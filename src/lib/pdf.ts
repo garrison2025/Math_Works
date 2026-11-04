@@ -1,5 +1,5 @@
 /** Browser-side vector PDF export: no screenshots, server, external API, or student records. */
-import {PDFDocument, StandardFonts, rgb, type PDFPage} from 'pdf-lib';
+import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import type {Worksheet, Problem, Diagram} from './math';
 export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
@@ -7,7 +7,7 @@ const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.8
 const ink=rgb(.09,.14,.22),sub=rgb(.35,.43,.52),accent=rgb(.105,.39,.65);
 function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,'/').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
 function wrap(text:string,maxChars:number){const words=ascii(text).split(/\s+/),lines:string[]=[];let line='';for(const word of words){if((line+' '+word).length>maxChars&&line){lines.push(line);line=word;}else line+=(line?' ':'')+word;}if(line)lines.push(line);return lines.length?lines:[''];}
-function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number){
+function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,font:PDFFont){
  const stroke={color:accent,thickness:1.1};const l=(a:number,b:number,c:number,e:number)=>page.drawLine({start:{x:x+a*w,y:y+b*h},end:{x:x+c*w,y:y+e*h},...stroke});
  const dot=(xx:number,yy:number)=>page.drawCircle({x:x+xx*w,y:y+yy*h,size:3,color:accent});
  if(d.kind==='protractor'){
@@ -24,7 +24,22 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number)
  if(d.kind==='parallelogram'){l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);return;}
  if(d.kind==='trapezoid'){l(.1,.15,.9,.15);l(.9,.15,.7,.85);l(.7,.85,.3,.85);l(.3,.85,.1,.15);return;}
  if(d.kind==='prism'){page.drawRectangle({x:x+w*.13,y:y+h*.12,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.4});l(.13,.77,.32,.94);l(.32,.94,.91,.94);l(.91,.94,.73,.77);l(.91,.94,.91,.28);l(.91,.28,.73,.12);return;}
- if(d.kind==='numberline'||d.kind==='box'){l(.1,.5,.9,.5);for(let i=0;i<=10;i++){const xx=.1+i*.08;l(xx,.47,xx,.53)}if(d.kind==='numberline')dot(.1+((d.values[0]+5)/10)*.8,.5);else{const [min,q1,med,q3,max]=d.values;const r=max-min||1,p=(z:number)=>.1+(z-min)/r*.8;l(p(min),.35,p(min),.65);l(p(max),.35,p(max),.65);page.drawRectangle({x:x+p(q1)*w,y:y+.35*h,width:(p(q3)-p(q1))*w,height:.3*h,borderColor:accent,borderWidth:1});l(p(med),.35,p(med),.65)}return;}
+ if(d.kind==='numberline'||d.kind==='box'){
+  l(.1,.5,.9,.5);
+  if(d.kind==='numberline'){
+   const n=d.values[0],op=d.labels?.[0],step=Math.max(1,Math.ceil(Math.abs(n)/5)),extent=step*5,px=(z:number)=>.5+(z/extent)*.4;
+   for(let i=-5;i<=5;i++){const xx=px(i*step);l(xx,.47,xx,.53)}
+   if(op){const dir=op.startsWith('>') ? .88 : .12;l(px(n),.5,dir,.5)}
+   const closed=!op||op.includes('≤')||op.includes('≥');
+   page.drawText(String(n),{x:x+px(n)*w-8,y:y+.65*h,size:9,font,color:ink});
+   page.drawCircle({x:x+px(n)*w,y:y+.5*h,size:4,borderColor:accent,borderWidth:1.2,...(closed?{color:accent}:{color:rgb(1,1,1)})});
+  }else{
+   const vals=d.values,lo=Math.min(...vals),hi=Math.max(...vals),range=hi-lo||1,p=(z:number)=>.1+(z-lo)/range*.8;
+   l(p(vals[0]),.5,p(vals[4]),.5);l(p(vals[0]),.36,p(vals[0]),.64);l(p(vals[4]),.36,p(vals[4]),.64);
+   page.drawRectangle({x:x+p(vals[1])*w,y:y+.35*h,width:(p(vals[3])-p(vals[1]))*w,height:.3*h,borderColor:accent,borderWidth:1});l(p(vals[2]),.35,p(vals[2]),.65);
+   for(const outlier of vals.slice(5))page.drawCircle({x:x+p(outlier)*w,y:y+.5*h,size:3,color:rgb(1,1,1),borderColor:accent,borderWidth:1});
+  }return;
+ }
  if(d.kind==='scatter'||d.kind==='coordinate'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);if(d.kind==='scatter'){for(let i=0;i<d.values.length;i+=2)dot(.14+d.values[i]*.18,Math.max(.1,Math.min(.95,.2+d.values[i+1]*.018)));}else if(d.values.length===2)dot(.5+d.values[0]*.025,.5+d.values[1]*.026);else{l(.2,.2,.8,.8);}return;}
  if(d.kind==='angle'){l(.25,.15,.9,.15);const a=d.values[0]*Math.PI/180;l(.25,.15,.25+.6*Math.cos(a),.15+.6*Math.sin(a));return;}
  if(d.kind==='line'){l(.1,.5,.9,.5);dot(.1,.5);dot(.9,.5);return;}
@@ -45,7 +60,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const xx=margin+(twoCols?col*(colW+colGap):0),yy=twoCols?rowY:currentY;
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrap(p.payload.question,twoCols?35:80)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
-  if(mode==='questions'&&p.diagramSpec){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128);y-=150;}
+  if(mode==='questions'&&p.diagramSpec){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font);y-=150;}
   if(mode==='answers'){for(const line of wrap(`Answer: ${p.expectedAnswer}`,80)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}}
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrap(p.expectedAnswer,80)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrap(`${k+1}) ${p.solutionSteps[k]}`,78)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;

@@ -34,7 +34,7 @@ Cloudflare Pages: Framework preset Astro, build `npm run build`, output `dist`; 
 - `src/data/keyword-evidence.csv`: 488 deduplicated candidate terms and attached competitor evidence; **do not confuse competitor traffic estimates with this site's traffic**.
 - `src/pages/`: Astro static topic pages and legal/about support.
 - `scripts/prepare.mjs`: build static WebP examples from fixed seed using Sharp.
-- `tests/math.test.mjs`: repeatability, 51k smoke seeds, oracle samples, diverse seeds.
+- `tests/math.test.mjs`: repeatability, 51k smoke seeds, 5k unlike-denominator cases, diagram regressions, oracle samples and diverse seeds.
 
 ## Publishing rules
 

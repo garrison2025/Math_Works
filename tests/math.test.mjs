@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {sampleProblem,makeWorksheet,quartiles,rational,addR,mulR,asText,Rng} from '../src/lib/math.ts';
+import {diagramSVG} from '../src/lib/diagram.ts';
 const routes=JSON.parse(fs.readFileSync(new URL('../src/data/routes.json',import.meta.url)));
 const available=routes.filter(r=>r.type!=='HOLD');
 test('route contract: 55 unique candidates, four HOLD excluded from generators',()=>{
@@ -60,4 +61,26 @@ test('known algebraic and geometry answers by substitution, independent of gener
   const f=sampleProblem('adding-unlike-fractions-worksheets',i),v=f.payload.question.match(/(\d+)\/(\d+) \+ (\d+)\/(\d+)/);
   assert.ok(v);const expected=addR(rational(BigInt(v[1]),BigInt(v[2])),rational(BigInt(v[3]),BigInt(v[4])));assert.equal(f.expectedAnswer,asText(expected));
  }
+});
+
+test('unlike denominator generation has exact reduced answers',()=>{
+ for(let seed=0;seed<5000;seed++){
+  const p=sampleProblem('adding-unlike-fractions-worksheets',seed);
+  const m=p.payload.question.match(/(\d+)\/(\d+) \+ (\d+)\/(\d+)/);
+  assert.ok(m);assert.notEqual(m[2],m[4]);
+  assert.equal(p.expectedAnswer,asText(addR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4])))));
+ }
+});
+test('dynamic number line SVG contains an endpoint for signed values',()=>{
+ for(const topic of ['number-line-worksheets','inequalities-worksheets'])for(let seed=0;seed<2000;seed++){
+  const d=sampleProblem(topic,seed).diagramSpec;
+  const svg=diagramSVG(d);
+  assert.ok(svg.includes('<circle cx='));
+  assert.ok(!svg.includes('NaN')&&!svg.includes('Point:'));
+ }
+});
+test('box plot SVG renders outlier separately from whiskers',()=>{
+ const svg=diagramSVG({kind:'box',values:[1,2.5,4.5,6.5,7,30]});
+ assert.ok(svg.includes('Whiskers exclude outliers'));
+ assert.equal((svg.match(/<circle/g)||[]).length,1);
 });

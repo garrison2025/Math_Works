@@ -19,12 +19,18 @@ function setup(root:HTMLElement){
   summary.textContent=`${s.problems.length} questions · ${difficulty.value} · ${paper.value}`;sheetCaption.textContent=`${mode==='questions'?'Practice worksheet':mode==='answers'?'Answer key':'Worked solutions'} · Sheet ID ${s.seed}`;sheetFooter.textContent=`${mode.toUpperCase()} · Seed ${s.seed} · ${s.problems.length} questions`;
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
  }
- function rebuild(){try{const {n,q,difficulty:d}=state();worksheet=makeWorksheet(topic,n,q,d);render();inform(`${q} matching problems generated locally · Seed ${n}.`);}catch(e){inform(e instanceof Error?e.message:'Could not create worksheet.',true);}}
+ function rebuild(){try{const {n,q,difficulty:d}=state();worksheet=makeWorksheet(topic,n,q,d);render();inform(`${q} matching problems generated locally · Seed ${n}.`);}catch(e){worksheet=undefined;inform(e instanceof Error?e.message:'Could not create worksheet.',true);}}
  function randomSeed(){const a=new Uint32Array(1);crypto.getRandomValues(a);seedInput.value=String(a[0]);rebuild();}
  difficulty.addEventListener('change',rebuild);quantity.addEventListener('change',rebuild);seedInput.addEventListener('change',rebuild);paper.addEventListener('change',render);
  root.querySelector<HTMLButtonElement>('[data-action="regenerate"]')!.addEventListener('click',randomSeed);
  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode as PdfMode;render();}));
- root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',()=>{rebuild();if(worksheet){inform('Open the print dialog. Select Actual size / 100% for the protractor.');document.documentElement.style.setProperty('print-color-adjust','exact');window.print();}});
+ root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',()=>{
+  rebuild();if(!worksheet)return;
+  let pageRule=document.getElementById('worksheet-print-page') as HTMLStyleElement|null;
+  if(!pageRule){pageRule=document.createElement('style');pageRule.id='worksheet-print-page';document.head.append(pageRule);}
+  pageRule.textContent=`@page { size: ${paper.value==='A4'?'A4':'letter'}; margin: 12.7mm; }`;
+  inform('Print dialog opened. Use Actual size / 100% for the protractor.');window.print();
+ });
  for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-${m}-${worksheet.seed}-${paper.value.toLowerCase()}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded · Seed ${worksheet.seed}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
  const url=new URL(window.location.href);const s=url.searchParams.get('seed');if(s&&/^\d+$/.test(s))seedInput.value=s;rebuild();
 }

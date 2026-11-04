@@ -21,6 +21,13 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 | Access/privacy | NO backend or student account; Cloudflare request metadata may exist; analytics/ads not installed |
 | External service/live deployment | NOT RUN / NO custom domain |
 
+## Correctness follow-up (2026-11-04)
+
+- Unlike-fraction denominators are guaranteed to differ; 5,000-seed oracle test PASS locally.
+- SVG/PDF number lines now scale across signed ranges; box-plots render outliers separately from whiskers; dedicated SVG regressions PASS locally.
+- Native print respects selected Letter or A4 size. Invalid seed clears stale worksheet state. Browser print path remains NOT RUN.
+- Local Node suite now reports 12 passed tests. GitHub CI for this follow-up commit still needs its own run.
+
 ## Blocking next checks
 
 1. GitHub Action `Quality checks`: install Node dependencies; typecheck/test/SSG build and inspect artifacts.
