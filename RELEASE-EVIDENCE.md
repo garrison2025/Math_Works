@@ -154,3 +154,8 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL PASS] 12,000 algebraic graph oracles validate intercepts, slopes, graph segments and separate question/answer SVG. Full math test suite 69/69 and TypeScript check passed.
 - [CI REQUIRED] Reproducible Letter/A4 PDFs, Chrome download/screenshot, Firefox browser behavior, Astro build and index audit. Check corresponding run; do not infer browser success from local tests.
 - [NOT RUN] Exhaustive manual PDF review, physical 50 mm protractor calibration and teacher signoff. Preview noindex remains mandatory.
+
+### R17 print-grid follow-up
+
+- [IMPLEMENTED, CI PENDING] PDF Cartesian panels now include light coordinate grid lines instead of bare tick axes; graphing practice uses one-unit grid spacing in SVG and vector PDF. Y-axis numbers are shown every 2 units to avoid label overlap on smaller paper diagrams.
+- [CI REQUIRED] Rerun the full PDF artifact and Chrome/Firefox smoke sequence, render representative Letter/A4 pages and verify the practice grid contains no answer line.

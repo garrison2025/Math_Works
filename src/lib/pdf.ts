@@ -184,17 +184,27 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  if(d.kind==='scatter'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);for(const [u,v] of scatterGeometry(d))dot(.14+u*.78,.2+v*.69);return;}
  if(d.kind==='coordinate'||d.kind==='linear-function'){
   const g=graphGeometry(d),mx=(z:number)=>.5+z/g.boundX*.44,my=(z:number)=>.5+z/g.boundY*.42;
+  const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
+  const tickX=drawingTask?1:g.boundX<=9?2:g.boundX<=20?5:10;
+  const tickY=drawingTask?1:g.boundY<=9?2:g.boundY<=20?5:10;
+  // Unit-spaced light grid on paper, matching the interactive SVG.
+  // Draw behind the axes, plotted line and labels.
+  const gridColor=rgb(.87,.91,.95);
+  for(let i=-g.boundX;i<=g.boundX;i+=tickX)if(i!==0)
+   page.drawLine({start:{x:x+mx(i)*w,y:y+.07*h},end:{x:x+mx(i)*w,y:y+.93*h},color:gridColor,thickness:.45});
+  for(let i=-g.boundY;i<=g.boundY;i+=tickY)if(i!==0)
+   page.drawLine({start:{x:x+.06*w,y:y+my(i)*h},end:{x:x+.94*w,y:y+my(i)*h},color:gridColor,thickness:.45});
   l(.06,.5,.94,.5);l(.5,.07,.5,.93);
-  const tickX=g.boundX<=9?2:g.boundX<=20?5:10,tickY=g.boundY<=9?2:g.boundY<=20?5:10;
   for(let i=-g.boundX;i<=g.boundX;i+=tickX){
    l(mx(i),.48,mx(i),.52);
    if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+mx(i)*w-font.widthOfTextAtSize(s,size)/2,y:y+.40*h,size,font,color:sub});}
   }
   for(let i=-g.boundY;i<=g.boundY;i+=tickY){
    l(.48,my(i),.52,my(i));
-   if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+.45*w-font.widthOfTextAtSize(s,size),y:y+my(i)*h-2,size,font,color:sub});}
+   if(i!==0&&(!drawingTask||i%2===0)){
+    const s=String(i),size=6;page.drawText(s,{x:x+.45*w-font.widthOfTextAtSize(s,size),y:y+my(i)*h-2,size,font,color:sub});
+   }
   }
-  const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
   if(g.segment&&(!drawingTask||showSolution)){
    const [[x1,y1],[x2,y2]]=g.segment;l(mx(x1),my(y1),mx(x2),my(y2));
    if(drawingTask){const [m,b]=d.values;dot(mx(0),my(b));dot(mx(1),my(m+b));}

@@ -46,3 +46,12 @@ test('R17: 3,000 old evaluate-mode seeds still equal the line substitution',()=>
   assert.ok(!p.diagramSpec.labels?.includes('draw'));
  }
 });
+
+test('R17 graph grids provide unit-spaced tick lines in both question and answer SVG',()=>{
+ const p=sampleProblem(topic,123,'standard',{slope:'positive',task:'graph'});
+ const blank=diagramSVG(p.diagramSpec),answer=diagramSVG(p.diagramSpec,true);
+ const gridCount=(svg)=>(svg.match(/stroke="#e1e8ee"/g)||[]).length;
+ assert.ok(gridCount(blank)>=20,'Blank graph should have a unit-grid, not just axes');
+ assert.equal(gridCount(blank),gridCount(answer),'Solutions must use the same coordinate scale as student grid');
+ assert.doesNotMatch(blank,/solution-linear/);assert.match(answer,/solution-linear-line/);
+});
