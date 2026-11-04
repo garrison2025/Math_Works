@@ -72,13 +72,13 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v4'));
- assert.ok(answers.getTitle()?.includes('v4'));
+ assert.ok(questions.getTitle()?.includes('v5'));
+ assert.ok(answers.getTitle()?.includes('v5'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=4/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=5/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v4 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v5 clipboard link',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
  await page.goto(`${base}/number-recognition-worksheets/`,{waitUntil:'networkidle'});
