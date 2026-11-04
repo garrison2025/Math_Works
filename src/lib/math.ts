@@ -183,7 +183,26 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'function-tables-worksheets':{const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-4,8),inputs=[x-1,x,x+1],outputs=inputs.map(v=>coeff*v+inter),position=opts.missing==='first'?0:opts.missing==='last'?2:1;
   const table=inputs.map((v,i)=>`${v}→${i===position?'____':outputs[i]}`).join(', ');
   make(`Complete the input/output table for f(x) = ${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}: ${table}.`,outputs[position],`Substitute the missing input x = ${inputs[position]}`,`f(${inputs[position]}) = ${coeff} × ${inputs[position]} + (${inter}) = ${outputs[position]}`);break}
- case 'linear-equations-worksheets':{const slope=opts.slope==='mixed'?r.int(-5,5):opts.slope==='positive'?r.int(1,5):opts.slope==='negative'?-r.int(1,5):0,inter=r.int(-9,9),x=r.int(-5,5);make(`For y = ${slope}x ${inter<0?'−':'+'} ${Math.abs(inter)}, find y when x = ${x}.`,slope*x+inter,`y = ${slope}×${x} + (${inter})`,`y = ${slope*x+inter}`);diagram={kind:'linear-function',values:[slope,inter,x,slope*x+inter]};break}
+ case 'linear-equations-worksheets':{
+  const graph=opts.task==='graph';
+  // Keep existing evaluation seeds stable; graph uses small slopes to permit
+  // plotting the intercept and a second integer point on the visible grid.
+  const slope=opts.slope==='mixed'?r.int(graph?-3:-5,graph?3:5):opts.slope==='positive'?r.int(1,graph?3:5):opts.slope==='negative'?-r.int(1,graph?3:5):0;
+  const inter=r.int(graph?-5:-9,graph?5:9),x=graph?0:r.int(-5,5);
+  const equation=`y = ${slope}x ${inter<0?'−':'+'} ${Math.abs(inter)}`;
+  if(graph){
+   make(`Graph the line ${equation} on the coordinate grid.`,
+    `slope = ${slope}; y-intercept = (0, ${inter})`,
+    `Plot the y-intercept at (0, ${inter}).`,
+    `Use slope ${slope}: from (0, ${inter}) to (1, ${slope+inter}).`,
+    `Draw a straight line through both points.`);
+   diagram={kind:'linear-function',values:[slope,inter,0,inter],labels:['draw']};
+  }else{
+   make(`For ${equation}, find y when x = ${x}.`,slope*x+inter,`y = ${slope}×${x} + (${inter})`,`y = ${slope*x+inter}`);
+   diagram={kind:'linear-function',values:[slope,inter,x,slope*x+inter]};
+  }
+  break;
+ }
  case 'slope-worksheets':{
   const x1=r.int(-4,2),vertical=opts.line==='mixed'?r.int(0,4)===0:opts.line==='vertical';
   const x2=vertical?x1:r.int(3,8),y1=r.int(-6,6),slope=r.int(-4,4),y2=vertical?y1+r.int(1,7):y1+slope*(x2-x1);

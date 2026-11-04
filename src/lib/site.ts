@@ -17,7 +17,8 @@ export const topicIntro=(slug:string)=>{
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
   'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',
-  'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.'
+  'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.',
+  'linear-equations-worksheets':'Evaluate linear functions or graph y = mx + b on a blank coordinate plane, then compare with a separately plotted answer key.'
  };
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
@@ -32,7 +33,7 @@ export function howTo(slug:string):string[]{
  if(slug.includes('statistics')||slug.includes('mean')||slug.includes('box'))return ['Put the data values in order if needed.','Use the stated statistical convention to compute the result.','Check the answer and working steps.'];
  if(slug.includes('order-of-operations'))return ['Work inside parentheses first.','Evaluate multiplication and division before addition and subtraction, working left to right at each priority.','Check that the final value matches the original expression structure.'];
  if(slug.includes('slope'))return ['Label both points (x₁, y₁) and (x₂, y₂).','Compute rise over run: (y₂ − y₁) / (x₂ − x₁).','If the two x-coordinates match, the vertical line has undefined slope.'];
- if(slug.includes('linear-equations'))return ['Read the slope m and y-intercept b in y = mx + b.','Substitute the specified x-value; multiply before adding b.','Check the resulting point lies on the plotted line.'];
+ if(slug.includes('linear-equations'))return ['For a graphing worksheet, plot the y-intercept (0, b), then use slope m to locate another point.','Draw the line through the two plotted points; the answer key shows the completed graph.','For evaluation worksheets, substitute the specified x-value and check that (x, y) lies on the line.'];
  if(slug.includes('scientific-notation'))return ['Move the decimal point until the leading number is at least 1 but less than 10.','Count the places moved to find the power of ten.','Use a negative exponent for numbers between zero and one.'];
  if(slug.includes('number-line'))return ['Find zero and the tick spacing.','Count left for negative values, right for positive values.','Mark the requested location, not its mirror image.'];
  if(slug.includes('coordinate-plane'))return ['Find the x- and y-axes and the origin.','Move right for positive x and up for positive y; move left or down for negative coordinates.','Check the quadrant against the two coordinate signs.'];
@@ -63,6 +64,7 @@ export function commonMistakes(slug:string):string[]{
  if(slug.includes('pythagorean'))return ['Treating one leg as the hypotenuse.', 'Taking the square root of the sum of legs instead of the sum of their squares.'];
  if(slug.includes('surface-area'))return ['Computing volume instead of total area of faces.', 'Using cubic rather than square units.'];
  if(slug.includes('area')||slug.includes('volume'))return ['Confusing slant length with perpendicular height.', 'Using the wrong square or cubic units.'];
+ if(slug.includes('linear-equations'))return ['Plotting the y-intercept on the x-axis instead of the y-axis.', 'Reversing rise and run when applying the slope.'];
  if(slug.includes('slope'))return ['Subtracting x-values and y-values in different orders.', 'Dividing by zero when points lie on a vertical line.'];
  if(slug.includes('scientific-notation'))return ['Writing a leading coefficient outside the 1 to 10 range.', 'Choosing the wrong exponent sign for a value below one.'];
  if(slug.includes('number-line'))return ['Placing negative numbers to the right of zero.', 'Counting tick marks without checking their scale.'];

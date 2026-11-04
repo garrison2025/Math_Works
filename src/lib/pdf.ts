@@ -186,9 +186,19 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   const g=graphGeometry(d),mx=(z:number)=>.5+z/g.boundX*.44,my=(z:number)=>.5+z/g.boundY*.42;
   l(.06,.5,.94,.5);l(.5,.07,.5,.93);
   const tickX=g.boundX<=9?2:g.boundX<=20?5:10,tickY=g.boundY<=9?2:g.boundY<=20?5:10;
-  for(let i=-g.boundX;i<=g.boundX;i+=tickX)l(mx(i),.48,mx(i),.52);
-  for(let i=-g.boundY;i<=g.boundY;i+=tickY)l(.48,my(i),.52,my(i));
-  if(g.segment){const [[x1,y1],[x2,y2]]=g.segment;l(mx(x1),my(y1),mx(x2),my(y2));}
+  for(let i=-g.boundX;i<=g.boundX;i+=tickX){
+   l(mx(i),.48,mx(i),.52);
+   if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+mx(i)*w-font.widthOfTextAtSize(s,size)/2,y:y+.40*h,size,font,color:sub});}
+  }
+  for(let i=-g.boundY;i<=g.boundY;i+=tickY){
+   l(.48,my(i),.52,my(i));
+   if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+.45*w-font.widthOfTextAtSize(s,size),y:y+my(i)*h-2,size,font,color:sub});}
+  }
+  const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
+  if(g.segment&&(!drawingTask||showSolution)){
+   const [[x1,y1],[x2,y2]]=g.segment;l(mx(x1),my(y1),mx(x2),my(y2));
+   if(drawingTask){const [m,b]=d.values;dot(mx(0),my(b));dot(mx(1),my(m+b));}
+  }
   for(const [vx,vy] of g.points){dot(mx(vx),my(vy));page.drawText(`(${vx},${vy})`,{x:x+mx(vx)*w+4,y:y+my(vy)*h+5,size:7,font,color:ink});}
   return;
  }
@@ -226,7 +236,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
   if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
-  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')?150:0);
+  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,9,bodyW-18).length,0);
   return common+13+answerLines*12+stepLines*11+24;
@@ -240,7 +250,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
   if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
-   if(p.diagramSpec&&['numberline','box-practice'].includes(p.diagramSpec.kind)){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
+   if(p.diagramSpec&&(['numberline','box-practice'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw')))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,9,bodyW-18)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;

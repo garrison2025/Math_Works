@@ -73,7 +73,15 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    for(let x=-g.boundX;x<=g.boundX;x+=tickX){const xx=px(x);parts+=`<line x1="${xx}" y1="25" x2="${xx}" y2="195" stroke="#e1e8ee" stroke-width="1"/>`;if(x!==0)parts+=text(xx,208,String(x));}
    for(let y=-g.boundY;y<=g.boundY;y+=tickY){const yy=py(y);parts+=`<line x1="53" y1="${yy}" x2="397" y2="${yy}" stroke="#e1e8ee" stroke-width="1"/>`;if(y!==0)parts+=text(43,yy+5,String(y));}
    parts+=line(53,cy,397,cy)+line(cx,25,cx,195)+text(410,cy-8,'x')+text(cx+12,17,'y');
-   if(g.segment){const [[x1,y1],[x2,y2]]=g.segment;parts+=`<line x1="${px(x1)}" y1="${py(y1)}" x2="${px(x2)}" y2="${py(y2)}" stroke="#187b68" stroke-width="3"/>`;}
+   const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
+   if(g.segment&&(!drawingTask||showSolution)){
+    const [[x1,y1],[x2,y2]]=g.segment;
+    parts+=`<line ${drawingTask?'class="solution-linear-line" ':''}x1="${px(x1)}" y1="${py(y1)}" x2="${px(x2)}" y2="${py(y2)}" stroke="#187b68" stroke-width="3"/>`;
+    if(drawingTask){
+     const [m,b]=d.values;
+     for(const [vx,vy] of [[0,b],[1,m+b]])parts+=`<circle class="solution-linear-point" cx="${px(vx)}" cy="${py(vy)}" r="5" fill="#187b68"/>`;
+    }
+   }
    for(const [x,y] of g.points){parts+=`<circle cx="${px(x)}" cy="${py(y)}" r="5" fill="#187b68" stroke="#fff" stroke-width="2"/>`+text(Math.min(399,px(x)+25),Math.max(18,py(y)-10),`(${x},${y})`);}
    break}
   case 'angle':{const deg=v[0],t=deg*Math.PI/180;parts=line(170,165,380,165)+line(170,165,170+155*Math.cos(t),165-155*Math.sin(t))+`<path d="M220 165 A50 50 0 0 0 ${170+50*Math.cos(t)} ${165-50*Math.sin(t)}" fill="none" stroke="#187b68" stroke-width="2"/>`+text(245,187,`${deg}°`);break}
