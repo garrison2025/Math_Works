@@ -111,6 +111,20 @@ try {
  assert.ok(await page.locator('.mobile-jump').isVisible());
  await page.screenshot({path:join(out,'two-step-mobile-390.png'),fullPage:true});
  events.push({kind:'interaction',name:'390px mobile preview order, no horizontal scroll',status:'pass'});
+ for(const width of [360,768,1440]){
+  await page.setViewportSize({width,height:900});
+  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
+  const boxes=await page.evaluate(()=>({
+   overflow:document.documentElement.scrollWidth-window.innerWidth,
+   preview:document.querySelector('.preview-panel')?.getBoundingClientRect().toJSON(),
+   settings:document.querySelector('.settings')?.getBoundingClientRect().toJSON()
+  }));
+  assert.ok(boxes.overflow<=2,`${width}px viewport has ${boxes.overflow}px horizontal overflow`);
+  if(width<=630)assert.ok(boxes.preview.y<boxes.settings.y,`${width}px preview priority broken`);
+  if(width>=961)assert.ok(boxes.settings.x<boxes.preview.x,`${width}px desktop columns broken`);
+  if(width===360)await page.screenshot({path:join(out,'two-step-mobile-360.png'),fullPage:true});
+  events.push({kind:'responsive',width,overflow:boxes.overflow,status:'pass'});
+ }
  assert.deepEqual(pageErrors,[],'Browser encountered uncaught JavaScript exceptions');
  events.push({kind:'runtime',pageErrors});
  await context.close();
