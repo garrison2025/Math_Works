@@ -114,3 +114,13 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [PASS sampled visual review] Rendered and inspected 11 pages across box-plot question sheets, scaled protractors and long multiplication worked-step sheets, plus an unlike-fractions answer sample. No visible clipping was observed in those sampled pages; this is **not** proof that all 71 pages were visually reviewed or that physical print size was verified.
 - [FOLLOW-UP] The first PDF artifact used route slugs as QA sample titles, unlike the end-user UI which already sends human-readable topic titles; subsequent sample exporter was corrected to pass `titleFor(slug)`.
 - [NOT RUN] Physical printed-protractor calibration, real Chrome/Firefox end-to-end browser downloads and educator sign-off. Preview release remains `noindex`.
+
+
+### R11 verified CI and browser artifacts (2026-11-04)
+
+- [PASS GitHub CI] Source commit `e66a5f240ac2c904cd1c6e65fe2dd9ea5b3146f3` passed run `41805618132`: TypeScript, mathematical tests, 51-topic PDF roundtrip, Astro build, static SEO/noindex audit and new real Chromium tests.
+- [PASS GitHub CI] Follow-up commit `7bcf0b18c0d72b79c541cdd4c154aeb9e7367bf4` passed run `41806340594`, including Chromium 360/390/768/1280/1440px responsive checks. 360/768/1440px reported zero horizontal overflow. Desktop screenshot plus 360/390px mobile screenshots were retained as artifact `math-works-browser-qa`.
+- [PASS browser flows] Against the built static site, Chrome generated and downloaded real A4 practice and separate answer-key PDFs, a single-page blank Letter protractor PDF, switched question/answer preview, changed equation coefficients, copied and parsed the `gv=4` share link, and checked each count-dots image against its answer. Uncaught browser JavaScript errors: none.
+- [PASS representative PDF review] CI output produced 42 deterministic Letter/A4 PDFs, totaling 138 pages. A PyMuPDF pass found zero text blocks outside the PDF MediaBox. The first pages of long division and three-digit multiplication were rasterized and visually inspected without visible text clipping; this is a sample, not complete visual acceptance.
+- [PASS preview HTML sampling] The Cloudflare `pages.dev` multiplication and number-recognition routes still return `noindex,nofollow` and contain the revised worksheet descriptions. External live-browser downloads on Cloudflare were not directly run: tested browser origin was the exact GitHub-built static bundle.
+- [NOT RUN] Firefox, physical paper and 50 ±1mm protractor calibration, all 138 PDF pages individually inspected, screen reader / teacher sign-off. Preview SEO stays blocked until release approval.
