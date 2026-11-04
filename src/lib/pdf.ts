@@ -1,7 +1,7 @@
 /** Browser-side vector PDF export: no screenshots, server, external API, or student records. */
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import type {Worksheet, Problem, Diagram} from './math';
-import {graphGeometry,scatterGeometry,boxPracticeAxis} from './graph.ts';
+import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
@@ -35,6 +35,9 @@ export function wrapPdfText(input:string,font:PDFFont,size:number,maxWidth:numbe
 function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,font:PDFFont){
  const stroke={color:accent,thickness:1.1};const l=(a:number,b:number,c:number,e:number)=>page.drawLine({start:{x:x+a*w,y:y+b*h},end:{x:x+c*w,y:y+e*h},...stroke});
  const dot=(xx:number,yy:number)=>page.drawCircle({x:x+xx*w,y:y+yy*h,size:3,color:accent});
+ const label=(text:string,xx:number,yy:number,size=8)=>{
+  page.drawText(ascii(text),{x:x+xx*w,y:y+yy*h,size,font,color:ink});
+ };
  if(d.kind==='protractor'){
   // Never shrink the printable instrument: the SVG and PDF both use a 72 mm radius.
   const r=PROTRACTOR_RADIUS_PT,cx=x+w/2,cy=y+45;
@@ -86,13 +89,45 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   page.drawText('Remainder: ______',{x:x+w*.18,y:base-27,size:9,font,color:sub});
   return;
  }
- if(d.kind==='triangle'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);l(.5,.88,.5,.12);return;}
+ if(d.kind==='triangle'){
+  l(.15,.16,.85,.16);l(.15,.16,.50,.88);l(.50,.88,.85,.16);l(.50,.88,.50,.16);
+  label(`${d.values[0]} base`,.38,.03);
+  label(`${d.values[1]===undefined?'?':d.values[1]} height`,.53,.53);
+  return;
+ }
  if(d.kind==='right-triangle'){const [a,b]=d.values,s=Math.min(w*.57/a,h*.67/b),dx=a*s/w,dy=b*s/h;const x0=.16,y0=.14;l(x0,y0,x0+dx,y0);l(x0,y0,x0,y0+dy);l(x0+dx,y0,x0,y0+dy);l(x0+.03,y0,x0+.03,y0+.06);l(x0+.03,y0+.06,x0,y0+.06);page.drawText(String(a),{x:x+(x0+dx/2)*w-4,y:y+2,size:8,font,color:ink});page.drawText(String(b),{x:x+(x0-.10)*w,y:y+(y0+dy/2)*h,size:8,font,color:ink});return;}
- if(d.kind==='triangle-angles'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);page.drawText(`${d.values[0]} deg`,{x:x+w*.22,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[1]} deg`,{x:x+w*.66,y:y+h*.22,size:8,font,color:ink});page.drawText('?',{x:x+w*.44,y:y+h*.70,size:8,font,color:ink});return;}
- if(d.kind==='rectangle'){page.drawRectangle({x:x+w*.2,y:y+h*.2,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.5});return;}
- if(d.kind==='parallelogram'){l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);return;}
- if(d.kind==='trapezoid'){l(.1,.15,.9,.15);l(.9,.15,.7,.85);l(.7,.85,.3,.85);l(.3,.85,.1,.15);return;}
- if(d.kind==='prism'){page.drawRectangle({x:x+w*.13,y:y+h*.12,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.4});l(.13,.77,.32,.94);l(.32,.94,.91,.94);l(.91,.94,.73,.77);l(.91,.94,.91,.28);l(.91,.28,.73,.12);return;}
+ if(d.kind==='triangle-angles'){
+  const g=angleTriangleLayout(d);
+  const px=(z:number)=>z/450,py=(z:number)=>(220-z)/220;
+  const [a,b,c]=g.vertices;
+  l(px(a[0]),py(a[1]),px(b[0]),py(b[1]));
+  l(px(b[0]),py(b[1]),px(c[0]),py(c[1]));
+  l(px(c[0]),py(c[1]),px(a[0]),py(a[1]));
+  for(let i=0;i<3;i++){const [tx,ty]=g.labelPositions[i];label(i===2?'?':`${d.values[i]} deg`,px(tx),py(ty),8);}
+  return;
+ }
+ if(d.kind==='rectangle'){
+  page.drawRectangle({x:x+w*.2,y:y+h*.2,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.5});
+  label(`${d.values[0]} units`,.43,.08);label(String(d.values[1]),.83,.52);return;
+ }
+ if(d.kind==='parallelogram'){
+  l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);l(.28,.15,.28,.88);
+  label(String(d.values[0]),.36,.04);label(d.values[1]===undefined?'?':String(d.values[1]),.30,.48);
+  return;
+ }
+ if(d.kind==='trapezoid'){
+  l(.1,.15,.9,.15);l(.9,.15,.7,.85);l(.7,.85,.3,.85);l(.3,.85,.1,.15);l(.3,.15,.3,.85);
+  label(String(d.values[0]),.44,.04);label(String(d.values[1]),.44,.88);
+  label(d.values[2]===undefined?'?':String(d.values[2]),.32,.50);
+  return;
+ }
+ if(d.kind==='prism'){
+  page.drawRectangle({x:x+w*.13,y:y+h*.12,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.4});
+  l(.13,.77,.32,.94);l(.32,.94,.91,.94);l(.91,.94,.73,.77);l(.91,.94,.91,.28);l(.91,.28,.73,.12);
+  label(String(d.values[0]),.38,.03);label(String(d.values[1]),.77,.19);
+  label(d.values[2]===undefined?'?':String(d.values[2]),.04,.48);
+  return;
+ }
  if(d.kind==='box-practice'){
   const axis=boxPracticeAxis(d.values),toX=(z:number)=>.10+axis.position(z)*.80;
   l(.07,.48,.94,.48);
