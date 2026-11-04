@@ -103,6 +103,33 @@ try {
  assert.equal(protractor.getPageCount(),1);
  events.push({kind:'interaction',name:'blank 180-degree protractor PDF download (physical measurement still NOT RUN)',status:'pass'});
 
+ // R12: verify real-angle diagrams and height masking with actual Chrome PDF downloads.
+ await page.goto(`${base}/triangle-angle-sum-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="thirdAngle"]').selectOption('obtuse');
+ const triangle=await page.locator('.problem').first().evaluate(el=>({
+  question:el.querySelector('.q')?.textContent??'',
+  labels:[...el.querySelectorAll('svg text')].map(t=>t.textContent??''),
+  vertices:el.querySelector('svg polygon')?.getAttribute('points')??''
+ }));
+ const given=triangle.question.match(/angles are (\d+)° and (\d+)°/);
+ assert.ok(given,'Missing triangle angle data');
+ assert.ok(triangle.labels.includes(`${given[1]}°`) && triangle.labels.includes(`${given[2]}°`));
+ assert.ok(triangle.labels.includes('?'),'The unknown angle is exposed');
+ assert.equal(triangle.vertices.split(' ').length,3,'Missing triangle vertices');
+ const triangleWait=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await triangleWait,'triangle-angle questions');
+ await page.screenshot({path:join(out,'r12-triangle-angle.png'),fullPage:true});
+ events.push({kind:'interaction',name:'true-angle SVG and PDF worksheet',status:'pass'});
+ await page.goto(`${base}/area-of-trapezoids-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('missing-height');
+ const trapezoidSvg=await page.locator('.diagram-vector').first().innerHTML();
+ assert.ok(trapezoidSvg.includes('>?</text>'),'Trapezoid diagram leaked the missing height');
+ const heightWait=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await heightWait,'trapezoid missing-height questions');
+ await page.screenshot({path:join(out,'r12-trapezoid-height.png'),fullPage:true});
+ events.push({kind:'interaction',name:'missing-height SVG and PDF worksheet',status:'pass'});
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));
