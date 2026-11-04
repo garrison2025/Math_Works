@@ -103,7 +103,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   l(px(a[0]),py(a[1]),px(b[0]),py(b[1]));
   l(px(b[0]),py(b[1]),px(c[0]),py(c[1]));
   l(px(c[0]),py(c[1]),px(a[0]),py(a[1]));
-  for(let i=0;i<3;i++){const [tx,ty]=g.labelPositions[i];label(i===2?'?':`${d.values[i]} deg`,px(tx),py(ty),8);}
+  for(let i=0;i<3;i++){const [tx,ty]=g.labelPositions[i],value=i===2?'?':`${d.values[i]} deg`;const fontSize=8;page.drawText(value,{x:x+px(tx)*w-font.widthOfTextAtSize(value,fontSize)/2,y:y+py(ty)*h,size:fontSize,font,color:ink});}
   return;
  }
  if(d.kind==='rectangle'){
