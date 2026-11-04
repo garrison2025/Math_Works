@@ -134,7 +134,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v6'),`${topic} missing version-six identity`);
+    assert.ok(doc.getTitle()?.includes('v7'),`${topic} missing version-seven identity`);
    }
   }
  }
@@ -203,14 +203,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'6');
+  assert.equal(sheet.generatorVersion,'7');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v6'));
+   assert.ok(document.getTitle()?.includes('v7'));
   }
  }
 });
@@ -226,8 +226,29 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v6/);
+   assert.match(parsed.getTitle()??'',/generator v7/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
+  }
+ }
+});
+
+
+test('R15 parallel, coincident and function classification worksheets serialize paired Letter/A4 PDF sets',async()=>{
+ const combinations=[
+  ['systems-equations-worksheets',{method:'parallel',solutions:'mixed'},'no solution'],
+  ['systems-equations-worksheets',{method:'coincident',solutions:'mixed'},'infinitely many solutions'],
+  ['domain-range-worksheets',{task:'function-test',relation:'function'},'yes'],
+  ['domain-range-worksheets',{task:'function-test',relation:'not-function'},'no']
+ ];
+ for(const [topic,options,expected] of combinations){
+  const sheet=makeWorksheet(topic,20261105,20,'standard',options);
+  assert.ok(sheet.problems.every(p=>p.expectedAnswer===expected));
+  for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
+   const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
+   assert.ok(pdf.getPageCount()>0);
+   assert.match(pdf.getTitle()??'',/generator v7/);
+   assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
+   assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }
  }
 });

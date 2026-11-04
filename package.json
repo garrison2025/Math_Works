@@ -9,7 +9,7 @@
     "build": "npm run prepare:assets && astro build",
     "preview": "astro preview",
     "typecheck": "tsc --noEmit -p tsconfig.math.json",
-    "test:math": "node --experimental-strip-types --test tests/math.test.mjs tests/independent-oracles.test.mjs tests/indexation.test.mjs tests/capabilities.test.mjs tests/r9-topic-math.test.mjs tests/r10-print-integrity.test.mjs tests/r12-geometry.test.mjs tests/r13-diagram-fidelity.test.mjs tests/r14-advanced-algebra.test.mjs tests/content.test.mjs tests/topic-options.test.mjs tests/worksheet-link.test.mjs",
+    "test:math": "node --experimental-strip-types --test tests/math.test.mjs tests/independent-oracles.test.mjs tests/indexation.test.mjs tests/capabilities.test.mjs tests/r9-topic-math.test.mjs tests/r10-print-integrity.test.mjs tests/r12-geometry.test.mjs tests/r13-diagram-fidelity.test.mjs tests/r14-advanced-algebra.test.mjs tests/r15-classification.test.mjs tests/r15-numberline-answer.test.mjs tests/content.test.mjs tests/topic-options.test.mjs tests/worksheet-link.test.mjs",
     "test:pdf": "node --experimental-strip-types --test tests/pdf.test.mjs",
     "qa:pdf-samples": "node --experimental-strip-types scripts/export-golden-pdfs.mjs",
     "test": "npm run typecheck && npm run test:math",

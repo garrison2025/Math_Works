@@ -32,17 +32,6 @@ jobs:
           path: qa-artifacts/browser/
           retention-days: 7
           if-no-files-found: warn
-      - name: Install Playwright Firefox and OS dependencies
-        run: npx playwright-core install --with-deps firefox
-      - name: Firefox cross-browser PDF, topic options and mobile QA
-        run: npm run qa:firefox
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: math-works-firefox-qa
-          path: qa-artifacts/firefox/
-          retention-days: 7
-          if-no-files-found: warn
       - name: Generate PDF golden fixtures
         run: npm run qa:pdf-samples
       - name: Render first pages for visual review (when Poppler is available)
@@ -67,3 +56,33 @@ jobs:
           grep -q 'noindex,nofollow' dist/index.html
           test -f dist/two-step-equations-worksheets/index.html
           test -f dist/images/worksheets/two-step-equations-worksheets-sample.webp
+
+  firefox-qa:
+    # A missing/unreachable browser runtime must not block all other release evidence.
+    # Firefox remains a required, separately reported job and never silently passes.
+    needs: test-and-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: math-works-built-site
+          path: dist/
+      - name: Install Playwright Firefox browser
+        timeout-minutes: 7
+        run: npx playwright-core install firefox
+      - name: Firefox PDF download and mobile QA
+        timeout-minutes: 5
+        run: npm run qa:firefox
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: math-works-firefox-qa
+          path: qa-artifacts/firefox/
+          retention-days: 7
+          if-no-files-found: warn

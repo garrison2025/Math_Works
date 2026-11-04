@@ -32,7 +32,7 @@ export function wrapPdfText(input:string,font:PDFFont,size:number,maxWidth:numbe
  if(line)lines.push(line);
  return lines.length?lines:[''];
 }
-function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,font:PDFFont){
+function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,font:PDFFont,showSolution=false){
  const stroke={color:accent,thickness:1.1};const l=(a:number,b:number,c:number,e:number)=>page.drawLine({start:{x:x+a*w,y:y+b*h},end:{x:x+c*w,y:y+e*h},...stroke});
  const dot=(xx:number,yy:number)=>page.drawCircle({x:x+xx*w,y:y+yy*h,size:3,color:accent});
  const label=(text:string,xx:number,yy:number,size=8)=>{
@@ -110,7 +110,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   const square=d.labels?.[0]==='square'||d.values[0]===d.values[1];
   if(square){const side=Math.min(w*.55,h*.62);page.drawRectangle({x:x+(w-side)/2,y:y+(h-side)/2,width:side,height:side,borderColor:accent,borderWidth:1.5});}
   else page.drawRectangle({x:x+w*.2,y:y+h*.2,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.5});
-  label(String(d.values[0])+' units',.43,.08);label(String(d.values[1]),.83,.52);return;
+  label(`${d.values[0]} units`,.43,.08);label(String(d.values[1]),.83,.52);return;
  }
  if(d.kind==='parallelogram'){
   l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);l(.28,.15,.28,.88);
@@ -125,6 +125,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  }
  if(d.kind==='prism'){
   if(d.labels?.[0]==='cube'){
+   // A cube has a genuinely square front face, not a generic rectangle.
    const side=Math.min(w*.43,h*.58),left=x+w*.29,bottom=y+h*.14,depth=side*.28;
    page.drawRectangle({x:left,y:bottom,width:side,height:side,borderColor:accent,borderWidth:1.4});
    for(const [x1,y1,x2,y2] of [[left,bottom+side,left+depth,bottom+side+depth],[left+side,bottom+side,left+side+depth,bottom+side+depth],[left+side,bottom,left+side+depth,bottom+depth],[left+depth,bottom+side+depth,left+side+depth,bottom+side+depth],[left+side+depth,bottom+depth,left+side+depth,bottom+side+depth]]){
@@ -153,8 +154,18 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   if(d.kind==='numberline'){
    const n=d.values[0],op=d.labels?.[0],step=Math.max(1,Math.ceil(Math.abs(n)/5)),extent=step*5,px=(z:number)=>.5+(z/extent)*.4;
    for(let i=-5;i<=5;i++){const xx=px(i*step);l(xx,.47,xx,.53);page.drawText(String(i*step),{x:x+xx*w-8,y:y+.65*h,size:7,font,color:ink});}
-   // Leave blank for the student. Neither the endpoint nor direction is disclosed.
-   void op; void px;
+   // A practice diagram must NEVER disclose the endpoint or ray.
+   if(showSolution){
+    const xx=x+px(n)*w,yy=y+.5*h,open=op==='<'||op==='>';
+    if(op){
+     const target=x+(op==='>'||op==='≥'?.9:.1)*w;
+     page.drawLine({start:{x:xx,y:yy},end:{x:target,y:yy},color:rgb(.09,.48,.41),thickness:2.8});
+     const direction=target>=xx?1:-1;
+     page.drawLine({start:{x:target,y:yy},end:{x:target-9*direction,y:yy+4},color:rgb(.09,.48,.41),thickness:2});
+     page.drawLine({start:{x:target,y:yy},end:{x:target-9*direction,y:yy-4},color:rgb(.09,.48,.41),thickness:2});
+    }
+    page.drawCircle({x:xx,y:yy,size:4,color:open?rgb(1,1,1):rgb(.09,.48,.41),borderColor:rgb(.09,.48,.41),borderWidth:1.8});
+   }
   }else{
    const vals=d.values,lo=Math.min(...vals),hi=Math.max(...vals),range=hi-lo||1,p=(z:number)=>.1+(z-lo)/range*.8;
    l(p(vals[0]),.5,p(vals[4]),.5);l(p(vals[0]),.36,p(vals[0]),.64);l(p(vals[4]),.36,p(vals[4]),.64);
@@ -179,8 +190,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   const draw=([a,b]:[[number,number],[number,number]])=>page.drawLine({start:pt(a),end:pt(b),color:accent,thickness:1.2});
   draw(g.horizontal);draw(g.diagonal);
   for(const arc of [g.givenArc,g.unknownArc])for(let i=1;i<arc.length;i++)draw([arc[i-1],arc[i]]);
-  const labels:[string,[number,number]][]=[[String(g.givenDegrees)+' deg',g.givenLabel],['?',g.unknownLabel]];
-  for(const [value,loc] of labels){
+  for(const [value,loc] of [[`${g.givenDegrees} deg`,g.givenLabel],['?',g.unknownLabel]] as [string,[number,number]][]){
    const pos=pt(loc),size=8;page.drawText(value,{x:pos.x-font.widthOfTextAtSize(value,size)/2,y:pos.y-3,size,font,color:ink});
   }
   return;
@@ -189,9 +199,8 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   l(.1,.5,.9,.5);const n=d.values[0];if(n!==2)dot(.1,.5);if(n===0)dot(.9,.5);
   if(n===1)dot(.65,.5);if(n===2){dot(.28,.5);dot(.72,.5);}
   if(n>=1){l(.86,.55,.9,.5);l(.86,.45,.9,.5);}if(n===2){l(.14,.55,.1,.5);l(.14,.45,.1,.5);}
-  const names=d.labels??['A','B'],p1=n===2?.28:.1,p2=n===2?.72:n===1?.65:.9;
-  const points:[string,number][]=[[names[0]??'A',p1],[names[1]??'B',p2]];
-  for(const [name,tx] of points)page.drawText(ascii(name),{x:x+tx*w-3,y:y+.64*h,size:9,font,color:ink});
+  const names=d.labels??['A','B'];const p1=n===2?.28:.1,p2=n===2?.72:n===1?.65:.9;
+  for(const [name,tx] of [[names[0]??'A',p1],[names[1]??'B',p2]] as [string,number][])page.drawText(ascii(name),{x:x+tx*w-3,y:y+.64*h,size:9,font,color:ink});
   return;
  }
  if(d.kind==='dots'){for(let i=0;i<d.values[0];i++)dot(.15+(i%6)*.13,.3+Math.floor(i/6)*.4);}
@@ -209,7 +218,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
   if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
-  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20;
+  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(p.diagramSpec?.kind==='numberline'?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,9,bodyW-18).length,0);
   return common+13+answerLines*12+stepLines*11+24;
@@ -222,7 +231,9 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
-  if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}}
+  if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
+   if(p.diagramSpec?.kind==='numberline'){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
+  }
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,9,bodyW-18)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;
  }

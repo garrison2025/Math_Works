@@ -16,14 +16,14 @@ export const topicIntro=(slug:string)=>{
   'box-plots-worksheets':'Find quartiles using the exclusive median-of-halves convention and read the five-number summary.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
-  'systems-equations-worksheets':'Solve two-variable linear systems using simple sum/difference equations or general coefficient elimination. Each system has exactly one integer solution.',
-  'domain-range-worksheets':'Practice domains and ranges of relations, including non-functions where one input corresponds to multiple outputs.'
+  'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',
+  'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.'
  };
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
- if(slug.includes('systems-equations'))return ['Identify coefficients of x and y in both equations.', 'Eliminate one variable by multiplying the two equations and subtracting, then solve for the remaining variable.', 'Substitute the answer and check that both original equations hold.'];
- if(slug.includes('domain-range'))return ['Read each ordered pair as (input, output).', 'Domain is the set of unique x-values; range is the set of unique y-values.', 'If the same input has different outputs, the relation is not a function.'];
+ if(slug.includes('systems-equations'))return ['Compare the coefficients of both equations to decide whether they are proportional.', 'If they are not proportional, eliminate a variable to find the unique solution.', 'If they are proportional, compare the constant terms: identical lines have infinitely many solutions; distinct parallel lines have none.'];
+ if(slug.includes('domain-range'))return ['Read each ordered pair as (input, output).', 'Domain is the set of unique x-values; range is the set of unique y-values.', 'For function identification, check whether any repeated input has two different outputs.'];
  if(slug.includes('box-plots'))return ['Order the observations and find the median.','Split into equal lower and upper halves, excluding the middle value for odd-sized samples.','Use the 1.5×IQR fences to identify outliers separately from the whisker endpoints.'];
  if(slug.includes('fraction'))return ['Read both numerators and denominators carefully.','Find a common denominator or simplify only when the operation requires it.','Compare your reduced fraction to the answer key.'];
  if(slug.includes('inequal'))return ['Identify the coefficient of the unknown and the comparison symbol.','Undo operations on both sides; flip < to > and ≤ to ≥ (or vice versa) when dividing by a negative.','Check a test value against the original inequality and mark open or closed endpoints as appropriate.'];

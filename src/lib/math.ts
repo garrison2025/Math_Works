@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='6' as const;
+export const GENERATOR_VERSION='7' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -156,6 +156,21 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
     `${det}x = ${s*d-t*b}; x = ${x}`,
     `Substitute into ${a}x ${sign(b)} ${Math.abs(b)}y = ${s}: y = ${y}`,
     `Check both: ${a*x+b*y} = ${s} and ${c*x+d*y} = ${t}`);
+  }else if(opts.method==='parallel'||opts.method==='coincident'){
+   // The second equation has proportional coefficients (determinant zero).
+   // Equal proportional constants => same line (infinite solutions).
+   // Different proportional constants => parallel lines (no solution).
+   const coef=()=>r.int(1,6)*(r.int(0,1)?1:-1);
+   const a=coef(),b=coef(),factor=r.pick([-4,-3,-2,2,3,4]);
+   const c=a*x+b*y,offset=opts.method==='parallel'?(r.int(1,9)*(r.int(0,1)?1:-1)):0;
+   const d=a*factor,e=b*factor,f=c*factor+offset;
+   const eq=(u:number,v:number,w:number)=>`${u}x ${v<0?'−':'+'} ${Math.abs(v)}y = ${w}`;
+   const status=opts.method==='parallel'?'no solution':'infinitely many solutions';
+   make(`Classify and solve the system: ${eq(a,b,c)}; ${eq(d,e,f)}.`,status,
+    `The x and y coefficients of the second equation are ${factor} times those of the first.`,
+    `Multiplying the first equation by ${factor} yields ${eq(d,e,c*factor)}.`,
+    opts.method==='parallel'?`The second equation instead has right-hand side ${f}, so the equations are inconsistent.`:'The two equations are identical after multiplication and describe the same line.',
+    `Conclusion: ${status}.`);
   }else make(`Solve: x + y = ${x+y}; x − y = ${x-y}`,`x = ${x}, y = ${y}`,`Add equations: 2x = ${(x+y)+(x-y)}`,`x = ${x}`,`Substitute to find y = ${y}`);
   break}
 
@@ -183,7 +198,10 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   const points=xs.map((x,i)=>`(${x},${ys[i]})`).join(', '),task=opts.task==='mixed'?r.pick(['domain','range']):opts.task;
   const unique=(items:number[])=>[...new Set(items)].sort((a,b)=>a-b);
   if(task==='domain')make(`List the domain of {${points}}.`,`{${unique(xs).join(', ')}}`,`Domain = the set of distinct x-values; list each input once.`);
-  else make(`List the range of {${points}}.`,`{${unique(ys).join(', ')}}`,`Range = the set of distinct y-values; list each output once.`);
+  else if(task==='range')make(`List the range of {${points}}.`,`{${unique(ys).join(', ')}}`,`Range = the set of distinct y-values; list each output once.`);
+  else make(`Is the relation {${points}} a function? Answer yes or no.`,opts.relation==='function'?'yes':'no',
+   `A relation is a function only if each distinct input maps to exactly one output.`,
+   opts.relation==='function'?'All input values are distinct, so the relation is a function.':`The input ${xs[0]} maps to both ${ys[0]} and ${ys[3]}, so it is not a function.`);
   break}
 
  case 'number-recognition-worksheets':{const n=r.int(1,12),type=opts.task==='mixed'?r.pick(['count-dots','word-to-numeral']):opts.task;

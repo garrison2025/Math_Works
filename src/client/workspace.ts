@@ -34,11 +34,22 @@ function setup(root:HTMLElement){
   if(Number(quantity.value)>maximum){quantity.value=String([...quantity.options].filter(o=>!o.disabled).at(-1)?.value||4);}
  }
 
- function render(){if(!worksheet)return;const s=worksheet;const diagram=s.problems.some(p=>!!p.diagramSpec);list.classList.toggle('with-diagrams',diagram);list.innerHTML=s.problems.map((p,i)=>`<div class="problem"><div class="no">${String(i+1).padStart(2,'0')}</div><div class="q">${esc(p.payload.question)}</div>${mode==='questions'&&p.diagramSpec?diagramSVG(p.diagramSpec):''}${mode==='answers'?`<div class="answer-text"><strong>Answer:</strong> ${esc(p.expectedAnswer)}</div>`:''}${mode==='steps'?`<div class="answer-text"><strong>Answer:</strong> ${esc(p.expectedAnswer)}</div><ol class="steps">${p.solutionSteps.map(line=>`<li>${esc(line)}</li>`).join('')}</ol>`:''}</div>`).join('');
+ function setExportReady(ready:boolean){
+  for(const action of ['worksheet','answers','print','share','steps']){
+   const button=root.querySelector<HTMLButtonElement>(`[data-action="${action}"]`);
+   if(button)button.disabled=!ready||(action==='steps'&&!stepsEnabled);
+  }
+ }
+ function render(){if(!worksheet)return;const s=worksheet;const diagram=s.problems.some(p=>!!p.diagramSpec);list.classList.toggle('with-diagrams',diagram);list.innerHTML=s.problems.map((p,i)=>`<div class="problem"><div class="no">${String(i+1).padStart(2,'0')}</div><div class="q">${esc(p.payload.question)}</div>${mode==='questions'&&p.diagramSpec?diagramSVG(p.diagramSpec):''}${mode==='answers'?`<div class="answer-text"><strong>Answer:</strong> ${esc(p.expectedAnswer)}</div>${p.diagramSpec?.kind==='numberline'?diagramSVG(p.diagramSpec,true):''}`:''}${mode==='steps'?`<div class="answer-text"><strong>Answer:</strong> ${esc(p.expectedAnswer)}</div><ol class="steps">${p.solutionSteps.map(line=>`<li>${esc(line)}</li>`).join('')}</ol>`:''}</div>`).join('');
   summary.textContent=`${s.problems.length} questions · ${difficulty.value} · ${paper.value} · Engine v${s.generatorVersion} · Config ${s.optionsHash}`;sheetCaption.textContent=`${mode==='questions'?'Practice worksheet':mode==='answers'?'Answer key':'Worked solutions'} · Sheet ID ${s.seed}`;sheetFooter.textContent=`${mode.toUpperCase()} · Engine v${s.generatorVersion} · Seed ${s.seed} · Config ${s.optionsHash} · ${s.problems.length} questions`;
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
  }
- function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){worksheet=undefined;inform(e instanceof Error?e.message:'Could not create worksheet.',true);}}
+ function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
+   worksheet=undefined;setExportReady(false);
+   list.classList.remove('with-diagrams');list.innerHTML='<p class="empty">Enter a valid seed and settings to generate a worksheet. Previously shown questions have been cleared.</p>';
+   summary.textContent='Worksheet unavailable';sheetCaption.textContent='Check settings before printing';sheetFooter.textContent='No valid worksheet to export';
+   inform(e instanceof Error?e.message:'Could not create worksheet.',true);
+  }}
  function randomSeed(){const a=new Uint32Array(1);crypto.getRandomValues(a);seedInput.value=String(a[0]);rebuild();}
  difficulty.addEventListener('change',rebuild);quantity.addEventListener('change',rebuild);seedInput.addEventListener('change',rebuild);paper.addEventListener('change',render);
  root.querySelectorAll<HTMLSelectElement>('[data-option]').forEach(el=>el.addEventListener('change',rebuild));
