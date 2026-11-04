@@ -16,6 +16,13 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: Archive built pages for browser QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: math-works-built-site
+          path: dist/
+          retention-days: 3
+          if-no-files-found: error
       - name: Generate PDF golden fixtures
         run: npm run qa:pdf-samples
       - name: Render first pages for visual review (when Poppler is available)
