@@ -15,6 +15,19 @@ export function diagramSVG(d?:Diagram):string{
  const text=(x:number,y:number,s:string)=>`<text x="${x}" y="${y}" fill="#172337" font-size="17" text-anchor="middle">${esc(s)}</text>`;
  const poly=(points:string)=>`<polygon points="${points}" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
  switch(d.kind){
+  case 'column-multiplication':{
+   if(v.length!==2||!v.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid multiplication diagram');
+   const top=String(v[0]),bottom=String(v[1]);
+   // Draw a genuine place-value setup, but never expose a partial product or final answer.
+   const firstRow=`<text x="169" y="122" font-size="14">ones</text><path d="M222 127H304" stroke="#62738a" stroke-width="1"/>`;
+   const secondRow=bottom.length>1?`<text x="169" y="149" font-size="14">tens</text><path d="M222 154H304" stroke="#62738a" stroke-width="1"/>`:'';
+   parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" text-anchor="end"><text x="285" y="49" font-size="34">${esc(top)}</text><text x="285" y="85" font-size="34">${esc(bottom)}</text><text x="189" y="85" font-size="30">×</text></g><path d="M175 98H304" stroke="#172337" stroke-width="2.6"/>${firstRow}${secondRow}<path d="M175 172H304" stroke="#172337" stroke-width="1.8"/><g fill="#62738a" font-family="ui-monospace, Consolas, monospace" font-size="17"><text x="185" y="201">Answer:</text><path d="M264 203H348" stroke="#62738a" stroke-width="1"/></g>`;
+   break}
+  case 'long-division':{
+   if(v.length!==2||!v.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid division diagram');
+   const [dividend,divisor]=v;
+   parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H344 M151 72V130" fill="none" stroke="#172337" stroke-width="2.8"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="163">remainder: ______</text></g>`;
+   break}
   case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]===undefined?'?':v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
   case 'right-triangle':{const [a,b]=v,s=Math.min(210/a,110/b),xx=120+a*s,yy=160-b*s;parts=poly(`120,160 ${xx},160 120,${yy}`)+line(120,160,135,160)+line(135,160,135,145)+line(135,145,120,145)+text((120+xx)/2,188,`${a} units`)+text(79,(160+yy)/2,`${b} units`);break}
   case 'triangle-angles':parts=poly('120,155 330,155 225,40')+text(166,146,`${v[0]}°`)+text(285,146,`${v[1]}°`)+text(225,79,'?')+text(225,205,'Diagram not to scale');break;

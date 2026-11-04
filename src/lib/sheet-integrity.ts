@@ -12,7 +12,8 @@ export function assertWorksheetIntegrity(sheet:Worksheet):void{
   if(!p||!answer||p.id!==`Q${i+1}`||answer.id!==p.id||p.topicId!==sheet.topicId||!p.payload||typeof p.payload.question!=='string'||!p.payload.question.trim())throw Error(`Invalid worksheet question ${i+1}`);
   if(typeof p.expectedAnswer!=='string'||!p.expectedAnswer.trim()||answer.answer!==p.expectedAnswer)throw Error(`Answer key mismatch at question ${i+1}`);
   if(!Array.isArray(p.solutionSteps)||!p.solutionSteps.length||p.solutionSteps.some(step=>typeof step!=='string'||!step.trim()))throw Error(`Missing solution reasoning at question ${i+1}`);
-  if(questions.has(p.payload.question))throw Error(`Duplicate question ${i+1}`);
-  questions.add(p.payload.question);
+  const signature=JSON.stringify([p.payload.question,p.diagramSpec??null]);
+  if(questions.has(signature))throw Error(`Duplicate question ${i+1}`);
+  questions.add(signature);
  }
 }

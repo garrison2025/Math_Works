@@ -1,9 +1,9 @@
 /** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
 import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicOptions} from './topic-options.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
-export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'clock'|'dots'; values: number[]; labels?: string[]};
+export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='3' as const;
+export const GENERATOR_VERSION='4' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -47,11 +47,11 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  const frac=(n:number,d:number)=>asText(rational(BigInt(n),BigInt(d)));
  const signed=()=>r.int(-max,max);
  switch(topicId){
- case 'two-digit-multiplication-worksheets':{const x=r.int(opts.factorRange==='large'?50:12,opts.factorRange==='small'?49:99),y=r.int(opts.factorRange==='large'?50:12,opts.factorRange==='small'?49:99),ones=x*(y%10),tens=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,ones+tens,`Ones partial product: ${x} × ${y%10} = ${ones}`,`Tens partial product: ${x} × ${Math.floor(y/10)}0 = ${tens}`,`Add: ${ones} + ${tens} = ${ones+tens}`);break}
- case 'three-digit-by-two-digit-multiplication-worksheets':{const x=r.int(101,999),y=r.int(opts.multiplierRange==='high'?50:11,opts.multiplierRange==='low'?49:99),p=x*(y%10),q=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,p+q,`Partial products: ${p} and ${q}`,`Sum: ${p}+${q}=${p+q}`);break}
+ case 'two-digit-multiplication-worksheets':{const x=r.int(opts.factorRange==='large'?50:12,opts.factorRange==='small'?49:99),y=r.int(opts.factorRange==='large'?50:12,opts.factorRange==='small'?49:99),ones=x*(y%10),tens=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,ones+tens,`Ones partial product: ${x} × ${y%10} = ${ones}`,`Tens partial product: ${x} × ${Math.floor(y/10)}0 = ${tens}`,`Add: ${ones} + ${tens} = ${ones+tens}`);diagram={kind:'column-multiplication',values:[x,y]};break}
+ case 'three-digit-by-two-digit-multiplication-worksheets':{const x=r.int(101,999),y=r.int(opts.multiplierRange==='high'?50:11,opts.multiplierRange==='low'?49:99),p=x*(y%10),q=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,p+q,`Partial products: ${p} and ${q}`,`Sum: ${p}+${q}=${p+q}`);diagram={kind:'column-multiplication',values:[x,y]};break}
  case 'two-digit-by-one-digit-multiplication-worksheets':{
   const [x,y]=r.pick(oneDigitProducts[opts.regrouping as 'mixed'|'yes'|'no']);
-  m(x,y);break}
+  m(x,y);diagram={kind:'column-multiplication',values:[x,y]};break}
 
  case 'integer-operations-worksheets':{const x=signed(),y=signed()||2,op=opts.operation==='mixed'?r.pick(['+','−','×','÷']):({addition:'+',subtraction:'−',multiplication:'×',division:'÷'} as Record<string,string>)[opts.operation];if(op==='÷'){const q=r.int(-9,9),d=r.pick([-6,-5,-4,-3,-2,2,3,4,5,6]);make(`${q*d} ÷ (${d}) = ____`,q,`Division is the inverse of multiplication: ${d} × ${q} = ${q*d}`)}else make(`${x} ${op} (${y}) = ____`,op==='+'?x+y:op==='−'?x-y:x*y,`Apply integer sign rules`,`${x} ${op} (${y}) = ${op==='+'?x+y:op==='−'?x-y:x*y}`);break}
  case 'one-step-equations-worksheets':{const x=signed(),k=r.int(1,max)*(r.int(0,1)?-1:1);if((opts.operation==='mixed'?r.int(0,1):opts.operation==='addition'?1:0))make(`Solve: x ${k<0?'−':'+'} ${Math.abs(k)} = ${x+k}`,`x = ${x}`,`Subtract ${k} from both sides`,`x = ${x}`);else make(`Solve: ${k}x = ${k*x}`,`x = ${x}`,`Divide both sides by ${k}`,`x = ${x}`);break}
@@ -109,7 +109,7 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'division-worksheets':{
   const d=opts.divisor==='mixed'?r.int(2,12):Number(opts.divisor),q=r.int(2,12);
   make(`${d*q} ÷ ${d} = ____`,q,`Because ${d} × ${q} = ${d*q}`);break}
- case 'long-division-worksheets':{const divisor=r.int(2,9),quotient=r.int(12,85),rem=opts.remainder==='no'?0:opts.remainder==='yes'?r.int(1,divisor-1):r.int(0,divisor-1),dividend=divisor*quotient+rem;let carry=0;const trace:string[]=[];for(const digit of String(dividend)){const value=carry*10+Number(digit),part=Math.floor(value/divisor);carry=value-part*divisor;trace.push(`Bring down ${digit}: ${value} ÷ ${divisor} gives ${part}; subtract ${part*divisor}, remainder ${carry}`);}make(`${dividend} ÷ ${divisor} = ____ (quotient R remainder)`,`${quotient} R ${rem}`,...trace,`Check: ${divisor}×${quotient}+${rem}=${dividend}`);break}
+ case 'long-division-worksheets':{const divisor=r.int(2,9),quotient=r.int(12,85),rem=opts.remainder==='no'?0:opts.remainder==='yes'?r.int(1,divisor-1):r.int(0,divisor-1),dividend=divisor*quotient+rem;let carry=0;const trace:string[]=[];for(const digit of String(dividend)){const value=carry*10+Number(digit),part=Math.floor(value/divisor);carry=value-part*divisor;trace.push(`Bring down ${digit}: ${value} ÷ ${divisor} gives ${part}; subtract ${part*divisor}, remainder ${carry}`);}make(`${dividend} ÷ ${divisor} = ____ (quotient R remainder)`,`${quotient} R ${rem}`,...trace,`Check: ${divisor}×${quotient}+${rem}=${dividend}`);diagram={kind:'long-division',values:[dividend,divisor]};break}
  case 'place-value-worksheets':{
   const x=r.int(1000,9999),place=opts.place==='mixed'?r.pick([1,10,100,1000]):({ones:1,tens:10,hundreds:100,thousands:1000} as Record<string,number>)[opts.place];
   make(`What is the value of the ${place===1?'ones':place===10?'tens':place===100?'hundreds':'thousands'} digit in ${x}?`,Math.floor(x/place)%10*place,
@@ -158,7 +158,7 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   if(type==='word-to-numeral'){
    const words=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
    make(`Write the numeral for “${words[n-1]}”.`,n,`The word “${words[n-1]}” represents the number ${n}`);
-  }else{make(`Count the dots: ${'● '.repeat(n).trim()}`,n,`Count each dot once: ${n}`);diagram={kind:'dots',values:[n]};}break}
+  }else{make('Count the dots shown below.',n,`Count each dot once: ${n}`);diagram={kind:'dots',values:[n]};}break}
  case 'number-line-worksheets':{const n=opts.sign==='mixed'?r.int(-9,9):opts.sign==='positive'?r.int(1,9):r.int(-9,-1);make(`Mark ${n} on the number line.`,String(n),n===0?'Zero is the origin':`${n<0?'Left':'Right'} of zero for ${n<0?'negative':'positive'} numbers`);diagram={kind:'numberline',values:[n]};break}
  case 'coordinate-plane-worksheets':{const preferred=opts.quadrant==='mixed'?r.pick(['I','II','III','IV']):opts.quadrant;const a=r.int(1,8),b=r.int(1,8),x=preferred==='I'||preferred==='IV'?a:-a,y=preferred==='I'||preferred==='II'?b:-b;const quad=x>0?(y>0?'I':'IV'):(y>0?'II':'III');make(`Which quadrant contains (${x}, ${y})?`,quad,`x is ${x>0?'positive':'negative'} and y is ${y>0?'positive':'negative'}`,`Quadrant ${quad}`);diagram={kind:'coordinate',values:[x,y]};break}
  case 'pythagorean-worksheets':{const triples=[[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,40,41],[12,35,37],[20,21,29],[11,60,61],[28,45,53],[33,56,65],[16,63,65]];const pool=difficulty==='easy'?triples.slice(0,3):difficulty==='standard'?triples.slice(0,9):triples;const k=opts.scale==='small'?r.int(1,3):opts.scale==='large'?r.int(4,8):r.int(1,difficulty==='challenge'?8:6),triple=r.pick(pool),[x,y,z]=triple.map(v=>v*k);make(`A right triangle has legs ${x} and ${y}. Find its hypotenuse.`,z,`a² + b² = c²`,`${x}² + ${y}² = ${z*z}`,`c = ${z}`);diagram={kind:'right-triangle',values:[x,y]};break}
@@ -234,7 +234,8 @@ export function makeWorksheet(topicId:string,seed:number,quantity:number,difficu
   let p:Problem|undefined;
   for(let attempt=0;attempt<320;attempt++){
    const candidate=sampleProblem(topicId,rng.next(),difficulty,normalized);
-   if(!seen.has(candidate.payload.question)){p=candidate;seen.add(candidate.payload.question);break}
+   const signature=JSON.stringify([candidate.payload.question,candidate.diagramSpec??null]);
+   if(!seen.has(signature)){p=candidate;seen.add(signature);break}
   }
   if(!p)throw Error('Not enough unique questions for this configuration; reduce quantity.');
   problems.push({...p,id:`Q${i+1}`});

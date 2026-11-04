@@ -30,7 +30,7 @@ test('all generated topics have nonempty answers, steps and reproducible 8 quest
   const a=makeWorksheet(r.slug,20261104,8,'standard');const b=makeWorksheet(r.slug,20261104,8,'standard');
   assert.deepEqual(a,b,`deterministic: ${r.slug}`);
   assert.equal(a.problems.length,8);assert.equal(a.answerMap.length,8);
-  assert.equal(new Set(a.problems.map(p=>p.payload.question)).size,8,`unique questions ${r.slug}`);
+  assert.equal(new Set(a.problems.map(p=>JSON.stringify([p.payload.question,p.diagramSpec??null]))).size,8,`unique questions ${r.slug}`);
   for(let i=0;i<8;i++){const p=a.problems[i];assert.ok(p.payload.question&&p.expectedAnswer&&p.solutionSteps.length,`complete ${r.slug}`);assert.equal(p.id,a.answerMap[i].id);assert.equal(p.expectedAnswer,a.answerMap[i].answer);}
  }
 });
@@ -42,7 +42,7 @@ test('51 topics x 1000 deterministic seeds: no crashes and problem object invari
  }
 });
 test('seed diversity across 100 worksheets per topic >= 95% unique',()=>{
- for(const r of available){const fingerprints=new Set();for(let i=0;i<100;i++){const w=makeWorksheet(r.slug,100+i,8);fingerprints.add(w.problems.map(p=>p.payload.question).join('|'));}assert.ok(fingerprints.size>=95,`${r.slug}: only ${fingerprints.size} unique`);}
+ for(const r of available){const fingerprints=new Set();for(let i=0;i<100;i++){const w=makeWorksheet(r.slug,100+i,8);fingerprints.add(w.problems.map(p=>JSON.stringify([p.payload.question,p.diagramSpec??null])).join('|'));}assert.ok(fingerprints.size>=95,`${r.slug}: only ${fingerprints.size} unique`);}
 });
 test('boundary rejection',()=>{
  assert.throws(()=>makeWorksheet('one-step-equations-worksheets',1,0));
@@ -98,4 +98,63 @@ test('protractor physical geometry contract is exactly 72 mm radius and 50 mm ru
  assert.equal(PROTRACTOR_RADIUS_MM,72);assert.equal(PROTRACTOR_CALIBRATION_MM,50);
  assert.ok(Math.abs(PROTRACTOR_RADIUS_PT/POINTS_PER_MM-72)<1e-10);
  assert.ok(Math.abs(PROTRACTOR_CALIBRATION_PT/POINTS_PER_MM-50)<1e-10);
+});
+
+test('R11 printable column multiplication preserves the long-form working area without printing answers',()=>{
+ for(const topic of [
+  'two-digit-multiplication-worksheets',
+  'two-digit-by-one-digit-multiplication-worksheets',
+  'three-digit-by-two-digit-multiplication-worksheets'
+ ])for(let seed=0;seed<200;seed++){
+  const problem=sampleProblem(topic,seed);
+  assert.equal(problem.diagramSpec?.kind,'column-multiplication',`${topic} seed=${seed}`);
+  const [a,b]=problem.diagramSpec.values;
+  assert.ok(a>=10&&b>=1);
+  assert.equal(Number(problem.expectedAnswer),a*b);
+  const svg=diagramSVG(problem.diagramSpec);
+  assert.ok(svg.includes('Answer:'));
+  if(b>=10)assert.ok(svg.includes('tens'));
+  assert.ok(svg.includes('font-family='));
+  assert.ok(!svg.includes(`<text>${problem.expectedAnswer}</text>`));
+  assert.ok(!svg.includes('NaN')&&!svg.includes('Infinity'));
+ }
+});
+
+test('R11 long division worksheet uses the actual dividend and divisor in an unsolved bracket',()=>{
+ for(let seed=0;seed<200;seed++){
+  const problem=sampleProblem('long-division-worksheets',seed);
+  assert.equal(problem.diagramSpec?.kind,'long-division');
+  const [dividend,divisor]=problem.diagramSpec.values;
+  const found=problem.expectedAnswer.match(/^(\d+) R (\d+)$/);
+  assert.ok(found);
+  assert.equal(dividend,divisor*Number(found[1])+Number(found[2]));
+  assert.ok(Number(found[2])<divisor);
+  const svg=diagramSVG(problem.diagramSpec);
+  assert.ok(svg.includes('remainder: ______'));
+  assert.ok(svg.includes('quotient: ______'));
+  assert.ok(!svg.includes('NaN'));
+ }
+});
+
+test('R11 number recognition never doubles the displayed dots',()=>{
+ for(let seed=0;seed<100;seed++){
+  const p=sampleProblem('number-recognition-worksheets',seed,'standard',{task:'count-dots'});
+  assert.equal(p.payload.question,'Count the dots shown below.');
+  assert.equal(p.diagramSpec?.kind,'dots');
+  const svg=diagramSVG(p.diagramSpec);
+  assert.equal((svg.match(/<circle\s/g)||[]).length,Number(p.expectedAnswer),`seed ${seed}`);
+  assert.ok(!p.payload.question.includes('●'));
+ }
+});
+
+test('R11 integrity treats identical visible text with different mathematical diagrams as distinct questions',async()=>{
+ const {assertWorksheetIntegrity}=await import('../src/lib/sheet-integrity.ts');
+ const set=makeWorksheet('number-recognition-worksheets',20261104,12,'standard',{task:'count-dots'});
+ assert.equal(new Set(set.problems.map(p=>p.payload.question)).size,1);
+ assert.equal(new Set(set.problems.map(p=>p.diagramSpec.values[0])).size,12);
+ assert.doesNotThrow(()=>assertWorksheetIntegrity(set));
+ // Reusing a visual diagram in another item is a genuine duplicate even when the text is unchanged.
+ const forged=structuredClone(set);
+ forged.problems[1].diagramSpec=structuredClone(forged.problems[0].diagramSpec);
+ assert.throws(()=>assertWorksheetIntegrity(forged),/Duplicate question/);
 });

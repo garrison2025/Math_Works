@@ -57,6 +57,35 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   page.drawText('Print at Actual size (100%); measure calibration bar.',{x:sx,y:sy+9,size:7,font,color:sub});
   return;
  }
+ if(d.kind==='column-multiplication'){
+  if(d.values.length!==2||!d.values.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid multiplication diagram');
+  const [top,bottom]=d.values;
+  const right=x+w*.72,base=y+h*.64,fontSize=19;
+  const rightText=(value:string,offset:number,size=fontSize)=>page.drawText(value,{x:right-font.widthOfTextAtSize(value,size),y:base+offset,size,font,color:ink});
+  rightText(String(top),29);rightText(String(bottom),6);
+  page.drawText('x',{x:right-80,y:base+6,size:16,font,color:ink});
+  page.drawLine({start:{x:right-100,y:base},end:{x:right+10,y:base},color:ink,thickness:1.5});
+  page.drawText('ones',{x:x+w*.13,y:base-19,size:8,font,color:sub});
+  page.drawLine({start:{x:right-76,y:base-23},end:{x:right+10,y:base-23},color:sub,thickness:.7});
+  if(bottom>=10){
+   page.drawText('tens',{x:x+w*.13,y:base-37,size:8,font,color:sub});
+   page.drawLine({start:{x:right-76,y:base-41},end:{x:right+10,y:base-41},color:sub,thickness:.7});
+  }
+  page.drawLine({start:{x:right-100,y:base-48},end:{x:right+10,y:base-48},color:ink,thickness:1});
+  page.drawText('Answer: ________',{x:x+w*.18,y:base-61,size:9,font,color:sub});
+  return;
+ }
+ if(d.kind==='long-division'){
+  if(d.values.length!==2||!d.values.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid long-division diagram');
+  const [dividend,divisor]=d.values,base=y+h*.48;
+  page.drawText(String(divisor),{x:x+w*.18,y:base,size:18,font,color:ink});
+  page.drawText(String(dividend),{x:x+w*.47,y:base,size:18,font,color:ink});
+  page.drawLine({start:{x:x+w*.39,y:base+30},end:{x:x+w*.86,y:base+30},color:ink,thickness:1.7});
+  page.drawLine({start:{x:x+w*.39,y:base+30},end:{x:x+w*.39,y:base-8},color:ink,thickness:1.7});
+  page.drawText('Quotient: ______',{x:x+w*.18,y:base+47,size:9,font,color:sub});
+  page.drawText('Remainder: ______',{x:x+w*.18,y:base-27,size:9,font,color:sub});
+  return;
+ }
  if(d.kind==='triangle'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);l(.5,.88,.5,.12);return;}
  if(d.kind==='right-triangle'){const [a,b]=d.values,s=Math.min(w*.57/a,h*.67/b),dx=a*s/w,dy=b*s/h;const x0=.16,y0=.14;l(x0,y0,x0+dx,y0);l(x0,y0,x0,y0+dy);l(x0+dx,y0,x0,y0+dy);l(x0+.03,y0,x0+.03,y0+.06);l(x0+.03,y0+.06,x0,y0+.06);page.drawText(String(a),{x:x+(x0+dx/2)*w-4,y:y+2,size:8,font,color:ink});page.drawText(String(b),{x:x+(x0-.10)*w,y:y+(y0+dy/2)*h,size:8,font,color:ink});return;}
  if(d.kind==='triangle-angles'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);page.drawText(`${d.values[0]} deg`,{x:x+w*.22,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[1]} deg`,{x:x+w*.66,y:y+h*.22,size:8,font,color:ink});page.drawText('?',{x:x+w*.44,y:y+h*.70,size:8,font,color:ink});return;}

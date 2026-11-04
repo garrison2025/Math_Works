@@ -16,13 +16,22 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
-      - name: Archive built pages for browser QA
+      - name: Archive built pages for offline browser QA
         uses: actions/upload-artifact@v4
         with:
           name: math-works-built-site
           path: dist/
           retention-days: 3
           if-no-files-found: error
+      - name: Chromium end-to-end worksheet downloads and mobile checks
+        run: npm run qa:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: math-works-browser-qa
+          path: qa-artifacts/browser/
+          retention-days: 7
+          if-no-files-found: warn
       - name: Generate PDF golden fixtures
         run: npm run qa:pdf-samples
       - name: Render first pages for visual review (when Poppler is available)
@@ -38,7 +47,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: r10-math-worksheet-golden-pdfs
+          name: r11-math-worksheet-golden-pdfs
           path: qa-artifacts/pdf-samples/
           retention-days: 7
           if-no-files-found: warn

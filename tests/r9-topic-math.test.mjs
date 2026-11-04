@@ -104,14 +104,14 @@ test('angle triangles, supplementary angles and MAD obey exact invariants for ev
   }
  }
 });
-test('R9 selector state and version-three shared links reproduce the same worksheet',()=>{
+test('R9 selector state and currently versioned shared links reproduce the same worksheet',()=>{
  assert.equal(Object.keys(topicOptionDefinitions).length,51);
  const samples=[['function-tables-worksheets',{missing:'first'}],['surface-area-worksheets',{solid:'cube'}],['triangle-angle-sum-worksheets',{thirdAngle:'obtuse'}],['number-recognition-worksheets',{task:'word-to-numeral'}]];
  for(const [slug,options] of samples){
   const cap=maxQuantityForTopic(slug,options,'standard');const quantity=cap>=8?8:4;
   const settings={seed:1765,difficulty:'standard',quantity,paper:'A4',options};
   const link=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,settings);
-  assert.equal(new URL(link).searchParams.get('gv'),'3');
+  assert.equal(new URL(link).searchParams.get('gv'),'4');
   const restored=parseWorksheetLink(link,slug);
   assert.deepEqual(restored.options,options);
   const lhs=makeWorksheet(slug,1765,quantity,'standard',options);

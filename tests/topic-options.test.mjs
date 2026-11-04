@@ -72,7 +72,7 @@ const captures={
  'printable-protractor':(p,v)=>v==='mixed'||(Number(p.expectedAnswer.replace('°',''))<90)===(v==='acute'),
  'systems-equations-worksheets':(p,v)=>v==='mixed'||(()=>{const m=p.expectedAnswer.match(/x = (-?\d+), y = (-?\d+)/);return v==='positive'?[Number(m[1]),Number(m[2])].every(x=>x>0):[Number(m[1]),Number(m[2])].every(x=>x<0)})(),
  'function-tables-worksheets':(p,v)=>{const cells=p.payload.question.split(': ').at(-1).split(', ');const i=v==='first'?0:v==='middle'?1:2;return cells[i].includes('____')},
- 'number-recognition-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith('Count the dots:')===(v==='count-dots'),
+ 'number-recognition-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith('Count the dots shown below.')===(v==='count-dots'),
  'linear-equations-worksheets':(p,v)=>v==='mixed'||(()=>{const slope=p.diagramSpec.values[0];return v==='positive'?slope>0:v==='negative'?slope<0:slope===0})(),
 
 };
@@ -133,7 +133,7 @@ test('every specialized selector generates full-size worksheets without exhausti
    for(let seed=1;seed<=50;seed++){
     const result=makeWorksheet(slug,seed,max,difficulty,opts);
     assert.equal(result.problems.length,max,`${slug} ${choice.value} ${difficulty} ${seed}`);
-    assert.equal(new Set(result.problems.map(p=>p.payload.question)).size,max);
+    assert.equal(new Set(result.problems.map(p=>JSON.stringify([p.payload.question,p.diagramSpec??null]))).size,max);
    }
   }
  }

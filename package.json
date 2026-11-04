@@ -13,7 +13,8 @@
     "test:pdf": "node --experimental-strip-types --test tests/pdf.test.mjs",
     "qa:pdf-samples": "node --experimental-strip-types scripts/export-golden-pdfs.mjs",
     "test": "npm run typecheck && npm run test:math",
-    "audit:static": "node scripts/audit-static.mjs"
+    "audit:static": "node scripts/audit-static.mjs",
+    "qa:browser": "node scripts/browser-smoke.mjs"
   },
   "dependencies": {
     "astro": "^5.15.3",
@@ -22,6 +23,7 @@
   "devDependencies": {
     "@types/node": "^22.15.29",
     "sharp": "^0.34.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "playwright-core": "^1.55.0"
   }
 }

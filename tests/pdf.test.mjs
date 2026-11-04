@@ -134,7 +134,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v3'),`${topic} missing version-three identity`);
+    assert.ok(doc.getTitle()?.includes('v4'),`${topic} missing version-four identity`);
    }
   }
  }
@@ -175,6 +175,18 @@ test('R10 all 51 live worksheet topics export parsable practice and answers on b
    assert.ok(Math.abs(first.getWidth()-dims[0])<0.05);
    assert.ok(Math.abs(first.getHeight()-dims[1])<0.05);
    assert.ok(pdf.getTitle()?.includes(set.optionsHash));
+  }
+ }
+});
+
+test('R11 full-size column multiplication and long-division diagrams survive practice PDF serialization',async()=>{
+ for(const topic of ['two-digit-multiplication-worksheets','two-digit-by-one-digit-multiplication-worksheets','three-digit-by-two-digit-multiplication-worksheets','long-division-worksheets']){
+  const sheet=makeWorksheet(topic,20261104,8,'standard');
+  assert.ok(sheet.problems.every(p=>p.diagramSpec));
+  for(const paper of ['Letter','A4']){
+   const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,'questions',paper));
+   assert.ok(pdf.getPageCount()>0,`${topic} ${paper} failed`);
+   assert.equal(pdf.getTitle()?.includes(sheet.optionsHash),true);
   }
  }
 });
