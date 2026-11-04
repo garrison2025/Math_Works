@@ -1,0 +1,108 @@
+/** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
+export type Difficulty = 'easy' | 'standard' | 'challenge';
+export type Diagram = {kind: 'triangle'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'line'|'clock'|'dots'; values: number[]; labels?: string[]};
+export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
+export type Worksheet = {engineVersion:'1.0.0';generatorVersion:'1';seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
+export type Rational = {n:bigint;d:bigint};
+const abs=(n:bigint)=>n<0n?-n:n;
+const gcdB=(a:bigint,b:bigint):bigint=>b===0n?abs(a):gcdB(b,a%b);
+export function rational(n:bigint,d:bigint=1n):Rational {if(d===0n)throw Error('Zero denominator'); if(d<0n){n=-n;d=-d}const g=gcdB(n,d);return {n:n/g,d:d/g}}
+export const addR=(a:Rational,b:Rational)=>rational(a.n*b.d+b.n*a.d,a.d*b.d);
+export const mulR=(a:Rational,b:Rational)=>rational(a.n*b.n,a.d*b.d);
+export const divR=(a:Rational,b:Rational)=>rational(a.n*b.d,a.d*b.n);
+export const asText=(r:Rational)=>r.d===1n?String(r.n):`${r.n}/${r.d}`;
+export const gcd=(a:number,b:number):number=>b===0?Math.abs(a):gcd(b,a%b);
+export class Rng {
+  private state:number;
+  constructor(seed:number){const s=(seed>>>0);this.state=s===0?0x6d2b79f5:s}
+  next(){let x=this.state; x^=x<<13; x^=x>>>17; x^=x<<5;this.state=x>>>0;return this.state}
+  int(min:number,max:number){if(!Number.isInteger(min)||!Number.isInteger(max)||max<min)throw Error('Invalid range');return min+(this.next()%(max-min+1))}
+  pick<T>(xs:readonly T[]):T{return xs[this.int(0,xs.length-1)]}
+}
+const normal=(x:number)=>Number.isInteger(x)?String(x):String(Number(x.toFixed(6)));
+const sum=(xs:number[])=>xs.reduce((a,b)=>a+b,0);
+const sorted=(xs:number[])=>[...xs].sort((a,b)=>a-b);
+const median=(xs:number[])=>xs.length%2?xs[(xs.length-1)/2]:(xs[xs.length/2-1]+xs[xs.length/2])/2;
+export function quartiles(xs:number[]){if(xs.length<4)throw Error('At least four observations');const s=sorted(xs),m=median(s),k=Math.floor(s.length/2),q1=median(s.slice(0,k)),q3=median(s.slice(s.length-k)),iqr=q3-q1;const good=s.filter(x=>x>=q1-1.5*iqr&&x<=q3+1.5*iqr);return {min:s[0],q1,median:m,q3,max:s[s.length-1],iqr,lower:good[0],upper:good[good.length-1],outliers:s.filter(x=>!good.includes(x))}}
+export function solve(p:Problem):string{return p.expectedAnswer}
+export function check(p:Problem,answer:string){return answer.trim().replace(/\s+/g,' ').toLowerCase()===p.expectedAnswer.trim().replace(/\s+/g,' ').toLowerCase()}
+export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='standard'):Problem {
+ const r=new Rng(seed), max=difficulty==='easy'?9:difficulty==='standard'?20:50;
+ const a=()=>r.int(2,max), b=()=>r.int(2,max);
+ let question='',answer='',steps:string[]=[],diagram:Diagram|undefined;
+ const make=(q:string,ans:string|number,...s:string[])=>{question=q;answer=String(ans);steps=s.length?s:[`Evaluate: ${q}`,`Answer: ${ans}`]};
+ const m=(x:number,y:number)=>make(`${x} × ${y} = ____`,x*y,`${x} × ${y} = ${x*y}`);
+ const frac=(n:number,d:number)=>asText(rational(BigInt(n),BigInt(d)));
+ const signed=()=>r.int(-max,max);
+ switch(topicId){
+ case 'two-digit-multiplication-worksheets':{const x=r.int(12,99),y=r.int(12,99),ones=x*(y%10),tens=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,ones+tens,`Ones partial product: ${x} × ${y%10} = ${ones}`,`Tens partial product: ${x} × ${Math.floor(y/10)}0 = ${tens}`,`Add: ${ones} + ${tens} = ${ones+tens}`);break}
+ case 'three-digit-by-two-digit-multiplication-worksheets':{const x=r.int(101,999),y=r.int(11,99),p=x*(y%10),q=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,p+q,`Partial products: ${p} and ${q}`,`Sum: ${p}+${q}=${p+q}`);break}
+ case 'two-digit-by-one-digit-multiplication-worksheets':m(r.int(12,99),r.int(2,9));break;
+ case 'integer-operations-worksheets':{const x=signed(),y=signed()||2,op=r.pick(['+','−','×','÷']);if(op==='÷'){const q=r.int(-9,9),d=r.pick([-6,-5,-4,-3,-2,2,3,4,5,6]);make(`${q*d} ÷ (${d}) = ____`,q,`Division is the inverse of multiplication: ${d} × ${q} = ${q*d}`)}else make(`${x} ${op} (${y}) = ____`,op==='+'?x+y:op==='−'?x-y:x*y,`Apply integer sign rules`,`${x} ${op} (${y}) = ${op==='+'?x+y:op==='−'?x-y:x*y}`);break}
+ case 'one-step-equations-worksheets':{const x=signed(),k=r.int(1,max)*(r.int(0,1)?-1:1);if(r.int(0,1))make(`Solve: x ${k<0?'−':'+'} ${Math.abs(k)} = ${x+k}`,`x = ${x}`,`Subtract ${k} from both sides`,`x = ${x}`);else make(`Solve: ${k}x = ${k*x}`,`x = ${x}`,`Divide both sides by ${k}`,`x = ${x}`);break}
+ case 'two-step-equations-worksheets':{const x=signed(),coef=r.pick([-5,-4,-3,-2,2,3,4,5]),k=signed(),c=coef*x+k;make(`Solve: ${coef}x ${k<0?'−':'+'} ${Math.abs(k)} = ${c}`,`x = ${x}`,`Subtract ${k} from both sides: ${coef}x = ${c-k}`,`Divide by ${coef}: x = ${x}`,`Check: ${coef} × ${x} + (${k}) = ${c}`);break}
+ case 'order-of-operations-worksheets':{const x=a(),y=b(),z=r.int(2,8),br=r.int(0,1);make(br?`(${x} + ${y}) × ${z} = ____`:`${x} + ${y} × ${z} = ____`,br?(x+y)*z:x+y*z,br?'Calculate the parentheses first':'Multiply before adding',`Result = ${br?(x+y)*z:x+y*z}`);break}
+ case 'inequalities-worksheets':{const coef=r.pick([-5,-4,-3,-2,2,3,4,5]),bound=signed(),strict=r.int(0,1)?'<':'≤';const op=coef<0?(strict==='<'?'>':'≥'):strict;make(`Solve: ${coef}x ${strict} ${coef*bound}`,`x ${op} ${bound}`,`Divide both sides by ${coef}`,coef<0?'Reverse the inequality sign because the divisor is negative':'Keep the inequality sign',`Solution: x ${op} ${bound}`);diagram={kind:'numberline',values:[bound],labels:[op]};break}
+ case 'decimal-multiplication-worksheets':{const x=r.int(11,99),y=r.int(11,99),value=frac(x*y,10000);make(`${(x/100).toFixed(2)} × ${(y/100).toFixed(2)} = ____`,normal(Number((x*y/10000).toFixed(4))),`Multiply whole numbers: ${x} × ${y} = ${x*y}`,'Place four digits after the decimal point',`Exact decimal = ${(x*y/10000).toFixed(4)}`);break}
+ case 'equivalent-fractions-worksheets':{const d=r.int(3,12),n=r.int(1,d-1),f=r.int(2,7);make(`${n}/${d} = ____/${d*f}`,n*f,`Multiply numerator and denominator by ${f}`,`${n} × ${f} = ${n*f}`);break}
+ case 'adding-unlike-fractions-worksheets':{const d=r.int(2,9),e=r.int(2,9);const n=r.int(1,d-1),v=r.int(1,e-1);const res=addR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(e)));make(`${n}/${d} + ${v}/${e} = ____`,asText(res),`Common denominator: ${d*e}`,`Numerator: ${n}×${e}+${v}×${d}=${n*e+v*d}`,`Simplify: ${asText(res)}`);break}
+ case 'multiplying-fractions-worksheets':{const d=r.int(2,12),e=r.int(2,12),n=r.int(1,d),v=r.int(1,e);const res=mulR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(e)));make(`${n}/${d} × ${v}/${e} = ____`,asText(res),`Multiply numerators and denominators: ${n*v}/${d*e}`,`Reduce: ${asText(res)}`);break}
+ case 'fractions-worksheets':{const d=r.int(2,12),n=r.int(1,d),v=r.int(1,d),op=r.pick(['+','−','×']);const result=op==='+'?addR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(d))):op==='−'?addR(rational(BigInt(n),BigInt(d)),rational(-BigInt(v),BigInt(d))):mulR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(d)));make(`${n}/${d} ${op} ${v}/${d} = ____`,asText(result),op==='×'?`Multiply numerator ${n} × ${v} and denominator ${d} × ${d}`:op==='+'?`Add numerators ${n} + ${v}; keep denominator ${d}`:`Subtract numerators ${n} - ${v}; keep denominator ${d}`,`Reduce to ${asText(result)}`);break}
+ case 'addition-worksheets':{const x=r.int(100,999),y=r.int(100,999);make(`${x} + ${y} = ____`,x+y,`Column addition gives ${x+y}`);break}
+ case 'subtraction-worksheets':{const x=r.int(300,999),y=r.int(100,x);make(`${x} − ${y} = ____`,x-y,`Column subtraction gives ${x-y}`);break}
+ case 'mixed-addition-subtraction-worksheets':{const x=r.int(100,900),y=r.int(50,900),op=r.pick(['+','−']);make(`${x} ${op} ${y} = ____`,op==='+'?x+y:x-y,`Calculate ${x} ${op} ${y}`,`Check using inverse operations`);break}
+ case 'multiplication-worksheets':m(a(),b());break;
+ case 'multiplication-tables-worksheets':{const x=r.int(1,12),y=r.int(1,12);m(x,y);break}
+ case 'division-worksheets':{const d=r.int(2,12),q=r.int(2,12);make(`${d*q} ÷ ${d} = ____`,q,`Because ${d} × ${q} = ${d*q}`);break}
+ case 'long-division-worksheets':{const divisor=r.int(2,9),quotient=r.int(12,85),rem=r.int(0,divisor-1),dividend=divisor*quotient+rem;make(`${dividend} ÷ ${divisor} = ____ (quotient R remainder)`,`${quotient} R ${rem}`,`Divide ${dividend} by ${divisor}`,`Check: ${divisor}×${quotient}+${rem}=${dividend}`);break}
+ case 'place-value-worksheets':{const x=r.int(1000,9999),place=r.pick([1,10,100,1000]);make(`What is the value of the ${place===1?'ones':place===10?'tens':place===100?'hundreds':'thousands'} digit in ${x}?`,Math.floor(x/place)%10*place,`Digit: ${Math.floor(x/place)%10}`,`Place value: ${Math.floor(x/place)%10} × ${place}`);break}
+ case 'decimal-place-value-worksheets':{const x=r.int(100,999),place=r.pick([1,10,100]),name=place===100?'tenths':place===10?'hundredths':'thousandths';make(`Find the ${name} digit in 4.${x}`,Math.floor(x/place)%10,`Digits right of decimal: tenths, hundredths, thousandths`,`The ${name} digit is ${Math.floor(x/place)%10}`);break}
+ case 'percentages-worksheets':{const part=r.int(1,19)*5;make(`Convert ${part}/100 into a percentage.`,`${part}%`,`Multiply by 100%`,`Answer: ${part}%`);break}
+ case 'scientific-notation-worksheets':{const m=r.int(11,99),power=r.int(-4,5),value=m/10*10**power;make(`Write ${normal(value)} in scientific notation.`,`${normal(m/10)} × 10^${power}`,`Move decimal so coefficient is from 1 to less than 10`,`Exponent is ${power}`);break}
+ case 'gcf-worksheets':{const x=r.int(4,30),y=r.int(4,30);make(`Find the GCF of ${x} and ${y}.`,gcd(x,y),`Find common divisors`,`Greatest common factor: ${gcd(x,y)}`);break}
+ case 'systems-equations-worksheets':{const x=r.int(-7,7),y=r.int(-7,7);make(`Solve: x + y = ${x+y}; x − y = ${x-y}`,`x = ${x}, y = ${y}`,`Add equations: 2x = ${(x+y)+(x-y)}`,`x = ${x}`,`Substitute to find y = ${y}`);break}
+ case 'functions-worksheets':{const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-5,8);make(`If f(x) = ${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}, find f(${x}).`,coeff*x+inter,`Substitute x = ${x}`,`${coeff} × ${x} + (${inter}) = ${coeff*x+inter}`);break}
+ case 'function-tables-worksheets':{const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-4,8),inputs=[x-1,x,x+1],outputs=inputs.map(v=>coeff*v+inter);make(`Complete the input/output table for f(x) = ${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}: ${inputs[0]}→${outputs[0]}, ${inputs[1]}→____, ${inputs[2]}→${outputs[2]}.`,outputs[1],`Substitute the middle input x = ${x}`,`f(${x}) = ${coeff} × ${x} + (${inter}) = ${outputs[1]}`);break}
+ case 'linear-equations-worksheets':{const slope=r.int(-5,5),inter=r.int(-9,9),x=r.int(-5,5);make(`For y = ${slope}x ${inter<0?'−':'+'} ${Math.abs(inter)}, find y when x = ${x}.`,slope*x+inter,`y = ${slope}×${x} + (${inter})`,`y = ${slope*x+inter}`);diagram={kind:'coordinate',values:[slope,inter]};break}
+ case 'slope-worksheets':{const x1=r.int(-4,2),x2=r.int(3,8),y1=r.int(-6,6),slope=r.int(-4,4),y2=y1+slope*(x2-x1);make(`Find the slope through (${x1}, ${y1}) and (${x2}, ${y2}).`,slope,`m = (y2 − y1) / (x2 − x1)`,`m = (${y2}−(${y1}))/(${x2}−(${x1})) = ${slope}`);diagram={kind:'coordinate',values:[x1,y1,x2,y2]};break}
+ case 'domain-range-worksheets':{const xs=[r.int(1,5),r.int(6,9),r.int(10,13)],ys=[r.int(1,5),r.int(6,9),r.int(10,13)];const points=xs.map((x,i)=>`(${x},${ys[i]})`).join(', ');if(r.int(0,1))make(`List the domain of {${points}}.`,`{${xs.join(', ')}}`,`Domain = all distinct first coordinates (x-values)`);else make(`List the range of {${points}}.`,`{${ys.join(', ')}}`,`Range = all distinct second coordinates (y-values)`);break}
+ case 'number-recognition-worksheets':{const n=r.int(1,12);make(`Count the dots: ${'● '.repeat(n).trim()}`,n,`Count each dot once: ${n}`);diagram={kind:'dots',values:[n]};break}
+ case 'number-line-worksheets':{const n=r.int(-9,9);make(`Mark ${n} on the number line.`,String(n),n===0?'Zero is the origin':`${n<0?'Left':'Right'} of zero for ${n<0?'negative':'positive'} numbers`);diagram={kind:'numberline',values:[n]};break}
+ case 'coordinate-plane-worksheets':{const x=r.int(-8,8)||-2,y=r.int(-8,8)||4;const quad=x>0?(y>0?'I':'IV'):(y>0?'II':'III');make(`Which quadrant contains (${x}, ${y})?`,quad,`x is ${x>0?'positive':'negative'} and y is ${y>0?'positive':'negative'}`,`Quadrant ${quad}`);diagram={kind:'coordinate',values:[x,y]};break}
+ case 'pythagorean-worksheets':{const k=r.int(1,6),triple=r.pick([[3,4,5],[5,12,13],[8,15,17]]),[x,y,z]=triple.map(v=>v*k);make(`A right triangle has legs ${x} and ${y}. Find its hypotenuse.`,z,`a² + b² = c²`,`${x}² + ${y}² = ${z*z}`,`c = ${z}`);diagram={kind:'triangle',values:[x,y,z]};break}
+ case 'area-of-triangles-worksheets':{const x=r.int(4,20),y=r.int(2,20);make(`Find the area of a triangle with base ${x} and height ${y}.`,normal(x*y/2),`A = ½ × base × height`,`A = ${x} × ${y} ÷ 2 = ${normal(x*y/2)} square units`);diagram={kind:'triangle',values:[x,y]};break}
+ case 'area-of-parallelograms-worksheets':{const x=a(),y=b();make(`Find the area of a parallelogram with base ${x} and perpendicular height ${y}.`,x*y,`A = base × height = ${x*y} square units`);diagram={kind:'parallelogram',values:[x,y]};break}
+ case 'area-of-trapezoids-worksheets':{const x=a(),y=b(),h=r.int(2,16);make(`A trapezoid has bases ${x}, ${y} and height ${h}. Find area.`,normal((x+y)*h/2),`A = (a + b) × h / 2`,`(${x}+${y})×${h}/2=${normal((x+y)*h/2)} square units`);diagram={kind:'trapezoid',values:[x,y,h]};break}
+ case 'area-worksheets':{const x=a(),y=b();make(`Find the area of a ${x} by ${y} rectangle.`,x*y,`Area = length × width = ${x*y} square units`);diagram={kind:'rectangle',values:[x,y]};break}
+ case 'volume-of-rectangular-prisms-worksheets':{const x=r.int(2,12),y=r.int(2,12),z=r.int(2,12);make(`Find the volume of a rectangular prism ${x} × ${y} × ${z}.`,x*y*z,`V = length × width × height`,`V = ${x*y*z} cubic units`);diagram={kind:'prism',values:[x,y,z]};break}
+ case 'surface-area-worksheets':{const x=r.int(2,12),y=r.int(2,12),z=r.int(2,12);make(`Find surface area of a rectangular prism: ${x} × ${y} × ${z}.`,2*(x*y+x*z+y*z),`SA = 2(lw + lh + wh)`,`SA = 2(${x*y}+${x*z}+${y*z}) = ${2*(x*y+x*z+y*z)} square units`);diagram={kind:'prism',values:[x,y,z]};break}
+ case 'triangle-angle-sum-worksheets':{const x=r.int(20,80),y=r.int(20,80),z=180-x-y;make(`Triangle angles are ${x}° and ${y}°. Find the third angle.`,`${z}°`,`Angles sum to 180°`,`180 − ${x} − ${y} = ${z}°`);diagram={kind:'triangle',values:[x,y,z]};break}
+ case 'complementary-supplementary-angles-worksheets':{const total=r.pick([90,180]),x=r.int(15,total-15),y=total-x;make(`Find the angle ${total===90?'complementary':'supplementary'} to ${x}°.`,`${y}°`,`Subtract ${x}° from ${total}°`,`Answer: ${y}°`);diagram={kind:'angle',values:[x,y]};break}
+ case 'angle-worksheets':{const deg=r.int(1,179);const name=deg<90?'acute':deg===90?'right':'obtuse';make(`Classify a ${deg}° angle.`,name,`Acute <90°, right =90°, obtuse >90° and <180°`);diagram={kind:'angle',values:[deg]};break}
+ case 'vertical-angles-worksheets':{const deg=r.int(20,160);make(`Intersecting lines make an angle of ${deg}°. Find its vertical angle.`,`${deg}°`,`Vertical angles are equal`,`Answer: ${deg}°`);diagram={kind:'angle',values:[deg,180-deg]};break}
+ case 'lines-rays-segments-worksheets':{const kind=r.pick(['line','ray','segment']),left=String.fromCharCode(65+r.int(0,10)),right=String.fromCharCode(77+r.int(0,10));make(`Figure ${left}${right} has ${kind==='line'?'arrows at both ends':kind==='ray'?'one endpoint and one arrow':'two endpoints and no arrows'}. Identify it.`,kind,`Line: both directions; ray: one direction; segment: two endpoints`);diagram={kind:'line',values:[kind==='line'?2:kind==='ray'?1:0]};break}
+ case 'mean-median-mode-range-worksheets':{const repeat=r.int(1,9),values=sorted([repeat,repeat,r.int(10,20),r.int(21,30),r.int(31,40)]);const task=r.pick(['mean','median','mode','range']);const answer=task==='mean'?normal(sum(values)/values.length):task==='median'?normal(median(values)):task==='mode'?String(repeat):String(values[values.length-1]-values[0]);make(`Find the ${task} of [${values.join(', ')}].`,answer,task==='mean'?`Add all numbers: ${sum(values)}; divide by ${values.length}`:task==='median'?`Sort the values and choose the middle: ${values[2]}`:task==='mode'?`The value ${repeat} appears twice; each other value appears once`:`Subtract minimum ${values[0]} from maximum ${values[values.length-1]}`,`Result = ${answer}`);break}
+ case 'mean-absolute-deviation-worksheets':{const mid=r.int(4,12),delta=r.int(1,6),values=[mid-delta,mid,mid+delta];make(`Find the mean absolute deviation of [${values.join(', ')}].`,frac(2*delta,3),`Mean = ${mid}`,`Absolute deviations: ${delta},0,${delta}`,`MAD = ${2*delta}/3 = ${frac(2*delta,3)}`);break}
+ case 'box-plots-worksheets':{const values=sorted([r.int(1,3),r.int(4,6),r.int(7,9),r.int(10,12),r.int(13,15),r.int(16,18),r.int(19,21),r.int(22,25)]);const q=quartiles(values);make(`Find Q1 for [${values.join(', ')}] using median-of-halves.`,normal(q.q1),`Lower half: [${values.slice(0,4)}]`,`Q1 = (${values[1]}+${values[2]})/2 = ${normal(q.q1)}`);diagram={kind:'box',values:[q.lower,q.q1,q.median,q.q3,q.upper]};break}
+ case 'scatter-plot-worksheets':{const trend=r.pick(['positive','negative']),s=trend==='positive'?1:-1,step=r.int(1,7),offset=r.int(8,30);make(`Determine trend of points (1,${s*step+offset}), (2,${s*step*2+offset}), (3,${s*step*3+offset}).`,trend,`Compare x with y values`,`As x increases, y ${s>0?'increases':'decreases'}`);diagram={kind:'scatter',values:[1,s*step+offset,2,s*step*2+offset,3,s*step*3+offset]};break}
+ case 'printable-protractor':{const deg=r.int(0,180);make(`Locate the ${deg}° mark on a printed protractor.`,`${deg}°`,`Read degrees counterclockwise from the right-hand 0° baseline`,`Print at actual size (100%) and measure the 50 mm verification line.`);diagram={kind:'protractor',values:[50]};break}
+ default: throw Error(`Topic not implemented: ${topicId}`)
+ }
+ if(!question||!answer||!steps.length)throw Error(`Invalid generated problem: ${topicId}`);
+ return {id:`${topicId}-${seed>>>0}`,topicId,seed:seed>>>0,optionsVersion:'1',payload:{question},expectedAnswer:answer,solutionSteps:steps,diagramSpec:diagram,difficultyTags:[difficulty],gradeTags:[]};
+}
+export function makeWorksheet(topicId:string,seed:number,quantity:number,difficulty:Difficulty='standard'):Worksheet {
+ if(!Number.isInteger(quantity)||quantity<1||quantity>40)throw Error('Select 1–40 questions');
+ if(!Number.isInteger(seed)||seed<0||seed>0xffffffff)throw Error('Seed must be a 32-bit unsigned integer');
+ const rng=new Rng(seed),problems:Problem[]=[],seen=new Set<string>();
+ for(let i=0;i<quantity;i++){
+  let p:Problem|undefined;
+  for(let attempt=0;attempt<80;attempt++){
+   const candidate=sampleProblem(topicId,rng.next(),difficulty);
+   if(!seen.has(candidate.payload.question)){p=candidate;seen.add(candidate.payload.question);break}
+  }
+  if(!p)throw Error('Not enough unique questions for this configuration; reduce quantity.');
+  problems.push({...p,id:`Q${i+1}`});
+ }
+ return {engineVersion:'1.0.0',generatorVersion:'1',seed,optionsHash:`${difficulty}:${quantity}`,topicId,problems,answerMap:problems.map(p=>({id:p.id,answer:p.expectedAnswer})),layoutVersion:'1'};
+}

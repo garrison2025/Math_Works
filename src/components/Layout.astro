@@ -1,0 +1,12 @@
+---
+import '../styles/global.css';
+const {title,description,canonicalPath='/'}=Astro.props;
+const base=(import.meta.env.PUBLIC_SITE_URL||'').replace(/\/$/,'');
+const indexed=import.meta.env.PUBLIC_INDEXABLE==='true' && base && !base.includes('.pages.dev') && !base.includes('example.com');
+const canonical=indexed?`${base}${canonicalPath}`:undefined;
+const structured=indexed?{"@context":"https://schema.org","@type":"WebApplication",name:"Printable Math Worksheet Studio",url:canonical,applicationCategory:"EducationalApplication",operatingSystem:"Web browser",offers:{"@type":"Offer",price:"0",priceCurrency:"USD"},description}:undefined;
+---
+<!DOCTYPE html>
+<html lang="en-US"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="color-scheme" content="light"/><title>{title}</title><meta name="description" content={description}/><meta name="robots" content={indexed?'index,follow,max-image-preview:large':'noindex,nofollow'}/>{canonical&&<link rel="canonical" href={canonical}/>}
+<meta property="og:type" content="website"/><meta property="og:title" content={title}/><meta property="og:description" content={description}/>{canonical&&<meta property="og:url" content={canonical}/>}<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>{structured&&<script type="application/ld+json" set:html={JSON.stringify(structured)} />}</head>
+<body><header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="Math Worksheet Studio home"><span class="brand-mark">∑</span><span>Math Worksheet <span style="color:#1b64a5">Studio</span></span></a><nav class="header-nav" aria-label="Main navigation"><a href="/#topics">All topics</a><a href="/#how-it-works">How it works</a><a class="nav-pill" href="/two-step-equations-worksheets/">Create a worksheet</a></nav></div></header><main><slot /></main><footer class="site-footer"><div class="container footer-inner"><span>© {new Date().getFullYear()} Math Worksheet Studio · Free, locally generated practice sheets.</span><div class="footer-links"><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/contact/">Contact</a></div></div></footer></body></html>

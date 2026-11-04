@@ -1,0 +1,24 @@
+{
+  "name": "math-worksheet-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare:assets": "node --experimental-strip-types scripts/prepare.mjs",
+    "dev": "astro dev",
+    "build": "npm run prepare:assets && astro build",
+    "preview": "astro preview",
+    "typecheck": "tsc --noEmit -p tsconfig.math.json",
+    "test:math": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test": "npm run typecheck && npm run test:math"
+  },
+  "dependencies": {
+    "astro": "^5.15.3",
+    "pdf-lib": "^1.17.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "sharp": "^0.34.2",
+    "typescript": "^5.8.3"
+  }
+}

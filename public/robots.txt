@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# All preview HTML includes noindex. No production sitemap is published until the custom domain is verified.

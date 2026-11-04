@@ -1,0 +1,497 @@
+[
+  {
+    "slug": "two-digit-multiplication-worksheets",
+    "tier": "SEO-A",
+    "kd": 20,
+    "volume": 2400,
+    "example": "3–4年级多位乘法；2×2 竖式：23×14=322；部分积92+230=322",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "integer-operations-worksheets",
+    "tier": "SEO-A",
+    "kd": 22,
+    "volume": 1900,
+    "example": "整数四则运算及负号：-7+12=5；(-24)÷6=-4",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "one-step-equations-worksheets",
+    "tier": "SEO-A",
+    "kd": 6,
+    "volume": 2900,
+    "example": "一步代数方程：x+7=12→x=5；-3x=12→x=-4",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "two-step-equations-worksheets",
+    "tier": "SEO-A",
+    "kd": 10,
+    "volume": 4400,
+    "example": "两步代数方程：3x+5=20→x=5；-2x+4=10→x=-3",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "order-of-operations-worksheets",
+    "tier": "SEO-A",
+    "kd": 17,
+    "volume": 2400,
+    "example": "运算顺序与 PEMDAS：3+4×2=11；(3+4)×2=14",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "inequalities-worksheets",
+    "tier": "SEO-B",
+    "kd": 21,
+    "volume": 720,
+    "example": "一/两步不等式：-2x<6→x>-3；x≤2 为实心端点",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "two-digit-by-one-digit-multiplication-worksheets",
+    "tier": "SEO-A",
+    "kd": 24,
+    "volume": 1300,
+    "example": "两位数乘一位数：23×4=92，进位1",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "volume-of-rectangular-prisms-worksheets",
+    "tier": "SEO-B",
+    "kd": 7,
+    "volume": 1000,
+    "example": "长方体体积与缺边求解：2×3×4=24 立方单位",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "complementary-supplementary-angles-worksheets",
+    "tier": "SEO-B",
+    "kd": 5,
+    "volume": 880,
+    "example": "余角与补角：35°余角55°；60°补角120°",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "mean-median-mode-range-worksheets",
+    "tier": "SEO-A",
+    "kd": 12,
+    "volume": 1600,
+    "example": "平均数/中位数/众数/极差：[1,1,3,5]→均值2.5 中位数2 众数1 极差4",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "decimal-multiplication-worksheets",
+    "tier": "SEO-A",
+    "kd": 21,
+    "volume": 2900,
+    "example": "小数乘法练习：1.2×0.3=0.36",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "area-of-triangles-worksheets",
+    "tier": "SEO-A",
+    "kd": 11,
+    "volume": 1300,
+    "example": "三角形面积：b=8,h=5→20平方单位",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "equivalent-fractions-worksheets",
+    "tier": "SEO-A",
+    "kd": 19,
+    "volume": 2900,
+    "example": "等值分数填空与图示：2/3=6/9；3/4=?/12→9",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "scatter-plot-worksheets",
+    "tier": "SEO-C",
+    "kd": 19,
+    "volume": 480,
+    "example": "散点图画点和趋势：(1,2),(2,4),(3,6)正相关趋势",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "box-plots-worksheets",
+    "tier": "SEO-B",
+    "kd": 6,
+    "volume": 1000,
+    "example": "盒须图五数概括和离群值：[1,2,3,4,5]→Q1=1.5 Median=3 Q3=4.5；IQR=3",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "adding-unlike-fractions-worksheets",
+    "tier": "SEO-A",
+    "kd": 10,
+    "volume": 1600,
+    "example": "异分母分数加法：1/2+1/3=5/6",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "area-worksheets",
+    "tier": "SEO-B",
+    "kd": 25,
+    "volume": 590,
+    "example": "面积练习聚合页：矩形2×3=6；三角形8×5/2=20",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P0"
+  },
+  {
+    "slug": "area-of-parallelograms-worksheets",
+    "tier": "SEO-B",
+    "kd": 21,
+    "volume": 590,
+    "example": "平行四边形面积：b=8,h=3→24",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "triangle-angle-sum-worksheets",
+    "tier": "SEO-C",
+    "kd": 13,
+    "volume": 480,
+    "example": "三角形角和：45°+65°→70°",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "area-of-trapezoids-worksheets",
+    "tier": "SEO-C",
+    "kd": 24,
+    "volume": 390,
+    "example": "梯形面积：a=5,b=9,h=4→28",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "pythagorean-worksheets",
+    "tier": "SEO-A",
+    "kd": 14,
+    "volume": 3600,
+    "example": "直角三角形勾股定理：3²+4²=5²",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "three-digit-by-two-digit-multiplication-worksheets",
+    "tier": "SEO-A",
+    "kd": 20,
+    "volume": 1900,
+    "example": "三位数乘两位数竖式：123×45=5535，615+4920",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "domain-range-worksheets",
+    "tier": "SEO-A",
+    "kd": 13,
+    "volume": 1300,
+    "example": "定义域和值域：{(1,2),(1,3),(2,4)}→域{1,2}值域{2,3,4}，不是函数",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "angle-worksheets",
+    "tier": "SEO-B",
+    "kd": 13,
+    "volume": 590,
+    "example": "角度综合图示：45°为锐角；120°为钝角",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P0"
+  },
+  {
+    "slug": "vertical-angles-worksheets",
+    "tier": "SEO-C",
+    "kd": 5,
+    "volume": 480,
+    "example": "对顶角与邻补角：一角70°→对顶70° 邻角110°",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "mean-absolute-deviation-worksheets",
+    "tier": "SEO-C",
+    "kd": 5,
+    "volume": 170,
+    "example": "总体平均绝对偏差：[1,3,5]→mean3 MAD4/3",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P0"
+  },
+  {
+    "slug": "multiplication-tables-worksheets",
+    "tier": "SEO-A",
+    "kd": 27,
+    "volume": 5400,
+    "example": "乘法表格与限时练习：7×8=56",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "multiplication-worksheets",
+    "tier": "SEO-A",
+    "kd": 19,
+    "volume": 5400,
+    "example": "通用乘法专项生成器：9×6=54",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P1"
+  },
+  {
+    "slug": "fractions-worksheets",
+    "tier": "SEO-A",
+    "kd": 29,
+    "volume": 2900,
+    "example": "混合分数练习：3/4−1/4=1/2",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P1"
+  },
+  {
+    "slug": "addition-worksheets",
+    "tier": "SEO-A",
+    "kd": 28,
+    "volume": 1900,
+    "example": "多位加法与进位：237+185=422",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P1"
+  },
+  {
+    "slug": "subtraction-worksheets",
+    "tier": "SEO-A",
+    "kd": 29,
+    "volume": 3600,
+    "example": "多位减法与退位：802−467=335",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P1"
+  },
+  {
+    "slug": "place-value-worksheets",
+    "tier": "SEO-A",
+    "kd": 21,
+    "volume": 4400,
+    "example": "整数位值和展开式：5204=5000+200+4",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "division-worksheets",
+    "tier": "SEO-A",
+    "kd": 22,
+    "volume": 1900,
+    "example": "除法事实与整除：56÷7=8",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P1"
+  },
+  {
+    "slug": "surface-area-worksheets",
+    "tier": "SEO-C",
+    "kd": 3,
+    "volume": 320,
+    "example": "表面积题：长方体2×3×4→52",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "functions-worksheets",
+    "tier": "SEO-B",
+    "kd": 19,
+    "volume": 1000,
+    "example": "函数求值/函数合成：f(x)=3x−2, f(4)=10",
+    "type": "CONDITIONAL_HUB",
+    "priority": "P1"
+  },
+  {
+    "slug": "multiplying-fractions-worksheets",
+    "tier": "SEO-A",
+    "kd": 24,
+    "volume": 1600,
+    "example": "分数乘法与约分：2/3×3/4=1/2",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "slope-worksheets",
+    "tier": "SEO-B",
+    "kd": 8,
+    "volume": 720,
+    "example": "斜率及两点连线：(1,2),(3,6)→m=2；(1,2),(1,5)→未定义",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "mixed-addition-subtraction-worksheets",
+    "tier": "SEO-A",
+    "kd": 22,
+    "volume": 4400,
+    "example": "加减混合竖式：503−278=225；225+278=503",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "long-division-worksheets",
+    "tier": "SEO-A",
+    "kd": 23,
+    "volume": 3600,
+    "example": "长除法步骤：125÷6=20 余5",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "decimal-place-value-worksheets",
+    "tier": "SEO-B",
+    "kd": 20,
+    "volume": 880,
+    "example": "小数位值与读写：4.307→十分位3、百分位0",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "printable-protractor",
+    "tier": "SEO-A",
+    "kd": 6,
+    "volume": 2400,
+    "example": "可打印校准量角器：0°水平向右，90°正上；50mm检验线实测50±1mm",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "number-line-worksheets",
+    "tier": "SEO-A",
+    "kd": 17,
+    "volume": 1900,
+    "example": "数轴标点与大小比较：[-5,5]中0正中；1/2在0和1之间",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "lines-rays-segments-worksheets",
+    "tier": "SEO-A",
+    "kd": 26,
+    "volume": 1600,
+    "example": "直线射线线段识别：线段AB两端点；射线AB起点A",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "word-problems-worksheets",
+    "tier": "HOLD",
+    "kd": 8,
+    "volume": 260,
+    "example": "有原创可参数化文字题：3盒每盒4支笔，共12支笔",
+    "type": "HOLD",
+    "priority": "P1"
+  },
+  {
+    "slug": "scientific-notation-worksheets",
+    "tier": "SEO-A",
+    "kd": 20,
+    "volume": 1600,
+    "example": "科学记数法和有效数字：4500=4.5×10³；0.003=3×10^-3",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "gcf-worksheets",
+    "tier": "SEO-A",
+    "kd": 18,
+    "volume": 1600,
+    "example": "最大公约数练习：gcd(18,24)=6",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "systems-equations-worksheets",
+    "tier": "SEO-A",
+    "kd": 20,
+    "volume": 1600,
+    "example": "二元一次方程组：x+y=5;x−y=1→x=3,y=2",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "coordinate-plane-worksheets",
+    "tier": "SEO-A",
+    "kd": 15,
+    "volume": 1600,
+    "example": "坐标平面描点：(-3,4)位于第二象限",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "function-tables-worksheets",
+    "tier": "SEO-C",
+    "kd": 12,
+    "volume": 320,
+    "example": "函数表输入输出：f(x)=2x+1，x=3→7",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "number-recognition-worksheets",
+    "tier": "SEO-B",
+    "kd": 19,
+    "volume": 1000,
+    "example": "数字识别与计数：7个图标对应数字7",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "percentages-worksheets",
+    "tier": "SEO-B",
+    "kd": 20,
+    "volume": 720,
+    "example": "分数百分数换算：3/20=15%",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "linear-equations-worksheets",
+    "tier": "SEO-A",
+    "kd": 6,
+    "volume": 1600,
+    "example": "一次函数绘图：y=2x+3，x=2→7",
+    "type": "CONDITIONAL_TOOL",
+    "priority": "P1"
+  },
+  {
+    "slug": "worksheets-by-grade",
+    "tier": "HOLD",
+    "kd": 23,
+    "volume": 3600,
+    "example": "按年级聚合已验收题目：8th grade目录必须链接≥8实际题型",
+    "type": "HOLD",
+    "priority": "P2"
+  },
+  {
+    "slug": "algebra-general-worksheets",
+    "tier": "HOLD",
+    "kd": 21,
+    "volume": 1300,
+    "example": "代数专题导航：至少包含一步/两步/不等式/函数等独立可用主题",
+    "type": "HOLD",
+    "priority": "P2"
+  },
+  {
+    "slug": "geometry-general-worksheets",
+    "tier": "HOLD",
+    "kd": 18,
+    "volume": 2400,
+    "example": "几何专题导航：至少6个已验收几何专题",
+    "type": "HOLD",
+    "priority": "P2"
+  }
+]

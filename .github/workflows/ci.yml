@@ -1,0 +1,21 @@
+name: Quality checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm run test
+      - run: npm run build
+      - name: Verify preview is not indexable
+        run: |
+          grep -q 'noindex,nofollow' dist/index.html
+          test -f dist/two-step-equations-worksheets/index.html
+          test -f dist/images/worksheets/two-step-equations-worksheets-sample.webp
