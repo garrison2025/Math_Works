@@ -59,3 +59,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - R4 local checks: TypeScript PASS and 22/22 math tests PASS, including 1,000 seed answer-visibility regression and 2,000 seed scatter bounds tests.
 - 51 static WebP previews regenerated locally (Sharp).
 - Local PDF/BROWSER/physical printer checks: NOT RUN. PDF test suite was expanded for R4 and must be confirmed by the current commit's GitHub CI.
+
+## R5: Protractor PDF physical geometry and function-table fidelity (2026-11-04)
+
+- [PASS local] A physical protractor metric contract now defines a 72 mm radius and 50 mm calibration line, shared across SVG and PDF implementations; the local math test suite reports 23 PASS.
+- [IMPLEMENTED, CI pending] Added single-page blank protractor PDF and a dedicated route-only download button. The general exercise PDF reserves physical-size space and paginates rather than shrinking the protractor.
+- [IMPLEMENTED, CI pending] Export text maps Unicode function-table arrows to ASCII `->`; `test:pdf` includes a regression case.
+- [NOT RUN] Physical 50 ±1 mm printer measurement on an actual printed protractor and visual page-by-page PDF review. The updated CI run must PASS before treating PDF roundtrip tests as passing.

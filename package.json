@@ -9,9 +9,10 @@
     "build": "npm run prepare:assets && astro build",
     "preview": "astro preview",
     "typecheck": "tsc --noEmit -p tsconfig.math.json",
-    "test:math": "node --experimental-strip-types --test tests/math.test.mjs tests/independent-oracles.test.mjs tests/indexation.test.mjs tests/capabilities.test.mjs",
+    "test:math": "node --experimental-strip-types --test tests/math.test.mjs tests/independent-oracles.test.mjs tests/indexation.test.mjs tests/capabilities.test.mjs tests/content.test.mjs",
     "test:pdf": "node --experimental-strip-types --test tests/pdf.test.mjs",
-    "test": "npm run typecheck && npm run test:math"
+    "test": "npm run typecheck && npm run test:math",
+    "audit:static": "node scripts/audit-static.mjs"
   },
   "dependencies": {
     "astro": "^5.15.3",

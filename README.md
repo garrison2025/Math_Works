@@ -55,3 +55,9 @@ The broad topic matrix currently prioritizes core deterministic examples, not th
 - The 51 static preview WebP files are regenerated from the current generator and SVG renderer at build time.
 
 These are source/automated-test checks; the release still needs browser and printed-page visual inspections.
+
+### Calibrated protractor export (R5)
+
+The **Printable Protractor** topic now has a dedicated button that downloads a standalone, single-page 180° protractor rather than eight separate randomized exercises. Its SVG and PDF dimensions share a 72 mm protractor radius and a 50 mm calibration ruler. Exercise PDFs also reserve a full-size instrument, with automatic pagination instead of scaling the instrument to a generic diagram slot. PDF function-table arrows are transliterated as `->`, not silently deleted.
+
+**Printing must use Actual size / 100%.** Physical printer measurement of 50 ±1 mm is still NOT RUN; PDF page dimensions and the pure geometry contract are automatically tested.
