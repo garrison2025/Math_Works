@@ -109,3 +109,7 @@ The **Printable Protractor** topic now has a dedicated button that downloads a s
 - PDF export first validates complete question ↔ answer IDs, counts, question uniqueness and nonempty explanations, refusing mismatched data. This is integrity validation, not an independent proof of every result.
 - Font-aware text wrapping and page-space estimates reduce PDF clipping and overlap risks; both Letter and A4 remain supported.
 - GitHub CI runs tests across all 51 implemented topic families and generates reproducible PDF sample artifacts for six representative families (`npm run qa:pdf-samples`), retaining them for a seven-day visual inspection window. Visual comparison and real printer calibration still require reviewer sign-off.
+
+### R12 geometry fidelity and teaching accuracy
+
+Interior-angle triangles now use true angle-derived vertices in SVG and PDF. PDF geometry diagrams include known dimension labels and question marks instead of exposing missing heights. New 3,000-seed independent angle tests, Chromium download smoke tests and additional Letter/A4 golden PDF fixtures accompany the updates. Physical protractor calibration, complete manual PDF review and educator approval are still outstanding.
