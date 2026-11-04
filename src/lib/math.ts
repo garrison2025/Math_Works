@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='5' as const;
+export const GENERATOR_VERSION='6' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -136,7 +136,29 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   }
   if(opts.relation!=='mixed' && (opts.relation==='coprime'?(g!==1):(g<=1)))throw Error('Cannot generate GCF choice');
   make(`Find the GCF of ${x} and ${y}.`,g,'Find common divisors',`Greatest common factor: ${g}`);break}
- case 'systems-equations-worksheets':{const x=r.int(opts.solutions==='positive'?1:-7,opts.solutions==='negative'?-1:7),y=r.int(opts.solutions==='positive'?1:-7,opts.solutions==='negative'?-1:7);make(`Solve: x + y = ${x+y}; x − y = ${x-y}`,`x = ${x}, y = ${y}`,`Add equations: 2x = ${(x+y)+(x-y)}`,`x = ${x}`,`Substitute to find y = ${y}`);break}
+ case 'systems-equations-worksheets':{
+  const x=r.int(opts.solutions==='positive'?1:-7,opts.solutions==='negative'?-1:7),y=r.int(opts.solutions==='positive'?1:-7,opts.solutions==='negative'?-1:7);
+  if(opts.method==='general'){
+   // Construct two different equations from the known integer intersection. The
+   // nonzero determinant guarantees a unique solution, without floating point.
+   const coef=()=>r.int(2,6)*(r.int(0,1)?1:-1);
+   let a=2,b=3,c=3,d=2,det=0;
+   for(let tries=0;tries<100;tries++){
+    a=coef();b=coef();c=coef();d=coef();det=a*d-b*c;
+    if(det!==0)break;
+   }
+   if(det===0)throw Error('Cannot construct a unique linear system');
+   const s=a*x+b*y,t=c*x+d*y,sign=(n:number)=>n<0?'−':'+';
+   make(`Solve the system: ${a}x ${sign(b)} ${Math.abs(b)}y = ${s}; ${c}x ${sign(d)} ${Math.abs(d)}y = ${t}.`,
+    `x = ${x}, y = ${y}`,
+    `Eliminate y: multiply the first equation by ${d} and the second by ${b}, then subtract.`,
+    `(${a} × ${d} − ${b} × ${c})x = ${s} × ${d} − ${t} × ${b}`,
+    `${det}x = ${s*d-t*b}; x = ${x}`,
+    `Substitute into ${a}x ${sign(b)} ${Math.abs(b)}y = ${s}: y = ${y}`,
+    `Check both: ${a*x+b*y} = ${s} and ${c*x+d*y} = ${t}`);
+  }else make(`Solve: x + y = ${x+y}; x − y = ${x-y}`,`x = ${x}, y = ${y}`,`Add equations: 2x = ${(x+y)+(x-y)}`,`x = ${x}`,`Substitute to find y = ${y}`);
+  break}
+
  case 'functions-worksheets':{
   const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-5,8),value=coeff*x+inter;
   const expression=`${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}`;
@@ -153,7 +175,17 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   make(`Find the slope through (${x1}, ${y1}) and (${x2}, ${y2}).`,vertical?'undefined':String(slope),
     'm = (y2 − y1) / (x2 − x1)',vertical?'The denominator is zero: the line is vertical and the slope is undefined.':`m = (${y2}−(${y1}))/(${x2}−(${x1})) = ${slope}`);
   diagram={kind:'coordinate',values:[x1,y1,x2,y2]};break}
- case 'domain-range-worksheets':{const xs=[r.int(1,5),r.int(6,9),r.int(10,13)],ys=[r.int(1,5),r.int(6,9),r.int(10,13)];const points=xs.map((x,i)=>`(${x},${ys[i]})`).join(', ');if(opts.task==='mixed'?r.int(0,1):opts.task==='domain')make(`List the domain of {${points}}.`,`{${xs.join(', ')}}`,`Domain = all distinct first coordinates (x-values)`);else make(`List the range of {${points}}.`,`{${ys.join(', ')}}`,`Range = all distinct second coordinates (y-values)`);break}
+ case 'domain-range-worksheets':{
+  const xs=[r.int(1,5),r.int(6,9),r.int(10,13)],ys=[r.int(1,5),r.int(6,9),r.int(10,13)];
+  // A non-function deliberately maps the same input to two DIFFERENT outputs.
+  // Domain/range are sets: repeated values must be listed only once.
+  if(opts.relation==='not-function'){xs.push(xs[0]);ys.push(r.int(14,18));}
+  const points=xs.map((x,i)=>`(${x},${ys[i]})`).join(', '),task=opts.task==='mixed'?r.pick(['domain','range']):opts.task;
+  const unique=(items:number[])=>[...new Set(items)].sort((a,b)=>a-b);
+  if(task==='domain')make(`List the domain of {${points}}.`,`{${unique(xs).join(', ')}}`,`Domain = the set of distinct x-values; list each input once.`);
+  else make(`List the range of {${points}}.`,`{${unique(ys).join(', ')}}`,`Range = the set of distinct y-values; list each output once.`);
+  break}
+
  case 'number-recognition-worksheets':{const n=r.int(1,12),type=opts.task==='mixed'?r.pick(['count-dots','word-to-numeral']):opts.task;
   if(type==='word-to-numeral'){
    const words=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];

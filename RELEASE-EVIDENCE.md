@@ -115,27 +115,29 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [FOLLOW-UP] The first PDF artifact used route slugs as QA sample titles, unlike the end-user UI which already sends human-readable topic titles; subsequent sample exporter was corrected to pass `titleFor(slug)`.
 - [NOT RUN] Physical printed-protractor calibration, real Chrome/Firefox end-to-end browser downloads and educator sign-off. Preview release remains `noindex`.
 
+## R11: practical long arithmetic, dot-count integrity, and browser QA gate (2026-11-04)
 
-### R11 verified CI and browser artifacts (2026-11-04)
+- [PASS local] Replaced plain horizontal-only exercises for 2×2, 2×1, 3×2 multiplication and long division with distinct answer-blind mathematical SVG diagrams. The same `diagramSpec` is consumed by the vector PDF renderer, including blank ones/tens partial-product rows and a quotient/remainder bracket.
+- [PASS local] Fixed number-recognition exercises duplicating their visual objects: the sentence says "Count the dots shown below" and exactly N circles are drawn. Corrected worksheet/PDF integrity checks to use the entire mathematical question identity (`question + diagramSpec`), so questions with identical instructions but different dot counts remain distinct; exact repeats remain blocked.
+- [PASS local] Generator and reproducible-link version increased to v4. Former `gv=3` / older links cannot be guaranteed to regenerate identical worksheet diagrams and a version warning is shown.
+- [PASS local] `npm run test:math`: 49 tests passed and `tsc --noEmit -p tsconfig.math.json` passed. Vector diagrams also rendered with Sharp for visual inspection. These checks do not establish full browser behavior or printable PDF fidelity.
+- [CI PENDING] `scripts/browser-smoke.mjs` now tests the built Astro bundle in Chromium, with real PDF downloads for worksheet/answers, separate calibrated protractor download, answer preview, active selectors, share-link clipboard, dot-count answer matching, and mobile 390px overflow. Browser PNGs and PDFs are uploaded as CI artifacts. The workflow requires preinstalled Chrome and an open-source `playwright-core` dev dependency (no paid API).
+- [CI PENDING] PDF golden set extended to long division and 3×2 multiplication; existing PDF structure, exact Letter/A4 and strict noindex tests must pass for this commit.
+- [NOT RUN] Firefox, physical 50±1mm ruler calibration, every PDF page manual visual review, accessibility screen reader and classroom teacher sign-off.
+- [SAFE] Do not turn on `PUBLIC_INDEXABLE`, add a custom canonical domain, GSC or AdSense during preview QA.
 
-- [PASS GitHub CI] Source commit `e66a5f240ac2c904cd1c6e65fe2dd9ea5b3146f3` passed run `41805618132`: TypeScript, mathematical tests, 51-topic PDF roundtrip, Astro build, static SEO/noindex audit and new real Chromium tests.
-- [PASS GitHub CI] Follow-up commit `7bcf0b18c0d72b79c541cdd4c154aeb9e7367bf4` passed run `41806340594`, including Chromium 360/390/768/1280/1440px responsive checks. 360/768/1440px reported zero horizontal overflow. Desktop screenshot plus 360/390px mobile screenshots were retained as artifact `math-works-browser-qa`.
-- [PASS browser flows] Against the built static site, Chrome generated and downloaded real A4 practice and separate answer-key PDFs, a single-page blank Letter protractor PDF, switched question/answer preview, changed equation coefficients, copied and parsed the `gv=4` share link, and checked each count-dots image against its answer. Uncaught browser JavaScript errors: none.
-- [PASS representative PDF review] CI output produced 42 deterministic Letter/A4 PDFs, totaling 138 pages. A PyMuPDF pass found zero text blocks outside the PDF MediaBox. The first pages of long division and three-digit multiplication were rasterized and visually inspected without visible text clipping; this is a sample, not complete visual acceptance.
-- [PASS preview HTML sampling] The Cloudflare `pages.dev` multiplication and number-recognition routes still return `noindex,nofollow` and contain the revised worksheet descriptions. External live-browser downloads on Cloudflare were not directly run: tested browser origin was the exact GitHub-built static bundle.
-- [NOT RUN] Firefox, physical paper and 50 ±1mm protractor calibration, all 138 PDF pages individually inspected, screen reader / teacher sign-off. Preview SEO stays blocked until release approval.
+## R12: true-angle triangle geometry and PDF diagram parity (2026-11-04)
 
+- [PASS local] The triangle-angle-sum SVG and PDF now derive vertices from the exact given interior angles, rather than portraying arbitrary angles on a fixed triangle; angles calculated from plotted coordinates match 3,000 independently regenerated seed/choice cases to <1e-8°.
+- [PASS local] The unknown third angle remains hidden with a question mark, including cases where its numeric value is equal to a known angle. Malformed or degenerate angle diagrams are rejected.
+- [PASS local] PDF diagram labels for triangle base/height, rectangle, parallelogram, trapezoid and rectangular prism now match the numeric dimensions displayed in SVG; missing heights remain `?`. `npm run test:math` passed 52/52 and `tsc` passed.
+- [IMPLEMENTED, CI confirmation pending] Added Chromium browser checks for the true-angle triangle and trapezoid unknown-height downloads, plus four geometric Letter/A4 golden PDF fixture families. Programmatic parsing, screenshots and raster QA must be checked after the R12 GitHub CI run.
+- [NOT RUN] Physical protractor printer measurement, Firefox interactive/download test, every page manual visual inspection, classroom educator signoff. Previews stay `noindex`; custom domain is not purchased.
 
-## R12: true-angle diagram & PDF parity (2026-11-04)
+## R14 advanced mathematics / Firefox QA (2026-11-05)
 
-- [PASS local] 52/52 math/content tests and TypeScript checks, including 3,000 random triangle angle reconstructions. SVGs show the given angles and hide the missing interior angle.
-- [IMPLEMENTED] PDF and SVG use shared triangle vertex geometry. PDF illustrations show known shape dimensions and retain `?` for unknown heights.
-- [IMPLEMENTED; VERIFY CI] Added live Chromium checks for triangle and trapezoid PDF downloads and 4 new sets of Letter/A4 geometry PDF fixtures.
-- [NOT RUN] Firefox browser downloads, physical printed-protractor 50mm ruler test, complete manual visual inspection of every PDF page and educator approval. `PUBLIC_INDEXABLE=false` remains required.
-
-## R13: teaching geometry corrections (2026-11-04)
-- [PASS local] 55 math/route/unit tests and TypeScript typecheck, including 3,000 true crossing-line geometry calculations, square/cube figures and line/ray/segment prompt checks.
-- [PASS local SVG] Representative 9-figure sample sheet rendered and visually inspected. All 51 topic WebP examples rebuilt from the corrected generator.
-- [CI TO VERIFY] Letter/A4 vector PDFs and Chromium download/reproducibility checks for vertical angles, square area, cube surface area and line/ray/segment.
-- [HOLD] Firefox, all-page human PDF review, physical 50 mm protractor calibration. Unpurchased domain; default noindex remains in force.
-- [CHANGE] Generator/share version v5; old links may not reproduce historically identical content.
+- [IMPLEMENTED, requires GitHub CI] General 2×2 linear systems with signed nonzero coefficients and guaranteed determinant != 0; a verified integer intersection is built into both equation constants.
+- [IMPLEMENTED, locally tested] Domain/range relations with repeated x-values and different y-values; unique set elements are preserved in output.
+- [LOCAL PASS] 12,000 independent two-variable linear systems solved by Cramer's algebra and substituted back; 12,000 domain/range relation samples independently reconstructed; 58 local test cases currently pass. Separate 30-question PDF export tests added.
+- [CI REQUIRED] Firefox browser installation, A4 PDF download, new selectors and 390px viewport. Do NOT claim Firefox PASS until Actions succeeds and the artifact is reviewed.
+- [NOT RUN] Actual physical 50 mm protractor calibration and exhaustive human review of all possible PDFs. `PUBLIC_INDEXABLE=false` remains required on pages.dev.

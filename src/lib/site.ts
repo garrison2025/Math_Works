@@ -15,13 +15,15 @@ export const topicIntro=(slug:string)=>{
   'mean-median-mode-range-worksheets':'Practice the four most common ways to summarize small numerical data sets.',
   'box-plots-worksheets':'Find quartiles using the exclusive median-of-halves convention and read the five-number summary.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
-  'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.'
+  'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
+  'systems-equations-worksheets':'Solve two-variable linear systems using simple sum/difference equations or general coefficient elimination. Each system has exactly one integer solution.',
+  'domain-range-worksheets':'Practice domains and ranges of relations, including non-functions where one input corresponds to multiple outputs.'
  };
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
- if(slug.includes('vertical-angles'))return ['Find the vertex where two straight lines cross.','Opposite angles are equal; adjacent angles on a straight line total 180°.','Read the given angle and solve for the question-mark sector.'];
- if(slug.includes('lines-rays-segments'))return ['Count arrowheads on the illustrated figure rather than reading hints in the question.','A line has two arrows; a ray has one endpoint and one arrow; a segment has two endpoints.','Use the two labeled points to describe the geometric object.'];
+ if(slug.includes('systems-equations'))return ['Identify coefficients of x and y in both equations.', 'Eliminate one variable by multiplying the two equations and subtracting, then solve for the remaining variable.', 'Substitute the answer and check that both original equations hold.'];
+ if(slug.includes('domain-range'))return ['Read each ordered pair as (input, output).', 'Domain is the set of unique x-values; range is the set of unique y-values.', 'If the same input has different outputs, the relation is not a function.'];
  if(slug.includes('box-plots'))return ['Order the observations and find the median.','Split into equal lower and upper halves, excluding the middle value for odd-sized samples.','Use the 1.5×IQR fences to identify outliers separately from the whisker endpoints.'];
  if(slug.includes('fraction'))return ['Read both numerators and denominators carefully.','Find a common denominator or simplify only when the operation requires it.','Compare your reduced fraction to the answer key.'];
  if(slug.includes('inequal'))return ['Identify the coefficient of the unknown and the comparison symbol.','Undo operations on both sides; flip < to > and ≤ to ≥ (or vice versa) when dividing by a negative.','Check a test value against the original inequality and mark open or closed endpoints as appropriate.'];
@@ -45,8 +47,8 @@ export function howTo(slug:string):string[]{
 
 /** Contextual reminders: intentionally about the generator's actual task, not generic SEO filler. */
 export function commonMistakes(slug:string):string[]{
- if(slug.includes('vertical-angles'))return ['Treating adjacent angles as equal instead of supplementary.','Mistaking a vertically opposite angle for the adjacent angle next to it.'];
- if(slug.includes('lines-rays-segments'))return ['Confusing labeled interior points with endpoints.','Ignoring whether a figure has arrows at one, two or neither end.'];
+ if(slug.includes('systems-equations'))return ['Combining equations with different coefficient scales without multiplying first.', 'Forgetting to check the solution in both original equations.'];
+ if(slug.includes('domain-range'))return ['Including a repeated x-value more than once in the domain.', 'Assuming every relation is a function when the same input appears with different outputs.'];
  if(slug.includes('inequal'))return ['Forgetting to reverse the comparison sign after multiplying or dividing both sides by a negative number.', 'Using a closed dot for < or > instead of an open dot.'];
  if(slug.includes('two-step-equations'))return ['Undoing multiplication before undoing the added or subtracted constant.', 'Missing the sign of a negative coefficient when dividing.'];
  if(slug.includes('one-step-equations'))return ['Applying an inverse operation on only one side of the equation.', 'Losing track of negative signs when dividing both sides by a negative coefficient.'];

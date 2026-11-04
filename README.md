@@ -110,14 +110,19 @@ The **Printable Protractor** topic now has a dedicated button that downloads a s
 - Font-aware text wrapping and page-space estimates reduce PDF clipping and overlap risks; both Letter and A4 remain supported.
 - GitHub CI runs tests across all 51 implemented topic families and generates reproducible PDF sample artifacts for six representative families (`npm run qa:pdf-samples`), retaining them for a seven-day visual inspection window. Visual comparison and real printer calibration still require reviewer sign-off.
 
-### R12 geometry fidelity and teaching accuracy
+## R11 browser and column-arithmetic QA
 
-Interior-angle triangles now use true angle-derived vertices in SVG and PDF. PDF geometry diagrams include known dimension labels and question marks instead of exposing missing heights. New 3,000-seed independent angle tests, Chromium download smoke tests and additional Letter/A4 golden PDF fixtures accompany the updates. Physical protractor calibration, complete manual PDF review and educator approval are still outstanding.
+New exercise layouts include original, editable-by-hand long multiplication working lines (ones/tens partial products) and long-division quotient/remainder brackets, implemented in both SVG worksheet previews and vector PDF exports. Number recognition shows each dot once; uniqueness and answer-key integrity are checked using the mathematical diagram as well as question text. These changes use generator **v4**; sharing links include `gv=4` and previous versions may not replay exactly.
 
-## R13: mathematical diagram fidelity
-- Real intersecting-line diagrams for vertical/adjacent angles in SVG and PDF; actual given sectors are measured rather than represented by an isolated angle.
-- Square mode draws equal sides, and cube mode draws a square front face.
-- Lines, rays and line segments are visual-identification questions with correctly placed arrowheads and two labeled points. The prompt no longer gives away the geometry category.
-- Deterministic generator/share format updated to v5, because earlier links may not reproduce changed questions exactly.
-- New independent geometry tests, Chromium PDF/download checks, and Letter/A4 PDF golden fixtures.
-- Cloudflare preview remains noindex while the domain is unpurchased and Firefox/physical printing QA remains outstanding.
+In GitHub Actions, `npm run qa:browser` now tests the *built* Astro site through free/open-source `playwright-core` and the runner's local Chrome, preserving screenshots and downloaded PDFs in the `math-works-browser-qa` artifact. It is a development verification step, not a promise that all browsers and physical printers work. Locally it requires a Chrome binary at `CHROME_BIN` or a standard system path. Continued `noindex` on `pages.dev` is intentional.
+
+### R12 geometry fidelity
+
+Triangle interior-angle pictures now use mathematically constructed vertex coordinates shared between HTML/SVG and vector PDFs. Previously fixed-angle pictures could contradict the numeric problems even with a "not to scale" disclaimer. Geometry PDFs now carry the visible base/height/side labels; missing heights are displayed as `?` instead of revealing the solution. The new `tests/r12-geometry.test.mjs` checks 3,000 random triangles independently and verifies unknown-height masking. CI browser checks and four more golden geometry PDF cases accompany these changes.
+
+## R14 advanced algebra and cross-browser verification (2026-11-05)
+
+- General two-variable linear systems can be selected under **System form → General**. Both coefficients on each equation vary, determinant is nonzero, and both equations share exactly one integer solution. A simple sum/difference option remains available.
+- Domain/range now offers **Relation type → Not function**. A repeated x-value with a different y-value teaches why a relation is not always a function; domain/range answers deduplicate repeated set elements.
+- Generator/share identifier is **v6**. Earlier `gv` links warn that exact question reproduction is not guaranteed; newly copied links use v6 and preserve both topic settings.
+- CI has an independent **Firefox** smoke suite: A4 question-PDF download, new algebra selector behavior, answer visibility toggle and 390px mobile layout. Firefox smoke tests use a locally served static build. Physical protractor print accuracy remains unverified.

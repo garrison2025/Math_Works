@@ -134,7 +134,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v5'),`${topic} missing version-five identity`);
+    assert.ok(doc.getTitle()?.includes('v6'),`${topic} missing version-six identity`);
    }
   }
  }
@@ -191,19 +191,43 @@ test('R11 full-size column multiplication and long-division diagrams survive pra
  }
 });
 
-test('R13 practice and answer PDFs include real crossing angles, square faces and labeled figures',async()=>{
- for(const [topic,options] of [
-  ['vertical-angles-worksheets',{task:'vertical'}],['vertical-angles-worksheets',{task:'adjacent'}],
-  ['area-worksheets',{shape:'square'}],['surface-area-worksheets',{solid:'cube'}],
-  ['lines-rays-segments-worksheets',{figure:'line'}],['lines-rays-segments-worksheets',{figure:'ray'}],
+test('R13 diagram corrections serialize true intersecting lines, square faces, and line/ray/segment choices',async()=>{
+ const examples=[
+  ['vertical-angles-worksheets',{task:'vertical'}],
+  ['vertical-angles-worksheets',{task:'adjacent'}],
+  ['area-worksheets',{shape:'square'}],
+  ['surface-area-worksheets',{solid:'cube'}],
+  ['lines-rays-segments-worksheets',{figure:'line'}],
+  ['lines-rays-segments-worksheets',{figure:'ray'}],
   ['lines-rays-segments-worksheets',{figure:'segment'}]
- ]){
+ ];
+ for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'5');
+  assert.equal(sheet.generatorVersion,'6');
+  assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
-   const doc=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
-   assert.ok(doc.getPageCount()>=1,topic+' '+paper+' '+mode);
-   assert.ok(doc.getTitle()?.includes('v5')&&doc.getTitle()?.includes(sheet.optionsHash));
+   const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
+   const document=await PDFDocument.load(bytes);
+   assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
+   assert.ok(document.getTitle()?.includes(sheet.optionsHash));
+   assert.ok(document.getTitle()?.includes('v6'));
+  }
+ }
+});
+
+test('R14 general systems and non-function domains export consistent A4/Letter question and answer PDFs',async()=>{
+ for(const [topic,options] of [
+  ['systems-equations-worksheets',{method:'general',solutions:'negative'}],
+  ['domain-range-worksheets',{task:'range',relation:'not-function'}]
+ ])for(const paper of ['Letter','A4']){
+  const sheet=makeWorksheet(topic,20261105,30,'challenge',options);
+  for(const mode of ['questions','answers']){
+   const raw=await createWorksheetPdf(sheet,topic,mode,paper);
+   const parsed=await PDFDocument.load(raw);
+   assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
+   assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
+   assert.match(parsed.getTitle()??'',/generator v6/);
+   assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
 });

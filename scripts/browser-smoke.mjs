@@ -72,13 +72,13 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v5'));
- assert.ok(answers.getTitle()?.includes('v5'));
+ assert.ok(questions.getTitle()?.includes('v6'));
+ assert.ok(answers.getTitle()?.includes('v6'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=5/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=6/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v5 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v6 clipboard link',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
  await page.goto(`${base}/number-recognition-worksheets/`,{waitUntil:'networkidle'});
@@ -103,59 +103,62 @@ try {
  assert.equal(protractor.getPageCount(),1);
  events.push({kind:'interaction',name:'blank 180-degree protractor PDF download (physical measurement still NOT RUN)',status:'pass'});
 
- // R12: verify real-angle diagrams and height masking with actual Chrome PDF downloads.
+ // R12 browser regression: true interior-angle geometry and masked missing-height PDF.
  await page.goto(`${base}/triangle-angle-sum-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="thirdAngle"]').selectOption('obtuse');
- const triangle=await page.locator('.problem').first().evaluate(el=>({
+ const firstAngle=await page.locator('.problem').first().evaluate(el=>({
   question:el.querySelector('.q')?.textContent??'',
-  labels:[...el.querySelectorAll('svg text')].map(t=>t.textContent??''),
-  vertices:el.querySelector('svg polygon')?.getAttribute('points')??''
+  labels:[...el.querySelectorAll('svg text')].map(e=>e.textContent??''),
+  polygon:el.querySelector('svg polygon')?.getAttribute('points')??''
  }));
- const given=triangle.question.match(/angles are (\d+)° and (\d+)°/);
- assert.ok(given,'Missing triangle angle data');
- assert.ok(triangle.labels.includes(`${given[1]}°`) && triangle.labels.includes(`${given[2]}°`));
- assert.ok(triangle.labels.includes('?'),'The unknown angle is exposed');
- assert.equal(triangle.vertices.split(' ').length,3,'Missing triangle vertices');
- const triangleWait=page.waitForEvent('download',{timeout:30000});
+ const nums=firstAngle.question.match(/angles are (\d+)° and (\d+)°/);
+ assert.ok(nums,'Angle worksheet did not show two known values');
+ assert.ok(firstAngle.labels.includes(`${nums[1]}°`)&&firstAngle.labels.includes(`${nums[2]}°`));
+ assert.ok(firstAngle.labels.includes('?'),'Missing triangle angle is not masked');
+ assert.equal(firstAngle.polygon.split(' ').length,3,'Triangle vertices missing');
+ const triangleDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await triangleWait,'triangle-angle questions');
- await page.screenshot({path:join(out,'r12-triangle-angle.png'),fullPage:true});
- events.push({kind:'interaction',name:'true-angle SVG and PDF worksheet',status:'pass'});
+ await verifyPdf(await triangleDownload,'true-angle triangle practice');
+ await page.screenshot({path:join(out,'triangle-angles-true-geometry.png'),fullPage:true});
+ events.push({kind:'interaction',name:'real-angle triangle SVG, unknown angle masking and PDF download',status:'pass'});
  await page.goto(`${base}/area-of-trapezoids-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="task"]').selectOption('missing-height');
- const trapezoidSvg=await page.locator('.diagram-vector').first().innerHTML();
- assert.ok(trapezoidSvg.includes('>?</text>'),'Trapezoid diagram leaked the missing height');
- const heightWait=page.waitForEvent('download',{timeout:30000});
+ const missingHeight=await page.locator('.diagram-vector').first().innerHTML();
+ assert.ok(missingHeight.includes('>?</text>'),'Unknown trapezoid height was not masked');
+ const heightDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await heightWait,'trapezoid missing-height questions');
- await page.screenshot({path:join(out,'r12-trapezoid-height.png'),fullPage:true});
- events.push({kind:'interaction',name:'missing-height SVG and PDF worksheet',status:'pass'});
+ await verifyPdf(await heightDownload,'trapezoid missing-height practice');
+ await page.screenshot({path:join(out,'trapezoid-missing-height.png'),fullPage:true});
+ events.push({kind:'interaction',name:'missing-height trapezoid is answer-blind in SVG and PDF',status:'pass'});
 
- // R13 browser regression: actual intersecting lines, square shape and a labeled ray.
- await page.goto(base+'/vertical-angles-worksheets/',{waitUntil:'networkidle'});
+ // R13: real geometric diagrams and their corresponding PDF export links.
+ await page.goto(`${base}/vertical-angles-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="task"]').selectOption('adjacent');
  const crossing=page.locator('.diagram-vector').first();
- assert.equal(await crossing.locator('polyline').count(),2,'Expected two angular sectors');
- assert.ok((await crossing.innerHTML()).includes('>?</text>'),'Unknown sector is not hidden');
- const crossingDownload=page.waitForEvent('download',{timeout:30000});
+ assert.equal(await crossing.locator('polyline').count(),2,'Intersecting lines need both angle arcs');
+ assert.ok((await crossing.innerHTML()).includes('>?<'),'Target angle must be hidden as question mark');
+ const verticalDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await crossingDownload,'R13 crossing angles PDF');
- await page.screenshot({path:join(out,'r13-crossing-angles.png'),fullPage:true});
- events.push({kind:'interaction',name:'R13 crossing angles PDF download',status:'pass'});
- await page.goto(base+'/area-worksheets/',{waitUntil:'networkidle'});
+ await verifyPdf(await verticalDownload,'R13 adjacent crossing angles');
+ await page.screenshot({path:join(out,'r13-vertical-angles.png'),fullPage:true});
+ events.push({kind:'interaction',name:'real intersecting lines render and export a vector PDF',status:'pass'});
+ await page.goto(`${base}/area-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="shape"]').selectOption('square');
  const square=page.locator('.diagram-vector rect').first();
- assert.equal(await square.getAttribute('width'),await square.getAttribute('height'),'Square geometry is not square');
- await page.screenshot({path:join(out,'r13-square.png'),fullPage:true});
- events.push({kind:'interaction',name:'R13 equal-sided square',status:'pass'});
- await page.goto(base+'/lines-rays-segments-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await square.getAttribute('width'),await square.getAttribute('height'),'Area square preview must be geometrically square');
+ await page.screenshot({path:join(out,'r13-area-square.png'),fullPage:true});
+ events.push({kind:'interaction',name:'square shape retains equal vector sides',status:'pass'});
+ await page.goto(`${base}/lines-rays-segments-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="figure"]').selectOption('ray');
+ const figure=page.locator('.diagram-vector').first();
+ assert.ok((await figure.innerHTML()).includes('<circle'),'Ray endpoint missing');
  assert.match(await page.locator('.problem .q').first().innerText(),/Identify the pictured figure/);
- const rayDownload=page.waitForEvent('download',{timeout:30000});
+ const lineDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await rayDownload,'R13 labeled ray PDF');
- await page.screenshot({path:join(out,'r13-ray.png'),fullPage:true});
- events.push({kind:'interaction',name:'R13 labeled ray PDF download',status:'pass'});
+ await verifyPdf(await lineDownload,'R13 labeled ray');
+ await page.screenshot({path:join(out,'r13-labeled-ray.png'),fullPage:true});
+ events.push({kind:'interaction',name:'line/ray/segment diagrams assessed visually, not text clues',status:'pass'});
+
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));

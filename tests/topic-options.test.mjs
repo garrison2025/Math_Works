@@ -78,15 +78,22 @@ const captures={
 };
 test('topic-option definitions use nonduplicated identifiers and valid defaults',()=>{
  assert.equal(all.length,51);
- for(const [slug,defs] of all){assert.equal(defs.length,1,slug);assert.equal(new Set(defs.map(d=>d.key)).size,defs.length);for(const d of defs){assert.ok(d.choices.some(x=>x.value===d.defaultValue));assert.equal(new Set(d.choices.map(x=>x.value)).size,d.choices.length);}assert.deepEqual(normalizeTopicOptions(slug),Object.fromEntries(defs.map(d=>[d.key,d.defaultValue])));}
+ for(const [slug,defs] of all){assert.ok(defs.length>=1&&defs.length<=3,slug);assert.equal(new Set(defs.map(d=>d.key)).size,defs.length);for(const d of defs){assert.ok(d.choices.some(x=>x.value===d.defaultValue));assert.equal(new Set(d.choices.map(x=>x.value)).size,d.choices.length);}assert.deepEqual(normalizeTopicOptions(slug),Object.fromEntries(defs.map(d=>[d.key,d.defaultValue])));}
  assert.equal(topicOptionsFor('two-digit-multiplication-worksheets').length,1);
+ assert.equal(topicOptionsFor('systems-equations-worksheets').length,2);
+ assert.equal(topicOptionsFor('domain-range-worksheets').length,2);
 });
 test('every special choice changes actual problem semantics across many seeds',()=>{
  for(const [slug,defs] of all){for(const def of defs)for(const item of def.choices){
   const option={[def.key]:item.value};
   for(let seed=1;seed<=100;seed++){
    const p=sampleProblem(slug,seed,'standard',option);
-   assert.ok(captures[slug](p,item.value),`${slug} ${item.value} seed ${seed}: ${p.payload.question}`);
+   const fits=slug==='systems-equations-worksheets'&&def.key==='method'
+    ?(item.value==='simple'?/^Solve: x \+ y =/.test(p.payload.question):/^Solve the system: /.test(p.payload.question))
+    :slug==='domain-range-worksheets'&&def.key==='relation'
+    ?(item.value==='function'?((p.payload.question.match(/\(/g)||[]).length===3):((p.payload.question.match(/\(/g)||[]).length===4))
+    :captures[slug](p,item.value);
+   assert.ok(fits,`${slug} ${def.key}=${item.value} seed ${seed}: ${p.payload.question}`);
   }
   const cap=maxQuantityForTopic(slug,option,'standard');const max=[12,8,4].find(n=>n<=cap)??1;
   const a=makeWorksheet(slug,20261104,max,'standard',option);

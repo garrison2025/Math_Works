@@ -32,6 +32,17 @@ jobs:
           path: qa-artifacts/browser/
           retention-days: 7
           if-no-files-found: warn
+      - name: Install Playwright Firefox and OS dependencies
+        run: npx playwright-core install --with-deps firefox
+      - name: Firefox cross-browser PDF, topic options and mobile QA
+        run: npm run qa:firefox
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: math-works-firefox-qa
+          path: qa-artifacts/firefox/
+          retention-days: 7
+          if-no-files-found: warn
       - name: Generate PDF golden fixtures
         run: npm run qa:pdf-samples
       - name: Render first pages for visual review (when Poppler is available)
