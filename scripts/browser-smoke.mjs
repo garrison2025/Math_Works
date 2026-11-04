@@ -174,6 +174,24 @@ try {
  await verifyPdf(await solved,'R16 completed box-plot answer key');
  await page.screenshot({path:join(out,'r16-box-plots-answer.png'),fullPage:true});
  events.push({kind:'interaction',name:'R16 modified box plots: no question leaks and completed answer PDF',status:'pass'});
+ // R17: the practice grid is blank; solutions and vector PDF contain the line.
+ await page.goto(`${base}/linear-equations-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('graph');
+ await page.locator('[data-option="slope"]').selectOption('negative');
+ assert.match(await page.locator('.problem .q').first().innerText(),/Graph the line/);
+ assert.equal(await page.locator('.solution-linear-line').count(),0,'No student practice answer leak');
+ await page.screenshot({path:join(out,'r17-linear-graph-practice.png'),fullPage:true});
+ const graphPractice=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await graphPractice,'R17 blank linear graph PDF');
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.solution-linear-line').count(),8);
+ assert.equal(await page.locator('.solution-linear-point').count(),16);
+ const graphAnswers=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ await verifyPdf(await graphAnswers,'R17 solved linear graph PDF');
+ await page.screenshot({path:join(out,'r17-linear-graph-answers.png'),fullPage:true});
+ events.push({kind:'interaction',name:'graph-a-line blank practice and completed answer key',status:'pass'});
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));

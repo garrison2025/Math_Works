@@ -88,7 +88,9 @@ test('every special choice changes actual problem semantics across many seeds',(
   const option={[def.key]:item.value};
   for(let seed=1;seed<=100;seed++){
    const p=sampleProblem(slug,seed,'standard',option);
-   const fits=slug==='systems-equations-worksheets'&&def.key==='method'
+   const fits=slug==='linear-equations-worksheets'&&def.key==='task'
+    ?(item.value==='graph'?p.payload.question.startsWith('Graph the line '):p.payload.question.startsWith('For y = '))
+    :slug==='systems-equations-worksheets'&&def.key==='method'
     ?(item.value==='simple'?/^Solve: x \+ y =/.test(p.payload.question):item.value==='general'?/^Solve the system: /.test(p.payload.question):p.payload.question.startsWith('Classify and solve the system: ')&&p.expectedAnswer===(item.value==='parallel'?'no solution':'infinitely many solutions'))
     :slug==='domain-range-worksheets'&&def.key==='relation'
     ?(item.value==='function'?((p.payload.question.match(/\(/g)||[]).length===3):((p.payload.question.match(/\(/g)||[]).length===4))

@@ -266,3 +266,20 @@ test('R16 modified box plots export Letter/A4 blank practice and completed answe
   assert.ok(answers.byteLength>questions.byteLength,'Solved plot graphics should increase PDF size');
  }
 });
+
+test('R17 graph worksheet question and answer PDFs use the same seed and Letter/A4 sizes',async()=>{
+ const topic='linear-equations-worksheets';
+ for(const slope of ['mixed','positive','negative','zero'])for(const paper of ['Letter','A4']){
+  const set=makeWorksheet(topic,20261105,8,'standard',{slope,task:'graph'});
+  const practice=await PDFDocument.load(await createWorksheetPdf(set,topic,'questions',paper));
+  const answers=await PDFDocument.load(await createWorksheetPdf(set,topic,'answers',paper));
+  assert.ok(practice.getPageCount()>0 && answers.getPageCount()>0);
+  for(const doc of [practice,answers]){
+   assert.ok(doc.getTitle()?.includes(set.optionsHash));
+   for(const page of doc.getPages()){
+    assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<0.015);
+    assert.ok(Math.abs(page.getHeight()-sizes[paper][1])<0.015);
+   }
+  }
+ }
+});

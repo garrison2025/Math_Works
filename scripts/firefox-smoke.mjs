@@ -69,6 +69,13 @@ try{
  await page.locator('[data-mode="questions"]').click();
  assert.equal(await page.locator('.problem .answer-text').count(),0);
  checks.push({name:'non-function relations and masked practice answers',status:'pass'});
+ await open('linear-equations-worksheets');
+ await page.locator('[data-option="task"]').selectOption('graph');
+ assert.equal(await page.locator('.solution-linear-line').count(),0);
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.solution-linear-line').count(),8);
+ checks.push({name:'linear graph blank practice and answer visibility in Firefox',status:'pass'});
+ await page.locator('[data-mode="questions"]').click();
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:'networkidle'});
  const geometry=await page.evaluate(()=>({

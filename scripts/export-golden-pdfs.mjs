@@ -18,6 +18,9 @@ const fixtures=[
  {slug:'box-plots-worksheets',quantity:8,options:{statistic:'draw'}},
  {slug:'printable-protractor',quantity:4,options:{angleRange:'acute'}},
  {slug:'linear-equations-worksheets',quantity:8,options:{slope:'negative'}},
+ {slug:'linear-equations-worksheets',quantity:8,options:{slope:'positive',task:'graph'}},
+ {slug:'linear-equations-worksheets',quantity:8,options:{slope:'negative',task:'graph'}},
+ {slug:'linear-equations-worksheets',quantity:8,options:{slope:'zero',task:'graph'}},
  {slug:'triangle-angle-sum-worksheets',quantity:8,options:{thirdAngle:'obtuse'}},
  {slug:'area-of-trapezoids-worksheets',quantity:8,options:{task:'missing-height'}},
  {slug:'area-of-triangles-worksheets',quantity:8,options:{task:'missing-height'}},
@@ -40,5 +43,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R15 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R17 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

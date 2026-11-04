@@ -133,3 +133,11 @@ Triangle interior-angle pictures now use mathematically constructed vertex coord
 - Practice shows only the source data and a blank numeric axis. The answer view and PDF overlay the correct quartile box, median line, non-outlier whiskers and separate outlier markers on the identical scale.
 - An independent 10,000-seed oracle verifies the five-number information and 1.5xIQR outlier fences. Letter/A4 PDF and Chromium download regressions are included.
 - Generator version 7 remains unchanged because existing topic algorithms and saved links retain their meaning. Preview URLs remain noindex.
+
+### R17: independent linear-function plotting practice (2026-11-05)
+
+- The Linear Equations topic now has a task selector: default Evaluate preserves its legacy seeded questions, while Graph displays a numbered blank coordinate grid on questions and the mathematically exact vector line plus two points only on the answer key.
+- Restricted graph domains cap the maximum unique exercise count (horizontal: 10, strictly positive/negative: 30, mixed: 40). The UI disables impossible quantities.
+- Added 12,000 independently checked slope/intercept seeds, seeded URL replay, Letter/A4 PDF pairs, Chrome and Firefox visual/download regressions, and golden PDF fixtures.
+- Generator v7 is unchanged: existing Evaluate question semantics are preserved, and new links record opt_task=graph.
+- The preview remains noindex until physical printing and complete release gates are satisfied.

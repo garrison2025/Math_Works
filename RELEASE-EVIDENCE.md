@@ -148,3 +148,9 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL PASS] 10,000 independent mathematical seed validations and 66 math/content/SEO regression tests; TypeScript passed.
 - [CI REQUIRED] Letter/A4 PDF generation and end-to-end Chrome download must pass the new workflow run. No physical print or exhaustive manual PDF signoff is implied.
 - [HOLD] Preview remains `noindex`, with no paid APIs, purchased domain, Search Console or advertising.
+
+## R17: answer-blind graph-the-line worksheets (2026-11-05)
+
+- [LOCAL PASS] 12,000 algebraic graph oracles validate intercepts, slopes, graph segments and separate question/answer SVG. Full math test suite 69/69 and TypeScript check passed.
+- [CI REQUIRED] Reproducible Letter/A4 PDFs, Chrome download/screenshot, Firefox browser behavior, Astro build and index audit. Check corresponding run; do not infer browser success from local tests.
+- [NOT RUN] Exhaustive manual PDF review, physical 50 mm protractor calibration and teacher signoff. Preview noindex remains mandatory.
