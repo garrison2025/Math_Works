@@ -65,7 +65,7 @@ export function angleTriangleLayout(d:Diagram):AngleTriangleLayout {
  const vertices=raw.map(plot) as [XY,XY,XY];
  const labelPositions=vertices.map((v,i)=>{
   const other=vertices.filter((_,k)=>k!==i);
-  return [v[0]*.73+(other[0][0]+other[1][0])*.135,v[1]*.73+(other[0][1]+other[1][1])*.135] as XY;
+  return [v[0]*.62+(other[0][0]+other[1][0])*.19,v[1]*.62+(other[0][1]+other[1][1])*.19] as XY;
  }) as [XY,XY,XY];
  return {vertices,labelPositions};
 }
