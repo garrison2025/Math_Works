@@ -12,6 +12,10 @@ An original, browser-first US-English printable math worksheet generator built w
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-researched KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts).
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
+- Thirteen high-demand topic routes now have meaningful topic-specific selectors, including integer operation, one-/two-step equation form, inequality coefficient sign, grouping, equivalent-fraction blanks, fraction operation, times table, division remainder, statistics skill, scatter trend, number-line sign and coordinate quadrant.
+- The topic, seed, difficulty, number of questions and selected topic settings deterministically define a short configuration fingerprint. Worksheet/answer PDFs include the same fingerprint in their filename and document header; a "Copy reproducible link" control restores settings from the URL without storing student content.
+- Focused times-table and sign-restricted number-line modes limit the quantity selector to the number of available unique questions for the selected setting.
+
 
 ## Getting started
 
@@ -44,7 +48,7 @@ All preview pages emit `noindex,nofollow`, with no canonical. **Setting a domain
 
 ## Limitations
 
-The broad topic matrix currently prioritizes core deterministic examples, not the full configurable parameter set listed in the V2 contract. PDF export and physical printer accuracy are implemented in code but **not yet independently browser-verified**. New `test:pdf` runs structural PDF output checks on GitHub CI; physical print inspection is still required. Default Helvetica export transliterates math symbols to plain ASCII in PDF (the HTML/SVG view retains Unicode), pending a properly licensed and tested embedded-font solution. Do not describe every generator or SEO route as fully accepted until the remaining gold/visual tests run.
+The 30 topic-specific setting groups are implemented and tested; the remaining routes still prioritize core deterministic examples rather than every advanced control listed in the V2 contract. PDF export and physical printer accuracy are implemented in code but **not yet independently browser-verified**. New `test:pdf` runs structural PDF output checks on GitHub CI; physical print inspection is still required. Default Helvetica export transliterates math symbols to plain ASCII in PDF (the HTML/SVG view retains Unicode), pending a properly licensed and tested embedded-font solution. Do not describe every generator or SEO route as fully accepted until the remaining gold/visual tests run.
 
 ### Question-only diagram safety (2026-11-04 follow-up)
 
@@ -71,10 +75,19 @@ The **Printable Protractor** topic now has a dedicated button that downloads a s
 - `npm run audit:static` checks that each built route has HTML, title, description, H1, `noindex`, no canonical or rich-result markup, and a real static sample WebP; HOLD routes must not appear. The check runs after `npm run build` in GitHub Actions.
 - Keep `PUBLIC_INDEXABLE=false` until a domain is owned and each route passes release QA.
 
-## R8: functional topic selectors and controlled worksheet quantity
+## R7: topic-specific classroom controls and reproducibility links
 
-- 17 additional specialized selectors bring the total to **30 functional topic setting groups**. Examples: regrouping/borrowing, decimals, proper/improper fraction products, place value, percent/scientific conversion direction, inverse function questions, vertical slope, missing prism height, and box-plot focus.
-- Generator validation prevents requesting more distinct questions than a chosen topic can supply. A precomputed legal-pair pool makes no-regrouping multiplication reliable; expanded Pythagorean triples improve worksheet variety.
-- New share URLs contain `gv=2` and PDF metadata includes generator version, seed and configuration fingerprint. **Old unversioned share links may not reproduce their original questions**, and the interface warns about this; historical generator replay is not implemented.
-- Local TypeScript and 34 Node tests passed, including 51 × 1,000 generator checks, full preset quantity coverage, and share-link reconstruction. PDF and Astro builds are checked separately in GitHub Actions.
-- No change to 55 route contracts, 488 keyword research entries, 4 HOLD routes or preview-site `noindex`. Browser interaction, PDF visual inspection and physical printer measurement remain unverified.
+- `src/lib/topic-options.ts`: validated per-topic option contracts for 13 topics, with genuine generator behavior rather than labels only.
+- `src/lib/worksheet-link.ts`: encoded, validated, reversible worksheet settings for sharing; links never include student data. Parameter links remain within the same nonindexable preview route.
+- PDF practice and answer documents include the same seed and configuration fingerprint. The two files also carry their own mode and paper size.
+- Automated regression cases cover option-specific meaning across 100 seeds per selectable value, invalid input rejection, fingerprint changes and share-link roundtrips.
+- Deployment remains `noindex` on `pages.dev` until a real domain and release gates are approved.
+
+## R8: targeted classroom settings, finite-domain caps and release identity
+
+- Added 17 **functional** topic-specific control groups, bringing the total from 13 to 30. Added regrouping/borrowing practice, decimal precision, proper/improper fraction products, place-value position, percent/scientific conversion directions, function input finding, vertical slopes, missing prism height, box-plot skill focus, division facts, angle relationships, line types and GCF relation. Each selection changes generated questions, not only labels.
+- `maxQuantityForTopic` limits narrow finite problem spaces (fixed divisor/table, signed number line, number recognition, no-carry products and easy Pythagorean triples). The UI disables impossible question quantities; direct engine requests reject them clearly. No paid API.
+- Replaced rejection-based no-carry multiplication with a precomputed pool of mathematically valid pairs; added more exact Pythagorean triples so 40-question worksheets in standard/challenge have sufficient variety.
+- Share URLs now include `gv=2`, and the worksheet and PDF metadata expose the generator version. **Old unversioned share links may not reproduce the exact old questions** because the underlying algorithms have evolved; the interface explicitly warns when opening such links. Preserving legacy R7 problem sets remains a future compatibility task; do not claim cross-release replay.
+- CI tests cover every specialized choice and the largest selectable question count, verify share-link and answer mapping round trips, and check that selected-option PDF metadata matches between the worksheet and answer key.
+- No changes to 55 intended routes, original keyword evidence or `noindex` safety. Chrome/Firefox interactions, visual PDF pagination and physical ruler/protractor calibration remain unverified.

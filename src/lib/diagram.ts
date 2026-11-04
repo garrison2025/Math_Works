@@ -15,12 +15,12 @@ export function diagramSVG(d?:Diagram):string{
  const text=(x:number,y:number,s:string)=>`<text x="${x}" y="${y}" fill="#172337" font-size="17" text-anchor="middle">${esc(s)}</text>`;
  const poly=(points:string)=>`<polygon points="${points}" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
  switch(d.kind){
-  case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
+  case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]===undefined?'?':v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
   case 'right-triangle':{const [a,b]=v,s=Math.min(210/a,110/b),xx=120+a*s,yy=160-b*s;parts=poly(`120,160 ${xx},160 120,${yy}`)+line(120,160,135,160)+line(135,160,135,145)+line(135,145,120,145)+text((120+xx)/2,188,`${a} units`)+text(79,(160+yy)/2,`${b} units`);break}
   case 'triangle-angles':parts=poly('120,155 330,155 225,40')+text(166,146,`${v[0]}°`)+text(285,146,`${v[1]}°`)+text(225,79,'?')+text(225,205,'Diagram not to scale');break;
   case 'rectangle':parts=`<rect x="130" y="45" width="190" height="110" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`+text(225,178,`${v[0]} units`)+text(345,105,`${v[1]}`);break;
-  case 'parallelogram':parts=poly('130,155 310,155 350,48 170,48')+line(170,48,170,155)+text(225,179,`${v[0]}`)+text(151,111,`${v[1]}`);break;
-  case 'trapezoid':parts=poly('100,155 360,155 300,49 160,49')+text(230,179,`${v[0]}`)+text(230,40,`${v[1]}`)+text(375,111,`${v[2]}`);break;
+  case 'parallelogram':parts=poly('130,155 310,155 350,48 170,48')+line(170,48,170,155)+text(225,179,`${v[0]}`)+text(151,111,v[1]===undefined?'?':`${v[1]}`);break;
+  case 'trapezoid':parts=poly('100,155 360,155 300,49 160,49')+text(230,179,`${v[0]}`)+text(230,40,`${v[1]}`)+text(375,111,v[2]===undefined?'?':`${v[2]}`);break;
   case 'prism':parts=`<rect x="100" y="72" width="190" height="100" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M100 72 L149 35 H339 V135 L290 172 M290 72 L339 35 M339 135 H149 V35" fill="none" stroke="#1b64a5" stroke-width="3"/>`+text(195,191,`${v[0]}`)+text(310,160,`${v[1]}`)+text(88,120,v[2]===undefined?'?':`${v[2]}`);break;
   case 'numberline':{
    const n=v[0],op=d.labels?.[0],step=Math.max(1,Math.ceil(Math.abs(n)/5)),extent=step*5,px=(z:number)=>225+z/extent*170;

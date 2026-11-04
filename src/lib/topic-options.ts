@@ -36,6 +36,27 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'complementary-supplementary-angles-worksheets':[entry('relation','Angle relationship','Practice complementary, supplementary, or mixed angle pairs.',mixed('complementary','supplementary'))],
  'lines-rays-segments-worksheets':[entry('figure','Figure type','Focus on lines, rays or segments.',mixed('line','ray','segment'))],
  'gcf-worksheets':[entry('relation','Common factors','Practice relatively prime pairs or pairs with a nontrivial GCF.',mixed('coprime','shared-factor'))],
+ 'two-digit-multiplication-worksheets':[entry('factorRange','Factor size','Choose smaller or larger two-digit factors.',mixed('small','large'))],
+ 'three-digit-by-two-digit-multiplication-worksheets':[entry('multiplierRange','Multiplier size','Choose two-digit multipliers below or at least 50.',mixed('low','high'))],
+ 'adding-unlike-fractions-worksheets':[entry('sumType','Fraction sum','Target sums less than one or at least one.',mixed('proper','improper'))],
+ 'area-of-triangles-worksheets':[entry('task','Triangle task','Find the area from base and height, or the missing height from area and base.',choice('area','missing-height'))],
+ 'area-of-parallelograms-worksheets':[entry('task','Parallelogram task','Find the area or find an unknown perpendicular height.',choice('area','missing-height'))],
+ 'area-of-trapezoids-worksheets':[entry('task','Trapezoid task','Find the area or find an unknown perpendicular height.',choice('area','missing-height'))],
+ 'area-worksheets':[entry('shape','Area shape','Practice rectangles or squares.',choice('rectangle','square'))],
+ 'triangle-angle-sum-worksheets':[entry('thirdAngle','Third-angle type','Practice triangles whose missing angle is acute, right or obtuse.',mixed('acute','right','obtuse'))],
+ 'pythagorean-worksheets':[entry('scale','Triangle sizes','Practice smaller or larger scaled Pythagorean triples.',mixed('small','large'))],
+ 'domain-range-worksheets':[entry('task','Identify','Ask for the domain or the range of a relation.',mixed('domain','range'))],
+ 'angle-worksheets':[entry('kind','Angle category','Practice acute, obtuse or mixed angle classification.',mixed('acute','obtuse'))],
+ 'vertical-angles-worksheets':[entry('task','Angle to find','Find a vertically opposite or an adjacent supplementary angle.',choice('vertical','adjacent'))],
+ 'mean-absolute-deviation-worksheets':[entry('distribution','Data pattern','Choose symmetric or skewed datasets with an exact mean.',choice('symmetric','skewed'))],
+ 'multiplication-worksheets':[entry('factors','Multiplication facts','Practice mixed, times-table or two-digit-by-one-digit products.',mixed('times-tables','two-digit-by-one-digit'))],
+ 'surface-area-worksheets':[entry('solid','Solid type','Find the surface area of a rectangular prism or cube.',choice('rectangular-prism','cube'))],
+ 'mixed-addition-subtraction-worksheets':[entry('operation','Operation','Mix addition and subtraction, or focus on one operation.',mixed('addition','subtraction'))],
+ 'printable-protractor':[entry('angleRange','Angle range','Focus on acute, obtuse, or mixed angles on the printed protractor.',mixed('acute','obtuse'))],
+ 'systems-equations-worksheets':[entry('solutions','Solution signs','Practice positive or negative integer solutions.',mixed('positive','negative'))],
+ 'function-tables-worksheets':[entry('missing','Table cell','Choose the first, middle or last missing output.',choice('middle','first','last'))],
+ 'number-recognition-worksheets':[entry('task','Number task','Count objects or convert number words to numerals.',mixed('count-dots','word-to-numeral'))],
+ 'linear-equations-worksheets':[entry('slope','Slope sign','Practice positive, negative or zero slopes on a coordinate grid.',mixed('positive','negative','zero'))],
 };
 export function topicOptionsFor(topic:string):readonly TopicOptionDefinition[]{return topicOptionDefinitions[topic]??[];}
 export function normalizeTopicOptions(topic:string,options:TopicOptions={}):TopicOptions {
@@ -65,7 +86,11 @@ export function maxQuantityForTopic(topic:string, options:TopicOptions={}, diffi
  if(topic==='two-digit-by-one-digit-multiplication-worksheets'&&value.regrouping==='no')return 20;
  if(topic==='division-worksheets'&&value.divisor!=='mixed')return 11;
  if(topic==='number-line-worksheets')return value.sign==='mixed'?16:9;
- if(topic==='pythagorean-worksheets'&&difficulty==='easy')return 16;
- if(topic==='number-recognition-worksheets')return 12;
+ if(topic==='number-recognition-worksheets')return value.task==='mixed'?20:12;
+ if(topic==='surface-area-worksheets'&&value.solid==='cube')return 11;
+ if(topic==='area-worksheets'&&value.shape==='square')return difficulty==='easy'?8:difficulty==='standard'?16:40;
+ if(topic==='pythagorean-worksheets'&&value.scale==='small')return difficulty==='easy'?8:difficulty==='standard'?20:30;
+ if(topic==='pythagorean-worksheets'&&difficulty==='easy'&&value.scale==='mixed')return 16;
+ if(topic==='pythagorean-worksheets'&&difficulty==='easy'&&value.scale==='large')return 12;
  return 40;
 }

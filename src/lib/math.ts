@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'line'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='2' as const;
+export const GENERATOR_VERSION='3' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -47,8 +47,8 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  const frac=(n:number,d:number)=>asText(rational(BigInt(n),BigInt(d)));
  const signed=()=>r.int(-max,max);
  switch(topicId){
- case 'two-digit-multiplication-worksheets':{const x=r.int(12,99),y=r.int(12,99),ones=x*(y%10),tens=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,ones+tens,`Ones partial product: ${x} × ${y%10} = ${ones}`,`Tens partial product: ${x} × ${Math.floor(y/10)}0 = ${tens}`,`Add: ${ones} + ${tens} = ${ones+tens}`);break}
- case 'three-digit-by-two-digit-multiplication-worksheets':{const x=r.int(101,999),y=r.int(11,99),p=x*(y%10),q=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,p+q,`Partial products: ${p} and ${q}`,`Sum: ${p}+${q}=${p+q}`);break}
+ case 'two-digit-multiplication-worksheets':{const x=r.int(opts.factorRange==='large'?50:12,opts.factorRange==='small'?49:99),y=r.int(opts.factorRange==='large'?50:12,opts.factorRange==='small'?49:99),ones=x*(y%10),tens=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,ones+tens,`Ones partial product: ${x} × ${y%10} = ${ones}`,`Tens partial product: ${x} × ${Math.floor(y/10)}0 = ${tens}`,`Add: ${ones} + ${tens} = ${ones+tens}`);break}
+ case 'three-digit-by-two-digit-multiplication-worksheets':{const x=r.int(101,999),y=r.int(opts.multiplierRange==='high'?50:11,opts.multiplierRange==='low'?49:99),p=x*(y%10),q=x*Math.floor(y/10)*10;make(`${x} × ${y} = ____`,p+q,`Partial products: ${p} and ${q}`,`Sum: ${p}+${q}=${p+q}`);break}
  case 'two-digit-by-one-digit-multiplication-worksheets':{
   const [x,y]=r.pick(oneDigitProducts[opts.regrouping as 'mixed'|'yes'|'no']);
   m(x,y);break}
@@ -67,7 +67,14 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  if(missing==='numerator')make(`${n}/${d} = ____/${d*f}`,n*f,`Multiply numerator and denominator by ${f}`,`${n} × ${f} = ${n*f}`);
  else make(`${n}/${d} = ${n*f}/____`,d*f,`Multiply numerator and denominator by ${f}`,`${d} × ${f} = ${d*f}`);
  break}
- case 'adding-unlike-fractions-worksheets':{const d=r.int(2,9),other=r.int(2,8),e=other>=d?other+1:other;const n=r.int(1,d-1),v=r.int(1,e-1);const res=addR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(e)));make(`${n}/${d} + ${v}/${e} = ____`,asText(res),`Common denominator: ${d*e}`,`Numerator: ${n}×${e}+${v}×${d}=${n*e+v*d}`,`Simplify: ${asText(res)}`);break}
+ case 'adding-unlike-fractions-worksheets':{let d=2,e=3,n=1,v=1;
+  for(let attempt=0;attempt<512;attempt++){
+   d=r.int(2,9);const other=r.int(2,8);e=other>=d?other+1:other;n=r.int(1,d-1);v=r.int(1,e-1);
+   const sumIsProper=n*e+v*d<d*e;
+   if(opts.sumType==='mixed'||sumIsProper===(opts.sumType==='proper'))break;
+   if(attempt===511)throw new Error('Unable to generate selected fraction sum');
+  }
+  const res=addR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(e)));make(`${n}/${d} + ${v}/${e} = ____`,asText(res),`Common denominator: ${d*e}`,`Numerator: ${n}×${e}+${v}×${d}=${n*e+v*d}`,`Simplify: ${asText(res)}`);break}
  case 'multiplying-fractions-worksheets':{
   const d=r.int(2,12),e=r.int(2,12),kind=opts.result==='mixed'?r.pick(['proper','improper']):opts.result;
   const n=kind==='proper'?r.int(1,d-1):r.int(d+1,d*2),v=kind==='proper'?r.int(1,e-1):r.int(e+1,e*2);
@@ -96,8 +103,8 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   }
   if(opts.borrowing!=='mixed'&&((opts.borrowing==='yes')!==borrow))throw Error('Cannot generate borrowing choice');
   make(`${x} − ${y} = ____`,x-y,`Column subtraction gives ${x-y}`);break}
- case 'mixed-addition-subtraction-worksheets':{const x=r.int(100,900),y=r.int(50,900),op=r.pick(['+','−']);make(`${x} ${op} ${y} = ____`,op==='+'?x+y:x-y,`Calculate ${x} ${op} ${y}`,`Check using inverse operations`);break}
- case 'multiplication-worksheets':m(a(),b());break;
+ case 'mixed-addition-subtraction-worksheets':{const x=r.int(100,900),y=r.int(50,900),op=opts.operation==='mixed'?r.pick(['+','−']):opts.operation==='addition'?'+':'−';make(`${x} ${op} ${y} = ____`,op==='+'?x+y:x-y,`Calculate ${x} ${op} ${y}`,`Check using inverse operations`);break}
+ case 'multiplication-worksheets':{const type=opts.factors==='mixed'?r.pick(['mixed','times-tables','two-digit-by-one-digit']):opts.factors; if(type==='times-tables')m(r.int(1,12),r.int(1,12));else if(type==='two-digit-by-one-digit')m(r.int(12,99),r.int(2,9));else m(a(),b());break}
  case 'multiplication-tables-worksheets':{const x=opts.table==='mixed'?r.int(1,12):Number(opts.table),y=r.int(1,12);m(x,y);break}
  case 'division-worksheets':{
   const d=opts.divisor==='mixed'?r.int(2,12):Number(opts.divisor),q=r.int(2,12);
@@ -129,30 +136,48 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   }
   if(opts.relation!=='mixed' && (opts.relation==='coprime'?(g!==1):(g<=1)))throw Error('Cannot generate GCF choice');
   make(`Find the GCF of ${x} and ${y}.`,g,'Find common divisors',`Greatest common factor: ${g}`);break}
- case 'systems-equations-worksheets':{const x=r.int(-7,7),y=r.int(-7,7);make(`Solve: x + y = ${x+y}; x − y = ${x-y}`,`x = ${x}, y = ${y}`,`Add equations: 2x = ${(x+y)+(x-y)}`,`x = ${x}`,`Substitute to find y = ${y}`);break}
+ case 'systems-equations-worksheets':{const x=r.int(opts.solutions==='positive'?1:-7,opts.solutions==='negative'?-1:7),y=r.int(opts.solutions==='positive'?1:-7,opts.solutions==='negative'?-1:7);make(`Solve: x + y = ${x+y}; x − y = ${x-y}`,`x = ${x}, y = ${y}`,`Add equations: 2x = ${(x+y)+(x-y)}`,`x = ${x}`,`Substitute to find y = ${y}`);break}
  case 'functions-worksheets':{
   const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-5,8),value=coeff*x+inter;
   const expression=`${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}`;
   const task=opts.task==='mixed'?r.pick(['evaluate','solve-input']):opts.task;
   if(task==='evaluate')make(`If f(x) = ${expression}, find f(${x}).`,value,`Substitute x = ${x}`,`${coeff} × ${x} + (${inter}) = ${value}`);
   else make(`If f(x) = ${expression} and f(x) = ${value}, find x.`,x,`Subtract ${inter}: ${coeff}x = ${value-inter}`,`Divide by ${coeff}: x = ${x}`);break}
- case 'function-tables-worksheets':{const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-4,8),inputs=[x-1,x,x+1],outputs=inputs.map(v=>coeff*v+inter);make(`Complete the input/output table for f(x) = ${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}: ${inputs[0]}→${outputs[0]}, ${inputs[1]}→____, ${inputs[2]}→${outputs[2]}.`,outputs[1],`Substitute the middle input x = ${x}`,`f(${x}) = ${coeff} × ${x} + (${inter}) = ${outputs[1]}`);break}
- case 'linear-equations-worksheets':{const slope=r.int(-5,5),inter=r.int(-9,9),x=r.int(-5,5);make(`For y = ${slope}x ${inter<0?'−':'+'} ${Math.abs(inter)}, find y when x = ${x}.`,slope*x+inter,`y = ${slope}×${x} + (${inter})`,`y = ${slope*x+inter}`);diagram={kind:'linear-function',values:[slope,inter,x,slope*x+inter]};break}
+ case 'function-tables-worksheets':{const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-4,8),inputs=[x-1,x,x+1],outputs=inputs.map(v=>coeff*v+inter),position=opts.missing==='first'?0:opts.missing==='last'?2:1;
+  const table=inputs.map((v,i)=>`${v}→${i===position?'____':outputs[i]}`).join(', ');
+  make(`Complete the input/output table for f(x) = ${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}: ${table}.`,outputs[position],`Substitute the missing input x = ${inputs[position]}`,`f(${inputs[position]}) = ${coeff} × ${inputs[position]} + (${inter}) = ${outputs[position]}`);break}
+ case 'linear-equations-worksheets':{const slope=opts.slope==='mixed'?r.int(-5,5):opts.slope==='positive'?r.int(1,5):opts.slope==='negative'?-r.int(1,5):0,inter=r.int(-9,9),x=r.int(-5,5);make(`For y = ${slope}x ${inter<0?'−':'+'} ${Math.abs(inter)}, find y when x = ${x}.`,slope*x+inter,`y = ${slope}×${x} + (${inter})`,`y = ${slope*x+inter}`);diagram={kind:'linear-function',values:[slope,inter,x,slope*x+inter]};break}
  case 'slope-worksheets':{
   const x1=r.int(-4,2),vertical=opts.line==='mixed'?r.int(0,4)===0:opts.line==='vertical';
   const x2=vertical?x1:r.int(3,8),y1=r.int(-6,6),slope=r.int(-4,4),y2=vertical?y1+r.int(1,7):y1+slope*(x2-x1);
   make(`Find the slope through (${x1}, ${y1}) and (${x2}, ${y2}).`,vertical?'undefined':String(slope),
     'm = (y2 − y1) / (x2 − x1)',vertical?'The denominator is zero: the line is vertical and the slope is undefined.':`m = (${y2}−(${y1}))/(${x2}−(${x1})) = ${slope}`);
   diagram={kind:'coordinate',values:[x1,y1,x2,y2]};break}
- case 'domain-range-worksheets':{const xs=[r.int(1,5),r.int(6,9),r.int(10,13)],ys=[r.int(1,5),r.int(6,9),r.int(10,13)];const points=xs.map((x,i)=>`(${x},${ys[i]})`).join(', ');if(r.int(0,1))make(`List the domain of {${points}}.`,`{${xs.join(', ')}}`,`Domain = all distinct first coordinates (x-values)`);else make(`List the range of {${points}}.`,`{${ys.join(', ')}}`,`Range = all distinct second coordinates (y-values)`);break}
- case 'number-recognition-worksheets':{const n=r.int(1,12);make(`Count the dots: ${'● '.repeat(n).trim()}`,n,`Count each dot once: ${n}`);diagram={kind:'dots',values:[n]};break}
+ case 'domain-range-worksheets':{const xs=[r.int(1,5),r.int(6,9),r.int(10,13)],ys=[r.int(1,5),r.int(6,9),r.int(10,13)];const points=xs.map((x,i)=>`(${x},${ys[i]})`).join(', ');if(opts.task==='mixed'?r.int(0,1):opts.task==='domain')make(`List the domain of {${points}}.`,`{${xs.join(', ')}}`,`Domain = all distinct first coordinates (x-values)`);else make(`List the range of {${points}}.`,`{${ys.join(', ')}}`,`Range = all distinct second coordinates (y-values)`);break}
+ case 'number-recognition-worksheets':{const n=r.int(1,12),type=opts.task==='mixed'?r.pick(['count-dots','word-to-numeral']):opts.task;
+  if(type==='word-to-numeral'){
+   const words=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+   make(`Write the numeral for “${words[n-1]}”.`,n,`The word “${words[n-1]}” represents the number ${n}`);
+  }else{make(`Count the dots: ${'● '.repeat(n).trim()}`,n,`Count each dot once: ${n}`);diagram={kind:'dots',values:[n]};}break}
  case 'number-line-worksheets':{const n=opts.sign==='mixed'?r.int(-9,9):opts.sign==='positive'?r.int(1,9):r.int(-9,-1);make(`Mark ${n} on the number line.`,String(n),n===0?'Zero is the origin':`${n<0?'Left':'Right'} of zero for ${n<0?'negative':'positive'} numbers`);diagram={kind:'numberline',values:[n]};break}
  case 'coordinate-plane-worksheets':{const preferred=opts.quadrant==='mixed'?r.pick(['I','II','III','IV']):opts.quadrant;const a=r.int(1,8),b=r.int(1,8),x=preferred==='I'||preferred==='IV'?a:-a,y=preferred==='I'||preferred==='II'?b:-b;const quad=x>0?(y>0?'I':'IV'):(y>0?'II':'III');make(`Which quadrant contains (${x}, ${y})?`,quad,`x is ${x>0?'positive':'negative'} and y is ${y>0?'positive':'negative'}`,`Quadrant ${quad}`);diagram={kind:'coordinate',values:[x,y]};break}
- case 'pythagorean-worksheets':{const triples=[[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,40,41],[12,35,37],[20,21,29],[11,60,61],[28,45,53],[33,56,65],[16,63,65]];const pool=difficulty==='easy'?triples.slice(0,3):difficulty==='standard'?triples.slice(0,9):triples;const k=r.int(1,difficulty==='challenge'?8:6),triple=r.pick(pool),[x,y,z]=triple.map(v=>v*k);make(`A right triangle has legs ${x} and ${y}. Find its hypotenuse.`,z,`a² + b² = c²`,`${x}² + ${y}² = ${z*z}`,`c = ${z}`);diagram={kind:'right-triangle',values:[x,y]};break}
- case 'area-of-triangles-worksheets':{const x=r.int(4,20),y=r.int(2,20);make(`Find the area of a triangle with base ${x} and height ${y}.`,normal(x*y/2),`A = ½ × base × height`,`A = ${x} × ${y} ÷ 2 = ${normal(x*y/2)} square units`);diagram={kind:'triangle',values:[x,y]};break}
- case 'area-of-parallelograms-worksheets':{const x=a(),y=b();make(`Find the area of a parallelogram with base ${x} and perpendicular height ${y}.`,x*y,`A = base × height = ${x*y} square units`);diagram={kind:'parallelogram',values:[x,y]};break}
- case 'area-of-trapezoids-worksheets':{const x=a(),y=b(),h=r.int(2,16);make(`A trapezoid has bases ${x}, ${y} and height ${h}. Find area.`,normal((x+y)*h/2),`A = (a + b) × h / 2`,`(${x}+${y})×${h}/2=${normal((x+y)*h/2)} square units`);diagram={kind:'trapezoid',values:[x,y,h]};break}
- case 'area-worksheets':{const x=a(),y=b();make(`Find the area of a ${x} by ${y} rectangle.`,x*y,`Area = length × width = ${x*y} square units`);diagram={kind:'rectangle',values:[x,y]};break}
+ case 'pythagorean-worksheets':{const triples=[[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,40,41],[12,35,37],[20,21,29],[11,60,61],[28,45,53],[33,56,65],[16,63,65]];const pool=difficulty==='easy'?triples.slice(0,3):difficulty==='standard'?triples.slice(0,9):triples;const k=opts.scale==='small'?r.int(1,3):opts.scale==='large'?r.int(4,8):r.int(1,difficulty==='challenge'?8:6),triple=r.pick(pool),[x,y,z]=triple.map(v=>v*k);make(`A right triangle has legs ${x} and ${y}. Find its hypotenuse.`,z,`a² + b² = c²`,`${x}² + ${y}² = ${z*z}`,`c = ${z}`);diagram={kind:'right-triangle',values:[x,y]};break}
+ case 'area-of-triangles-worksheets':{const x=r.int(4,20),y=r.int(2,20),area=normal(x*y/2);
+  if(opts.task==='missing-height')make(`A triangle has base ${x} and area ${area} square units. Find its perpendicular height.`,y,'Area = base × height / 2',`Height = 2 × ${area} / ${x} = ${y} units`);
+  else make(`Find the area of a triangle with base ${x} and height ${y}.`,area,'A = ½ × base × height',`A = ${x} × ${y} ÷ 2 = ${area} square units`);
+  diagram={kind:'triangle',values:opts.task==='missing-height'?[x]:[x,y]};break}
+ case 'area-of-parallelograms-worksheets':{const x=a(),y=b();
+  if(opts.task==='missing-height')make(`A parallelogram has base ${x} and area ${x*y} square units. Find its perpendicular height.`,y,'Area = base × perpendicular height',`Height = ${x*y} / ${x} = ${y} units`);
+  else make(`Find the area of a parallelogram with base ${x} and perpendicular height ${y}.`,x*y,`A = base × height = ${x*y} square units`);
+  diagram={kind:'parallelogram',values:opts.task==='missing-height'?[x]:[x,y]};break}
+ case 'area-of-trapezoids-worksheets':{const x=a(),y=b(),h=r.int(2,16),area=normal((x+y)*h/2);
+  if(opts.task==='missing-height')make(`A trapezoid has bases ${x}, ${y} and area ${area} square units. Find its height.`,h,'Area = (a + b) × height / 2',`Height = 2 × ${area} / (${x} + ${y}) = ${h} units`);
+  else make(`A trapezoid has bases ${x}, ${y} and height ${h}. Find area.`,area,'A = (a + b) × h / 2',`(${x}+${y})×${h}/2=${area} square units`);
+  diagram={kind:'trapezoid',values:opts.task==='missing-height'?[x,y]:[x,y,h]};break}
+ case 'area-worksheets':{const x=a(),y=opts.shape==='square'?x:b();
+  if(opts.shape==='square')make(`Find the area of a square with side ${x}.`,x*x,`Area = side × side = ${x*x} square units`);
+  else make(`Find the area of a ${x} by ${y} rectangle.`,x*y,`Area = length × width = ${x*y} square units`);
+  diagram={kind:'rectangle',values:[x,y]};break}
  case 'volume-of-rectangular-prisms-worksheets':{
   const x=r.int(2,12),y=r.int(2,12),z=r.int(2,12);
   const task=opts.task==='mixed'?r.pick(['volume','missing-height']):opts.task;
@@ -160,22 +185,29 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
     'V = length × width × height',`h = ${x*y*z} ÷ (${x} × ${y}) = ${z} units`);
   else make(`Find the volume of a rectangular prism ${x} × ${y} × ${z}.`,x*y*z,'V = length × width × height',`V = ${x*y*z} cubic units`);
   diagram={kind:'prism',values:task==='missing-height'?[x,y]:[x,y,z]};break}
- case 'surface-area-worksheets':{const x=r.int(2,12),y=r.int(2,12),z=r.int(2,12);make(`Find surface area of a rectangular prism: ${x} × ${y} × ${z}.`,2*(x*y+x*z+y*z),`SA = 2(lw + lh + wh)`,`SA = 2(${x*y}+${x*z}+${y*z}) = ${2*(x*y+x*z+y*z)} square units`);diagram={kind:'prism',values:[x,y,z]};break}
- case 'triangle-angle-sum-worksheets':{const x=r.int(20,80),y=r.int(20,80),z=180-x-y;make(`Triangle angles are ${x}° and ${y}°. Find the third angle.`,`${z}°`,`Angles sum to 180°`,`180 − ${x} − ${y} = ${z}°`);diagram={kind:'triangle-angles',values:[x,y,z]};break}
+ case 'surface-area-worksheets':{const x=r.int(2,12),y=opts.solid==='cube'?x:r.int(2,12),candidate=r.int(2,11),z=opts.solid==='cube'?x:y===x?(candidate>=x?candidate+1:candidate):r.int(2,12);
+  make(opts.solid==='cube'?`Find surface area of a cube with side ${x}.`:`Find surface area of a rectangular prism: ${x} × ${y} × ${z}.`,2*(x*y+x*z+y*z),opts.solid==='cube'?'Cube surface area = 6 × side²':'SA = 2(lw + lh + wh)',`Surface area = ${2*(x*y+x*z+y*z)} square units`);
+  diagram={kind:'prism',values:[x,y,z]};break}
+ case 'triangle-angle-sum-worksheets':{
+  const z=opts.thirdAngle==='acute'?r.int(20,89):opts.thirdAngle==='right'?90:opts.thirdAngle==='obtuse'?r.int(91,139):r.int(20,139);
+  const x=r.int(20,160-z),y=180-z-x;make(`Triangle angles are ${x}° and ${y}°. Find the third angle.`,`${z}°`,`Angles sum to 180°`,`180 − ${x} − ${y} = ${z}°`);diagram={kind:'triangle-angles',values:[x,y,z]};break}
  case 'complementary-supplementary-angles-worksheets':{
   const relation=opts.relation==='mixed'?r.pick(['complementary','supplementary']):opts.relation;
   const total=relation==='complementary'?90:180,x=r.int(15,total-15),y=total-x;
   make(`Find the angle ${relation} to ${x}°.`,`${y}°`,`Subtract ${x}° from ${total}°`,`Answer: ${y}°`);
   diagram={kind:'angle',values:[x,y]};break}
- case 'angle-worksheets':{const deg=r.int(1,179);const name=deg<90?'acute':deg===90?'right':'obtuse';make(`Classify a ${deg}° angle.`,name,`Acute <90°, right =90°, obtuse >90° and <180°`);diagram={kind:'angle',values:[deg]};break}
- case 'vertical-angles-worksheets':{const deg=r.int(20,160);make(`Intersecting lines make an angle of ${deg}°. Find its vertical angle.`,`${deg}°`,`Vertical angles are equal`,`Answer: ${deg}°`);diagram={kind:'angle',values:[deg,180-deg]};break}
+ case 'angle-worksheets':{const deg=opts.kind==='acute'?r.int(1,89):opts.kind==='obtuse'?r.int(91,179):r.int(0,12)===0?90:r.int(1,179);const name=deg<90?'acute':deg===90?'right':'obtuse';make(`Classify a ${deg}° angle.`,name,`Acute <90°, right =90°, obtuse >90° and <180°`);diagram={kind:'angle',values:[deg]};break}
+ case 'vertical-angles-worksheets':{const deg=r.int(20,160),adjacent=opts.task==='adjacent',answer=adjacent?180-deg:deg;
+  make(`Intersecting lines make an angle of ${deg}°. Find its ${adjacent?'adjacent supplementary':'vertical'} angle.`,`${answer}°`,adjacent?'Angles on a straight line add to 180°':'Vertical angles are equal',`Answer: ${answer}°`);
+  diagram={kind:'angle',values:[deg,180-deg]};break}
  case 'lines-rays-segments-worksheets':{
   const kind=opts.figure==='mixed'?r.pick(['line','ray','segment']):opts.figure;
   const left=String.fromCharCode(65+r.int(0,10)),right=String.fromCharCode(77+r.int(0,10));
   make(`Figure ${left}${right} has ${kind==='line'?'arrows at both ends':kind==='ray'?'one endpoint and one arrow':'two endpoints and no arrows'}. Identify it.`,kind,'Line: both directions; ray: one direction; segment: two endpoints');
   diagram={kind:'line',values:[kind==='line'?2:kind==='ray'?1:0]};break}
  case 'mean-median-mode-range-worksheets':{const repeat=r.int(1,9),values=sorted([repeat,repeat,r.int(10,20),r.int(21,30),r.int(31,40)]);const task=opts.statistic==='mixed'?r.pick(['mean','median','mode','range']):opts.statistic;const answer=task==='mean'?normal(sum(values)/values.length):task==='median'?normal(median(values)):task==='mode'?String(repeat):String(values[values.length-1]-values[0]);make(`Find the ${task} of [${values.join(', ')}].`,answer,task==='mean'?`Add all numbers: ${sum(values)}; divide by ${values.length}`:task==='median'?`Sort the values and choose the middle: ${values[2]}`:task==='mode'?`The value ${repeat} appears twice; each other value appears once`:`Subtract minimum ${values[0]} from maximum ${values[values.length-1]}`,`Result = ${answer}`);break}
- case 'mean-absolute-deviation-worksheets':{const mid=r.int(4,12),delta=r.int(1,6),values=[mid-delta,mid,mid+delta];make(`Find the mean absolute deviation of [${values.join(', ')}].`,frac(2*delta,3),`Mean = ${mid}`,`Absolute deviations: ${delta},0,${delta}`,`MAD = ${2*delta}/3 = ${frac(2*delta,3)}`);break}
+ case 'mean-absolute-deviation-worksheets':{const mid=r.int(4,12),delta=r.int(1,6),skewed=opts.distribution==='skewed',values=skewed?[mid-2*delta,mid+delta,mid+delta]:[mid-delta,mid,mid+delta],deviation=skewed?4*delta:2*delta;
+  make(`Find the mean absolute deviation of [${values.join(', ')}].`,frac(deviation,3),`Mean = ${mid}`,`Absolute deviations: ${values.map(v=>Math.abs(v-mid)).join(', ')}`,`MAD = ${deviation}/3 = ${frac(deviation,3)}`);break}
  case 'box-plots-worksheets':{
   const values=r.int(0,4)===0?[1,2,3,4,5,6,7,30].map(v=>v+r.int(0,1)) : sorted([r.int(1,3),r.int(4,6),r.int(7,9),r.int(10,12),r.int(13,15),r.int(16,18),r.int(19,21),r.int(22,25)]);
   const q=quartiles(values),task=opts.statistic==='mixed'?r.pick(['Q1','median','Q3','IQR','outliers']):opts.statistic;
@@ -185,7 +217,7 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
    `Fences: ${normal(q.q1-1.5*q.iqr)} and ${normal(q.q3+1.5*q.iqr)}; outliers: ${q.outliers.join(', ')||'none'}`,`Answer: ${ans}`);
   diagram={kind:'box',values:[q.lower,q.q1,q.median,q.q3,q.upper,...q.outliers]};break}
  case 'scatter-plot-worksheets':{const trend=opts.trend==='mixed'?r.pick(['positive','negative']):opts.trend,s=trend==='positive'?1:-1,step=r.int(1,7),offset=r.int(8,30);make(`Determine trend of points (1,${s*step+offset}), (2,${s*step*2+offset}), (3,${s*step*3+offset}).`,trend,`Compare x with y values`,`As x increases, y ${s>0?'increases':'decreases'}`);diagram={kind:'scatter',values:[1,s*step+offset,2,s*step*2+offset,3,s*step*3+offset]};break}
- case 'printable-protractor':{const deg=r.int(0,180);make(`Locate the ${deg}° mark on a printed protractor.`,`${deg}°`,`Read degrees counterclockwise from the right-hand 0° baseline`,`Print at actual size (100%) and measure the 50 mm verification line.`);diagram={kind:'protractor',values:[50]};break}
+ case 'printable-protractor':{const deg=opts.angleRange==='acute'?r.int(1,89):opts.angleRange==='obtuse'?r.int(91,179):r.int(0,180);make(`Locate the ${deg}° mark on a printed protractor.`,`${deg}°`,`Read degrees counterclockwise from the right-hand 0° baseline`,`Print at actual size (100%) and measure the 50 mm verification line.`);diagram={kind:'protractor',values:[50]};break}
  default: throw Error(`Topic not implemented: ${topicId}`)
  }
  if(!question||!answer||!steps.length)throw Error(`Invalid generated problem: ${topicId}`);

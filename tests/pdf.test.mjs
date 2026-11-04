@@ -109,3 +109,33 @@ test('selected topic choices keep practice and answer PDF metadata aligned',asyn
   assert.deepEqual(sheet.problems.map(({id,expectedAnswer})=>({id,answer:expectedAnswer})),sheet.answerMap);
  }
 });
+
+// R9: content and answer-key identity for every newly parameterized family whose
+// problem text or layout is materially different from the R8 default.
+test('new R9 configured worksheets generate paired printable PDF documents',async()=>{
+ const examples=[
+  ['adding-unlike-fractions-worksheets',{sumType:'proper'}],
+  ['area-of-triangles-worksheets',{task:'missing-height'}],
+  ['area-of-parallelograms-worksheets',{task:'missing-height'}],
+  ['area-of-trapezoids-worksheets',{task:'missing-height'}],
+  ['triangle-angle-sum-worksheets',{thirdAngle:'right'}],
+  ['surface-area-worksheets',{solid:'cube'}],
+  ['function-tables-worksheets',{missing:'first'}],
+  ['number-recognition-worksheets',{task:'word-to-numeral'}],
+  ['linear-equations-worksheets',{slope:'zero'}],
+  ['mean-absolute-deviation-worksheets',{distribution:'skewed'}]
+ ];
+ for(const [topic,options] of examples){
+  const set=makeWorksheet(topic,20261104,8,'standard',options);
+  assert.ok(set.optionsHash);
+  for(const paper of ['Letter','A4']){
+   const worksheets=await Promise.all(['questions','answers'].map(mode=>createWorksheetPdf(set,topic,mode,paper)));
+   const docs=await Promise.all(worksheets.map(bytes=>PDFDocument.load(bytes)));
+   for(const doc of docs){
+    assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
+    assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
+    assert.ok(doc.getTitle()?.includes('v3'),`${topic} missing version-three identity`);
+   }
+  }
+ }
+});

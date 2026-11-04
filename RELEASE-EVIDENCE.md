@@ -76,12 +76,21 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [NOT RUN] Browser PDF clicks, visual breakpoints, actual physical printing, font rendering and accessibility tab-order interaction.
 - Domain: **NOT PURCHASED**. Do not set indexability flags, create a paid API account, install analytics/ads, or submit the preview to GSC.
 
-## R8: parameter semantics and random-generation reliability (2026-11-04)
 
-- [IMPLEMENTED] 30 functional topic-specific control groups, up from 13, with strict allowable values and mathematical generation behavior.
-- [PASS — local] TypeScript check and 34 mathematics/SEO/content/link tests, including independent mathematical oracles and per-choice semantic checks.
-- [PASS — local] 46,125 seed × difficulty × choice × worksheet combinations completed without generation failure; 2,000 seeds × 20 non-regrouping multiplication questions also passed.
-- [IMPLEMENTED] Explicit limits for finite question spaces, more Pythagorean triples, stable v2 identity in share links and PDF metadata. Historical v1 links are not guaranteed identical; show a warning.
-- [CI PENDING] GitHub PDF tests, Astro SSG build and static SEO audit for this commit.
-- [NOT RUN] Chrome/Firefox interactive flows, mobile screen screenshots, rendered PDF visual pagination on Letter/A4 and physical 50 mm protractor calibration.
-- [HOLD] Domain is not purchased; `PUBLIC_INDEXABLE=false`. No AdSense, analytics, hosted APIs or paid infrastructure.
+## R7: validated topic-specific selectors and matching export identity (2026-11-04)
+
+- [PASS local] 13 topic option contracts implemented with real generation behavior and strict allowlisted input values. No change to the planned 55 routes, 4 HOLD routes, 51 built preview pages or approved keywords.
+- [PASS local] Per-choice tests across 100 seeds, same-seed/same-configuration reproduction, different-options fingerprints, invalid-selection rejection and selected worksheet-link roundtrips.
+- [PASS local] `tsc --noEmit -p tsconfig.math.json`; 31 Node math/metadata/content/URL tests passed.
+- [IMPLEMENTED, CI PENDING] Browser workspace controls, URL restoration and fingerprint-identical practice/answer PDF naming and metadata. CI must run Astro build and PDF-lib tests before marking these parts PASS.
+- [NOT RUN] Actual Chrome/Firefox controls, download clicks, visual PDF review, physical 50 mm print calibration and manual teaching/grade-level accuracy review.
+- [HOLD] Preview remains `noindex`; no paid API, analytics, ads, GSC submission or custom canonical domain was added.
+
+## R8: stronger topic controls and finite-problem safety (2026-11-04)
+
+- [IMPLEMENTED] 17 additional genuinely parameterized topics, total 30 specialized control groups out of 51 preview routes. All 4 HOLD routes remain unpublished.
+- [PASS locally] TypeScript typecheck, all 34 Node math/SEO/content tests, including independent math oracles, 51x1000 seed invariants, 30 topic option families, reproducible-link round trips, and full UI-selectable worksheet quantities over representative seeds.
+- [PASS locally] Multiplication-without-regrouping uses an enumerated mathematically valid pool; tested 2,000 seeds x 20 questions without exhausting or violating the no-carry constraint.
+- [PASS locally] Finite-domain caps address number recognition, signed number line, fixed multiplication/division tables and easier Pythagorean tasks.
+- [IMPLEMENTED; CI PDF verification pending] PDFs and share URLs identify generator release v2. Prior unversioned links may produce different sets; a visible warning avoids promising legacy reproduction.
+- [NOT RUN] Chrome/Firefox hands-on download and mobile interaction, PDF page-image reviews on Letter/A4, physical printer 50 mm calibration. Continue `PUBLIC_INDEXABLE=false`; no custom domain purchased.
