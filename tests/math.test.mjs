@@ -92,3 +92,10 @@ test('boxplot vector shows whisker range and each outlier as separate marker',()
  const q=quartiles([1,2,3,4,5,6,7,30]);
  assert.deepEqual([q.lower,q.upper,...q.outliers],[1,7,30]);
 });
+
+import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM,PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT,POINTS_PER_MM} from '../src/lib/protractor.ts';
+test('protractor physical geometry contract is exactly 72 mm radius and 50 mm ruler',()=>{
+ assert.equal(PROTRACTOR_RADIUS_MM,72);assert.equal(PROTRACTOR_CALIBRATION_MM,50);
+ assert.ok(Math.abs(PROTRACTOR_RADIUS_PT/POINTS_PER_MM-72)<1e-10);
+ assert.ok(Math.abs(PROTRACTOR_CALIBRATION_PT/POINTS_PER_MM-50)<1e-10);
+});

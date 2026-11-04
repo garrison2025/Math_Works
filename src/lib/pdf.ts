@@ -3,23 +3,37 @@ import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-l
 import type {Worksheet, Problem, Diagram} from './math';
 import {graphGeometry,scatterGeometry} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
+import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
 const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.89]};
 const ink=rgb(.09,.14,.22),sub=rgb(.35,.43,.52),accent=rgb(.105,.39,.65);
-function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,'/').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
+export function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,'/').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/→/g,' -> ').replace(/←/g,' <- ').replace(/↔/g,' <-> ').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
 function wrap(text:string,maxChars:number){const words=ascii(text).split(/\s+/),lines:string[]=[];let line='';for(const word of words){if((line+' '+word).length>maxChars&&line){lines.push(line);line=word;}else line+=(line?' ':'')+word;}if(line)lines.push(line);return lines.length?lines:[''];}
 function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,font:PDFFont){
  const stroke={color:accent,thickness:1.1};const l=(a:number,b:number,c:number,e:number)=>page.drawLine({start:{x:x+a*w,y:y+b*h},end:{x:x+c*w,y:y+e*h},...stroke});
  const dot=(xx:number,yy:number)=>page.drawCircle({x:x+xx*w,y:y+yy*h,size:3,color:accent});
  if(d.kind==='protractor'){
-  // PDF points are physical: 50mm = 141.7323pt. The calibration bar is independent of page scaling.
-  const cx=x+w/2,cy=y+15,r=Math.min(w*.37,h*.76);l(.08,.14,.92,.14);
-  for(let a=0;a<=180;a++){const rad=a*Math.PI/180,ri=r*(a%10===0?.84:.93);page.drawLine({start:{x:cx+ri*Math.cos(rad),y:cy+r*.0+ri*Math.sin(rad)},end:{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)},color:ink,thickness:a%10===0?.85:.35});}
-  page.drawCircle({x:cx,y:cy,size:2,borderColor:ink,borderWidth:.6});const len=50*72/25.4, sx=x+10,sy=y+3;
-  page.drawLine({start:{x:sx,y:sy},end:{x:sx+len,y:sy},color:ink,thickness:.8});
-  page.drawLine({start:{x:sx,y:sy-3},end:{x:sx,y:sy+3},color:ink,thickness:.8});
-  page.drawLine({start:{x:sx+len,y:sy-3},end:{x:sx+len,y:sy+3},color:ink,thickness:.8});return;
+  // Never shrink the printable instrument: the SVG and PDF both use a 72 mm radius.
+  const r=PROTRACTOR_RADIUS_PT,cx=x+w/2,cy=y+45;
+  if(w<2*r+20||h<r+66)throw new Error('Protractor page space is too small for calibrated output');
+  page.drawLine({start:{x:cx-r,y:cy},end:{x:cx+r,y:cy},color:ink,thickness:1});
+  for(let a=0;a<=180;a++){
+   const t=a*Math.PI/180,cos=Math.cos(t),sin=Math.sin(t);
+   const inner=r-(a%10===0?15:a%5===0?10:5);
+   page.drawLine({start:{x:cx+inner*cos,y:cy+inner*sin},end:{x:cx+r*cos,y:cy+r*sin},color:ink,thickness:a%10===0?.8:.35});
+   if(a>0){const p=(a-1)*Math.PI/180;page.drawLine({start:{x:cx+r*Math.cos(p),y:cy+r*Math.sin(p)},end:{x:cx+r*cos,y:cy+r*sin},color:ink,thickness:.7});}
+   if(a%10===0){const label=String(a),fSize=7,lr=r-27;
+    page.drawText(label,{x:cx+lr*cos-font.widthOfTextAtSize(label,fSize)/2,y:cy+lr*sin-2.5,size:fSize,font,color:ink});}
+  }
+  page.drawCircle({x:cx,y:cy,size:2,borderColor:ink,borderWidth:.7});
+  const sx=x+15,sy=y+11,len=PROTRACTOR_CALIBRATION_PT;
+  page.drawLine({start:{x:sx,y:sy},end:{x:sx+len,y:sy},color:ink,thickness:1});
+  page.drawLine({start:{x:sx,y:sy-3},end:{x:sx,y:sy+3},color:ink,thickness:1});
+  page.drawLine({start:{x:sx+len,y:sy-3},end:{x:sx+len,y:sy+3},color:ink,thickness:1});
+  page.drawText('50 mm check',{x:sx+len+8,y:sy-3,size:8,font,color:ink});
+  page.drawText('Print at Actual size (100%); measure calibration bar.',{x:sx,y:sy+9,size:7,font,color:sub});
+  return;
  }
  if(d.kind==='triangle'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);l(.5,.88,.5,.12);return;}
  if(d.kind==='right-triangle'){const [a,b]=d.values,s=Math.min(w*.57/a,h*.67/b),dx=a*s/w,dy=b*s/h;const x0=.16,y0=.14;l(x0,y0,x0+dx,y0);l(x0,y0,x0,y0+dy);l(x0+dx,y0,x0,y0+dy);l(x0+.03,y0,x0+.03,y0+.06);l(x0+.03,y0+.06,x0,y0+.06);page.drawText(String(a),{x:x+(x0+dx/2)*w-4,y:y+2,size:8,font,color:ink});page.drawText(String(b),{x:x+(x0-.10)*w,y:y+(y0+dy/2)*h,size:8,font,color:ink});return;}
@@ -65,7 +79,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  function newPage(){page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-48;page.drawText(ascii(topicName).slice(0,74),{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=19;page.drawText(`Math Worksheet Studio | ${mode.toUpperCase()} | ID ${sheet.topicId.slice(0,15)}-${sheet.seed} | ${sheet.problems.length} questions`,{x:margin,y:currentY,size:8,font,color:sub});currentY-=12;page.drawLine({start:{x:margin,y:currentY},end:{x:pw-margin,y:currentY},color:accent,thickness:1});currentY-=23;page.drawText('Name: ______________________________      Date: _______________',{x:margin,y:currentY,size:9,font,color:ink});currentY-=23;}
  newPage();
  const colGap=19,colW=twoCols?(bodyW-colGap)/2:bodyW;
- function heightFor(p:Problem){const questionLines=wrap(p.payload.question,twoCols?35:80);if(mode==='questions')return 27+questionLines.length*13+(p.diagramSpec?150:0)+(twoCols?22:32);if(mode==='answers')return 28+questionLines.length*11+12;return 35+questionLines.length*12+p.solutionSteps.reduce((acc,s)=>acc+Math.max(1,wrap(s,82).length)*11,0)+20;}
+ function heightFor(p:Problem){const questionLines=wrap(p.payload.question,twoCols?35:80);if(mode==='questions')return 27+questionLines.length*13+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+(twoCols?22:32);if(mode==='answers')return 28+questionLines.length*11+12;return 35+questionLines.length*12+p.solutionSteps.reduce((acc,s)=>acc+Math.max(1,wrap(s,82).length)*11,0)+20;}
  let rowY=currentY,rowH=0,col=0;
  for(let i=0;i<sheet.problems.length;i++){
   const p=sheet.problems[i],needed=heightFor(p);if(twoCols&&col===2){currentY=rowY-rowH-8;rowY=currentY;rowH=0;col=0;}
@@ -73,11 +87,24 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const xx=margin+(twoCols?col*(colW+colGap):0),yy=twoCols?rowY:currentY;
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrap(p.payload.question,twoCols?35:80)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
-  if(mode==='questions'&&p.diagramSpec){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font);y-=150;}
+  if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
   if(mode==='answers'){for(const line of wrap(`Answer: ${p.expectedAnswer}`,80)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}}
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrap(p.expectedAnswer,80)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrap(`${k+1}) ${p.solutionSteps[k]}`,78)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;
  }
  const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:19,size:7,font,color:sub});}
  pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
+}
+
+/** One practical, unmarked 180° instrument on a single Letter/A4 PDF page.
+ * Calibration is physical and does not depend on a browser CSS print scale. */
+export async function createBlankProtractorPdf(paper:Paper):Promise<Uint8Array>{
+ const pdf=await PDFDocument.create();const [w,h]=PAGE_SIZE[paper];const page=pdf.addPage([w,h]);
+ const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
+ page.drawText('Printable 180 Degree Protractor',{x:40,y:h-62,size:18,font:bold,color:ink});
+ page.drawText('Print using Actual size / 100%, not Fit to page.',{x:40,y:h-84,size:10,font,color:sub});
+ plotDiagram(page,{kind:'protractor',values:[PROTRACTOR_CALIBRATION_PT]},40,h-440,w-80,280,font);
+ page.drawText('Use the 50 mm line to check printer scaling. Accuracy is not guaranteed until measured.',{x:40,y:52,size:8,font,color:sub});
+ pdf.setTitle('Calibrated 180 Degree Printable Protractor - 50 mm check');
+ pdf.setCreator('Math Worksheet Studio');return pdf.save();
 }

@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PDFDocument} from 'pdf-lib';
 import {makeWorksheet} from '../src/lib/math.ts';
-import {createWorksheetPdf} from '../src/lib/pdf.ts';
+import {createWorksheetPdf,createBlankProtractorPdf,ascii} from '../src/lib/pdf.ts';
 import {hasVerifiedSteps} from '../src/lib/capabilities.ts';
 const mathTopics=[
  'two-step-equations-worksheets','adding-unlike-fractions-worksheets',
@@ -40,5 +40,26 @@ test('multipage output has no zero-page or lost-page failures',async()=>{
    assert.ok(doc.getPageCount()>0);
    if(quantity===40)assert.ok(doc.getPageCount()>1);
   }
+ }
+});
+
+test('PDF text transliteration preserves function-table arrows',()=>{
+ assert.equal(ascii('1→2; -3 ← 4; 5 × 6'), '1 -> 2; -3  <-  4; 5 x 6');
+});
+test('blank protractor PDF is single page on Letter and A4',async()=>{
+ for(const paper of ['Letter','A4']){
+  const bytes=await createBlankProtractorPdf(paper);
+  assert.ok(bytes.byteLength>2000);
+  const doc=await PDFDocument.load(bytes);
+  assert.equal(doc.getPageCount(),1);
+  const [w,h]=sizes[paper];assert.ok(Math.abs(doc.getPage(0).getWidth()-w)<.015);assert.ok(Math.abs(doc.getPage(0).getHeight()-h)<.015);
+ }
+});
+
+test('protractor exercise sheets reserve enough physical space per page',async()=>{
+ for(const paper of ['Letter','A4']){
+  const sheet=makeWorksheet('printable-protractor',20261104,4);
+  const doc=await PDFDocument.load(await createWorksheetPdf(sheet,'Printable Protractor','questions',paper));
+  assert.ok(doc.getPageCount()>=2,`${paper} failed to break full-size protractors across pages`);
  }
 });

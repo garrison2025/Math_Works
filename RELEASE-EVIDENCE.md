@@ -48,3 +48,14 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - Local `tsc -p tsconfig.math.json` and **20 tests PASS** after changes, including 51,000 random seed object checks. Static previews regenerated (51 WebP) using Sharp.
 - Added PDF roundtrip tests to GitHub Actions for Letter/A4 page size, representative modes, nonempty file, multipage and steps capability restrictions. **These PDF tests are NOT RUN locally** because `pdf-lib` is unavailable in the working container; check the new CI run before claiming PASS.
 - Browser screenshots, live deployment, PDF visual inspection and physical protractor ruler testing remain **NOT RUN**. Do not enable custom domain indexation until approved routes and the physical-print gate pass.
+
+## Answer-blind worksheet and chart regression (R4, 2026-11-04)
+
+- Source change: mask Pythagorean hypotenuse, triangle unknown third angle, and rectangular-prism missing height from question diagrams.
+- Use true right-triangle leg geometry for the Pythagorean SVG and vector PDF rather than an isosceles/incorrect schematic.
+- Remove solved number-line endpoints and inequality rays from question SVG/PDF; keep readable tick labels in PDF.
+- Prevent the target y-coordinate from being printed on the linear function practice graph.
+- Normalize SVG/PDF scatter coordinates to a shared plotting range; negative values stay within the page.
+- R4 local checks: TypeScript PASS and 22/22 math tests PASS, including 1,000 seed answer-visibility regression and 2,000 seed scatter bounds tests.
+- 51 static WebP previews regenerated locally (Sharp).
+- Local PDF/BROWSER/physical printer checks: NOT RUN. PDF test suite was expanded for R4 and must be confirmed by the current commit's GitHub CI.

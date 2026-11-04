@@ -45,3 +45,13 @@ All preview pages emit `noindex,nofollow`, with no canonical. **Setting a domain
 ## Limitations
 
 The broad topic matrix currently prioritizes core deterministic examples, not the full configurable parameter set listed in the V2 contract. PDF export and physical printer accuracy are implemented in code but **not yet independently browser-verified**. New `test:pdf` runs structural PDF output checks on GitHub CI; physical print inspection is still required. Default Helvetica export transliterates math symbols to plain ASCII in PDF (the HTML/SVG view retains Unicode), pending a properly licensed and tested embedded-font solution. Do not describe every generator or SEO route as fully accepted until the remaining gold/visual tests run.
+
+### Question-only diagram safety (2026-11-04 follow-up)
+
+- Unknown lengths/angles are masked on question sheets (Pythagorean hypotenuse, triangle third angle, rectangular prism missing height).
+- Number line/inequality practice grids are blank rather than pre-solved; the answer key contains the exact solution.
+- Linear graphs show the mathematical line but do not label the requested output point on practice sheets.
+- Scatter-plot coordinates use a shared normalized plotting transform in both SVG and PDF, preventing off-page data points.
+- The 51 static preview WebP files are regenerated from the current generator and SVG renderer at build time.
+
+These are source/automated-test checks; the release still needs browser and printed-page visual inspections.
