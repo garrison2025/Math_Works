@@ -7,7 +7,9 @@ import {hasVerifiedSteps} from '../src/lib/capabilities.ts';
 const mathTopics=[
  'two-step-equations-worksheets','adding-unlike-fractions-worksheets',
  'two-digit-multiplication-worksheets','pythagorean-worksheets',
- 'box-plots-worksheets','printable-protractor'
+ 'box-plots-worksheets','printable-protractor',
+ 'triangle-angle-sum-worksheets','volume-of-rectangular-prisms-worksheets',
+ 'inequalities-worksheets','scatter-plot-worksheets','linear-equations-worksheets'
 ];
 const sizes={Letter:[612,792],A4:[595.28,841.89]};
 for(const topic of mathTopics)test(`PDF roundtrip: ${topic}`,async()=>{

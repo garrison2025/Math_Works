@@ -63,24 +63,32 @@ test('known algebraic and geometry answers by substitution, independent of gener
  }
 });
 
-test('unlike denominator generation has exact reduced answers',()=>{
- for(let seed=0;seed<5000;seed++){
-  const p=sampleProblem('adding-unlike-fractions-worksheets',seed);
+test('unlike-fraction generator never produces equal denominators in 5000 seeds',()=>{
+ for(let i=0;i<5000;i++){
+  const p=sampleProblem('adding-unlike-fractions-worksheets',i);
   const m=p.payload.question.match(/(\d+)\/(\d+) \+ (\d+)\/(\d+)/);
-  assert.ok(m);assert.notEqual(m[2],m[4]);
-  assert.equal(p.expectedAnswer,asText(addR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4])))));
+  assert.ok(m);
+  assert.notEqual(m[2],m[4],`seed ${i}: equal denominators`);
+  const oracle=addR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4])));
+  assert.equal(p.expectedAnswer,asText(oracle));
  }
 });
-test('dynamic number line SVG contains an endpoint for signed values',()=>{
- for(const topic of ['number-line-worksheets','inequalities-worksheets'])for(let seed=0;seed<2000;seed++){
-  const d=sampleProblem(topic,seed).diagramSpec;
+test('number line uses a dynamic scale for every generated endpoint',()=>{
+ for(const topic of ['number-line-worksheets','inequalities-worksheets'])for(let i=0;i<2000;i++){
+  const d=sampleProblem(topic,i).diagramSpec;
+  assert.equal(d.kind,'numberline');
   const svg=diagramSVG(d);
-  assert.ok(svg.includes('<circle cx='));
-  assert.ok(!svg.includes('NaN')&&!svg.includes('Point:'));
+  assert.ok(!svg.includes('<circle cx='),`practice sheet must not include solved endpoint: ${topic} ${i}`);
+  assert.ok(!svg.includes('Point:'),`fallback hides endpoint: ${topic} ${i}`);
+  assert.ok(!svg.includes('NaN')&&!svg.includes('Infinity'));
  }
 });
-test('box plot SVG renders outlier separately from whiskers',()=>{
- const svg=diagramSVG({kind:'box',values:[1,2.5,4.5,6.5,7,30]});
+test('boxplot vector shows whisker range and each outlier as separate marker',()=>{
+ const sample={kind:'box',values:[1,2.5,4.5,6.5,7,30]};
+ const svg=diagramSVG(sample);
  assert.ok(svg.includes('Whiskers exclude outliers'));
  assert.equal((svg.match(/<circle/g)||[]).length,1);
+ assert.ok(svg.includes('stroke="#a44127"'));
+ const q=quartiles([1,2,3,4,5,6,7,30]);
+ assert.deepEqual([q.lower,q.upper,...q.outliers],[1,7,30]);
 });

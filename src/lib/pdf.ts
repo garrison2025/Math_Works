@@ -1,7 +1,7 @@
 /** Browser-side vector PDF export: no screenshots, server, external API, or student records. */
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import type {Worksheet, Problem, Diagram} from './math';
-import {graphGeometry} from './graph.ts';
+import {graphGeometry,scatterGeometry} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
@@ -22,7 +22,8 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   page.drawLine({start:{x:sx+len,y:sy-3},end:{x:sx+len,y:sy+3},color:ink,thickness:.8});return;
  }
  if(d.kind==='triangle'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);l(.5,.88,.5,.12);return;}
- if(d.kind==='triangle-angles'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);page.drawText(`${d.values[0]} deg`,{x:x+w*.22,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[1]} deg`,{x:x+w*.66,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[2]} deg`,{x:x+w*.44,y:y+h*.70,size:8,font,color:ink});return;}
+ if(d.kind==='right-triangle'){const [a,b]=d.values,s=Math.min(w*.57/a,h*.67/b),dx=a*s/w,dy=b*s/h;const x0=.16,y0=.14;l(x0,y0,x0+dx,y0);l(x0,y0,x0,y0+dy);l(x0+dx,y0,x0,y0+dy);l(x0+.03,y0,x0+.03,y0+.06);l(x0+.03,y0+.06,x0,y0+.06);page.drawText(String(a),{x:x+(x0+dx/2)*w-4,y:y+2,size:8,font,color:ink});page.drawText(String(b),{x:x+(x0-.10)*w,y:y+(y0+dy/2)*h,size:8,font,color:ink});return;}
+ if(d.kind==='triangle-angles'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);page.drawText(`${d.values[0]} deg`,{x:x+w*.22,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[1]} deg`,{x:x+w*.66,y:y+h*.22,size:8,font,color:ink});page.drawText('?',{x:x+w*.44,y:y+h*.70,size:8,font,color:ink});return;}
  if(d.kind==='rectangle'){page.drawRectangle({x:x+w*.2,y:y+h*.2,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.5});return;}
  if(d.kind==='parallelogram'){l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);return;}
  if(d.kind==='trapezoid'){l(.1,.15,.9,.15);l(.9,.15,.7,.85);l(.7,.85,.3,.85);l(.3,.85,.1,.15);return;}
@@ -31,11 +32,9 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   l(.1,.5,.9,.5);
   if(d.kind==='numberline'){
    const n=d.values[0],op=d.labels?.[0],step=Math.max(1,Math.ceil(Math.abs(n)/5)),extent=step*5,px=(z:number)=>.5+(z/extent)*.4;
-   for(let i=-5;i<=5;i++){const xx=px(i*step);l(xx,.47,xx,.53)}
-   if(op){const dir=op.startsWith('>') ? .88 : .12;l(px(n),.5,dir,.5)}
-   const closed=!op||op.includes('≤')||op.includes('≥');
-   page.drawText(String(n),{x:x+px(n)*w-8,y:y+.65*h,size:9,font,color:ink});
-   page.drawCircle({x:x+px(n)*w,y:y+.5*h,size:4,borderColor:accent,borderWidth:1.2,...(closed?{color:accent}:{color:rgb(1,1,1)})});
+   for(let i=-5;i<=5;i++){const xx=px(i*step);l(xx,.47,xx,.53);page.drawText(String(i*step),{x:x+xx*w-8,y:y+.65*h,size:7,font,color:ink});}
+   // Leave blank for the student. Neither the endpoint nor direction is disclosed.
+   void op; void px;
   }else{
    const vals=d.values,lo=Math.min(...vals),hi=Math.max(...vals),range=hi-lo||1,p=(z:number)=>.1+(z-lo)/range*.8;
    l(p(vals[0]),.5,p(vals[4]),.5);l(p(vals[0]),.36,p(vals[0]),.64);l(p(vals[4]),.36,p(vals[4]),.64);
@@ -43,7 +42,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    for(const outlier of vals.slice(5))page.drawCircle({x:x+p(outlier)*w,y:y+.5*h,size:3,color:rgb(1,1,1),borderColor:accent,borderWidth:1});
   }return;
  }
- if(d.kind==='scatter'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);for(let i=0;i<d.values.length;i+=2)dot(.14+d.values[i]*.18,Math.max(.1,Math.min(.95,.2+d.values[i+1]*.018)));return;}
+ if(d.kind==='scatter'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);for(const [u,v] of scatterGeometry(d))dot(.14+u*.78,.2+v*.69);return;}
  if(d.kind==='coordinate'||d.kind==='linear-function'){
   const g=graphGeometry(d),mx=(z:number)=>.5+z/g.boundX*.44,my=(z:number)=>.5+z/g.boundY*.42;
   l(.06,.5,.94,.5);l(.5,.07,.5,.93);

@@ -1,5 +1,5 @@
 import type {Diagram} from './math';
-import {graphGeometry} from './graph.ts';
+import {graphGeometry,scatterGeometry} from './graph.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Vector graphics are generated from the same diagramSpec as the answer object. */
 export function diagramSVG(d?:Diagram):string{
@@ -15,18 +15,19 @@ export function diagramSVG(d?:Diagram):string{
  const poly=(points:string)=>`<polygon points="${points}" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
  switch(d.kind){
   case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
-  case 'triangle-angles':parts=poly('120,155 330,155 225,40')+text(166,146,`${v[0]}°`)+text(285,146,`${v[1]}°`)+text(225,79,`${v[2]}°`);break;
+  case 'right-triangle':{const [a,b]=v,s=Math.min(210/a,110/b),xx=120+a*s,yy=160-b*s;parts=poly(`120,160 ${xx},160 120,${yy}`)+line(120,160,135,160)+line(135,160,135,145)+line(135,145,120,145)+text((120+xx)/2,188,`${a} units`)+text(79,(160+yy)/2,`${b} units`);break}
+  case 'triangle-angles':parts=poly('120,155 330,155 225,40')+text(166,146,`${v[0]}°`)+text(285,146,`${v[1]}°`)+text(225,79,'?')+text(225,205,'Diagram not to scale');break;
   case 'rectangle':parts=`<rect x="130" y="45" width="190" height="110" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`+text(225,178,`${v[0]} units`)+text(345,105,`${v[1]}`);break;
   case 'parallelogram':parts=poly('130,155 310,155 350,48 170,48')+line(170,48,170,155)+text(225,179,`${v[0]}`)+text(151,111,`${v[1]}`);break;
   case 'trapezoid':parts=poly('100,155 360,155 300,49 160,49')+text(230,179,`${v[0]}`)+text(230,40,`${v[1]}`)+text(375,111,`${v[2]}`);break;
-  case 'prism':parts=`<rect x="100" y="72" width="190" height="100" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M100 72 L149 35 H339 V135 L290 172 M290 72 L339 35 M339 135 H149 V35" fill="none" stroke="#1b64a5" stroke-width="3"/>`+text(195,191,`${v[0]}`)+text(310,160,`${v[1]}`)+text(88,120,`${v[2]}`);break;
+  case 'prism':parts=`<rect x="100" y="72" width="190" height="100" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M100 72 L149 35 H339 V135 L290 172 M290 72 L339 35 M339 135 H149 V35" fill="none" stroke="#1b64a5" stroke-width="3"/>`+text(195,191,`${v[0]}`)+text(310,160,`${v[1]}`)+text(88,120,v[2]===undefined?'?':`${v[2]}`);break;
   case 'numberline':{
    const n=v[0],op=d.labels?.[0],step=Math.max(1,Math.ceil(Math.abs(n)/5)),extent=step*5,px=(z:number)=>225+z/extent*170;
    parts=line(55,105,395,105)+`<path d="M55 105l9 -6v12zM395 105l-9 -6v12z" fill="#1b64a5"/>`;
    for(let i=-5;i<=5;i++){const z=i*step,x=px(z);parts+=line(x,99,x,111)+text(x,137,String(z))}
-   if(op){const towardRight=op.startsWith('>'),ex=towardRight?385:65;parts+=line(px(n),105,ex,105);parts+=`<path d="M${ex} 105l${towardRight?-12:12} -7v14z" fill="#187b68"/>`}
-   const closed=!op||op.includes('≤')||op.includes('≥');
-   parts+=`<circle cx="${px(n)}" cy="105" r="8" fill="${closed?'#1b64a5':'white'}" stroke="#1b64a5" stroke-width="3"/>`;
+   // Practice sheets show an unmarked number line. The answer is in the key.
+   // This applies to both placement and inequality tasks.
+   void op;
    break}
   case 'coordinate':
   case 'linear-function':{
@@ -41,7 +42,7 @@ export function diagramSVG(d?:Diagram):string{
    break}
   case 'angle':{const deg=v[0],t=deg*Math.PI/180;parts=line(170,165,380,165)+line(170,165,170+155*Math.cos(t),165-155*Math.sin(t))+`<path d="M220 165 A50 50 0 0 0 ${170+50*Math.cos(t)} ${165-50*Math.sin(t)}" fill="none" stroke="#187b68" stroke-width="2"/>`+text(245,187,`${deg}°`);break}
   case 'line':{const n=v[0];parts=line(80,110,365,110)+(n!==2?`<circle cx="80" cy="110" r="5" fill="#172337"/>`:'')+(n===0?`<circle cx="365" cy="110" r="5" fill="#172337"/>`:'')+(n>=1?`<path d="M374 110l-15 -8v16z" fill="#1b64a5"/>`:'')+(n===2?`<path d="M71 110l15 -8v16z" fill="#1b64a5"/>`:'');break}
-  case 'scatter':{parts=line(75,175,400,175)+line(75,175,75,20);for(let i=0;i<v.length;i+=2){let x=85+v[i]*75,y=160-v[i+1]*6;parts+=`<circle cx="${x}" cy="${y}" r="6" fill="#187b68"/>`}break}
+  case 'scatter':{const pts=scatterGeometry(d);parts=line(75,175,400,175)+line(75,175,75,20);for(const [u,z] of pts){const x=85+u*300,y=160-z*125;parts+=`<circle cx="${x}" cy="${y}" r="6" fill="#187b68"/>`;}break}
   case 'box':{
    const all=[...v],lo=Math.min(...all),hi=Math.max(...all),range=Math.max(1,hi-lo),sx=(n:number)=>80+(n-lo)/range*310;
    parts=line(65,120,395,120)+`<rect x="${sx(v[1])}" y="90" width="${Math.max(1,sx(v[3])-sx(v[1]))}" height="60" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;

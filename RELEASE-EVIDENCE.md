@@ -36,3 +36,15 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 2. Browser test: Chrome/Firefox desktop and mobile, PDF download flows, keyboard/tab/invalid inputs, print CSS and inaccessible states.
 3. 6 golden PDFs x 2 paper sizes, image-by-image compare; physically print 50mm calibration bar.
 4. Author-specific topic controls, separate diagrams/working steps and 24 overlapping route intents need manual QA; only enable `PUBLIC_INDEXABLE` when these checks pass.
+
+## Follow-up development: graph semantics, independent math oracles, controlled publishing (2026-11-04)
+
+- True Cartesian graph coordinates use one shared math geometry contract for SVG and PDF: slope endpoints, actual linear function `y=mx+b`, and plotted question/answer point are derived together. This corrects the previous case where `linear-equations-worksheets` mistakenly used slope/intercept as a single point.
+- Triangle angle-sum questions now use degree-angle diagrams instead of incorrectly labeling the angles as side lengths. Lines/rays/segments display the appropriate endpoint and arrow counts.
+- Percentages practice now covers different denominators, not only `/100`.
+- Added `independent-oracles.test.mjs`: independent formula re-evaluation of **42 specific topic families × 300 seeds each** (math code tests, not final user/print QA).
+- Added `indexation.test.mjs`: indexability requires a verified custom HTTPS host, explicit `PUBLIC_INDEXABLE=true`, main branch and a comma-separated list of specifically approved tool routes. Eight conditional hubs and four HOLDs remain noindex even if mistakenly included in allowlist.
+- Added `capabilities.test.mjs`: only 13 audited topic generators expose 'worked steps PDF'; all other topics still offer worksheet/answer PDF, but their step export cannot be represented as verified.
+- Local `tsc -p tsconfig.math.json` and **20 tests PASS** after changes, including 51,000 random seed object checks. Static previews regenerated (51 WebP) using Sharp.
+- Added PDF roundtrip tests to GitHub Actions for Letter/A4 page size, representative modes, nonempty file, multipage and steps capability restrictions. **These PDF tests are NOT RUN locally** because `pdf-lib` is unavailable in the working container; check the new CI run before claiming PASS.
+- Browser screenshots, live deployment, PDF visual inspection and physical protractor ruler testing remain **NOT RUN**. Do not enable custom domain indexation until approved routes and the physical-print gate pass.

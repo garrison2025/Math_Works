@@ -15,11 +15,23 @@ export function graphGeometry(d:Diagram):GraphGeometry {
   const xa=m===0?-boundX:Math.max(-boundX,Math.min((-boundY-b)/m,(boundY-b)/m));
   const xb=m===0?boundX:Math.min(boundX,Math.max((-boundY-b)/m,(boundY-b)/m));
   if(xa>xb)throw Error('Graph line outside visible plot');
-  return {kind:d.kind,boundX,boundY,points:[[x,y]],segment:[[xa,m*xa+b],[xb,m*xb+b]]};
+  // Do not put the requested (x,y) answer point on a practice worksheet.
+  return {kind:d.kind,boundX,boundY,points:[],segment:[[xa,m*xa+b],[xb,m*xb+b]]};
  }
  if(d.values.length!==2&&d.values.length!==4)throw Error('Coordinate graph needs one or two points');
  const points:XY[]=d.values.length===2?[[d.values[0],d.values[1]]]:[[d.values[0],d.values[1]],[d.values[2],d.values[3]]];
  const boundX=Math.max(5,Math.ceil(Math.max(...points.map(p=>Math.abs(p[0])))+2));
  const boundY=Math.max(5,Math.ceil(Math.max(...points.map(p=>Math.abs(p[1])))+2));
  return {kind:d.kind,boundX,boundY,points,...(points.length===2?{segment:[points[0],points[1]] as [XY,XY]}:{})};
+}
+
+/** Return normalized scatter coordinates, preserving the sign of correlation
+ * while keeping every point within both SVG and PDF plotting rectangles. */
+export function scatterGeometry(d:Diagram):XY[]{
+ if(d.kind!=='scatter'||d.values.length<4||d.values.length%2||!d.values.every(Number.isFinite))throw Error('Invalid scatter data');
+ const points:XY[]=[];for(let i=0;i<d.values.length;i+=2)points.push([d.values[i],d.values[i+1]]);
+ const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
+ const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
+ const spanX=maxX-minX||1,spanY=maxY-minY||1;
+ return points.map(([x,y])=>[(x-minX)/spanX,(y-minY)/spanY]);
 }

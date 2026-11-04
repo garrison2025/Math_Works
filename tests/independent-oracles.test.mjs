@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {sampleProblem,quartiles,gcd,rational,addR,mulR,asText} from '../src/lib/math.ts';
-import {graphGeometry} from '../src/lib/graph.ts';
+import {graphGeometry,scatterGeometry} from '../src/lib/graph.ts';
 import {diagramSVG} from '../src/lib/diagram.ts';
 const seeds=300;
 const verify=(slug,oracle)=>{for(let seed=0;seed<seeds;seed++){const p=sampleProblem(slug,seed);const expected=oracle(p.payload.question,p);assert.equal(p.expectedAnswer,String(expected),`${slug} seed ${seed}: ${p.payload.question}`)}};
@@ -36,7 +36,7 @@ test('300 independent algebra and graph oracles per route',()=>{
  verify('one-step-equations-worksheets',q=>{let m=q.match(/^Solve: x ([+−]) (\d+) = (-?\d+)/);if(m)return `x = ${n(m[3])-(m[1]==='+'?n(m[2]):-n(m[2]))}`;m=re(q,/^Solve: (-?\d+)x = (-?\d+)/);return `x = ${n(m[2])/n(m[1])}`;});
  verify('inequalities-worksheets',q=>{const m=re(q,/^Solve: (-?\d+)x ([+−]) (\d+) ([<≤]) (-?\d+)/);const b=m[2]==='+'?n(m[3]):-n(m[3]),a=n(m[1]);const op=a<0?(m[4]==='<'?'>':'≥'):m[4];return `x ${op} ${(n(m[5])-b)/a}`;});
  verify('systems-equations-worksheets',q=>{const m=re(q,/^Solve: x \+ y = (-?\d+); x − y = (-?\d+)/);return `x = ${(n(m[1])+n(m[2]))/2}, y = ${(n(m[1])-n(m[2]))/2}`;});
- for(const slug of ['functions-worksheets','linear-equations-worksheets'])verify(slug,(q,p)=>{let m=slug==='functions-worksheets'?re(q,/If f\(x\) = (-?\d+)x ([+−]) (\d+), find f\((-?\d+)\)/):re(q,/For y = (-?\d+)x ([+−]) (\d+), find y when x = (-?\d+)/);const y=n(m[1])*n(m[4])+(m[2]==='+'?n(m[3]):-n(m[3]));if(slug==='linear-equations-worksheets'){const d=p.diagramSpec;assert.equal(d.kind,'linear-function');assert.deepEqual(d.values,[n(m[1]),m[2]==='+'?n(m[3]):-n(m[3]),n(m[4]),y]);const g=graphGeometry(d);assert.deepEqual(g.points,[[n(m[4]),y]]);assert.ok(g.segment[0][0]<=g.points[0][0]&&g.segment[1][0]>=g.points[0][0]);}return y;});
+ for(const slug of ['functions-worksheets','linear-equations-worksheets'])verify(slug,(q,p)=>{let m=slug==='functions-worksheets'?re(q,/If f\(x\) = (-?\d+)x ([+−]) (\d+), find f\((-?\d+)\)/):re(q,/For y = (-?\d+)x ([+−]) (\d+), find y when x = (-?\d+)/);const y=n(m[1])*n(m[4])+(m[2]==='+'?n(m[3]):-n(m[3]));if(slug==='linear-equations-worksheets'){const d=p.diagramSpec;assert.equal(d.kind,'linear-function');assert.deepEqual(d.values,[n(m[1]),m[2]==='+'?n(m[3]):-n(m[3]),n(m[4]),y]);const g=graphGeometry(d);assert.deepEqual(g.points,[], 'practice graph must not label the requested answer');assert.ok(g.segment[0][0]<=n(m[4])&&g.segment[1][0]>=n(m[4]));}return y;});
  verify('slope-worksheets',(q,p)=>{const m=re(q,/slope through \((-?\d+), (-?\d+)\) and \((-?\d+), (-?\d+)\)/);const [x1,y1,x2,y2]=m.slice(1).map(n);const g=graphGeometry(p.diagramSpec);assert.deepEqual(g.points,[[x1,y1],[x2,y2]]);return x1===x2?'undefined':String((y2-y1)/(x2-x1));});
  verify('coordinate-plane-worksheets',(q,p)=>{const m=re(q,/contains \((-?\d+), (-?\d+)\)/);const [x,y]=m.slice(1).map(n);assert.deepEqual(graphGeometry(p.diagramSpec).points,[[x,y]]);return x>0?(y>0?'I':'IV'):(y>0?'II':'III');});
 });
@@ -63,5 +63,42 @@ test('all four line/segment/ray diagrams match endpoint semantics',()=>{
   const svg=diagramSVG({kind:'line',values:[n]});
   assert.equal((svg.match(/<circle/g)||[]).length,2-n,`wrong endpoint count ${name}`);
   assert.equal((svg.match(/<path/g)||[]).length,n,`wrong arrow count ${name}`);
+ }
+});
+
+
+test('question-only diagrams do not reveal the unknown answer',()=>{
+ for(let seed=0;seed<1000;seed++){
+  const p=sampleProblem('pythagorean-worksheets',seed);
+  assert.equal(p.diagramSpec.kind,'right-triangle');
+  assert.equal(p.diagramSpec.values.length,2);
+  const svg=diagramSVG(p.diagramSpec);
+  assert.ok(svg.includes('units'));
+  assert.ok(!svg.includes('hyp.'),`hypotenuse answer leaked: ${seed}`);
+  const a=sampleProblem('triangle-angle-sum-worksheets',seed);
+  assert.equal(a.diagramSpec.kind,'triangle-angles');
+  const shape=diagramSVG(a.diagramSpec);
+  assert.ok(shape.includes('>?<'),`unknown angle leaked: ${seed}`);
+  assert.equal((shape.match(/°<\/text>/g)||[]).length,2,'only the two supplied angles may be labeled');
+  const v=sampleProblem('volume-of-rectangular-prisms-worksheets',seed);
+  if(v.payload.question.includes('Find its height')){
+   assert.equal(v.diagramSpec.values.length,2);
+   assert.ok(diagramSVG(v.diagramSpec).includes('>?<'),`missing height leaked: ${seed}`);
+  }
+  const g=sampleProblem('linear-equations-worksheets',seed);
+  assert.equal(graphGeometry(g.diagramSpec).points.length,0);
+ }
+});
+
+test('scatter plots preserve correlation direction and stay inside plot bounds',()=>{
+ for(let seed=0;seed<2000;seed++){
+  const p=sampleProblem('scatter-plot-worksheets',seed);
+  const pts=scatterGeometry(p.diagramSpec);
+  assert.equal(pts.length,3);
+  assert.ok(pts.every(([x,y])=>x>=0&&x<=1&&y>=0&&y<=1));
+  const sign=p.expectedAnswer==='positive'?1:-1;
+  assert.equal(Math.sign(pts.at(-1)[1]-pts[0][1]),sign);
+  const svg=diagramSVG(p.diagramSpec);
+  assert.equal((svg.match(/<circle/g)||[]).length,3);
  }
 });
