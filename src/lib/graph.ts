@@ -48,3 +48,24 @@ export function boxPracticeAxis(values:readonly number[]){
  for(let v=start;v<=end+step*1e-8;v+=step)ticks.push(Number(v.toFixed(8)));
  return {start,end,step,ticks,position:(value:number)=>(value-start)/extent};
 }
+
+
+/** Triangle interior angles to exact coordinate geometry, fitted at uniform scale. */
+export type AngleTriangleLayout = {vertices:[XY,XY,XY];labelPositions:[XY,XY,XY]};
+export function angleTriangleLayout(d:Diagram):AngleTriangleLayout {
+ if(d.kind!=='triangle-angles'||d.values.length!==3||!d.values.every(z=>Number.isInteger(z)&&z>0)||d.values.reduce((a,b)=>a+b,0)!==180)throw Error('Invalid interior-angle triangle');
+ const [left,right,top]=d.values.map(z=>z*Math.PI/180);
+ const apex:XY=[Math.sin(right)*Math.cos(left)/Math.sin(top),Math.sin(right)*Math.sin(left)/Math.sin(top)];
+ if(!apex.every(Number.isFinite)||apex[1]<=0)throw Error('Degenerate triangle');
+ const raw:XY[]=[[0,0],[1,0],apex];
+ const minX=Math.min(...raw.map(p=>p[0])),maxX=Math.max(...raw.map(p=>p[0]));
+ const height=apex[1],scale=Math.min(300/(maxX-minX),130/height);
+ const centerX=225-(minX+maxX)*scale/2;
+ const plot=(p:XY):XY=>[centerX+p[0]*scale,165-p[1]*scale];
+ const vertices=raw.map(plot) as [XY,XY,XY];
+ const labelPositions=vertices.map((v,i)=>{
+  const other=vertices.filter((_,k)=>k!==i);
+  return [v[0]*.73+(other[0][0]+other[1][0])*.135,v[1]*.73+(other[0][1]+other[1][1])*.135] as XY;
+ }) as [XY,XY,XY];
+ return {vertices,labelPositions};
+}
