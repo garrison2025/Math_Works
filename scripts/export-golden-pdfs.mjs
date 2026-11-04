@@ -20,7 +20,11 @@ const fixtures=[
  {slug:'triangle-angle-sum-worksheets',quantity:8,options:{thirdAngle:'obtuse'}},
  {slug:'area-of-trapezoids-worksheets',quantity:8,options:{task:'missing-height'}},
  {slug:'area-of-triangles-worksheets',quantity:8,options:{task:'missing-height'}},
- {slug:'volume-of-rectangular-prisms-worksheets',quantity:8,options:{task:'missing-height'}}
+ {slug:'volume-of-rectangular-prisms-worksheets',quantity:8,options:{task:'missing-height'}},
+ {slug:'vertical-angles-worksheets',quantity:8,options:{task:'adjacent'}},
+ {slug:'area-worksheets',quantity:8,options:{shape:'square'}},
+ {slug:'surface-area-worksheets',quantity:8,options:{solid:'cube'}},
+ {slug:'lines-rays-segments-worksheets',quantity:8,options:{figure:'mixed'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){
@@ -32,5 +36,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R12 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R13 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

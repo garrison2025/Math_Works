@@ -88,7 +88,7 @@ test('300 independent geometry and statistics oracles per route',()=>{
 test('all four line/segment/ray diagrams match endpoint semantics',()=>{
  const s={line:2,ray:1,segment:0};for(const [name,n] of Object.entries(s)){
   const svg=diagramSVG({kind:'line',values:[n]});
-  assert.equal((svg.match(/<circle/g)||[]).length,2-n,`wrong endpoint count ${name}`);
+  assert.equal((svg.match(/<circle/g)||[]).length,2,`Each line, ray and segment must show two labeled points: ${name}`);
   assert.equal((svg.match(/<path/g)||[]).length,n,`wrong arrow count ${name}`);
  }
 });

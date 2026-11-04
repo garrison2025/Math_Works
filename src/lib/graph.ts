@@ -69,3 +69,31 @@ export function angleTriangleLayout(d:Diagram):AngleTriangleLayout {
  }) as [XY,XY,XY];
  return {vertices,labelPositions};
 }
+
+/** Shared SVG/PDF geometry for two actually intersecting straight lines. */
+export type IntersectingAngleGeometry = {
+ center:XY;horizontal:[XY,XY];diagonal:[XY,XY];
+ givenArc:XY[];unknownArc:XY[];givenLabel:XY;unknownLabel:XY;
+ givenDegrees:number;unknownDegrees:number;task:'vertical'|'adjacent';
+};
+export function intersectingAngleGeometry(d:Diagram):IntersectingAngleGeometry {
+ if(d.kind!=='intersecting-lines'||d.values.length!==2||
+    !Number.isInteger(d.values[0])||d.values[0]<1||d.values[0]>179||
+    !(d.values[1]===0||d.values[1]===1))throw Error('Invalid intersecting-line problem');
+ const degrees=d.values[0],adjacent=d.values[1]===1,center:XY=[225,110];
+ const at=(angle:number,r:number):XY=>[
+  center[0]+r*Math.cos(angle*Math.PI/180),
+  center[1]-r*Math.sin(angle*Math.PI/180)
+ ];
+ const arc=(first:number,last:number)=>{
+  const steps=Math.max(2,Math.ceil((last-first)/5)+1);
+  return Array.from({length:steps},(_,i)=>at(first+(last-first)*i/(steps-1),32));
+ };
+ const from=adjacent?degrees:180,to=adjacent?180:180+degrees;
+ return {
+  center,horizontal:[[70,110],[380,110]],diagonal:[at(degrees+180,97),at(degrees,97)],
+  givenArc:arc(0,degrees),unknownArc:arc(from,to),
+  givenLabel:at(degrees/2,70),unknownLabel:at((from+to)/2,70),
+  givenDegrees:degrees,unknownDegrees:adjacent?180-degrees:degrees,task:adjacent?'adjacent':'vertical'
+ };
+}

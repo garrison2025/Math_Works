@@ -130,6 +130,32 @@ try {
  await verifyPdf(await heightWait,'trapezoid missing-height questions');
  await page.screenshot({path:join(out,'r12-trapezoid-height.png'),fullPage:true});
  events.push({kind:'interaction',name:'missing-height SVG and PDF worksheet',status:'pass'});
+
+ // R13 browser regression: actual intersecting lines, square shape and a labeled ray.
+ await page.goto(base+'/vertical-angles-worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('adjacent');
+ const crossing=page.locator('.diagram-vector').first();
+ assert.equal(await crossing.locator('polyline').count(),2,'Expected two angular sectors');
+ assert.ok((await crossing.innerHTML()).includes('>?</text>'),'Unknown sector is not hidden');
+ const crossingDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await crossingDownload,'R13 crossing angles PDF');
+ await page.screenshot({path:join(out,'r13-crossing-angles.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R13 crossing angles PDF download',status:'pass'});
+ await page.goto(base+'/area-worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-option="shape"]').selectOption('square');
+ const square=page.locator('.diagram-vector rect').first();
+ assert.equal(await square.getAttribute('width'),await square.getAttribute('height'),'Square geometry is not square');
+ await page.screenshot({path:join(out,'r13-square.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R13 equal-sided square',status:'pass'});
+ await page.goto(base+'/lines-rays-segments-worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-option="figure"]').selectOption('ray');
+ assert.match(await page.locator('.problem .q').first().innerText(),/Identify the pictured figure/);
+ const rayDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await rayDownload,'R13 labeled ray PDF');
+ await page.screenshot({path:join(out,'r13-ray.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R13 labeled ray PDF download',status:'pass'});
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));

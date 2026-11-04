@@ -20,6 +20,8 @@ export const topicIntro=(slug:string)=>{
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
+ if(slug.includes('vertical-angles'))return ['Find the vertex where two straight lines cross.','Opposite angles are equal; adjacent angles on a straight line total 180°.','Read the given angle and solve for the question-mark sector.'];
+ if(slug.includes('lines-rays-segments'))return ['Count arrowheads on the illustrated figure rather than reading hints in the question.','A line has two arrows; a ray has one endpoint and one arrow; a segment has two endpoints.','Use the two labeled points to describe the geometric object.'];
  if(slug.includes('box-plots'))return ['Order the observations and find the median.','Split into equal lower and upper halves, excluding the middle value for odd-sized samples.','Use the 1.5×IQR fences to identify outliers separately from the whisker endpoints.'];
  if(slug.includes('fraction'))return ['Read both numerators and denominators carefully.','Find a common denominator or simplify only when the operation requires it.','Compare your reduced fraction to the answer key.'];
  if(slug.includes('inequal'))return ['Identify the coefficient of the unknown and the comparison symbol.','Undo operations on both sides; flip < to > and ≤ to ≥ (or vice versa) when dividing by a negative.','Check a test value against the original inequality and mark open or closed endpoints as appropriate.'];
@@ -43,6 +45,8 @@ export function howTo(slug:string):string[]{
 
 /** Contextual reminders: intentionally about the generator's actual task, not generic SEO filler. */
 export function commonMistakes(slug:string):string[]{
+ if(slug.includes('vertical-angles'))return ['Treating adjacent angles as equal instead of supplementary.','Mistaking a vertically opposite angle for the adjacent angle next to it.'];
+ if(slug.includes('lines-rays-segments'))return ['Confusing labeled interior points with endpoints.','Ignoring whether a figure has arrows at one, two or neither end.'];
  if(slug.includes('inequal'))return ['Forgetting to reverse the comparison sign after multiplying or dividing both sides by a negative number.', 'Using a closed dot for < or > instead of an open dot.'];
  if(slug.includes('two-step-equations'))return ['Undoing multiplication before undoing the added or subtracted constant.', 'Missing the sign of a negative coefficient when dividing.'];
  if(slug.includes('one-step-equations'))return ['Applying an inverse operation on only one side of the equation.', 'Losing track of negative signs when dividing both sides by a negative coefficient.'];

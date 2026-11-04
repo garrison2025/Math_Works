@@ -132,3 +132,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED] PDF and SVG use shared triangle vertex geometry. PDF illustrations show known shape dimensions and retain `?` for unknown heights.
 - [IMPLEMENTED; VERIFY CI] Added live Chromium checks for triangle and trapezoid PDF downloads and 4 new sets of Letter/A4 geometry PDF fixtures.
 - [NOT RUN] Firefox browser downloads, physical printed-protractor 50mm ruler test, complete manual visual inspection of every PDF page and educator approval. `PUBLIC_INDEXABLE=false` remains required.
+
+## R13: teaching geometry corrections (2026-11-04)
+- [PASS local] 55 math/route/unit tests and TypeScript typecheck, including 3,000 true crossing-line geometry calculations, square/cube figures and line/ray/segment prompt checks.
+- [PASS local SVG] Representative 9-figure sample sheet rendered and visually inspected. All 51 topic WebP examples rebuilt from the corrected generator.
+- [CI TO VERIFY] Letter/A4 vector PDFs and Chromium download/reproducibility checks for vertical angles, square area, cube surface area and line/ray/segment.
+- [HOLD] Firefox, all-page human PDF review, physical 50 mm protractor calibration. Unpurchased domain; default noindex remains in force.
+- [CHANGE] Generator/share version v5; old links may not reproduce historically identical content.

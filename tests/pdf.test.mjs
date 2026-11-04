@@ -134,7 +134,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v4'),`${topic} missing version-four identity`);
+    assert.ok(doc.getTitle()?.includes('v5'),`${topic} missing version-five identity`);
    }
   }
  }
@@ -187,6 +187,23 @@ test('R11 full-size column multiplication and long-division diagrams survive pra
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,'questions',paper));
    assert.ok(pdf.getPageCount()>0,`${topic} ${paper} failed`);
    assert.equal(pdf.getTitle()?.includes(sheet.optionsHash),true);
+  }
+ }
+});
+
+test('R13 practice and answer PDFs include real crossing angles, square faces and labeled figures',async()=>{
+ for(const [topic,options] of [
+  ['vertical-angles-worksheets',{task:'vertical'}],['vertical-angles-worksheets',{task:'adjacent'}],
+  ['area-worksheets',{shape:'square'}],['surface-area-worksheets',{solid:'cube'}],
+  ['lines-rays-segments-worksheets',{figure:'line'}],['lines-rays-segments-worksheets',{figure:'ray'}],
+  ['lines-rays-segments-worksheets',{figure:'segment'}]
+ ]){
+  const sheet=makeWorksheet(topic,20261104,8,'standard',options);
+  assert.equal(sheet.generatorVersion,'5');
+  for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
+   const doc=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
+   assert.ok(doc.getPageCount()>=1,topic+' '+paper+' '+mode);
+   assert.ok(doc.getTitle()?.includes('v5')&&doc.getTitle()?.includes(sheet.optionsHash));
   }
  }
 });

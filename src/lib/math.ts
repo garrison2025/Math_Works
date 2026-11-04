@@ -1,9 +1,9 @@
 /** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
 import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicOptions} from './topic-options.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
-export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
+export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='4' as const;
+export const GENERATOR_VERSION='5' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -177,7 +177,7 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'area-worksheets':{const x=a(),y=opts.shape==='square'?x:b();
   if(opts.shape==='square')make(`Find the area of a square with side ${x}.`,x*x,`Area = side × side = ${x*x} square units`);
   else make(`Find the area of a ${x} by ${y} rectangle.`,x*y,`Area = length × width = ${x*y} square units`);
-  diagram={kind:'rectangle',values:[x,y]};break}
+  diagram={kind:'rectangle',values:[x,y],labels:[opts.shape]};break}
  case 'volume-of-rectangular-prisms-worksheets':{
   const x=r.int(2,12),y=r.int(2,12),z=r.int(2,12);
   const task=opts.task==='mixed'?r.pick(['volume','missing-height']):opts.task;
@@ -187,7 +187,7 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   diagram={kind:'prism',values:task==='missing-height'?[x,y]:[x,y,z]};break}
  case 'surface-area-worksheets':{const x=r.int(2,12),y=opts.solid==='cube'?x:r.int(2,12),candidate=r.int(2,11),z=opts.solid==='cube'?x:y===x?(candidate>=x?candidate+1:candidate):r.int(2,12);
   make(opts.solid==='cube'?`Find surface area of a cube with side ${x}.`:`Find surface area of a rectangular prism: ${x} × ${y} × ${z}.`,2*(x*y+x*z+y*z),opts.solid==='cube'?'Cube surface area = 6 × side²':'SA = 2(lw + lh + wh)',`Surface area = ${2*(x*y+x*z+y*z)} square units`);
-  diagram={kind:'prism',values:[x,y,z]};break}
+  diagram={kind:'prism',values:[x,y,z],labels:[opts.solid]};break}
  case 'triangle-angle-sum-worksheets':{
   const z=opts.thirdAngle==='acute'?r.int(20,89):opts.thirdAngle==='right'?90:opts.thirdAngle==='obtuse'?r.int(91,139):r.int(20,139);
   const x=r.int(20,160-z),y=180-z-x;make(`Triangle angles are ${x}° and ${y}°. Find the third angle.`,`${z}°`,`Angles sum to 180°`,`180 − ${x} − ${y} = ${z}°`);diagram={kind:'triangle-angles',values:[x,y,z]};break}
@@ -199,12 +199,13 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'angle-worksheets':{const deg=opts.kind==='acute'?r.int(1,89):opts.kind==='obtuse'?r.int(91,179):r.int(0,12)===0?90:r.int(1,179);const name=deg<90?'acute':deg===90?'right':'obtuse';make(`Classify a ${deg}° angle.`,name,`Acute <90°, right =90°, obtuse >90° and <180°`);diagram={kind:'angle',values:[deg]};break}
  case 'vertical-angles-worksheets':{const deg=r.int(20,160),adjacent=opts.task==='adjacent',answer=adjacent?180-deg:deg;
   make(`Intersecting lines make an angle of ${deg}°. Find its ${adjacent?'adjacent supplementary':'vertical'} angle.`,`${answer}°`,adjacent?'Angles on a straight line add to 180°':'Vertical angles are equal',`Answer: ${answer}°`);
-  diagram={kind:'angle',values:[deg,180-deg]};break}
+  diagram={kind:'intersecting-lines',values:[deg,adjacent?1:0]};break}
  case 'lines-rays-segments-worksheets':{
   const kind=opts.figure==='mixed'?r.pick(['line','ray','segment']):opts.figure;
   const left=String.fromCharCode(65+r.int(0,10)),right=String.fromCharCode(77+r.int(0,10));
-  make(`Figure ${left}${right} has ${kind==='line'?'arrows at both ends':kind==='ray'?'one endpoint and one arrow':'two endpoints and no arrows'}. Identify it.`,kind,'Line: both directions; ray: one direction; segment: two endpoints');
-  diagram={kind:'line',values:[kind==='line'?2:kind==='ray'?1:0]};break}
+  make('Identify the pictured figure: line, ray, or segment.',kind,
+   'A line extends infinitely in both directions; a ray starts at one endpoint; a segment has two endpoints.',`The figure is a ${kind}.`);
+  diagram={kind:'line',values:[kind==='line'?2:kind==='ray'?1:0],labels:[left,right]};break}
  case 'mean-median-mode-range-worksheets':{const repeat=r.int(1,9),values=sorted([repeat,repeat,r.int(10,20),r.int(21,30),r.int(31,40)]);const task=opts.statistic==='mixed'?r.pick(['mean','median','mode','range']):opts.statistic;const answer=task==='mean'?normal(sum(values)/values.length):task==='median'?normal(median(values)):task==='mode'?String(repeat):String(values[values.length-1]-values[0]);make(`Find the ${task} of [${values.join(', ')}].`,answer,task==='mean'?`Add all numbers: ${sum(values)}; divide by ${values.length}`:task==='median'?`Sort the values and choose the middle: ${values[2]}`:task==='mode'?`The value ${repeat} appears twice; each other value appears once`:`Subtract minimum ${values[0]} from maximum ${values[values.length-1]}`,`Result = ${answer}`);break}
  case 'mean-absolute-deviation-worksheets':{const mid=r.int(4,12),delta=r.int(1,6),skewed=opts.distribution==='skewed',values=skewed?[mid-2*delta,mid+delta,mid+delta]:[mid-delta,mid,mid+delta],deviation=skewed?4*delta:2*delta;
   make(`Find the mean absolute deviation of [${values.join(', ')}].`,frac(deviation,3),`Mean = ${mid}`,`Absolute deviations: ${values.map(v=>Math.abs(v-mid)).join(', ')}`,`MAD = ${deviation}/3 = ${frac(deviation,3)}`);break}

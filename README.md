@@ -113,3 +113,11 @@ The **Printable Protractor** topic now has a dedicated button that downloads a s
 ### R12 geometry fidelity and teaching accuracy
 
 Interior-angle triangles now use true angle-derived vertices in SVG and PDF. PDF geometry diagrams include known dimension labels and question marks instead of exposing missing heights. New 3,000-seed independent angle tests, Chromium download smoke tests and additional Letter/A4 golden PDF fixtures accompany the updates. Physical protractor calibration, complete manual PDF review and educator approval are still outstanding.
+
+## R13: mathematical diagram fidelity
+- Real intersecting-line diagrams for vertical/adjacent angles in SVG and PDF; actual given sectors are measured rather than represented by an isolated angle.
+- Square mode draws equal sides, and cube mode draws a square front face.
+- Lines, rays and line segments are visual-identification questions with correctly placed arrowheads and two labeled points. The prompt no longer gives away the geometry category.
+- Deterministic generator/share format updated to v5, because earlier links may not reproduce changed questions exactly.
+- New independent geometry tests, Chromium PDF/download checks, and Letter/A4 PDF golden fixtures.
+- Cloudflare preview remains noindex while the domain is unpurchased and Firefox/physical printing QA remains outstanding.
