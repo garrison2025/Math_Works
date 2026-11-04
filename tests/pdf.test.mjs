@@ -139,3 +139,42 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
   }
  }
 });
+
+
+test('R10 font-metric wrapping never crosses the printable content width',async()=>{
+ const {wrapPdfText}=await import('../src/lib/pdf.ts');
+ const doc=await PDFDocument.create(),font=await doc.embedFont('Helvetica');
+ for(const width of [170,260,490])for(const text of [
+  'An exceptionally long classroom question with coefficients and fractional values to display in the PDF export.',
+  '123456789012345678901234567890123456789012345678901234567890',
+  'Find Q1 for [3, 4, 15, 22, 38, 60, 101, 120] using the median-of-halves definition.'
+ ]){
+  const lines=wrapPdfText(text,font,10,width);
+  assert.ok(lines.length>0);
+  for(const line of lines)assert.ok(font.widthOfTextAtSize(line,10)<=width+0.01,`Line exceeded ${width}pt: ${line}`);
+ }
+});
+
+test('R10 PDF export rejects stale or corrupted answer mappings',async()=>{
+ const set=makeWorksheet('two-step-equations-worksheets',63,8);
+ set.answerMap[3].answer='incorrect answer';
+ await assert.rejects(()=>createWorksheetPdf(set,'Two Step Equations','questions','Letter'),/Answer key mismatch/);
+});
+
+test('R10 all 51 live worksheet topics export parsable practice and answers on both paper sizes',async()=>{
+ const {readFileSync}=await import('node:fs');
+ const routes=JSON.parse(readFileSync(new URL('../src/data/routes.json',import.meta.url),'utf8'));
+ for(const [index,{slug,type}] of routes.entries()){
+  if(type==='HOLD')continue;
+  const set=makeWorksheet(slug,101+index,8,'standard');
+  for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
+   const pdf=await PDFDocument.load(await createWorksheetPdf(set,slug,mode,paper));
+   assert.ok(pdf.getPageCount()>=1,`${slug} ${mode} ${paper}`);
+   const first=pdf.getPages()[0];
+   const dims=paper==='Letter'?[612,792]:[595.28,841.89];
+   assert.ok(Math.abs(first.getWidth()-dims[0])<0.05);
+   assert.ok(Math.abs(first.getHeight()-dims[1])<0.05);
+   assert.ok(pdf.getTitle()?.includes(set.optionsHash));
+  }
+ }
+});

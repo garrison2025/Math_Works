@@ -35,3 +35,16 @@ export function scatterGeometry(d:Diagram):XY[]{
  const spanX=maxX-minX||1,spanY=maxY-minY||1;
  return points.map(([x,y])=>[(x-minX)/spanX,(y-minY)/spanY]);
 }
+
+/** Empty five-number-summary axis. Inputs are observed raw values, never calculated
+ * quartiles, whisker endpoints or outlier locations (which would disclose answers). */
+export function boxPracticeAxis(values:readonly number[]){
+ if(values.length<4||!values.every(v=>Number.isFinite(v)&&Number.isInteger(v)))throw Error('Invalid box-plot sample');
+ const min=Math.min(...values),max=Math.max(...values),spread=Math.max(1,max-min);
+ const magnitude=10**Math.floor(Math.log10(spread/7));
+ const step=[1,2,5,10].map(v=>v*magnitude).find(v=>spread/v<=9)??10*magnitude;
+ const start=Math.floor(min/step)*step,end=Math.ceil(max/step)*step;
+ const extent=Math.max(step,end-start),ticks:number[]=[];
+ for(let v=start;v<=end+step*1e-8;v+=step)ticks.push(Number(v.toFixed(8)));
+ return {start,end,step,ticks,position:(value:number)=>(value-start)/extent};
+}

@@ -16,6 +16,25 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: Generate PDF golden fixtures
+        run: npm run qa:pdf-samples
+      - name: Render first pages for visual review (when Poppler is available)
+        shell: bash
+        run: |
+          if command -v pdftoppm >/dev/null 2>&1; then
+            for file in qa-artifacts/pdf-samples/*-questions.pdf; do
+              pdftoppm -f 1 -l 1 -singlefile -r 110 -png "$file" "${file%.pdf}"
+            done
+          else
+            echo 'NOT RUN: pdftoppm is unavailable; inspect PDF artifacts manually.'
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r10-math-worksheet-golden-pdfs
+          path: qa-artifacts/pdf-samples/
+          retention-days: 7
+          if-no-files-found: warn
       - name: Verify preview is not indexable
         run: |
           grep -q 'noindex,nofollow' dist/index.html

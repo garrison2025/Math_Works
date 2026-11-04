@@ -1,7 +1,7 @@
 /** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
 import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicOptions} from './topic-options.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
-export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'line'|'clock'|'dots'; values: number[]; labels?: string[]};
+export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
 export const GENERATOR_VERSION='3' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
@@ -215,7 +215,7 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   make(`Find ${task} for [${values.join(', ')}] using median-of-halves.`,ans,
    `Q1=${normal(q.q1)}, median=${normal(q.median)}, Q3=${normal(q.q3)}, IQR=${normal(q.iqr)}`,
    `Fences: ${normal(q.q1-1.5*q.iqr)} and ${normal(q.q3+1.5*q.iqr)}; outliers: ${q.outliers.join(', ')||'none'}`,`Answer: ${ans}`);
-  diagram={kind:'box',values:[q.lower,q.q1,q.median,q.q3,q.upper,...q.outliers]};break}
+  diagram={kind:'box-practice',values};break}
  case 'scatter-plot-worksheets':{const trend=opts.trend==='mixed'?r.pick(['positive','negative']):opts.trend,s=trend==='positive'?1:-1,step=r.int(1,7),offset=r.int(8,30);make(`Determine trend of points (1,${s*step+offset}), (2,${s*step*2+offset}), (3,${s*step*3+offset}).`,trend,`Compare x with y values`,`As x increases, y ${s>0?'increases':'decreases'}`);diagram={kind:'scatter',values:[1,s*step+offset,2,s*step*2+offset,3,s*step*3+offset]};break}
  case 'printable-protractor':{const deg=opts.angleRange==='acute'?r.int(1,89):opts.angleRange==='obtuse'?r.int(91,179):r.int(0,180);make(`Locate the ${deg}° mark on a printed protractor.`,`${deg}°`,`Read degrees counterclockwise from the right-hand 0° baseline`,`Print at actual size (100%) and measure the 50 mm verification line.`);diagram={kind:'protractor',values:[50]};break}
  default: throw Error(`Topic not implemented: ${topicId}`)

@@ -94,3 +94,14 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [PASS locally] Finite-domain caps address number recognition, signed number line, fixed multiplication/division tables and easier Pythagorean tasks.
 - [IMPLEMENTED; CI PDF verification pending] PDFs and share URLs identify generator release v2. Prior unversioned links may produce different sets; a visible warning avoids promising legacy reproduction.
 - [NOT RUN] Chrome/Firefox hands-on download and mobile interaction, PDF page-image reviews on Letter/A4, physical printer 50 mm calibration. Continue `PUBLIC_INDEXABLE=false`; no custom domain purchased.
+
+
+## R9: 51 live topic selectors + independent mode-oracle tests (2026-11-04)
+
+- [PASS local] All 51 implemented (non-HOLD) topic generators now expose one genuinely active, validated specialization selector; 21 added in R9. This is **not** an assertion that all 55 V2 feature-contracts or per-topic gold fixtures are fully implemented/accepted.
+- [PASS local] `npm run test`: 40/40 tests including TypeScript. `npm run prepare:assets`: 51 topic preview WebP assets. A separate choice/difficulty/seed pressure test produced 27,150 complete worksheets with zero exceptions.
+- [PASS local] Missing-height problem SVG derives only known sides/bases from `diagramSpec`; the unknown length is rendered as `?`. Independent question-text formula tests cover new R9 geometry, domain/range, exact fraction sums, MAD, functions and angles.
+- [IMPLEMENTED] Generator version 3 in share URLs, worksheet identity and PDF metadata. Prior version-2 or unversioned links are not guaranteed to replay their old question sets; a visible warning is displayed.
+- [CI PENDING] PDF/Letter/A4 tests, full Astro SSG build and preview static SEO audit for the R9 commit must be verified from the R9 GitHub Actions run; local npm registry is unavailable.
+- [NOT RUN] Cross-browser real PDF clicks, physical printer calibration, visual PDF review of the six golden fixtures × Letter/A4, mobile accessibility keyboard journey and final teacher correctness signoff.
+- [SAFE] No purchases, paid API, accounts, analytics, advertising, custom canonical domain or indexation enabled. `*.pages.dev` remains `noindex,nofollow`.

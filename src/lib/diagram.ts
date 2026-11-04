@@ -1,5 +1,5 @@
 import type {Diagram} from './math';
-import {graphGeometry,scatterGeometry} from './graph.ts';
+import {graphGeometry,scatterGeometry,boxPracticeAxis} from './graph.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Vector graphics are generated from the same diagramSpec as the answer object. */
@@ -44,6 +44,12 @@ export function diagramSVG(d?:Diagram):string{
   case 'angle':{const deg=v[0],t=deg*Math.PI/180;parts=line(170,165,380,165)+line(170,165,170+155*Math.cos(t),165-155*Math.sin(t))+`<path d="M220 165 A50 50 0 0 0 ${170+50*Math.cos(t)} ${165-50*Math.sin(t)}" fill="none" stroke="#187b68" stroke-width="2"/>`+text(245,187,`${deg}°`);break}
   case 'line':{const n=v[0];parts=line(80,110,365,110)+(n!==2?`<circle cx="80" cy="110" r="5" fill="#172337"/>`:'')+(n===0?`<circle cx="365" cy="110" r="5" fill="#172337"/>`:'')+(n>=1?`<path d="M374 110l-15 -8v16z" fill="#1b64a5"/>`:'')+(n===2?`<path d="M71 110l15 -8v16z" fill="#1b64a5"/>`:'');break}
   case 'scatter':{const pts=scatterGeometry(d);parts=line(75,175,400,175)+line(75,175,75,20);for(const [u,z] of pts){const x=85+u*300,y=160-z*125;parts+=`<circle cx="${x}" cy="${y}" r="6" fill="#187b68"/>`;}break}
+  case 'box-practice':{
+   const axis=boxPracticeAxis(v),toX=(value:number)=>75+300*axis.position(value);
+   parts=line(65,112,395,112)+`<path d="M65 112l9 -6v12zM395 112l-9 -6v12z" fill="#1b64a5"/>`;
+   for(const tick of axis.ticks){const x=toX(tick);parts+=line(x,103,x,121)+text(x,146,String(tick));}
+   parts+=text(225,184,'Draw the box, median and whiskers after solving');
+   break}
   case 'box':{
    const all=[...v],lo=Math.min(...all),hi=Math.max(...all),range=Math.max(1,hi-lo),sx=(n:number)=>80+(n-lo)/range*310;
    parts=line(65,120,395,120)+`<rect x="${sx(v[1])}" y="90" width="${Math.max(1,sx(v[3])-sx(v[1]))}" height="60" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
