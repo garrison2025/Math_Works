@@ -25,7 +25,7 @@ for(const topic of mathTopics)test(`PDF roundtrip: ${topic}`,async()=>{
    assert.ok(Math.abs(page.getWidth()-width)<.015);
    assert.ok(Math.abs(page.getHeight()-height)<.015);
   }
-  assert.ok(doc.getTitle()?.includes(sheet.seed.toString()));
+  assert.ok(doc.getTitle()?.includes(sheet.seed.toString()));assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
  }
 });
 test('PDF steps reject unreviewed topics rather than imply verified solution',async()=>{

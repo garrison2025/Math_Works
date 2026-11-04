@@ -23,7 +23,7 @@ test('300 independent arithmetic oracles per route (14 independent operations)',
 });
 
 test('300 independent rational, percentages and notation oracles per route',()=>{
- verify('equivalent-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) = ____\/(\d+)/);assert.equal(n(m[3])%n(m[2]),0);return n(m[1])*n(m[3])/n(m[2]);});
+ verify('equivalent-fractions-worksheets',q=>{let m=q.match(/^(\d+)\/(\d+) = ____\/(\d+)/);if(m){assert.equal(n(m[3])%n(m[2]),0);return n(m[1])*n(m[3])/n(m[2]);}m=re(q,/^(\d+)\/(\d+) = (\d+)\/____/);return n(m[2])*n(m[3])/n(m[1]);});
  verify('adding-unlike-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) \+ (\d+)\/(\d+)/);assert.notEqual(m[2],m[4]);return asText(addR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4]))));});
  verify('multiplying-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) × (\d+)\/(\d+)/);return asText(mulR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4]))));});
  verify('fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) ([+−×]) (\d+)\/(\d+)/);const a=rational(BigInt(m[1]),BigInt(m[2])),b=rational(BigInt(m[4]),BigInt(m[5]));return asText(m[3]==='+'?addR(a,b):m[3]==='−'?addR(a,rational(-b.n,b.d)):mulR(a,b));});

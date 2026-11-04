@@ -1,1 +1,1 @@
-{"compilerOptions":{"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","strict":true,"skipLibCheck":true,"noEmit":true,"allowImportingTsExtensions":true},"include":["src/lib/math.ts","src/lib/diagram.ts","src/lib/graph.ts","src/lib/indexation.ts"]}
+{"compilerOptions":{"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","strict":true,"skipLibCheck":true,"noEmit":true,"allowImportingTsExtensions":true},"include":["src/lib/math.ts","src/lib/diagram.ts","src/lib/graph.ts","src/lib/topic-options.ts","src/lib/worksheet-link.ts","src/lib/indexation.ts"]}

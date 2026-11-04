@@ -66,3 +66,6 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED, CI pending] Added single-page blank protractor PDF and a dedicated route-only download button. The general exercise PDF reserves physical-size space and paginates rather than shrinking the protractor.
 - [IMPLEMENTED, CI pending] Export text maps Unicode function-table arrows to ASCII `->`; `test:pdf` includes a regression case.
 - [NOT RUN] Physical 50 ±1 mm printer measurement on an actual printed protractor and visual page-by-page PDF review. The updated CI run must PASS before treating PDF roundtrip tests as passing.
+
+## R7 development
+Thirteen route-specific selectors and reproducible links implemented. Independent browser/physical-print checks still NOT RUN. Custom domain not purchased; indexation disabled.
