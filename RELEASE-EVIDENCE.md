@@ -105,3 +105,12 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [CI PENDING] PDF/Letter/A4 tests, full Astro SSG build and preview static SEO audit for the R9 commit must be verified from the R9 GitHub Actions run; local npm registry is unavailable.
 - [NOT RUN] Cross-browser real PDF clicks, physical printer calibration, visual PDF review of the six golden fixtures × Letter/A4, mobile accessibility keyboard journey and final teacher correctness signoff.
 - [SAFE] No purchases, paid API, accounts, analytics, advertising, custom canonical domain or indexation enabled. `*.pages.dev` remains `noindex,nofollow`.
+
+### R10 CI and PDF visual-audit evidence
+
+- [PASS GitHub CI] Commit `d1e33f3e90e43889a01f2360fa62240ad3e4b56c`: all workflow steps passed, including `npm run test`, all-topic PDF tests, Astro build, static SEO audit and `noindex` verification.
+- [PASS artifact generation] The GitHub run `41800761538` produced artifact `r10-math-worksheet-golden-pdfs` (artifact ID `13306908011`; 30 PDFs; 7-day retention). The optional Poppler render step did not add PNGs, so rasterization was done separately in a local review environment.
+- [PASS structural review] 30 PDF files, 71 pages parsed in PyMuPDF; all Letter/A4 MediaBoxes matched intended paper dimensions and zero extracted text spans were detected outside page bounds.
+- [PASS sampled visual review] Rendered and inspected 11 pages across box-plot question sheets, scaled protractors and long multiplication worked-step sheets, plus an unlike-fractions answer sample. No visible clipping was observed in those sampled pages; this is **not** proof that all 71 pages were visually reviewed or that physical print size was verified.
+- [FOLLOW-UP] The first PDF artifact used route slugs as QA sample titles, unlike the end-user UI which already sends human-readable topic titles; subsequent sample exporter was corrected to pass `titleFor(slug)`.
+- [NOT RUN] Physical printed-protractor calibration, real Chrome/Firefox end-to-end browser downloads and educator sign-off. Preview release remains `noindex`.

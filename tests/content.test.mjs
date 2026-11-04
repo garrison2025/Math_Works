@@ -29,3 +29,12 @@ test('every published topic has useful contextual instructions and common mistak
   assert.ok(titleFor(route.slug).length>0 && topicIntro(route.slug).length>40,route.slug);
  }
 });
+
+
+test('R10 teaching guidance tracks the actual specialty and avoids incorrect equation claims',()=>{
+ assert.match(topicIntro('equivalent-fractions-worksheets'),/numerator or denominator/);
+ assert.match(howTo('box-plots-worksheets').join(' '),/1\.5×IQR/);
+ assert.doesNotMatch(commonMistakes('one-step-equations-worksheets').join(' '),/changes the sign of the solution/);
+ assert.match(commonMistakes('multiplying-fractions-worksheets').join(' '),/product/);
+ assert.match(howTo('number-recognition-worksheets').join(' '),/number word/);
+});

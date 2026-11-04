@@ -10,7 +10,7 @@ export const topicIntro=(slug:string)=>{
  const names:Record<string,string>={
   'two-step-equations-worksheets':'Practice solving equations that require undoing two operations. Each sheet includes a matching answer key and worked steps.',
   'one-step-equations-worksheets':'Create addition or multiplication equations with a single unknown and a unique solution.',
-  'equivalent-fractions-worksheets':'Find the missing numerator in equivalent fractions using the same scale factor on top and bottom.',
+  'equivalent-fractions-worksheets':'Find a missing numerator or denominator in equivalent fractions using the same scale factor on top and bottom.',
   'adding-unlike-fractions-worksheets':'Build confidence with common denominators, fraction addition and reducing exact answers.',
   'mean-median-mode-range-worksheets':'Practice the four most common ways to summarize small numerical data sets.',
   'box-plots-worksheets':'Find quartiles using the exclusive median-of-halves convention and read the five-number summary.',
@@ -20,6 +20,7 @@ export const topicIntro=(slug:string)=>{
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
+ if(slug.includes('box-plots'))return ['Order the observations and find the median.','Split into equal lower and upper halves, excluding the middle value for odd-sized samples.','Use the 1.5×IQR fences to identify outliers separately from the whisker endpoints.'];
  if(slug.includes('fraction'))return ['Read both numerators and denominators carefully.','Find a common denominator or simplify only when the operation requires it.','Compare your reduced fraction to the answer key.'];
  if(slug.includes('inequal'))return ['Identify the coefficient of the unknown and the comparison symbol.','Undo operations on both sides; flip < to > and ≤ to ≥ (or vice versa) when dividing by a negative.','Check a test value against the original inequality and mark open or closed endpoints as appropriate.'];
  if(slug.includes('equation') && !slug.includes('linear-equations') && !slug.includes('systems-equations'))return ['Identify the operations acting on the variable.','Apply inverse operations to isolate the variable on one side of the equals sign.','Substitute your answer into the original equation to check equality.'];
@@ -31,13 +32,12 @@ export function howTo(slug:string):string[]{
  if(slug.includes('scientific-notation'))return ['Move the decimal point until the leading number is at least 1 but less than 10.','Count the places moved to find the power of ten.','Use a negative exponent for numbers between zero and one.'];
  if(slug.includes('number-line'))return ['Find zero and the tick spacing.','Count left for negative values, right for positive values.','Mark the requested location, not its mirror image.'];
  if(slug.includes('coordinate-plane'))return ['Find the x- and y-axes and the origin.','Move right for positive x and up for positive y; move left or down for negative coordinates.','Check the quadrant against the two coordinate signs.'];
- if(slug.includes('box-plots'))return ['Order the observations and find the median.','Split into equal lower and upper halves, excluding the middle value for odd-sized samples.','Use the 1.5×IQR fences to identify outliers separately from the whisker endpoints.'];
  if(slug.includes('scatter-plot'))return ['Read every coordinate pair (x, y).','Look for an overall upward, downward or absent trend as x increases.','Base the answer on the pattern of all points, not one pair.'];
  if(slug.includes('mean-median-mode-range'))return ['Sort the observations before finding the median.','Divide their sum by the number of observations for the mean; count frequencies for mode.','Subtract minimum from maximum for the range.'];
  if(slug.includes('printable-protractor'))return ['Print using Actual size or 100%, with page fitting switched off.','Measure the printed 50 mm calibration line with a real ruler before using the scale.','Align the center and zero baseline to the angle before reading degrees.'];
  if(slug.includes('pythagorean'))return ['Locate the right angle; the opposite side is the hypotenuse.','Use a² + b² = c² with legs a and b.','Take the nonnegative square root to find the hypotenuse length.'];
  if(slug.includes('long-division'))return ['Divide the leading digits by the divisor.','Multiply, subtract, then bring down the next digit.','Check dividend = divisor × quotient + remainder, with remainder less than divisor.'];
- if(slug.includes('number-recognition'))return ['Count the dots carefully from left to right.','Match the count to the corresponding numeral.','Count a second time to check you did not skip or double-count a dot.'];
+ if(slug.includes('number-recognition'))return ['Read whether this question shows dots or a number word.','Count each dot once, or identify the numeral represented by the word.','Write the numeral and check it against the separate answer key.'];
  return ['Choose a difficulty and number of practice questions.','Solve the questions on your printable worksheet.','Use the separate answer key to verify each answer.'];
 }
 
@@ -45,8 +45,9 @@ export function howTo(slug:string):string[]{
 export function commonMistakes(slug:string):string[]{
  if(slug.includes('inequal'))return ['Forgetting to reverse the comparison sign after multiplying or dividing both sides by a negative number.', 'Using a closed dot for < or > instead of an open dot.'];
  if(slug.includes('two-step-equations'))return ['Undoing multiplication before undoing the added or subtracted constant.', 'Missing the sign of a negative coefficient when dividing.'];
- if(slug.includes('one-step-equations'))return ['Applying an inverse operation on only one side of the equation.', 'Forgetting that dividing by a negative number changes the sign of the solution.'];
+ if(slug.includes('one-step-equations'))return ['Applying an inverse operation on only one side of the equation.', 'Losing track of negative signs when dividing both sides by a negative coefficient.'];
  if(slug.includes('order-of-operations'))return ['Adding from left to right before completing multiplication.', 'Ignoring parentheses when the same numbers are regrouped.'];
+ if(slug.includes('multiplying-fractions'))return ['Multiplying one numerator by a denominator instead of numerator × numerator and denominator × denominator.', 'Failing to reduce the final product to lowest terms.'];
  if(slug.includes('fraction'))return ['Adding denominators when adding fractions.', 'Forgetting to simplify the resulting numerator and denominator.'];
  if(slug.includes('box-plots'))return ['Including the middle observation in both halves when using exclusive median-of-halves.', 'Extending whiskers to outliers instead of the last non-outlier observation.'];
  if(slug.includes('scatter-plot'))return ['Confusing the x and y positions on a coordinate grid.', 'Treating a pattern as necessarily causal.'];
