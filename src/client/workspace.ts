@@ -2,9 +2,11 @@ import {makeWorksheet,type Difficulty,type Worksheet} from '../lib/math';
 import {diagramSVG} from '../lib/diagram';
 import {titleFor} from '../lib/site';
 import {createWorksheetPdf,type PdfMode,type Paper} from '../lib/pdf';
+import {hasVerifiedSteps} from '../lib/capabilities';
 const esc=(s:string)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function setup(root:HTMLElement){
  const topic=root.dataset.topic||'';
+ const stepsEnabled=hasVerifiedSteps(topic);
  const field=<T extends HTMLElement>(name:string)=>root.querySelector<T>(`[data-field="${name}"]`)!;
  const difficulty=field<HTMLSelectElement>('difficulty'),quantity=field<HTMLSelectElement>('quantity'),paper=field<HTMLSelectElement>('paper'),seedInput=field<HTMLInputElement>('seed');
  const status=root.querySelector<HTMLElement>('[data-status]')!;
@@ -23,7 +25,7 @@ function setup(root:HTMLElement){
  function randomSeed(){const a=new Uint32Array(1);crypto.getRandomValues(a);seedInput.value=String(a[0]);rebuild();}
  difficulty.addEventListener('change',rebuild);quantity.addEventListener('change',rebuild);seedInput.addEventListener('change',rebuild);paper.addEventListener('change',render);
  root.querySelector<HTMLButtonElement>('[data-action="regenerate"]')!.addEventListener('click',randomSeed);
- root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode as PdfMode;render();}));
+ root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.mode==='steps'&&!stepsEnabled)return;mode=b.dataset.mode as PdfMode;render();}));
  root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',()=>{
   rebuild();if(!worksheet)return;
   let pageRule=document.getElementById('worksheet-print-page') as HTMLStyleElement|null;
@@ -31,7 +33,7 @@ function setup(root:HTMLElement){
   pageRule.textContent=`@page { size: ${paper.value==='A4'?'A4':'letter'}; margin: 12.7mm; }`;
   inform('Print dialog opened. Use Actual size / 100% for the protractor.');window.print();
  });
- for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-${m}-${worksheet.seed}-${paper.value.toLowerCase()}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded · Seed ${worksheet.seed}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
+ for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-${m}-${worksheet.seed}-${paper.value.toLowerCase()}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded · Seed ${worksheet.seed}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
  const url=new URL(window.location.href);const s=url.searchParams.get('seed');if(s&&/^\d+$/.test(s))seedInput.value=s;rebuild();
 }
 export function initWorkspaces(){document.querySelectorAll<HTMLElement>('[data-workspace]').forEach(el=>{if(el.dataset.ready)return;el.dataset.ready='true';setup(el);});}

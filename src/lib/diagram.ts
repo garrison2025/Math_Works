@@ -1,4 +1,5 @@
 import type {Diagram} from './math';
+import {graphGeometry} from './graph.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Vector graphics are generated from the same diagramSpec as the answer object. */
 export function diagramSVG(d?:Diagram):string{
@@ -13,7 +14,8 @@ export function diagramSVG(d?:Diagram):string{
  const text=(x:number,y:number,s:string)=>`<text x="${x}" y="${y}" fill="#172337" font-size="17" text-anchor="middle">${esc(s)}</text>`;
  const poly=(points:string)=>`<polygon points="${points}" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
  switch(d.kind){
-  case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]} height`);break;
+  case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
+  case 'triangle-angles':parts=poly('120,155 330,155 225,40')+text(166,146,`${v[0]}°`)+text(285,146,`${v[1]}°`)+text(225,79,`${v[2]}°`);break;
   case 'rectangle':parts=`<rect x="130" y="45" width="190" height="110" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`+text(225,178,`${v[0]} units`)+text(345,105,`${v[1]}`);break;
   case 'parallelogram':parts=poly('130,155 310,155 350,48 170,48')+line(170,48,170,155)+text(225,179,`${v[0]}`)+text(151,111,`${v[1]}`);break;
   case 'trapezoid':parts=poly('100,155 360,155 300,49 160,49')+text(230,179,`${v[0]}`)+text(230,40,`${v[1]}`)+text(375,111,`${v[2]}`);break;
@@ -26,9 +28,19 @@ export function diagramSVG(d?:Diagram):string{
    const closed=!op||op.includes('≤')||op.includes('≥');
    parts+=`<circle cx="${px(n)}" cy="105" r="8" fill="${closed?'#1b64a5':'white'}" stroke="#1b64a5" stroke-width="3"/>`;
    break}
-  case 'coordinate':{parts=line(30,110,420,110)+line(225,15,225,198);for(let i=-4;i<=4;i++){const x=225+40*i,y=110+20*i;parts+=line(x,104,x,116)+line(219,y,231,y)}if(v.length===2){const x=225+v[0]*14,y=110-v[1]*9;parts+=`<circle cx="${Math.max(35,Math.min(415,x))}" cy="${Math.max(20,Math.min(195,y))}" r="7" fill="#187b68"/>`;}else{parts+=line(225+v[0]*19,110-v[1]*12,225+v[2]*19,110-v[3]*12)}break}
+  case 'coordinate':
+  case 'linear-function':{
+   const g=graphGeometry(d),cx=225,cy=110,bw=172,bh=85;
+   const px=(z:number)=>cx+(z/g.boundX)*bw,py=(z:number)=>cy-(z/g.boundY)*bh;
+   const tickX=g.boundX<=9?2:g.boundX<=20?5:10,tickY=g.boundY<=9?2:g.boundY<=20?5:10;
+   for(let x=-g.boundX;x<=g.boundX;x+=tickX){const xx=px(x);parts+=`<line x1="${xx}" y1="25" x2="${xx}" y2="195" stroke="#e1e8ee" stroke-width="1"/>`;if(x!==0)parts+=text(xx,208,String(x));}
+   for(let y=-g.boundY;y<=g.boundY;y+=tickY){const yy=py(y);parts+=`<line x1="53" y1="${yy}" x2="397" y2="${yy}" stroke="#e1e8ee" stroke-width="1"/>`;if(y!==0)parts+=text(43,yy+5,String(y));}
+   parts+=line(53,cy,397,cy)+line(cx,25,cx,195)+text(410,cy-8,'x')+text(cx+12,17,'y');
+   if(g.segment){const [[x1,y1],[x2,y2]]=g.segment;parts+=`<line x1="${px(x1)}" y1="${py(y1)}" x2="${px(x2)}" y2="${py(y2)}" stroke="#187b68" stroke-width="3"/>`;}
+   for(const [x,y] of g.points){parts+=`<circle cx="${px(x)}" cy="${py(y)}" r="5" fill="#187b68" stroke="#fff" stroke-width="2"/>`+text(Math.min(399,px(x)+25),Math.max(18,py(y)-10),`(${x},${y})`);}
+   break}
   case 'angle':{const deg=v[0],t=deg*Math.PI/180;parts=line(170,165,380,165)+line(170,165,170+155*Math.cos(t),165-155*Math.sin(t))+`<path d="M220 165 A50 50 0 0 0 ${170+50*Math.cos(t)} ${165-50*Math.sin(t)}" fill="none" stroke="#187b68" stroke-width="2"/>`+text(245,187,`${deg}°`);break}
-  case 'line':{const n=v[0];parts=line(80,110,365,110)+`<circle cx="80" cy="110" r="5" fill="#172337"/><circle cx="365" cy="110" r="5" fill="#172337"/>`+(n>=1?`<path d="M374 110l-15 -8v16z" fill="#1b64a5"/>`:'')+(n===2?`<path d="M71 110l15 -8v16z" fill="#1b64a5"/>`:'');break}
+  case 'line':{const n=v[0];parts=line(80,110,365,110)+(n!==2?`<circle cx="80" cy="110" r="5" fill="#172337"/>`:'')+(n===0?`<circle cx="365" cy="110" r="5" fill="#172337"/>`:'')+(n>=1?`<path d="M374 110l-15 -8v16z" fill="#1b64a5"/>`:'')+(n===2?`<path d="M71 110l15 -8v16z" fill="#1b64a5"/>`:'');break}
   case 'scatter':{parts=line(75,175,400,175)+line(75,175,75,20);for(let i=0;i<v.length;i+=2){let x=85+v[i]*75,y=160-v[i+1]*6;parts+=`<circle cx="${x}" cy="${y}" r="6" fill="#187b68"/>`}break}
   case 'box':{
    const all=[...v],lo=Math.min(...all),hi=Math.max(...all),range=Math.max(1,hi-lo),sx=(n:number)=>80+(n-lo)/range*310;

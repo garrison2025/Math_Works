@@ -1,6 +1,8 @@
 /** Browser-side vector PDF export: no screenshots, server, external API, or student records. */
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import type {Worksheet, Problem, Diagram} from './math';
+import {graphGeometry} from './graph.ts';
+import {hasVerifiedSteps} from './capabilities.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
 const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.89]};
@@ -20,6 +22,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   page.drawLine({start:{x:sx+len,y:sy-3},end:{x:sx+len,y:sy+3},color:ink,thickness:.8});return;
  }
  if(d.kind==='triangle'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);l(.5,.88,.5,.12);return;}
+ if(d.kind==='triangle-angles'){l(.15,.12,.85,.12);l(.15,.12,.5,.88);l(.5,.88,.85,.12);page.drawText(`${d.values[0]} deg`,{x:x+w*.22,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[1]} deg`,{x:x+w*.66,y:y+h*.22,size:8,font,color:ink});page.drawText(`${d.values[2]} deg`,{x:x+w*.44,y:y+h*.70,size:8,font,color:ink});return;}
  if(d.kind==='rectangle'){page.drawRectangle({x:x+w*.2,y:y+h*.2,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.5});return;}
  if(d.kind==='parallelogram'){l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);return;}
  if(d.kind==='trapezoid'){l(.1,.15,.9,.15);l(.9,.15,.7,.85);l(.7,.85,.3,.85);l(.3,.85,.1,.15);return;}
@@ -40,12 +43,23 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    for(const outlier of vals.slice(5))page.drawCircle({x:x+p(outlier)*w,y:y+.5*h,size:3,color:rgb(1,1,1),borderColor:accent,borderWidth:1});
   }return;
  }
- if(d.kind==='scatter'||d.kind==='coordinate'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);if(d.kind==='scatter'){for(let i=0;i<d.values.length;i+=2)dot(.14+d.values[i]*.18,Math.max(.1,Math.min(.95,.2+d.values[i+1]*.018)));}else if(d.values.length===2)dot(.5+d.values[0]*.025,.5+d.values[1]*.026);else{l(.2,.2,.8,.8);}return;}
+ if(d.kind==='scatter'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);for(let i=0;i<d.values.length;i+=2)dot(.14+d.values[i]*.18,Math.max(.1,Math.min(.95,.2+d.values[i+1]*.018)));return;}
+ if(d.kind==='coordinate'||d.kind==='linear-function'){
+  const g=graphGeometry(d),mx=(z:number)=>.5+z/g.boundX*.44,my=(z:number)=>.5+z/g.boundY*.42;
+  l(.06,.5,.94,.5);l(.5,.07,.5,.93);
+  const tickX=g.boundX<=9?2:g.boundX<=20?5:10,tickY=g.boundY<=9?2:g.boundY<=20?5:10;
+  for(let i=-g.boundX;i<=g.boundX;i+=tickX)l(mx(i),.48,mx(i),.52);
+  for(let i=-g.boundY;i<=g.boundY;i+=tickY)l(.48,my(i),.52,my(i));
+  if(g.segment){const [[x1,y1],[x2,y2]]=g.segment;l(mx(x1),my(y1),mx(x2),my(y2));}
+  for(const [vx,vy] of g.points){dot(mx(vx),my(vy));page.drawText(`(${vx},${vy})`,{x:x+mx(vx)*w+4,y:y+my(vy)*h+5,size:7,font,color:ink});}
+  return;
+ }
  if(d.kind==='angle'){l(.25,.15,.9,.15);const a=d.values[0]*Math.PI/180;l(.25,.15,.25+.6*Math.cos(a),.15+.6*Math.sin(a));return;}
- if(d.kind==='line'){l(.1,.5,.9,.5);dot(.1,.5);dot(.9,.5);return;}
+ if(d.kind==='line'){l(.1,.5,.9,.5);const n=d.values[0];if(n!==2)dot(.1,.5);if(n===0)dot(.9,.5);if(n>=1){l(.86,.55,.9,.5);l(.86,.45,.9,.5);}if(n===2){l(.14,.55,.1,.5);l(.14,.45,.1,.5);}return;}
  if(d.kind==='dots'){for(let i=0;i<d.values[0];i++)dot(.15+(i%6)*.13,.3+Math.floor(i/6)*.4);}
 }
 export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:PdfMode,paper:Paper):Promise<Uint8Array>{
+ if(mode==='steps'&&!hasVerifiedSteps(sheet.topicId))throw new Error('Worked steps are not yet verified for this topic');
  const pdf=await PDFDocument.create();const [pw,ph]=PAGE_SIZE[paper];const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
  const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode==='questions'&&!hasDiagrams;
  let page:PDFPage;let currentY=0;let pageNum=0;

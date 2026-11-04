@@ -13,6 +13,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-audit --no-fund
       - run: npm run test
+      - run: npm run test:pdf
       - run: npm run build
       - name: Verify preview is not indexable
         run: |

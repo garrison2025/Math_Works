@@ -1,8 +1,11 @@
 ---
 import '../styles/global.css';
+import topics from '../data/routes.json';
+import {isIndexablePath,absoluteSite} from '../lib/indexation';
 const {title,description,canonicalPath='/'}=Astro.props;
-const base=(import.meta.env.PUBLIC_SITE_URL||'').replace(/\/$/,'');
-const indexed=import.meta.env.PUBLIC_INDEXABLE==='true' && base && !base.includes('.pages.dev') && !base.includes('example.com');
+const release={site:import.meta.env.PUBLIC_SITE_URL||'', enabled:import.meta.env.PUBLIC_INDEXABLE||'', routes:import.meta.env.PUBLIC_INDEXABLE_ROUTES||'', branch:process.env.CF_PAGES_BRANCH||''};
+const base=absoluteSite(release);
+const indexed=isIndexablePath(canonicalPath,release,topics);
 const canonical=indexed?`${base}${canonicalPath}`:undefined;
 const structured=indexed?{"@context":"https://schema.org","@type":"WebApplication",name:"Printable Math Worksheet Studio",url:canonical,applicationCategory:"EducationalApplication",operatingSystem:"Web browser",offers:{"@type":"Offer",price:"0",priceCurrency:"USD"},description}:undefined;
 ---

@@ -21,12 +21,14 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 | Access/privacy | NO backend or student account; Cloudflare request metadata may exist; analytics/ads not installed |
 | External service/live deployment | NOT RUN / NO custom domain |
 
-## Correctness follow-up (2026-11-04)
+## Math and print correctness follow-up (2026-11-04)
 
-- Unlike-fraction denominators are guaranteed to differ; 5,000-seed oracle test PASS locally.
-- SVG/PDF number lines now scale across signed ranges; box-plots render outliers separately from whiskers; dedicated SVG regressions PASS locally.
-- Native print respects selected Letter or A4 size. Invalid seed clears stale worksheet state. Browser print path remains NOT RUN.
-- Local Node suite now reports 12 passed tests. GitHub CI for this follow-up commit still needs its own run.
+- `adding-unlike-fractions-worksheets`: denominator generation now guarantees unequal denominators; 5,000-seed independent fraction oracle regression PASS locally.
+- SVG/PDF number lines use dynamic scales so markers remain visible for large signed/inequality endpoints; 4,000-seed SVG regression PASS locally.
+- Box plots render whiskers from non-outlier observations, and mark outliers separately in HTML/SVG and PDF. A dedicated vector regression is PASS locally.
+- Native print sets Letter/A4 from the user's current selector, preventing a stale Letter-only page rule. Browser print verification remains NOT RUN.
+- Invalid worksheet input clears stale state rather than silently printing the previous worksheet. Browser interaction verification remains NOT RUN.
+- Local Node test suite now includes 12 cases, all PASS. The GitHub CI result reported earlier applies to the previous commit; the follow-up commit needs a new CI check.
 
 ## Blocking next checks
 

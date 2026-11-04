@@ -1,1 +1,1 @@
-{"compilerOptions":{"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"skipLibCheck":true,"noEmit":false,"outDir":"/tmp/mathworks-check"},"include":["src/lib/math.ts"]}
+{"compilerOptions":{"target":"ES2022","module":"ESNext","moduleResolution":"Bundler","strict":true,"skipLibCheck":true,"noEmit":true,"allowImportingTsExtensions":true},"include":["src/lib/math.ts","src/lib/diagram.ts","src/lib/graph.ts","src/lib/indexation.ts"]}
