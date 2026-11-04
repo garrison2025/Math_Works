@@ -1,6 +1,6 @@
 /** Browser-side vector PDF export: no screenshots, server, external API, or student records. */
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
-import {quartiles,type Worksheet, type Problem, type Diagram} from './math';
+import {quartiles,type Worksheet, type Problem, type Diagram} from './math.ts';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
