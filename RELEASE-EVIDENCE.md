@@ -124,3 +124,11 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [PASS representative PDF review] CI output produced 42 deterministic Letter/A4 PDFs, totaling 138 pages. A PyMuPDF pass found zero text blocks outside the PDF MediaBox. The first pages of long division and three-digit multiplication were rasterized and visually inspected without visible text clipping; this is a sample, not complete visual acceptance.
 - [PASS preview HTML sampling] The Cloudflare `pages.dev` multiplication and number-recognition routes still return `noindex,nofollow` and contain the revised worksheet descriptions. External live-browser downloads on Cloudflare were not directly run: tested browser origin was the exact GitHub-built static bundle.
 - [NOT RUN] Firefox, physical paper and 50 ±1mm protractor calibration, all 138 PDF pages individually inspected, screen reader / teacher sign-off. Preview SEO stays blocked until release approval.
+
+
+## R12: true-angle diagram & PDF parity (2026-11-04)
+
+- [PASS local] 52/52 math/content tests and TypeScript checks, including 3,000 random triangle angle reconstructions. SVGs show the given angles and hide the missing interior angle.
+- [IMPLEMENTED] PDF and SVG use shared triangle vertex geometry. PDF illustrations show known shape dimensions and retain `?` for unknown heights.
+- [IMPLEMENTED; VERIFY CI] Added live Chromium checks for triangle and trapezoid PDF downloads and 4 new sets of Letter/A4 geometry PDF fixtures.
+- [NOT RUN] Firefox browser downloads, physical printed-protractor 50mm ruler test, complete manual visual inspection of every PDF page and educator approval. `PUBLIC_INDEXABLE=false` remains required.
