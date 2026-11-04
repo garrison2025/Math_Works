@@ -23,12 +23,28 @@ test('300 independent arithmetic oracles per route (14 independent operations)',
 });
 
 test('300 independent rational, percentages and notation oracles per route',()=>{
- verify('equivalent-fractions-worksheets',q=>{let m=q.match(/^(\d+)\/(\d+) = ____\/(\d+)/);if(m){assert.equal(n(m[3])%n(m[2]),0);return n(m[1])*n(m[3])/n(m[2]);}m=re(q,/^(\d+)\/(\d+) = (\d+)\/____/);return n(m[2])*n(m[3])/n(m[1]);});
+ verify('equivalent-fractions-worksheets',q=>{
+  let m=q.match(/^(\d+)\/(\d+) = ____\/(\d+)/);
+  if(m){assert.equal(n(m[3])%n(m[2]),0);return n(m[1])*n(m[3])/n(m[2]);}
+  m=re(q,/^(\d+)\/(\d+) = (\d+)\/____/);
+  assert.equal(n(m[3])%n(m[1]),0);return n(m[2])*n(m[3])/n(m[1]);
+ });
  verify('adding-unlike-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) \+ (\d+)\/(\d+)/);assert.notEqual(m[2],m[4]);return asText(addR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4]))));});
  verify('multiplying-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) × (\d+)\/(\d+)/);return asText(mulR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4]))));});
  verify('fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) ([+−×]) (\d+)\/(\d+)/);const a=rational(BigInt(m[1]),BigInt(m[2])),b=rational(BigInt(m[4]),BigInt(m[5]));return asText(m[3]==='+'?addR(a,b):m[3]==='−'?addR(a,rational(-b.n,b.d)):mulR(a,b));});
- verify('percentages-worksheets',q=>{const m=re(q,/^Convert (\d+)\/(\d+) into a percentage/);return `${Number((n(m[1])/n(m[2])*100).toFixed(6))}%`;});
- verify('scientific-notation-worksheets',q=>{const m=re(q,/Write (\d+(?:\.\d+)?) in scientific notation/);const value=n(m[1]);let exponent=Math.floor(Math.log10(value));const mantissa=Number((value/10**exponent).toFixed(8));return `${mantissa} × 10^${exponent}`;});
+ verify('percentages-worksheets',q=>{
+  let m=q.match(/^Convert (\d+)\/(\d+) into a percentage/);
+  if(m)return `${Number((n(m[1])/n(m[2])*100).toFixed(6))}%`;
+  m=re(q,/^Convert (\d+(?:\.\d+)?)% into a fraction in simplest form/);
+  const digits=m[1].split('.')[1]?.length||0,scale=10**digits;
+  return frac(Math.round(n(m[1])*scale),100*scale);
+ });
+ verify('scientific-notation-worksheets',q=>{
+  let m=q.match(/^Write (\d+(?:\.\d+)?) in scientific notation/);
+  if(m){const value=n(m[1]);let exponent=Math.floor(Math.log10(value));const mantissa=Number((value/10**exponent).toFixed(8));return `${mantissa} × 10^${exponent}`;}
+  m=re(q,/^Write (\d+(?:\.\d+)?) × 10\^(-?\d+) in standard form/);
+  return String(Number((n(m[1])*10**n(m[2])).toFixed(6)));
+ });
 });
 
 test('300 independent algebra and graph oracles per route',()=>{
@@ -36,7 +52,18 @@ test('300 independent algebra and graph oracles per route',()=>{
  verify('one-step-equations-worksheets',q=>{let m=q.match(/^Solve: x ([+−]) (\d+) = (-?\d+)/);if(m)return `x = ${n(m[3])-(m[1]==='+'?n(m[2]):-n(m[2]))}`;m=re(q,/^Solve: (-?\d+)x = (-?\d+)/);return `x = ${n(m[2])/n(m[1])}`;});
  verify('inequalities-worksheets',q=>{const m=re(q,/^Solve: (-?\d+)x ([+−]) (\d+) ([<≤]) (-?\d+)/);const b=m[2]==='+'?n(m[3]):-n(m[3]),a=n(m[1]);const op=a<0?(m[4]==='<'?'>':'≥'):m[4];return `x ${op} ${(n(m[5])-b)/a}`;});
  verify('systems-equations-worksheets',q=>{const m=re(q,/^Solve: x \+ y = (-?\d+); x − y = (-?\d+)/);return `x = ${(n(m[1])+n(m[2]))/2}, y = ${(n(m[1])-n(m[2]))/2}`;});
- for(const slug of ['functions-worksheets','linear-equations-worksheets'])verify(slug,(q,p)=>{let m=slug==='functions-worksheets'?re(q,/If f\(x\) = (-?\d+)x ([+−]) (\d+), find f\((-?\d+)\)/):re(q,/For y = (-?\d+)x ([+−]) (\d+), find y when x = (-?\d+)/);const y=n(m[1])*n(m[4])+(m[2]==='+'?n(m[3]):-n(m[3]));if(slug==='linear-equations-worksheets'){const d=p.diagramSpec;assert.equal(d.kind,'linear-function');assert.deepEqual(d.values,[n(m[1]),m[2]==='+'?n(m[3]):-n(m[3]),n(m[4]),y]);const g=graphGeometry(d);assert.deepEqual(g.points,[], 'practice graph must not label the requested answer');assert.ok(g.segment[0][0]<=n(m[4])&&g.segment[1][0]>=n(m[4]));}return y;});
+ for(const slug of ['functions-worksheets','linear-equations-worksheets'])verify(slug,(q,p)=>{
+  const inverse=q.match(/If f\(x\) = (-?\d+)x ([+−]) (\d+) and f\(x\) = (-?\d+), find x/);
+  if(inverse){const intercept=inverse[2]==='+'?n(inverse[3]):-n(inverse[3]);return (n(inverse[4])-intercept)/n(inverse[1]);}
+  const m=slug==='functions-worksheets'?re(q,/If f\(x\) = (-?\d+)x ([+−]) (\d+), find f\((-?\d+)\)/):re(q,/For y = (-?\d+)x ([+−]) (\d+), find y when x = (-?\d+)/);
+  const y=n(m[1])*n(m[4])+(m[2]==='+'?n(m[3]):-n(m[3]));
+  if(slug==='linear-equations-worksheets'){
+    const d=p.diagramSpec;assert.equal(d.kind,'linear-function');assert.deepEqual(d.values,[n(m[1]),m[2]==='+'?n(m[3]):-n(m[3]),n(m[4]),y]);
+    const g=graphGeometry(d);assert.deepEqual(g.points,[], 'practice graph must not label the requested answer');
+    assert.ok(g.segment[0][0]<=n(m[4])&&g.segment[1][0]>=n(m[4]));
+  }
+  return y;
+ });
  verify('slope-worksheets',(q,p)=>{const m=re(q,/slope through \((-?\d+), (-?\d+)\) and \((-?\d+), (-?\d+)\)/);const [x1,y1,x2,y2]=m.slice(1).map(n);const g=graphGeometry(p.diagramSpec);assert.deepEqual(g.points,[[x1,y1],[x2,y2]]);return x1===x2?'undefined':String((y2-y1)/(x2-x1));});
  verify('coordinate-plane-worksheets',(q,p)=>{const m=re(q,/contains \((-?\d+), (-?\d+)\)/);const [x,y]=m.slice(1).map(n);assert.deepEqual(graphGeometry(p.diagramSpec).points,[[x,y]]);return x>0?(y>0?'I':'IV'):(y>0?'II':'III');});
 });

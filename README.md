@@ -62,5 +62,19 @@ The **Printable Protractor** topic now has a dedicated button that downloads a s
 
 **Printing must use Actual size / 100%.** Physical printer measurement of 50 ±1 mm is still NOT RUN; PDF page dimensions and the pure geometry contract are automatically tested.
 
-## R7 topic-specific controls
-Thirteen key topics now offer real operation, fraction, coefficient, times-table, statistics, number-line, scatter and quadrant selectors. Worksheet and answer PDFs include matching configuration identifiers; a share link restores the selected settings. All pages.dev previews remain noindex.
+### Deployed preview and R6 editorial/mobile checks (2026-11-04)
+
+- Current preview: https://math-works.pages.dev/ (not a purchased custom domain). Live HTTP extraction confirmed the homepage, two-step equations route and robots.txt returned content; both sampled HTML pages emit `noindex,nofollow`. This is **not** a real-browser interaction test.
+- On narrow mobile screens, the worksheet preview now comes first, with a visible "Customize & download" link down to the parameter controls. Visual screenshots and touch workflow still require verification.
+- Teaching guidance now separates equations from inequalities, so ordinary equation help no longer tells pupils to flip inequality symbols.
+- Arithmetic-topic classification includes order of operations, number recognition, and number lines; topic pages include context-specific common-mistake warnings.
+- `npm run audit:static` checks that each built route has HTML, title, description, H1, `noindex`, no canonical or rich-result markup, and a real static sample WebP; HOLD routes must not appear. The check runs after `npm run build` in GitHub Actions.
+- Keep `PUBLIC_INDEXABLE=false` until a domain is owned and each route passes release QA.
+
+## R8: functional topic selectors and controlled worksheet quantity
+
+- 17 additional specialized selectors bring the total to **30 functional topic setting groups**. Examples: regrouping/borrowing, decimals, proper/improper fraction products, place value, percent/scientific conversion direction, inverse function questions, vertical slope, missing prism height, and box-plot focus.
+- Generator validation prevents requesting more distinct questions than a chosen topic can supply. A precomputed legal-pair pool makes no-regrouping multiplication reliable; expanded Pythagorean triples improve worksheet variety.
+- New share URLs contain `gv=2` and PDF metadata includes generator version, seed and configuration fingerprint. **Old unversioned share links may not reproduce their original questions**, and the interface warns about this; historical generator replay is not implemented.
+- Local TypeScript and 34 Node tests passed, including 51 × 1,000 generator checks, full preset quantity coverage, and share-link reconstruction. PDF and Astro builds are checked separately in GitHub Actions.
+- No change to 55 route contracts, 488 keyword research entries, 4 HOLD routes or preview-site `noindex`. Browser interaction, PDF visual inspection and physical printer measurement remain unverified.

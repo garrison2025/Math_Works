@@ -25,7 +25,8 @@ for(const topic of mathTopics)test(`PDF roundtrip: ${topic}`,async()=>{
    assert.ok(Math.abs(page.getWidth()-width)<.015);
    assert.ok(Math.abs(page.getHeight()-height)<.015);
   }
-  assert.ok(doc.getTitle()?.includes(sheet.seed.toString()));assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
+  assert.ok(doc.getTitle()?.includes(sheet.seed.toString()));
+  assert.ok(doc.getTitle()?.includes(sheet.optionsHash),`PDF config identity missing: ${topic} ${paper} ${mode}`);
  }
 });
 test('PDF steps reject unreviewed topics rather than imply verified solution',async()=>{
@@ -61,5 +62,50 @@ test('protractor exercise sheets reserve enough physical space per page',async()
   const sheet=makeWorksheet('printable-protractor',20261104,4);
   const doc=await PDFDocument.load(await createWorksheetPdf(sheet,'Printable Protractor','questions',paper));
   assert.ok(doc.getPageCount()>=2,`${paper} failed to break full-size protractors across pages`);
+ }
+});
+
+
+test('PDF config fingerprint distinguishes selected fraction operations without changing answer identity',async()=>{
+ const addition=makeWorksheet('fractions-worksheets',20261104,8,'standard',{operation:'addition'});
+ const subtraction=makeWorksheet('fractions-worksheets',20261104,8,'standard',{operation:'subtraction'});
+ assert.notEqual(addition.optionsHash,subtraction.optionsHash);
+ for(const sheet of [addition,subtraction]){
+  const [practice,answers]=await Promise.all([
+   createWorksheetPdf(sheet,'Fraction Practice','questions','Letter'),
+   createWorksheetPdf(sheet,'Fraction Practice','answers','Letter')
+  ]);
+  for(const bytes of [practice,answers]){
+   const doc=await PDFDocument.load(bytes);
+   assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
+   assert.ok(doc.getPageCount()>=1);
+  }
+  assert.equal(sheet.answerMap.length,sheet.problems.length);
+  sheet.answerMap.forEach((v,i)=>assert.equal(v.answer,sheet.problems[i].expectedAnswer));
+ }
+});
+
+test('selected topic choices keep practice and answer PDF metadata aligned',async()=>{
+ const examples=[
+  ['addition-worksheets',{regrouping:'no'}],
+  ['subtraction-worksheets',{borrowing:'yes'}],
+  ['percentages-worksheets',{direction:'percent-to-fraction'}],
+  ['functions-worksheets',{task:'solve-input'}],
+  ['volume-of-rectangular-prisms-worksheets',{task:'missing-height'}],
+  ['scientific-notation-worksheets',{direction:'to-standard'}]
+ ];
+ for(const [topic,options] of examples){
+  const sheet=makeWorksheet(topic,1956,8,'challenge',options);
+  const [practice,answerKey]=await Promise.all([
+   createWorksheetPdf(sheet,topic,'questions','A4'),
+   createWorksheetPdf(sheet,topic,'answers','A4')
+  ]);
+  for(const bytes of [practice,answerKey]){
+   const doc=await PDFDocument.load(bytes);
+   assert.ok(doc.getTitle()?.includes(sheet.optionsHash),`${topic}: configuration metadata absent`);
+   assert.ok(doc.getTitle()?.includes('1956'),`${topic}: seed metadata absent`);
+   assert.ok(doc.getPageCount()>=1);
+  }
+  assert.deepEqual(sheet.problems.map(({id,expectedAnswer})=>({id,answer:expectedAnswer})),sheet.answerMap);
  }
 });

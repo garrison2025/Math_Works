@@ -67,5 +67,21 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED, CI pending] Export text maps Unicode function-table arrows to ASCII `->`; `test:pdf` includes a regression case.
 - [NOT RUN] Physical 50 ±1 mm printer measurement on an actual printed protractor and visual page-by-page PDF review. The updated CI run must PASS before treating PDF roundtrip tests as passing.
 
-## R7 development
-Thirteen route-specific selectors and reproducible links implemented. Independent browser/physical-print checks still NOT RUN. Custom domain not purchased; indexation disabled.
+## R6: pages.dev live content and publishing safety review (2026-11-04)
+
+- [PASS — remote HTML fetch] https://math-works.pages.dev/ and `/two-step-equations-worksheets/` returned English content with the expected titles, descriptions, links and `noindex,nofollow` meta directive; `/robots.txt` was accessible. This is a sampled content audit, **not** Chrome/Firefox visual or interactivity evidence.
+- [PASS — local] Reassigned order of operations, number recognition and number line to arithmetic grouping; equation guidance no longer mentions inequality sign reversal, while inequality guidance does. Added 3 focused tests to the previously passing local suite (26 in total).
+- [IMPLEMENTED, visual NOT RUN] Mobile preview precedes the settings panel on narrow devices, with a keyboard-focusable jump link to configuration and download controls.
+- [IMPLEMENTED, CI pending] Topic-specific common mistakes added to topic HTML. `scripts/audit-static.mjs` verifies 51 built topic routes, static real sample images and strict preview `noindex` and no canonical leakage.
+- [NOT RUN] Browser PDF clicks, visual breakpoints, actual physical printing, font rendering and accessibility tab-order interaction.
+- Domain: **NOT PURCHASED**. Do not set indexability flags, create a paid API account, install analytics/ads, or submit the preview to GSC.
+
+## R8: parameter semantics and random-generation reliability (2026-11-04)
+
+- [IMPLEMENTED] 30 functional topic-specific control groups, up from 13, with strict allowable values and mathematical generation behavior.
+- [PASS — local] TypeScript check and 34 mathematics/SEO/content/link tests, including independent mathematical oracles and per-choice semantic checks.
+- [PASS — local] 46,125 seed × difficulty × choice × worksheet combinations completed without generation failure; 2,000 seeds × 20 non-regrouping multiplication questions also passed.
+- [IMPLEMENTED] Explicit limits for finite question spaces, more Pythagorean triples, stable v2 identity in share links and PDF metadata. Historical v1 links are not guaranteed identical; show a warning.
+- [CI PENDING] GitHub PDF tests, Astro SSG build and static SEO audit for this commit.
+- [NOT RUN] Chrome/Firefox interactive flows, mobile screen screenshots, rendered PDF visual pagination on Letter/A4 and physical 50 mm protractor calibration.
+- [HOLD] Domain is not purchased; `PUBLIC_INDEXABLE=false`. No AdSense, analytics, hosted APIs or paid infrastructure.

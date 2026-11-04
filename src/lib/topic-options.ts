@@ -1,31 +1,71 @@
-export type TopicOptions=Record<string,string>;
-export type Choice={value:string;label:string};
-export type TopicOptionDefinition={key:string;label:string;hint:string;defaultValue:string;choices:readonly Choice[]};
-const choices=(...values:string[]):Choice[]=>values.map(value=>({value,label:value.replace(/-/g,' ').replace(/^./,x=>x.toUpperCase())}));
-const field=(key:string,label:string,hint:string,items:Choice[]):TopicOptionDefinition=>({key,label,hint,defaultValue:items[0].value,choices:items});
-const mixed=(...values:string[])=>choices('mixed',...values);
+/** Topic-specific choices are part of the deterministic generator contract. */
+export type TopicOptions = Record<string,string>;
+export type Choice = { value:string; label:string };
+export type TopicOptionDefinition = { key:string; label:string; hint:string; defaultValue:string; choices:readonly Choice[] };
+const choice=(...values:string[]):Choice[]=>values.map(value=>({value,label:value.replace(/-/g,' ').replace(/^./,ch=>ch.toUpperCase())}));
+const entry=(key:string,label:string,hint:string,values:readonly Choice[]):TopicOptionDefinition=>({key,label,hint,defaultValue:values[0].value,choices:values});
+const mixed=(...values:string[])=>choice('mixed',...values);
 export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionDefinition[]>>={
-'integer-operations-worksheets':[field('operation','Integer operation','Choose addition, subtraction, multiplication, division or all.',mixed('addition','subtraction','multiplication','division'))],
-'one-step-equations-worksheets':[field('operation','Equation form','Practice additive or multiplicative equations.',mixed('addition','multiplication'))],
-'two-step-equations-worksheets':[field('coefficient','Coefficient sign','Positive or negative coefficients.',mixed('positive','negative'))],
-'inequalities-worksheets':[field('coefficient','Coefficient sign','Negative coefficients reverse the inequality symbol.',mixed('positive','negative'))],
-'order-of-operations-worksheets':[field('grouping','Grouping','With or without parentheses.',mixed('parentheses','no-parentheses'))],
-'equivalent-fractions-worksheets':[field('missing','Missing fraction part','Find a missing numerator or denominator.',mixed('numerator','denominator'))],
-'fractions-worksheets':[field('operation','Fraction operation','Choose a specific fraction operation.',mixed('addition','subtraction','multiplication'))],
-'multiplication-tables-worksheets':[field('table','Times table','Pick a single table or practice all 1–12.',[{value:'mixed',label:'Mixed 1–12'},...Array.from({length:12},(_,i)=>({value:String(i+1),label:String(i+1)+' times table'}))])],
-'long-division-worksheets':[field('remainder','Remainder practice','With or without remainders.',mixed('yes','no'))],
-'mean-median-mode-range-worksheets':[field('statistic','Statistics skill','Mean, median, mode or range.',mixed('mean','median','mode','range'))],
-'scatter-plot-worksheets':[field('trend','Trend direction','Positive or negative trends.',mixed('positive','negative'))],
-'number-line-worksheets':[field('sign','Target number sign','Positive or negative integers.',mixed('positive','negative'))],
-'coordinate-plane-worksheets':[field('quadrant','Quadrant','Practice a specific quadrant.',[{value:'mixed',label:'Mixed quadrants'},...['I','II','III','IV'].map(value=>({value,label:'Quadrant '+value}))])]
+ 'integer-operations-worksheets':[entry('operation','Integer operation','Target one operation or combine all four.',mixed('addition','subtraction','multiplication','division'))],
+ 'one-step-equations-worksheets':[entry('operation','Equation form','Practice additive equations, multiplicative equations, or both.',mixed('addition','multiplication'))],
+ 'two-step-equations-worksheets':[entry('coefficient','Coefficient sign','Focus on positive or negative coefficients.',mixed('positive','negative'))],
+ 'inequalities-worksheets':[entry('coefficient','Coefficient sign','Negative coefficients require reversing the inequality sign.',mixed('positive','negative'))],
+ 'order-of-operations-worksheets':[entry('grouping','Expression grouping','Select parentheses, no parentheses, or both.',mixed('parentheses','no-parentheses'))],
+ 'equivalent-fractions-worksheets':[entry('missing','Missing part','Choose which part of the equivalent fraction is blank.',mixed('numerator','denominator'))],
+ 'fractions-worksheets':[entry('operation','Fraction operation','Practice addition, subtraction, multiplication, or a mix.',mixed('addition','subtraction','multiplication'))],
+ 'multiplication-tables-worksheets':[entry('table','Times table','Target one times table or mix all tables 1 through 12.',[{value:'mixed',label:'Mixed 1–12'},...Array.from({length:12},(_,i)=>({value:String(i+1),label:`${i+1} times table`}))])],
+ 'long-division-worksheets':[entry('remainder','Remainder practice','Choose exact divisions, remainders, or both.',mixed('yes','no'))],
+ 'mean-median-mode-range-worksheets':[entry('statistic','Statistics skill','Target one statistic or practice the full set.',mixed('mean','median','mode','range'))],
+ 'scatter-plot-worksheets':[entry('trend','Trend direction','Focus on positive or negative linear relationships.',mixed('positive','negative'))],
+ 'number-line-worksheets':[entry('sign','Target number sign','Practice placing negative or positive integers.',mixed('positive','negative'))],
+ 'coordinate-plane-worksheets':[entry('quadrant','Quadrant','Practice a specific quadrant or all four.',[{value:'mixed',label:'Mixed quadrants'},...['I','II','III','IV'].map(value=>({value,label:`Quadrant ${value}`}))])],
+ 'two-digit-by-one-digit-multiplication-worksheets':[entry('regrouping','Regrouping','Choose multiplication with or without a carry.',mixed('yes','no'))],
+ 'addition-worksheets':[entry('regrouping','Addition carrying','Target addition with or without regrouping.',mixed('yes','no'))],
+ 'subtraction-worksheets':[entry('borrowing','Subtraction borrowing','Target subtraction requiring a borrow or no borrow.',mixed('yes','no'))],
+ 'decimal-multiplication-worksheets':[entry('places','Decimal places','Number of decimal places in each factor.',[{value:'mixed',label:'Mixed 1–2 places'},{value:'1',label:'1 place each'},{value:'2',label:'2 places each'}])],
+ 'multiplying-fractions-worksheets':[entry('result','Fraction result','Select a proper or improper product.',mixed('proper','improper'))],
+ 'place-value-worksheets':[entry('place','Place to practice','Choose which digit position to identify.',mixed('ones','tens','hundreds','thousands'))],
+ 'decimal-place-value-worksheets':[entry('place','Decimal place','Choose tenths, hundredths or thousandths.',mixed('tenths','hundredths','thousandths'))],
+ 'percentages-worksheets':[entry('direction','Conversion direction','Convert a fraction to a percent or a percent to a simplest fraction.',mixed('fraction-to-percent','percent-to-fraction'))],
+ 'scientific-notation-worksheets':[entry('direction','Conversion direction','Convert numbers to or from scientific notation.',mixed('to-scientific','to-standard'))],
+ 'functions-worksheets':[entry('task','Function task','Evaluate a function or find its input from the output.',mixed('evaluate','solve-input'))],
+ 'slope-worksheets':[entry('line','Line orientation','Practice vertical lines with undefined slopes or non-vertical slopes.',mixed('vertical','nonvertical'))],
+ 'volume-of-rectangular-prisms-worksheets':[entry('task','Prism task','Find the volume or solve for the missing height.',mixed('volume','missing-height'))],
+ 'box-plots-worksheets':[entry('statistic','Box plot skill','Focus on quartiles, interquartile range or outliers.',[{value:'mixed',label:'Mixed skills'},...['Q1','median','Q3','IQR','outliers'].map(value=>({value,label:value==='outliers'?'Outliers':value}))])],
+ 'division-worksheets':[entry('divisor','Divisor','Choose one divisor or mixed division facts.',[{value:'mixed',label:'Mixed divisors'},...Array.from({length:11},(_,i)=>i+2).map(value=>({value:String(value),label:`Divide by ${value}`}))])],
+ 'complementary-supplementary-angles-worksheets':[entry('relation','Angle relationship','Practice complementary, supplementary, or mixed angle pairs.',mixed('complementary','supplementary'))],
+ 'lines-rays-segments-worksheets':[entry('figure','Figure type','Focus on lines, rays or segments.',mixed('line','ray','segment'))],
+ 'gcf-worksheets':[entry('relation','Common factors','Practice relatively prime pairs or pairs with a nontrivial GCF.',mixed('coprime','shared-factor'))],
 };
-export const topicOptionsFor=(topic:string):readonly TopicOptionDefinition[]=>topicOptionDefinitions[topic]??[];
-export function normalizeTopicOptions(topic:string,options:TopicOptions={}):TopicOptions{
- const defs=topicOptionsFor(topic);if(options===null||typeof options!=='object'||Array.isArray(options))throw Error('Invalid topic options');
- const allowed=new Set(defs.map(d=>d.key));for(const key of Object.keys(options))if(!allowed.has(key))throw Error('Unsupported option: '+key);
- const result:TopicOptions={};for(const d of defs){const value=options[d.key]??d.defaultValue;if(typeof value!=='string'||!d.choices.some(c=>c.value===value))throw Error('Invalid '+d.label+' selection');result[d.key]=value;}return result;
+export function topicOptionsFor(topic:string):readonly TopicOptionDefinition[]{return topicOptionDefinitions[topic]??[];}
+export function normalizeTopicOptions(topic:string,options:TopicOptions={}):TopicOptions {
+ const defs=topicOptionsFor(topic);
+ if(options===null||typeof options!=='object'||Array.isArray(options))throw new Error('Invalid topic options');
+ const allowed=new Set(defs.map(d=>d.key));
+ for(const key of Object.keys(options))if(!allowed.has(key))throw new Error(`Unsupported option: ${key}`);
+ const output:TopicOptions={};
+ for(const def of defs){const value=options[def.key]??def.defaultValue;
+  if(typeof value!=='string'||!def.choices.some(c=>c.value===value))throw new Error(`Invalid ${def.label.toLowerCase()} selection`);
+  output[def.key]=value;
+ }
+ return output;
 }
-export function optionsFingerprint(topic:string,difficulty:string,quantity:number,options:TopicOptions):string{
- const str=JSON.stringify([topic,difficulty,quantity,normalizeTopicOptions(topic,options)]);let hash=0x811c9dc5;
- for(let i=0;i<str.length;i++)hash=Math.imul(hash^str.charCodeAt(i),0x01000193)>>>0;return hash.toString(16).padStart(8,'0');
+export function optionsFingerprint(topic:string,difficulty:string,quantity:number,options:TopicOptions):string {
+ const ordered=normalizeTopicOptions(topic,options);
+ const value=JSON.stringify([topic,difficulty,quantity,ordered]);
+ let hash=0x811c9dc5;
+ for(let i=0;i<value.length;i++)hash=Math.imul(hash^value.charCodeAt(i),0x01000193)>>>0;
+ return hash.toString(16).padStart(8,'0');
+}
+
+/** Hard cap based on the number of different questions available under narrow configurations. */
+export function maxQuantityForTopic(topic:string, options:TopicOptions={}, difficulty:'easy'|'standard'|'challenge'='standard'):number {
+ const value=normalizeTopicOptions(topic,options);
+ if(topic==='multiplication-tables-worksheets'&&value.table!=='mixed')return 12;
+ if(topic==='two-digit-by-one-digit-multiplication-worksheets'&&value.regrouping==='no')return 20;
+ if(topic==='division-worksheets'&&value.divisor!=='mixed')return 11;
+ if(topic==='number-line-worksheets')return value.sign==='mixed'?16:9;
+ if(topic==='pythagorean-worksheets'&&difficulty==='easy')return 16;
+ if(topic==='number-recognition-worksheets')return 12;
+ return 40;
 }

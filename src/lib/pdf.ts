@@ -76,7 +76,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  const pdf=await PDFDocument.create();const [pw,ph]=PAGE_SIZE[paper];const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
  const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode==='questions'&&!hasDiagrams;
  let page:PDFPage;let currentY=0;let pageNum=0;
- function newPage(){page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-48;page.drawText(ascii(topicName).slice(0,74),{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=19;page.drawText(`Math Worksheet Studio | ${mode.toUpperCase()} | ID ${sheet.topicId.slice(0,15)}-${sheet.seed} | Config ${sheet.optionsHash} | ${sheet.problems.length} questions`,{x:margin,y:currentY,size:8,font,color:sub});currentY-=12;page.drawLine({start:{x:margin,y:currentY},end:{x:pw-margin,y:currentY},color:accent,thickness:1});currentY-=23;page.drawText('Name: ______________________________      Date: _______________',{x:margin,y:currentY,size:9,font,color:ink});currentY-=23;}
+ function newPage(){page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-48;page.drawText(ascii(topicName).slice(0,74),{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=19;page.drawText(`Math Worksheet Studio | ${mode.toUpperCase()} | ID ${sheet.topicId.slice(0,15)}-${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${sheet.problems.length} questions`,{x:margin,y:currentY,size:8,font,color:sub});currentY-=12;page.drawLine({start:{x:margin,y:currentY},end:{x:pw-margin,y:currentY},color:accent,thickness:1});currentY-=23;page.drawText('Name: ______________________________      Date: _______________',{x:margin,y:currentY,size:9,font,color:ink});currentY-=23;}
  newPage();
  const colGap=19,colW=twoCols?(bodyW-colGap)/2:bodyW;
  function heightFor(p:Problem){const questionLines=wrap(p.payload.question,twoCols?35:80);if(mode==='questions')return 27+questionLines.length*13+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+(twoCols?22:32);if(mode==='answers')return 28+questionLines.length*11+12;return 35+questionLines.length*12+p.solutionSteps.reduce((acc,s)=>acc+Math.max(1,wrap(s,82).length)*11,0)+20;}
@@ -92,8 +92,8 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrap(p.expectedAnswer,80)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrap(`${k+1}) ${p.solutionSteps[k]}`,78)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;
  }
- const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | Config ${sheet.optionsHash} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:19,size:7,font,color:sub});}
- pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed} - config ${sheet.optionsHash}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
+ const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:19,size:7,font,color:sub});}
+ pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed} - generator v${sheet.generatorVersion} - config ${sheet.optionsHash}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
 }
 
 /** One practical, unmarked 180° instrument on a single Letter/A4 PDF page.
