@@ -1,4 +1,4 @@
-import type {Diagram} from './math';
+import {quartiles,type Diagram} from './math.ts';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry} from './graph.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -100,7 +100,14 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    const axis=boxPracticeAxis(v),toX=(value:number)=>75+300*axis.position(value);
    parts=line(65,112,395,112)+`<path d="M65 112l9 -6v12zM395 112l-9 -6v12z" fill="#1b64a5"/>`;
    for(const tick of axis.ticks){const x=toX(tick);parts+=line(x,103,x,121)+text(x,146,String(tick));}
-   parts+=text(225,184,'Draw the box, median and whiskers after solving');
+   if(showSolution){
+    const q=quartiles(v),x1=toX(q.q1),x2=toX(q.q3);
+    parts+=line(toX(q.lower),112,toX(q.upper),112)+line(toX(q.lower),94,toX(q.lower),130)+line(toX(q.upper),94,toX(q.upper),130);
+    parts+=`<rect class="solution-box" x="${x1}" y="91" width="${Math.max(1,x2-x1)}" height="42" fill="#e9f2f9" stroke="#187b68" stroke-width="3"/>`;
+    parts+=line(toX(q.median),91,toX(q.median),133);
+    for(const outlier of q.outliers)parts+=`<circle class="solution-outlier" cx="${toX(outlier)}" cy="112" r="6" fill="white" stroke="#a44127" stroke-width="3"/>`;
+   }
+   parts+=text(225,184,showSolution?'Modified box plot (outliers separate)':'Draw the box, median and whiskers after solving');
    break}
   case 'box':{
    const all=[...v],lo=Math.min(...all),hi=Math.max(...all),range=Math.max(1,hi-lo),sx=(n:number)=>80+(n-lo)/range*310;

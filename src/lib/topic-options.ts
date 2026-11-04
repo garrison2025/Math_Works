@@ -31,7 +31,7 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'functions-worksheets':[entry('task','Function task','Evaluate a function or find its input from the output.',mixed('evaluate','solve-input'))],
  'slope-worksheets':[entry('line','Line orientation','Practice vertical lines with undefined slopes or non-vertical slopes.',mixed('vertical','nonvertical'))],
  'volume-of-rectangular-prisms-worksheets':[entry('task','Prism task','Find the volume or solve for the missing height.',mixed('volume','missing-height'))],
- 'box-plots-worksheets':[entry('statistic','Box plot skill','Focus on quartiles, interquartile range or outliers.',[{value:'mixed',label:'Mixed skills'},...['Q1','median','Q3','IQR','outliers'].map(value=>({value,label:value==='outliers'?'Outliers':value}))])],
+ 'box-plots-worksheets':[entry('statistic','Box plot skill','Focus on quartiles, interquartile range or outliers.',[{value:'mixed',label:'Mixed skills'},...['Q1','median','Q3','IQR','outliers','draw'].map(value=>({value,label:value==='outliers'?'Outliers':value==='draw'?'Draw modified box plot':value}))])],
  'division-worksheets':[entry('divisor','Divisor','Choose one divisor or mixed division facts.',[{value:'mixed',label:'Mixed divisors'},...Array.from({length:11},(_,i)=>i+2).map(value=>({value:String(value),label:`Divide by ${value}`}))])],
  'complementary-supplementary-angles-worksheets':[entry('relation','Angle relationship','Practice complementary, supplementary, or mixed angle pairs.',mixed('complementary','supplementary'))],
  'lines-rays-segments-worksheets':[entry('figure','Figure type','Focus on lines, rays or segments.',mixed('line','ray','segment'))],

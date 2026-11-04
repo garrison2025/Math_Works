@@ -1,6 +1,6 @@
 /** Browser-side vector PDF export: no screenshots, server, external API, or student records. */
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
-import type {Worksheet, Problem, Diagram} from './math';
+import {quartiles,type Worksheet, type Problem, type Diagram} from './math';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
@@ -146,7 +146,15 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    const label=String(tick),fontSize=8;
    page.drawText(label,{x:x+px*w-font.widthOfTextAtSize(label,fontSize)/2,y:y+.64*h,size:fontSize,font,color:ink});
   }
-  page.drawText('Draw box, median and whiskers',{x:x+.1*w,y:y+.12*h,size:8,font,color:sub});
+  if(showSolution){
+   const q=quartiles(d.values),start=toX(q.q1),end=toX(q.q3);
+   l(toX(q.lower),.48,toX(q.upper),.48);
+   l(toX(q.lower),.32,toX(q.lower),.64);l(toX(q.upper),.32,toX(q.upper),.64);
+   page.drawRectangle({x:x+start*w,y:y+.32*h,width:Math.max(1,(end-start)*w),height:.32*h,borderColor:accent,borderWidth:1.7});
+   l(toX(q.median),.32,toX(q.median),.64);
+   for(const outlier of q.outliers)page.drawCircle({x:x+toX(outlier)*w,y:y+.48*h,size:3.8,color:rgb(1,1,1),borderColor:rgb(.64,.26,.15),borderWidth:1.5});
+  }
+  page.drawText(showSolution?'Modified box plot (outliers separate)':'Draw box, median and whiskers',{x:x+.1*w,y:y+.12*h,size:8,font,color:sub});
   return;
  }
  if(d.kind==='numberline'||d.kind==='box'){
@@ -218,7 +226,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
   if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
-  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(p.diagramSpec?.kind==='numberline'?150:0);
+  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,9,bodyW-18).length,0);
   return common+13+answerLines*12+stepLines*11+24;
@@ -232,7 +240,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
   if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
-   if(p.diagramSpec?.kind==='numberline'){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
+   if(p.diagramSpec&&['numberline','box-practice'].includes(p.diagramSpec.kind)){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,9,bodyW-18)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;

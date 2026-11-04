@@ -262,10 +262,11 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'box-plots-worksheets':{
   const values=r.int(0,4)===0?[1,2,3,4,5,6,7,30].map(v=>v+r.int(0,1)) : sorted([r.int(1,3),r.int(4,6),r.int(7,9),r.int(10,12),r.int(13,15),r.int(16,18),r.int(19,21),r.int(22,25)]);
   const q=quartiles(values),task=opts.statistic==='mixed'?r.pick(['Q1','median','Q3','IQR','outliers']):opts.statistic;
-  const ans=task==='Q1'?normal(q.q1):task==='Q3'?normal(q.q3):task==='median'?normal(q.median):task==='IQR'?normal(q.iqr):q.outliers.length?q.outliers.join(', '):'none';
-  make(`Find ${task} for [${values.join(', ')}] using median-of-halves.`,ans,
+  const summary=`Q1=${normal(q.q1)}, median=${normal(q.median)}, Q3=${normal(q.q3)}; whiskers=${q.lower} to ${q.upper}; outliers=${q.outliers.join(', ')||'none'}`;
+  const ans=task==='draw'?summary:task==='Q1'?normal(q.q1):task==='Q3'?normal(q.q3):task==='median'?normal(q.median):task==='IQR'?normal(q.iqr):q.outliers.length?q.outliers.join(', '):'none';
+  make(task==='draw'?`Draw a modified box plot for [${values.join(', ')}]. Use median-of-halves and 1.5×IQR for outliers.`:`Find ${task} for [${values.join(', ')}] using median-of-halves.`,ans,
    `Q1=${normal(q.q1)}, median=${normal(q.median)}, Q3=${normal(q.q3)}, IQR=${normal(q.iqr)}`,
-   `Fences: ${normal(q.q1-1.5*q.iqr)} and ${normal(q.q3+1.5*q.iqr)}; outliers: ${q.outliers.join(', ')||'none'}`,`Answer: ${ans}`);
+   `Fences: ${normal(q.q1-1.5*q.iqr)} and ${normal(q.q3+1.5*q.iqr)}; whiskers: ${q.lower} to ${q.upper}; outliers: ${q.outliers.join(', ')||'none'}`,`Answer: ${ans}`);
   diagram={kind:'box-practice',values};break}
  case 'scatter-plot-worksheets':{const trend=opts.trend==='mixed'?r.pick(['positive','negative']):opts.trend,s=trend==='positive'?1:-1,step=r.int(1,7),offset=r.int(8,30);make(`Determine trend of points (1,${s*step+offset}), (2,${s*step*2+offset}), (3,${s*step*3+offset}).`,trend,`Compare x with y values`,`As x increases, y ${s>0?'increases':'decreases'}`);diagram={kind:'scatter',values:[1,s*step+offset,2,s*step*2+offset,3,s*step*3+offset]};break}
  case 'printable-protractor':{const deg=opts.angleRange==='acute'?r.int(1,89):opts.angleRange==='obtuse'?r.int(91,179):r.int(0,180);make(`Locate the ${deg}° mark on a printed protractor.`,`${deg}°`,`Read degrees counterclockwise from the right-hand 0° baseline`,`Print at actual size (100%) and measure the 50 mm verification line.`);diagram={kind:'protractor',values:[50]};break}

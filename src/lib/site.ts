@@ -13,7 +13,7 @@ export const topicIntro=(slug:string)=>{
   'equivalent-fractions-worksheets':'Find a missing numerator or denominator in equivalent fractions using the same scale factor on top and bottom.',
   'adding-unlike-fractions-worksheets':'Build confidence with common denominators, fraction addition and reducing exact answers.',
   'mean-median-mode-range-worksheets':'Practice the four most common ways to summarize small numerical data sets.',
-  'box-plots-worksheets':'Find quartiles using the exclusive median-of-halves convention and read the five-number summary.',
+  'box-plots-worksheets':'Calculate quartiles and outliers or construct a modified box plot from data, with a separate completed answer diagram.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
   'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',

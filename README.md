@@ -126,3 +126,10 @@ Triangle interior-angle pictures now use mathematically constructed vertex coord
 - Domain/range now offers **Relation type → Not function**. A repeated x-value with a different y-value teaches why a relation is not always a function; domain/range answers deduplicate repeated set elements.
 - Generator/share identifier is **v6**. Earlier `gv` links warn that exact question reproduction is not guaranteed; newly copied links use v6 and preserve both topic settings.
 - CI has an independent **Firefox** smoke suite: A4 question-PDF download, new algebra selector behavior, answer visibility toggle and 390px mobile layout. Firefox smoke tests use a locally served static build. Physical protractor print accuracy remains unverified.
+
+### R16: construct modified box plots with independently verified answer diagrams
+
+- Box Plots now offers **Draw modified box plot** along with Q1/median/Q3/IQR/outlier tasks.
+- Practice shows only the source data and a blank numeric axis. The answer view and PDF overlay the correct quartile box, median line, non-outlier whiskers and separate outlier markers on the identical scale.
+- An independent 10,000-seed oracle verifies the five-number information and 1.5xIQR outlier fences. Letter/A4 PDF and Chromium download regressions are included.
+- Generator version 7 remains unchanged because existing topic algorithms and saved links retain their meaning. Preview URLs remain noindex.

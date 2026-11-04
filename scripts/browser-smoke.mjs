@@ -159,6 +159,21 @@ try {
  await page.screenshot({path:join(out,'r13-labeled-ray.png'),fullPage:true});
  events.push({kind:'interaction',name:'line/ray/segment diagrams assessed visually, not text clues',status:'pass'});
 
+ // R16: original data and blank axis are shown before a separate completed answer.
+ await page.goto(`${base}/box-plots-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="statistic"]').selectOption('draw');
+ assert.match(await page.locator('.problem .q').first().innerText(),/Draw a modified box plot/);
+ assert.equal(await page.locator('.solution-box').count(),0,'Practice must not disclose quartiles');
+ const blank=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await blank,'R16 blank box-plot practice');
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.solution-box').count(),8,'Answer must show eight complete plots');
+ const solved=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ await verifyPdf(await solved,'R16 completed box-plot answer key');
+ await page.screenshot({path:join(out,'r16-box-plots-answer.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R16 modified box plots: no question leaks and completed answer PDF',status:'pass'});
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));

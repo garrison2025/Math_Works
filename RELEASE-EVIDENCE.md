@@ -141,3 +141,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL PASS] 12,000 independent two-variable linear systems solved by Cramer's algebra and substituted back; 12,000 domain/range relation samples independently reconstructed; 58 local test cases currently pass. Separate 30-question PDF export tests added.
 - [CI REQUIRED] Firefox browser installation, A4 PDF download, new selectors and 390px viewport. Do NOT claim Firefox PASS until Actions succeeds and the artifact is reviewed.
 - [NOT RUN] Actual physical 50 mm protractor calibration and exhaustive human review of all possible PDFs. `PUBLIC_INDEXABLE=false` remains required on pages.dev.
+
+## R16: modified box plot drawing
+
+- [IMPLEMENTED; CI PENDING] Blank graded construction axes and completed answer-key box/whisker/outlier overlays share the exact raw input and numeric scale.
+- [LOCAL PASS] 10,000 independent mathematical seed validations and 66 math/content/SEO regression tests; TypeScript passed.
+- [CI REQUIRED] Letter/A4 PDF generation and end-to-end Chrome download must pass the new workflow run. No physical print or exhaustive manual PDF signoff is implied.
+- [HOLD] Preview remains `noindex`, with no paid APIs, purchased domain, Search Console or advertising.

@@ -48,7 +48,7 @@ const captures={
  'functions-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('find x.')===(v==='solve-input')),
  'slope-worksheets':(p,v)=>v==='mixed'||(p.expectedAnswer==='undefined')===(v==='vertical'),
  'volume-of-rectangular-prisms-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('Find its height')===(v==='missing-height')),
- 'box-plots-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith(`Find ${v} for`),
+ 'box-plots-worksheets':(p,v)=>v==='mixed'||(v==='draw'?p.payload.question.startsWith('Draw a modified box plot'):p.payload.question.startsWith(`Find ${v} for`)),
  'division-worksheets':(p,v)=>v==='mixed'||p.payload.question.match(/÷ (\d+) =/)?.[1]===v,
  'complementary-supplementary-angles-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`angle ${v} to`),
  'lines-rays-segments-worksheets':(p,v)=>v==='mixed'||p.expectedAnswer===v,

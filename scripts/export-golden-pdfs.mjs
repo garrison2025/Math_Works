@@ -15,6 +15,7 @@ const fixtures=[
  {slug:'long-division-worksheets',quantity:20,options:{remainder:'yes'}},
  {slug:'three-digit-by-two-digit-multiplication-worksheets',quantity:20,options:{multiplierRange:'high'}},
  {slug:'box-plots-worksheets',quantity:8,options:{statistic:'Q1'}},
+ {slug:'box-plots-worksheets',quantity:8,options:{statistic:'draw'}},
  {slug:'printable-protractor',quantity:4,options:{angleRange:'acute'}},
  {slug:'linear-equations-worksheets',quantity:8,options:{slope:'negative'}},
  {slug:'triangle-angle-sum-worksheets',quantity:8,options:{thirdAngle:'obtuse'}},

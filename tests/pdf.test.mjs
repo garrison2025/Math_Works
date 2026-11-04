@@ -252,3 +252,17 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   }
  }
 });
+
+test('R16 modified box plots export Letter/A4 blank practice and completed answers',async()=>{
+ const sheet=makeWorksheet('box-plots-worksheets',20261105,8,'standard',{statistic:'draw'});
+ for(const paper of ['Letter','A4']){
+  const questions=await createWorksheetPdf(sheet,'Draw Modified Box Plots','questions',paper);
+  const answers=await createWorksheetPdf(sheet,'Draw Modified Box Plots','answers',paper);
+  const q=await PDFDocument.load(questions),a=await PDFDocument.load(answers);
+  assert.ok(q.getPageCount()>=1&&a.getPageCount()>=1);
+  assert.ok(q.getTitle()?.includes(sheet.optionsHash));
+  assert.ok(a.getTitle()?.includes(sheet.optionsHash));
+  assert.deepEqual(q.getPage(0).getSize(),a.getPage(0).getSize());
+  assert.ok(answers.byteLength>questions.byteLength,'Solved plot graphics should increase PDF size');
+ }
+});
