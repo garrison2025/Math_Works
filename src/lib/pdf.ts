@@ -242,9 +242,11 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   for(let i=-g.boundY;i<=g.boundY;i+=tickY)if(i!==0)
    page.drawLine({start:{x:x+.06*w,y:y+my(i)*h},end:{x:x+.94*w,y:y+my(i)*h},color:gridColor,thickness:.45});
   l(.06,.5,.94,.5);l(.5,.07,.5,.93);
+  // R37: print x-axis tick labels BELOW the plotting grid, rather than
+  // alongside y-axis tick text near the origin (a real collision in 40-Q PDFs).
   for(let i=-g.boundX;i<=g.boundX;i+=tickX){
    l(mx(i),.48,mx(i),.52);
-   if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+mx(i)*w-font.widthOfTextAtSize(s,size)/2,y:y+.40*h,size,font,color:sub});}
+   if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+mx(i)*w-font.widthOfTextAtSize(s,size)/2,y:y+.018*h,size,font,color:sub});}
   }
   for(let i=-g.boundY;i<=g.boundY;i+=tickY){
    l(.48,my(i),.52,my(i));
@@ -254,7 +256,12 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    const [[x1,y1],[x2,y2]]=g.segment;l(mx(x1),my(y1),mx(x2),my(y2));
    if(drawingTask){const [m,b]=d.values;dot(mx(0),my(b));dot(mx(1),my(m+b));}
   }
-  for(const [vx,vy] of g.points){dot(mx(vx),my(vy));page.drawText(`(${vx},${vy})`,{x:x+mx(vx)*w+4,y:y+my(vy)*h+5,size:7,font,color:ink});}
+  // The question text already names each ordered pair. Repeating coordinate
+  // captions inside this compact 235x128pt diagram made some labels collide
+  // with y-axis numbers and adjacent point captions on real PDF pages.
+  // Dots + readable axes are enough to locate the two points, while the
+  // equation text and answer key retain their exact coordinate values.
+  for(const [vx,vy] of g.points)dot(mx(vx),my(vy));
   return;
  }
  if(d.kind==='angle'){
