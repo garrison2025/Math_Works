@@ -12,6 +12,33 @@ const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.8
 const ink=rgb(.09,.14,.22),sub=rgb(.35,.43,.52),accent=rgb(.105,.39,.65);
 /** Worked solutions are reading material, not compact answer-key metadata. */
 const STEP_FONT_SIZE=10, STEP_LINE_HEIGHT=14, STEP_GAP=3;
+/** Optional pencil work area, drawn only on question PDFs with no worksheet diagram.
+ * Each 21pt rule sits below the prompt and is included in heightFor before pagination.
+ * This is intentionally topic-based: fact drills should remain compact.
+ */
+const PRACTICE_WORK_LINES:Readonly<Record<string,number>>={
+ 'one-step-equations-worksheets':1,
+ 'two-step-equations-worksheets':2,
+ 'order-of-operations-worksheets':2,
+ 'integer-operations-worksheets':1,
+ 'decimal-multiplication-worksheets':1,
+ 'fractions-worksheets':2,
+ 'equivalent-fractions-worksheets':2,
+ 'adding-unlike-fractions-worksheets':2,
+ 'multiplying-fractions-worksheets':2,
+ 'mean-median-mode-range-worksheets':2,
+ 'mean-absolute-deviation-worksheets':2,
+ 'percentages-worksheets':2,
+ 'systems-equations-worksheets':2,
+ 'functions-worksheets':1,
+ 'scientific-notation-worksheets':1,
+ 'gcf-worksheets':1
+};
+export function worksheetWorkLines(topic:string,mode:PdfMode,hasDiagram:boolean):number{
+ return mode==='questions'&&!hasDiagram?(PRACTICE_WORK_LINES[topic]??0):0;
+}
+const RULE_SPACING=21;
+const paperRule=rgb(.78,.84,.89);
 /** Preserve the math glyphs supported by the built-in Helvetica WinAnsi encoding.
  * Unsupported glyphs still have explicit readable ASCII substitutions: no paid
  * font download, server, or user-provided document is required. */
@@ -322,7 +349,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  function heightFor(p:Problem){
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
-  if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
+  if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)*RULE_SPACING+18;
   if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,STEP_FONT_SIZE,bodyW-18).length,0);
@@ -338,6 +365,13 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
+  // Writing rules use the same per-problem measured height as pagination,
+  // and leave the first line well below the last line of the question.
+  for(let rule=0;rule<worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec);rule++){
+   const ruleY=y-8-rule*RULE_SPACING;
+   page.drawLine({start:{x:xx+8,y:ruleY},end:{x:xx+colW-14,y:ruleY},
+    color:paperRule,thickness:.65});
+  }
   if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
    if(p.diagramSpec&&(['numberline','box-practice','function-table'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-'))))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }

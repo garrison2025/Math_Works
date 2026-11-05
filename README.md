@@ -261,3 +261,8 @@ Every page now has a keyboard-visible **Skip to main content** link. The local p
 ### R37 — full-catalog page-legibility preflight and review board
 
 A new PyMuPDF CI release gate inspects **every page** of all 468 maximum-count stress PDFs for substantial overlaps among independently drawn text spans, replacement/missing glyphs and blank text pages. It separately builds `qa-artifacts/pdf-stress/visual-review-contact-sheet.pdf`: scalable vector thumbnails of first/last pages for A4 challenge practice/answers and approved steps across all **51 live topics**, with a machine-readable sample index. Five adversarial geometry tests must pass. The board is retained in the private CI PDF-stress artifact, not deployed as crawlable content. This automates a text-collision gate but does **not** certify text-vector collisions, printable diagrams, a real physical printer or a teacher's final visual sign-off. Do not enable indexation on this evidence alone.
+
+
+### R38 — ruled handwriting space in printable question PDFs
+
+Practice questions requiring calculations now reserve one or two thin pencil rules underneath each prompt for showing working (e.g. multi-step equations, fractions, PEMDAS, percentage change and statistics). Fact drills stay compact; diagrams retain their native answer-blind drawing space. Rule spacing is included in the PDF layout's measured problem height **before** deciding page breaks, on both A4 and Letter. Answer keys and worked-step PDFs are unchanged. All output remains browser-local and vector-based. Stress PDFs, semantic checks, text/vector margins and the R37 text-collision gate must pass; actual classroom/physical printer approval remains outstanding.

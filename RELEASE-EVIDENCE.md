@@ -319,3 +319,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Generate a vector contact sheet of first/last A4 challenge pages, covering every topic, and store the exact selected source files/page numbers in `visual-preflight-audit.json` for manual review.
 - [LOCAL PASS] Five PyMuPDF synthetic tests for collisions, legitimate adjacent rows/columns, missing glyphs and blank page behavior; CI must rerun and report the full-catalog outcome.
 - [NOT RUN] Full human inspection of the contact sheet and real 50mm printed ruler. Automated text collision testing is not a complete visual acceptance test.
+
+
+### R38 — optional pencil working lines (CI verification required)
+
+- [IMPLEMENTED] One or two 21pt-spaced handwriting rules for explicit calculation topics on printable question pages only. No ruled lines in answer/steps PDFs or alongside full diagrams; number-fact drills remain compact.
+- [IMPLEMENTED] Physical pagination reserves rule height before page break and rejects oversized exercises; both Letter/A4 use exactly the same writing-line geometry with the existing 36pt safe margins.
+- [CI REQUIRED] Run full 51-topic maximum-count stress, R32 semantic, R30 vector/text margins, R37 text-collision preflight and Chromium/Firefox checks on the final R38 commit. Avoid treating changed page counts as errors if all manifest identity checks still pass.
+- [NOT VERIFIED] Manual review of all 51 topics and physical printer calibration.
