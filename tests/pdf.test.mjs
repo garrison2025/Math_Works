@@ -203,7 +203,7 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'8');
+  assert.equal(sheet.generatorVersion,'10');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
