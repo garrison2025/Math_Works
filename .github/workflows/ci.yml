@@ -36,6 +36,8 @@ jobs:
         run: npm run qa:pdf-samples
       - name: Stress test all 51 live worksheet PDFs at maximum count
         run: npm run qa:pdf-stress
+      - name: R54 export paired A4 and Letter writing-room PDF fixtures
+        run: npm run qa:writing-room
       - name: Export Letter and A4 blank actual-size protractor PDFs
         run: npm run qa:protractor-instruments
       - name: Export Letter and A4 universal printer calibration PDFs
@@ -56,6 +58,8 @@ jobs:
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
       - name: Enforce 36-point vector-drawing safe margins on every stress PDF
         run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
+      - name: R54 verify student pencil rules from actual PDF drawing operators
+        run: .venv-pdf-audit/bin/python scripts/check-writing-room-vectors.py qa-artifacts/r54-writing-room
       - name: R52 adversarial tests for actual exported print calibration geometry
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_print_calibration_audit.py' -v
       - name: R52 check real PDF 100 mm X/Y and 50 mm vector segments
@@ -88,6 +92,14 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
         run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive R54 extra writing-room reference PDFs and vector audit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r54-writing-room-paper-pdfs
+          path: qa-artifacts/r54-writing-room/
+          retention-days: 14
+          if-no-files-found: error
       - name: Archive R52 printable calibration sheets and independently checked geometry
         uses: actions/upload-artifact@v4
         if: always()
