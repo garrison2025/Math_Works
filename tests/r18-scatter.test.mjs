@@ -61,7 +61,7 @@ test('R18: plot-points share links retain task, trend, seed, and version eight',
  for(const trend of ['mixed','positive','negative','none']){
   const opts={task:'plot',trend},data={seed:20261105,difficulty:'challenge',quantity:8,paper:'A4',options:normalizeTopicOptions(topic,opts)};
   const link=buildWorksheetLink(`https://math-works.pages.dev/${topic}/`,topic,data);
-  assert.equal(new URL(link).searchParams.get('gv'),'10');
+  assert.equal(new URL(link).searchParams.get('gv'),'11');
   assert.deepEqual(parseWorksheetLink(link,topic),data);
   assert.deepEqual(makeWorksheet(topic,data.seed,8,'challenge',opts),makeWorksheet(topic,data.seed,8,'challenge',parseWorksheetLink(link,topic).options));
  }

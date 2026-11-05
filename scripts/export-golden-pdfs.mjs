@@ -37,7 +37,10 @@ const fixtures=[
  {slug:'pythagorean-worksheets',quantity:8,options:{scale:'small',task:'missing-leg'}},
  {slug:'pythagorean-worksheets',quantity:8,options:{scale:'large',task:'mixed'}},
  {slug:'function-tables-worksheets',quantity:8,options:{task:'input',missing:'middle'}},
- {slug:'function-tables-worksheets',quantity:8,options:{task:'output',missing:'first'}}
+ {slug:'function-tables-worksheets',quantity:8,options:{task:'output',missing:'first'}},
+ {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mode',modePattern:'two'}},
+ {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mode',modePattern:'none'}},
+ {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mean',modePattern:'mixed'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){
@@ -49,5 +52,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R18 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R21 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

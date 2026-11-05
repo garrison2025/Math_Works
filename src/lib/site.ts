@@ -12,7 +12,7 @@ export const topicIntro=(slug:string)=>{
   'one-step-equations-worksheets':'Create addition or multiplication equations with a single unknown and a unique solution.',
   'equivalent-fractions-worksheets':'Find a missing numerator or denominator in equivalent fractions using the same scale factor on top and bottom.',
   'adding-unlike-fractions-worksheets':'Build confidence with common denominators, fraction addition and reducing exact answers.',
-  'mean-median-mode-range-worksheets':'Practice the four most common ways to summarize small numerical data sets.',
+  'mean-median-mode-range-worksheets':'Calculate mean, median, mode and range from realistic data sets: even or odd sample counts, one mode, two modes or no mode, with exact fractional means.',
   'box-plots-worksheets':'Calculate quartiles and outliers or construct a modified box plot from data, with a separate completed answer diagram.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
@@ -24,6 +24,7 @@ export const topicIntro=(slug:string)=>{
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
+ if(slug==='mean-median-mode-range-worksheets')return ['Order the observations from smallest to largest; keep repeated values.', 'For mean, divide the exact sum by the count. For median, average the middle two values when the count is even.', 'For mode, compare frequencies: zero, one or two values can have the highest frequency. For range, subtract minimum from maximum.'];
  if(slug==='function-tables-worksheets')return ['Read the rule f(x) = mx + b and locate the blank cell in the table.', 'For a missing output, substitute x into the rule. For a missing input, set mx + b equal to the visible output and solve for x.', 'Write the result in the empty cell and check with the separate completed answer table.'];
  if(slug.includes('systems-equations'))return ['Compare the coefficients of both equations to decide whether they are proportional.', 'If they are not proportional, eliminate a variable to find the unique solution.', 'If they are proportional, compare the constant terms: identical lines have infinitely many solutions; distinct parallel lines have none.'];
  if(slug.includes('domain-range'))return ['Read each ordered pair as (input, output).', 'Domain is the set of unique x-values; range is the set of unique y-values.', 'For function identification, check whether any repeated input has two different outputs.'];

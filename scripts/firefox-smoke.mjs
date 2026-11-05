@@ -45,7 +45,7 @@ try{
  const dl=await qa,filepath=join(out,dl.suggestedFilename());
  await dl.saveAs(filepath);const pdf=await PDFDocument.load(readFileSync(filepath));
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
- assert.match(pdf.getTitle()??'',/generator v10/);
+ assert.match(pdf.getTitle()??'',/generator v11/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
  await page.locator('[data-option="method"]').selectOption('parallel');
  await page.locator('[data-mode="answers"]').click();
@@ -100,6 +100,15 @@ try{
  const fnA=await page.locator('.problem .diagram-vector').first().innerHTML();
  assert.ok(!fnA.includes('>____</text>'));
  checks.push({name:'R20 Firefox function-table inverse input blank and completed answer cell',status:'pass'});
+ await page.locator('[data-mode="questions"]').click();
+ await open('mean-median-mode-range-worksheets');
+ await page.locator('[data-option="statistic"]').selectOption('mode');
+ await page.locator('[data-option="modePattern"]').selectOption('none');
+ await page.locator('[data-mode="answers"]').click();
+ assert.match(await page.locator('.problem .answer-text').first().innerText(),/no mode/);
+ await page.locator('[data-option="modePattern"]').selectOption('two');
+ assert.match(await page.locator('.problem .answer-text').first().innerText(),/Answer:.*\d+, \d+/);
+ checks.push({name:'R21 bimodal and no-mode statistics in Firefox',status:'pass'});
  await page.locator('[data-mode="questions"]').click();
  await open('linear-equations-worksheets');
  await page.setViewportSize({width:390,height:844});

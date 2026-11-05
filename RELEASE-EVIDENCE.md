@@ -180,3 +180,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED; CI VERIFICATION REQUIRED] Added leg/hypotenuse/mixed task modes, answer-blind triangle diagrams in SVG and vector PDF, answer key diagrams, updated teaching guidance and `v9` share identity.
 - [LOCAL TEST] Independent theorem oracles over 18,000 problem seeds, all difficulty levels and variants, plus deterministic worksheet/link replay checks. Re-run full test suite and GitHub CI after final commit.
 - [NOT RUN] Physical protractor calibration or exhaustive manual visual review of all 51 topic families.
+
+### R20 function-table source QA
+
+- [IMPLEMENTED, CI PENDING] New input/output/mixed missing-cell tasks, shared validated vector SVG/PDF table model and matching PDF answer table; generator v10.
+- [LOCAL TEST REQUIRED] 18,000 independent inverse/forward algebra checks, question-only blank cell, answer-only full table, share links and wrong-data rejection.
+- [CI REQUIRED] Full PDF smoke, Chrome/Firefox QA, Letter/A4 golden fixtures and Astro/noindex audit.
+- [NOT RUN] Physical printer checks and exhaustive manual inspection of all topic PDF variations.

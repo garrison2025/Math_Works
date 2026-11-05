@@ -80,7 +80,7 @@ test('300 independent geometry and statistics oracles per route',()=>{
  verify('complementary-supplementary-angles-worksheets',q=>{const m=re(q,/angle (complementary|supplementary) to (\d+)°/);return `${(m[1]==='complementary'?90:180)-n(m[2])}°`;});
  verify('vertical-angles-worksheets',q=>{const m=re(q,/angle of (\d+)°/);return `${m[1]}°`;});
  verify('angle-worksheets',q=>{const m=re(q,/Classify a (\d+)°/);return n(m[1])<90?'acute':n(m[1])===90?'right':'obtuse';});
- verify('mean-median-mode-range-worksheets',q=>{const m=re(q,/Find the (mean|median|mode|range) of \[([\d, ]+)\]/);const v=m[2].split(', ').map(n).sort((a,b)=>a-b);return m[1]==='mean'?v.reduce((a,b)=>a+b,0)/v.length:m[1]==='median'?v[Math.floor(v.length/2)]:m[1]==='mode'?v[0]:v.at(-1)-v[0];});
+ verify('mean-median-mode-range-worksheets',q=>{const m=re(q,/Find the (mean|median|mode|range) of \[([\d, ]+)\]/);const v=m[2].split(', ').map(n).sort((a,b)=>a-b),total=v.reduce((a,b)=>a+b,0);if(m[1]==='mean')return frac(total,v.length);if(m[1]==='median')return (v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2);if(m[1]==='range')return v.at(-1)-v[0];const f=new Map();for(const x of v)f.set(x,(f.get(x)??0)+1);const high=Math.max(...f.values());return high===1?'no mode':[...f].filter(([,c])=>c===high).map(([x])=>x).sort((a,b)=>a-b).join(', ');});
  verify('mean-absolute-deviation-worksheets',q=>{const m=re(q,/deviation of \[([-\d, ]+)\]/);const vals=m[1].split(', ').map(n),mean=vals.reduce((a,b)=>a+b)/vals.length,absSum=vals.reduce((acc,x)=>acc+Math.abs(x-mean),0);return frac(absSum,vals.length);});
  verify('box-plots-worksheets',q=>{const m=re(q,/Find (Q1|median|Q3|IQR|outliers) for \[([\d, ]+)\]/);const vals=m[2].split(', ').map(n),v=quartiles(vals);return m[1]==='outliers'?(v.outliers.join(', ')||'none'):String(v[m[1]==='Q1'?'q1':m[1]==='Q3'?'q3':m[1]==='IQR'?'iqr':'median']);});
 });
@@ -88,7 +88,7 @@ test('300 independent geometry and statistics oracles per route',()=>{
 test('all four line/segment/ray diagrams match endpoint semantics',()=>{
  const s={line:2,ray:1,segment:0};for(const [name,n] of Object.entries(s)){
   const svg=diagramSVG({kind:'line',values:[n]});
-  assert.equal((svg.match(/<circle/g)||[]).length,2,`Each line, ray and segment must show two labeled points: ${name}`);
+  assert.equal((svg.match(/<circle/g)||[]).length,2,`Each named geometric object must show exactly two labeled points: ${name}`);
   assert.equal((svg.match(/<path/g)||[]).length,n,`wrong arrow count ${name}`);
  }
 });
@@ -124,9 +124,9 @@ test('scatter plots preserve correlation direction and stay inside plot bounds',
   assert.equal(pts.length,6);
   assert.ok(pts.every(([x,y])=>x>=0&&x<=1&&y>=0&&y<=1));
   const raw=p.diagramSpec.values.filter((_,i)=>i%2===1);
-  const cov=raw.reduce((acc,y,i)=>acc+(i+1-3.5)*y,0);
-  const classification=Math.abs(cov)<1e-9?'no clear linear trend':cov>0?'positive':'negative';
-  assert.equal(p.expectedAnswer,classification);
+  const covariance=raw.reduce((acc,y,i)=>acc+(i+1-3.5)*y,0);
+  const actual=Math.abs(covariance)<1e-9?'no clear linear trend':covariance>0?'positive':'negative';
+  assert.equal(p.expectedAnswer,actual);
   const svg=diagramSVG(p.diagramSpec);
   assert.equal((svg.match(/<circle/g)||[]).length,6);
  }

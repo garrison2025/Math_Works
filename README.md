@@ -162,3 +162,7 @@ On `/scatter-plot-worksheets/`, teachers can choose **Identify the trend** (posi
 - The question-only triangle labels the unknown leg as `?` while the hypotenuse and other leg stay visible; answer mode includes the reconstructed side. PDF question/answer diagrams use the same contract and respect paper dimensions.
 - Independent mathematical oracles and deterministic URL/worksheet consistency tests cover all three tasks; the generator and share-link format are now v9, deliberately not claiming compatibility with earlier seeded worksheet IDs.
 - Classroom print accuracy remains subject to human review; physical protractor calibration is not programmatically verified.
+
+### R20: printable function-table cells
+
+Function Tables now supports missing outputs, missing inputs, and mixed practice, with first/middle/last blank cell choices. Worksheet diagrams show a real 2 × 4 math table, not inline arrow text. Only the answer key fills the missing input or output; the table is drawn as vectors in both SVG and PDF. New generator version v10 protects reproducible share links; see `tests/r20-function-tables.test.mjs` and the R20 PDF fixtures. Browser and physical-print signoff remain separate from automated testing.

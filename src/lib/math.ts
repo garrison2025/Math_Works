@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='10' as const;
+export const GENERATOR_VERSION='11' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -308,7 +308,30 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   make('Identify the pictured figure: line, ray, or segment.',kind,
    'A line extends infinitely in both directions; a ray starts at one endpoint; a segment has two endpoints.',`The figure is a ${kind}.`);
   diagram={kind:'line',values:[kind==='line'?2:kind==='ray'?1:0],labels:[left,right]};break}
- case 'mean-median-mode-range-worksheets':{const repeat=r.int(1,9),values=sorted([repeat,repeat,r.int(10,20),r.int(21,30),r.int(31,40)]);const task=opts.statistic==='mixed'?r.pick(['mean','median','mode','range']):opts.statistic;const answer=task==='mean'?normal(sum(values)/values.length):task==='median'?normal(median(values)):task==='mode'?String(repeat):String(values[values.length-1]-values[0]);make(`Find the ${task} of [${values.join(', ')}].`,answer,task==='mean'?`Add all numbers: ${sum(values)}; divide by ${values.length}`:task==='median'?`Sort the values and choose the middle: ${values[2]}`:task==='mode'?`The value ${repeat} appears twice; each other value appears once`:`Subtract minimum ${values[0]} from maximum ${values[values.length-1]}`,`Result = ${answer}`);break}
+ case 'mean-median-mode-range-worksheets':{
+  const task=opts.statistic==='mixed'?r.pick(['mean','median','mode','range']):opts.statistic;
+  const pattern=opts.modePattern==='mixed'?r.pick(['single','two','none']):opts.modePattern;
+  const count=r.int(5,difficulty==='easy'?6:difficulty==='standard'?8:9);
+  // Draw distinct source values, then deliberately repeat only the requested modes.
+  // This prevents accidental third modes and creates even/odd sample sizes.
+  const distinctCount=pattern==='none'?count:count-2,distinct=new Set<number>();
+  const upper=difficulty==='easy'?25:difficulty==='standard'?55:95;
+  while(distinct.size<distinctCount)distinct.add(r.int(1,upper));
+  const initial=[...distinct];
+  const values=sorted([...initial,...(pattern==='single'?[initial[0],initial[0]]:pattern==='two'?[initial[0],initial[1]]:[])]);
+  const total=sum(values),counts=new Map<number,number>();
+  for(const value of values)counts.set(value,(counts.get(value)??0)+1);
+  const highest=Math.max(...counts.values()),modes=highest===1?[]:[...counts].filter(([,frequency])=>frequency===highest).map(([value])=>value).sort((x,y)=>x-y);
+  const mean=asText(rational(BigInt(total),BigInt(values.length)));
+  const mid=median(values),modeAnswer=modes.length?modes.join(', '):'no mode';
+  const answer=task==='mean'?mean:task==='median'?normal(mid):task==='mode'?modeAnswer:String(values.at(-1)!-values[0]);
+  const how=task==='mean'?`Sum ${total} divided by ${values.length} = ${mean} (exact)`:
+   task==='median'?values.length%2?`The middle observation is ${normal(mid)}.`:`The two middle observations are ${values[values.length/2-1]} and ${values[values.length/2]}; their mean is ${normal(mid)}.`:
+   task==='mode'?modes.length?`Most frequent (${highest} times): ${modeAnswer}.`:'Every value appears exactly once, so there is no mode.':
+   `Maximum ${values.at(-1)} minus minimum ${values[0]} = ${answer}.`;
+  make(`Find the ${task} of [${values.join(', ')}].`,answer,
+   `There are ${values.length} values, ordered from least to greatest.`,how,`Answer: ${answer}`);
+  break}
  case 'mean-absolute-deviation-worksheets':{const mid=r.int(4,12),delta=r.int(1,6),skewed=opts.distribution==='skewed',values=skewed?[mid-2*delta,mid+delta,mid+delta]:[mid-delta,mid,mid+delta],deviation=skewed?4*delta:2*delta;
   make(`Find the mean absolute deviation of [${values.join(', ')}].`,frac(deviation,3),`Mean = ${mid}`,`Absolute deviations: ${values.map(v=>Math.abs(v-mid)).join(', ')}`,`MAD = ${deviation}/3 = ${frac(deviation,3)}`);break}
  case 'box-plots-worksheets':{
