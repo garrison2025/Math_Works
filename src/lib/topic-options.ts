@@ -59,7 +59,7 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
   {value:'parallel',label:'Parallel: no solution'},
   {value:'coincident',label:'Coincident: infinitely many'}
  ])],
- 'function-tables-worksheets':[entry('missing','Table cell','Choose the first, middle or last missing output.',choice('middle','first','last'))],
+ 'function-tables-worksheets':[entry('missing','Missing table column','Choose the first, middle or last column to complete.',choice('middle','first','last')),entry('task','Missing table value','Find an output, solve for a missing input, or mix the two types.',choice('output','input','mixed'))],
  'number-recognition-worksheets':[entry('task','Number task','Count objects or convert number words to numerals.',mixed('count-dots','word-to-numeral'))],
  'linear-equations-worksheets':[entry('slope','Slope sign','Practice positive, negative or zero slopes on a coordinate grid.',mixed('positive','negative','zero')),entry('task','Linear function task','Evaluate y at a given x or draw the line on an empty coordinate grid.',choice('evaluate','graph'))],
 };
@@ -87,8 +87,9 @@ export function optionsFingerprint(topic:string,difficulty:string,quantity:numbe
 /** Hard cap based on the number of different questions available under narrow configurations. */
 export function maxQuantityForTopic(topic:string, options:TopicOptions={}, difficulty:'easy'|'standard'|'challenge'='standard'):number {
  const value=normalizeTopicOptions(topic,options);
- // A horizontal line is determined by its intercept (11 choices), while
- // each signed slope subset yields only 33 unique lines. Leave a safety margin.
+ // A single horizontal line is determined by its intercept (11 distinct choices);
+ // restricted signed slopes yield 3 slopes x 11 intercepts (33 unique lines).
+ // Leave a margin for deterministic random drawing without excessive retries.
  if(topic==='linear-equations-worksheets'&&value.task==='graph')return value.slope==='zero'?10:value.slope==='mixed'?40:30;
  if(topic==='scatter-plot-worksheets')return value.trend==='none'?10:value.trend==='mixed'?40:20;
  if(topic==='multiplication-tables-worksheets'&&value.table!=='mixed')return 12;

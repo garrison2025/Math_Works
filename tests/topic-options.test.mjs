@@ -71,7 +71,7 @@ const captures={
  'mixed-addition-subtraction-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(v==='addition'?' + ':' − '),
  'printable-protractor':(p,v)=>v==='mixed'||(Number(p.expectedAnswer.replace('°',''))<90)===(v==='acute'),
  'systems-equations-worksheets':(p,v)=>v==='mixed'||(()=>{const m=p.expectedAnswer.match(/x = (-?\d+), y = (-?\d+)/);return v==='positive'?[Number(m[1]),Number(m[2])].every(x=>x>0):[Number(m[1]),Number(m[2])].every(x=>x<0)})(),
- 'function-tables-worksheets':(p,v)=>{const cells=p.payload.question.split(': ').at(-1).split(', ');const i=v==='first'?0:v==='middle'?1:2;return cells[i].includes('____')},
+ 'function-tables-worksheets':(p,v)=>{const d=p.diagramSpec;if(v==='first'||v==='middle'||v==='last')return d.values[8]==={first:0,middle:1,last:2}[v];return v==='mixed'||(d.values[9]===1)===(v==='input')},
  'number-recognition-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith('Count the dots shown below.')===(v==='count-dots'),
  'linear-equations-worksheets':(p,v)=>v==='mixed'||(()=>{const slope=p.diagramSpec.values[0];return v==='positive'?slope>0:v==='negative'?slope<0:slope===0})(),
 

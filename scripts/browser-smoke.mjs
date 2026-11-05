@@ -72,13 +72,35 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v9'));
- assert.ok(answers.getTitle()?.includes('v9'));
+ assert.ok(questions.getTitle()?.includes('v10'));
+ assert.ok(answers.getTitle()?.includes('v10'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=9/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=10/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v9 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v10 clipboard link',status:'pass'});
+
+ // R20: a missing INPUT must be blank in practice, but completed in both SVG and PDF answer keys.
+ await page.goto(`${base}/function-tables-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('input');
+ await page.locator('[data-option="missing"]').selectOption('first');
+ assert.match(await page.locator('.problem .q').first().innerText(),/missing input/);
+ let firstTable=await page.locator('.problem svg').first().innerHTML();
+ assert.equal((firstTable.match(/>____<\/text>/g)||[]).length,1);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const tableQuestionDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const tableQuestionPdf=await verifyPdf(await tableQuestionDownload,'R20 function-table missing-input questions',{paper:'A4'});
+ await page.locator('[data-mode="answers"]').click();
+ const solvedTable=await page.locator('.problem svg').first().innerHTML();
+ assert.ok(solvedTable.includes('f(x)'));
+ assert.ok(!solvedTable.includes('>____</text>'));
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ const tableAnswerDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ const tableAnswerPdf=await verifyPdf(await tableAnswerDownload,'R20 function-table missing-input answers',{paper:'A4'});
+ assert.ok(tableQuestionPdf.getTitle()?.includes('v10')&&tableAnswerPdf.getTitle()?.includes('v10'));
+ events.push({kind:'interaction',name:'R20 inverse function table blank-cell SVG, completed answer SVG and paired PDF',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
  await page.goto(`${base}/number-recognition-worksheets/`,{waitUntil:'networkidle'});
@@ -96,22 +118,23 @@ try {
  assert.ok((await page.locator('.diagram-vector').first().innerHTML()).includes('remainder: ______'));
  events.push({kind:'interaction',name:'long division printable answer-blind bracket',status:'pass'});
 
- // R19: Pythagorean missing-leg question diagrams mask the unknown while answer diagrams reveal it.
+ // R19: Pythagorean missing-leg questions show only known sides; answer SVG restores the unknown.
  await page.goto(`${base}/pythagorean-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="task"]').selectOption('missing-leg');
  const unknown=await page.locator('.problem .q').first().innerText();
  assert.match(unknown,/Find the other leg/);
- assert.match(await page.locator('.diagram-vector').first().innerHTML(),/>[?] units<[/]text>/);
+ assert.match(await page.locator('.diagram-vector').first().innerHTML(),/>\? units<\/text>/);
  const r19Questions=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
  await verifyPdf(await r19Questions,'R19 missing-leg practice');
  await page.locator('[data-mode="answers"]').click();
- assert.equal(await page.locator('.problem .answer-text').count(),8);
+ assert.ok(await page.locator('.problem .answer-text').count()===8);
  assert.match(await page.locator('.problem .diagram-vector').first().innerHTML(),/units/);
  const r19Answers=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  await verifyPdf(await r19Answers,'R19 missing-leg answer key');
  events.push({kind:'interaction',name:'R19 missing-leg SVG masking and paired PDF download',status:'pass'});
+
  await page.goto(`${base}/printable-protractor/`,{waitUntil:'networkidle'});
  const protractorDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="protractor"]').click();
@@ -175,54 +198,57 @@ try {
  await page.screenshot({path:join(out,'r13-labeled-ray.png'),fullPage:true});
  events.push({kind:'interaction',name:'line/ray/segment diagrams assessed visually, not text clues',status:'pass'});
 
- // R16: original data and blank axis are shown before a separate completed answer.
+ // R16: students see a blank statistical axis; only the answer preview reveals the constructed plot.
  await page.goto(`${base}/box-plots-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="statistic"]').selectOption('draw');
  assert.match(await page.locator('.problem .q').first().innerText(),/Draw a modified box plot/);
- assert.equal(await page.locator('.solution-box').count(),0,'Practice must not disclose quartiles');
- const blank=page.waitForEvent('download',{timeout:30000});
+ assert.equal(await page.locator('.solution-box').count(),0,'Practice mode must not reveal quartiles');
+ const blankDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await blank,'R16 blank box-plot practice');
+ await verifyPdf(await blankDownload,'R16 blank box-plot practice');
  await page.locator('[data-mode="answers"]').click();
- assert.equal(await page.locator('.solution-box').count(),8,'Answer must show eight complete plots');
- const solved=page.waitForEvent('download',{timeout:30000});
+ assert.equal(await page.locator('.solution-box').count(),8,'Answer preview should show one complete plot for each task');
+ const solvedDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
- await verifyPdf(await solved,'R16 completed box-plot answer key');
+ await verifyPdf(await solvedDownload,'R16 completed box-plot answer key');
  await page.screenshot({path:join(out,'r16-box-plots-answer.png'),fullPage:true});
- events.push({kind:'interaction',name:'R16 modified box plots: no question leaks and completed answer PDF',status:'pass'});
- // R17: the practice grid is blank; solutions and vector PDF contain the line.
+ events.push({kind:'interaction',name:'modified box-plot construction hides practice answers and renders completed answer PDF',status:'pass'});
+
+ // R17: graph practice is blank; answer preview and downloaded PDF contain the completed line.
  await page.goto(`${base}/linear-equations-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="task"]').selectOption('graph');
  await page.locator('[data-option="slope"]').selectOption('negative');
  assert.match(await page.locator('.problem .q').first().innerText(),/Graph the line/);
- assert.equal(await page.locator('.solution-linear-line').count(),0,'No student practice answer leak');
- await page.screenshot({path:join(out,'r17-linear-graph-practice.png'),fullPage:true});
+ assert.equal(await page.locator('.solution-linear-line').count(),0,'Student grid must remain blank');
+ await page.screenshot({path:join(out,'r17-linear-graph-blank-practice.png'),fullPage:true});
  const graphPractice=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await graphPractice,'R17 blank linear graph PDF');
+ await verifyPdf(await graphPractice,'R17 blank linear-graph PDF');
  await page.locator('[data-mode="answers"]').click();
- assert.equal(await page.locator('.solution-linear-line').count(),8);
- assert.equal(await page.locator('.solution-linear-point').count(),16);
+ assert.equal(await page.locator('.solution-linear-line').count(),8,'Answer key needs a completed graph for each question');
+ assert.equal(await page.locator('.solution-linear-point').count(),16,'Two solution points are needed per graph');
  const graphAnswers=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
- await verifyPdf(await graphAnswers,'R17 solved linear graph PDF');
+ await verifyPdf(await graphAnswers,'R17 solved linear-graph PDF');
  await page.screenshot({path:join(out,'r17-linear-graph-answers.png'),fullPage:true});
- events.push({kind:'interaction',name:'graph-a-line blank practice and completed answer key',status:'pass'});
+ events.push({kind:'interaction',name:'graph-a-line mode blank practice and completed answer key',status:'pass'});
+
  await page.goto(`${base}/scatter-plot-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="task"]').selectOption('plot');
  await page.locator('[data-option="trend"]').selectOption('none');
  assert.equal(await page.locator('.scatter-solution-point').count(),0,'Scatter practice leaked plotted coordinates');
  await page.locator('[data-field="paper"]').selectOption('A4');
- const scatterPracticeEvent=page.waitForEvent('download',{timeout:30000});
+ const scatterQuestionDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- await verifyPdf(await scatterPracticeEvent,'R18 blank scatter PDF',{paper:'A4'});
+ await verifyPdf(await scatterQuestionDownload,'R18 blank scatter PDF',{paper:'A4'});
  await page.locator('[data-mode="answers"]').click();
- assert.equal(await page.locator('.scatter-solution-point').count(),48,'Scatter answers need six plotted points per question');
- const scatterAnswerEvent=page.waitForEvent('download',{timeout:30000});
+ assert.equal(await page.locator('.scatter-solution-point').count(),8*6,'Scatter answer keys should plot six points per exercise');
+ const scatterAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
- await verifyPdf(await scatterAnswerEvent,'R18 scatter answer PDF',{paper:'A4'});
+ await verifyPdf(await scatterAnswerDownload,'R18 plotted scatter PDF',{paper:'A4'});
  await page.screenshot({path:join(out,'r18-scatter-solution.png'),fullPage:true});
- events.push({kind:'interaction',name:'R18 scatter task blanks practice and plots six points in answer PDF',status:'pass'});
+ events.push({kind:'interaction',name:'R18 scatter practice is blank, answer graphs reveal points, A4 PDFs download',status:'pass'});
+
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));

@@ -29,20 +29,6 @@ for(const topic of mathTopics)test(`PDF roundtrip: ${topic}`,async()=>{
   assert.ok(doc.getTitle()?.includes(sheet.optionsHash),`PDF config identity missing: ${topic} ${paper} ${mode}`);
  }
 });
-test('R18: scatter plotting exports matching questions and plotted-answer PDFs for Letter/A4',async()=>{
- for(const paper of ['Letter','A4'])for(const trend of ['positive','negative','none']){
-  const sheet=makeWorksheet('scatter-plot-worksheets',20261105,8,'standard',{task:'plot',trend});
-  for(const mode of ['questions','answers']){
-   const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,'Scatter Plot Worksheets',mode,paper));
-   assert.ok(pdf.getPageCount()>=1);
-   const [w,h]=sizes[paper];
-   for(const page of pdf.getPages()){assert.ok(Math.abs(page.getWidth()-w)<.015);assert.ok(Math.abs(page.getHeight()-h)<.015);}
-   assert.ok(pdf.getTitle()?.includes('generator v9'));
-   assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
-  }
- }
-});
-
 test('PDF steps reject unreviewed topics rather than imply verified solution',async()=>{
  const sheet=makeWorksheet('box-plots-worksheets',7,8);
  await assert.rejects(()=>createWorksheetPdf(sheet,'Box Plots','steps','Letter'),/not yet verified/);
@@ -148,7 +134,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v9'),`${topic} missing version-nine identity`);
+    assert.ok(doc.getTitle()?.includes('v10'),`${topic} missing version-ten identity`);
    }
   }
  }
@@ -217,14 +203,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'9');
+  assert.equal(sheet.generatorVersion,'8');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v9'));
+   assert.ok(document.getTitle()?.includes('v10'));
   }
  }
 });
@@ -240,7 +226,7 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v9/);
+   assert.match(parsed.getTitle()??'',/generator v10/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
@@ -260,14 +246,15 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
    assert.ok(pdf.getPageCount()>0);
-   assert.match(pdf.getTitle()??'',/generator v9/);
+   assert.match(pdf.getTitle()??'',/generator v10/);
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
    assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }
  }
 });
 
-test('R16 modified box plots export Letter/A4 blank practice and completed answers',async()=>{
+
+test('R16 modified box plots export blank practice and completed answer diagrams on both papers',async()=>{
  const sheet=makeWorksheet('box-plots-worksheets',20261105,8,'standard',{statistic:'draw'});
  for(const paper of ['Letter','A4']){
   const questions=await createWorksheetPdf(sheet,'Draw Modified Box Plots','questions',paper);
@@ -277,19 +264,20 @@ test('R16 modified box plots export Letter/A4 blank practice and completed answe
   assert.ok(q.getTitle()?.includes(sheet.optionsHash));
   assert.ok(a.getTitle()?.includes(sheet.optionsHash));
   assert.deepEqual(q.getPage(0).getSize(),a.getPage(0).getSize());
-  assert.ok(answers.byteLength>questions.byteLength,'Solved plot graphics should increase PDF size');
+  assert.ok(answers.byteLength>questions.byteLength,'Completed answer graphics should increase the PDF stream size');
  }
 });
 
-test('R17 graph worksheet question and answer PDFs use the same seed and Letter/A4 sizes',async()=>{
+
+test('R17: graph-a-line worksheets generate matching blank question and solved-graph answer PDFs',async()=>{
  const topic='linear-equations-worksheets';
- for(const slope of ['mixed','positive','negative','zero'])for(const paper of ['Letter','A4']){
+ for(const slope of ['positive','negative','zero','mixed'])for(const paper of ['Letter','A4']){
   const set=makeWorksheet(topic,20261105,8,'standard',{slope,task:'graph'});
-  const practice=await PDFDocument.load(await createWorksheetPdf(set,topic,'questions',paper));
-  const answers=await PDFDocument.load(await createWorksheetPdf(set,topic,'answers',paper));
-  assert.ok(practice.getPageCount()>0 && answers.getPageCount()>0);
-  for(const doc of [practice,answers]){
-   assert.ok(doc.getTitle()?.includes(set.optionsHash));
+  for(const mode of ['questions','answers']){
+   const bytes=await createWorksheetPdf(set,topic,mode,paper);
+   const doc=await PDFDocument.load(bytes);
+   assert.ok(doc.getPageCount()>0);
+   assert.ok(doc.getTitle().includes(set.optionsHash));
    for(const page of doc.getPages()){
     assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<0.015);
     assert.ok(Math.abs(page.getHeight()-sizes[paper][1])<0.015);
@@ -298,7 +286,26 @@ test('R17 graph worksheet question and answer PDFs use the same seed and Letter/
  }
 });
 
-test('R19: missing Pythagorean leg shares configuration identity in Letter/A4 practice, answers and steps PDFs',async()=>{
+test('R18: six-point scatter drawing produces matching practice/answer PDF pairs on both paper sizes',async()=>{
+ for(const paper of ['Letter','A4'])for(const trend of ['positive','negative','none']){
+  const set=makeWorksheet('scatter-plot-worksheets',20261105,8,'standard',{task:'plot',trend});
+  for(const mode of ['questions','answers']){
+   const bytes=await createWorksheetPdf(set,'Scatter Plot Worksheets',mode,paper);
+   const doc=await PDFDocument.load(bytes);
+   assert.ok(doc.getPageCount()>=1);
+   const [w,h]=sizes[paper];
+   for(const page of doc.getPages()){
+    assert.ok(Math.abs(page.getWidth()-w)<.015);
+    assert.ok(Math.abs(page.getHeight()-h)<.015);
+   }
+   assert.ok(doc.getTitle()?.includes(`generator v${set.generatorVersion}`));
+   assert.ok(doc.getTitle()?.includes(set.optionsHash));
+  }
+ }
+});
+
+
+test('R19: missing Pythagorean leg uses the same config identity in A4/Letter practice, key and steps PDF',async()=>{
  for(const paper of ['Letter','A4'])for(const task of ['missing-leg','mixed']){
   const sheet=makeWorksheet('pythagorean-worksheets',20261105,8,'standard',{scale:'large',task});
   for(const mode of ['questions','answers','steps']){
@@ -306,8 +313,23 @@ test('R19: missing Pythagorean leg shares configuration identity in Letter/A4 pr
    const pdf=await PDFDocument.load(bytes);
    assert.ok(pdf.getPageCount()>=1);
    assert.ok(pdf.getTitle().includes(sheet.optionsHash));
-   assert.match(pdf.getTitle(),/generator v9/);
+   assert.match(pdf.getTitle(),/generator v10/);
    assert.ok(bytes.length>2000);
+  }
+ }
+});
+
+
+test('R20: input/output function tables produce answer-separated vector PDFs in Letter/A4',async()=>{
+ for(const paper of ['Letter','A4'])for(const task of ['input','output','mixed']){
+  const sheet=makeWorksheet('function-tables-worksheets',9918,16,'standard',{task,missing:'middle'});
+  for(const mode of ['questions','answers']){
+   const bytes=await createWorksheetPdf(sheet,'Function Tables Worksheets',mode,paper);
+   const doc=await PDFDocument.load(bytes);
+   assert.ok(doc.getPageCount()>0);
+   assert.match(doc.getTitle()??'',/generator v10/);
+   assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
+   for(const page of doc.getPages())assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<.02);
   }
  }
 });

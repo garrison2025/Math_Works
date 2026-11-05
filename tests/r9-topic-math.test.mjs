@@ -64,12 +64,18 @@ test('domain/range, function table and linear function choices give mathematical
   }
   for(const v of ['first','middle','last']){
    const p=pick('function-tables-worksheets','missing',v,seed);
-   const m=read(p.payload.question,/f\(x\) = (\d+)x ([+−]) (\d+): (.*)\./);
-   const coeff=Number(m[1]),inter=(m[2]==='+'?1:-1)*Number(m[3]),cells=m[4].split(', ');
+   const m=read(p.payload.question,/f\(x\) = (\d+)x ([+−]) (\d+)\./);
+   const coeff=Number(m[1]),inter=(m[2]==='+'?1:-1)*Number(m[3]);
+   const vals=p.diagramSpec.values;
+   assert.equal(p.diagramSpec.kind,'function-table');
    const i=v==='first'?0:v==='middle'?1:2;
-   const missing=read(cells[i],/(-?\d+)→____/);
-   assert.equal(p.expectedAnswer,String(coeff*Number(missing[1])+inter));
-   assert.equal(cells.filter(x=>x.includes('____')).length,1);
+   assert.equal(vals[8],i);
+   assert.equal(vals[9],0,'Legacy output mode must keep missing output semantics');
+   const input=vals[2+i],result=vals[5+i];
+   assert.equal(result,coeff*input+inter);
+   assert.equal(p.expectedAnswer,String(result));
+   const blank=diagramSVG(p.diagramSpec);
+   assert.equal((blank.match(/>____<\/text>/g)||[]).length,1);
   }
   for(const sign of ['positive','negative','zero']){
    const p=pick('linear-equations-worksheets','slope',sign,seed);
@@ -106,12 +112,12 @@ test('angle triangles, supplementary angles and MAD obey exact invariants for ev
 });
 test('R9 selector state and currently versioned shared links reproduce the same worksheet',()=>{
  assert.equal(Object.keys(topicOptionDefinitions).length,51);
- const samples=[['function-tables-worksheets',{missing:'first'}],['surface-area-worksheets',{solid:'cube'}],['triangle-angle-sum-worksheets',{thirdAngle:'obtuse'}],['number-recognition-worksheets',{task:'word-to-numeral'}]];
+ const samples=[['function-tables-worksheets',{missing:'first',task:'output'}],['surface-area-worksheets',{solid:'cube'}],['triangle-angle-sum-worksheets',{thirdAngle:'obtuse'}],['number-recognition-worksheets',{task:'word-to-numeral'}]];
  for(const [slug,options] of samples){
   const cap=maxQuantityForTopic(slug,options,'standard');const quantity=cap>=8?8:4;
   const settings={seed:1765,difficulty:'standard',quantity,paper:'A4',options};
   const link=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,settings);
-  assert.equal(new URL(link).searchParams.get('gv'),'9');
+  assert.equal(new URL(link).searchParams.get('gv'),'10');
   const restored=parseWorksheetLink(link,slug);
   assert.deepEqual(restored.options,options);
   const lhs=makeWorksheet(slug,1765,quantity,'standard',options);

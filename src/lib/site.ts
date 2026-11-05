@@ -18,11 +18,13 @@ export const topicIntro=(slug:string)=>{
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
   'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',
   'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.',
-  'linear-equations-worksheets':'Evaluate linear functions or graph y = mx + b on a blank coordinate plane, then compare with a separately plotted answer key.'
+  'linear-equations-worksheets':'Evaluate linear functions or graph y = mx + b on a blank coordinate plane, then compare with a separately plotted answer key.',
+  'function-tables-worksheets':'Complete printable two-row function tables by calculating a missing output or solving backward for a missing input. Separate answer tables reveal the correct cell.'
  };
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
+ if(slug==='function-tables-worksheets')return ['Read the rule f(x) = mx + b and locate the blank cell in the table.', 'For a missing output, substitute x into the rule. For a missing input, set mx + b equal to the visible output and solve for x.', 'Write the result in the empty cell and check with the separate completed answer table.'];
  if(slug.includes('systems-equations'))return ['Compare the coefficients of both equations to decide whether they are proportional.', 'If they are not proportional, eliminate a variable to find the unique solution.', 'If they are proportional, compare the constant terms: identical lines have infinitely many solutions; distinct parallel lines have none.'];
  if(slug.includes('domain-range'))return ['Read each ordered pair as (input, output).', 'Domain is the set of unique x-values; range is the set of unique y-values.', 'For function identification, check whether any repeated input has two different outputs.'];
  if(slug.includes('box-plots'))return ['Order the observations and find the median.','Split into equal lower and upper halves, excluding the middle value for odd-sized samples.','Use the 1.5×IQR fences to identify outliers separately from the whisker endpoints.'];
@@ -37,7 +39,7 @@ export function howTo(slug:string):string[]{
  if(slug.includes('scientific-notation'))return ['Move the decimal point until the leading number is at least 1 but less than 10.','Count the places moved to find the power of ten.','Use a negative exponent for numbers between zero and one.'];
  if(slug.includes('number-line'))return ['Find zero and the tick spacing.','Count left for negative values, right for positive values.','Mark the requested location, not its mirror image.'];
  if(slug.includes('coordinate-plane'))return ['Find the x- and y-axes and the origin.','Move right for positive x and up for positive y; move left or down for negative coordinates.','Check the quadrant against the two coordinate signs.'];
- if(slug.includes('scatter-plot'))return ['For plotting tasks, mark each ordered pair (x, y) on the correctly numbered axes.','For interpretation tasks, read the plotted points and look for an overall upward, downward or absent linear trend.','A curved pattern need not have a clear linear trend; check all six observations.'];
+ if(slug.includes('scatter-plot'))return ['For plotting tasks, mark each ordered pair (x, y) on the correctly numbered axes.','For interpretation tasks, read the plotted points and look for an overall upward, downward or absent linear trend.','A curved pattern need not have a clear linear trend. Check all six observations, not just two points.'];
  if(slug.includes('mean-median-mode-range'))return ['Sort the observations before finding the median.','Divide their sum by the number of observations for the mean; count frequencies for mode.','Subtract minimum from maximum for the range.'];
  if(slug.includes('printable-protractor'))return ['Print using Actual size or 100%, with page fitting switched off.','Measure the printed 50 mm calibration line with a real ruler before using the scale.','Align the center and zero baseline to the angle before reading degrees.'];
  if(slug.includes('pythagorean'))return ['Identify the hypotenuse opposite the right angle: it is always the longest side.','For a missing hypotenuse use c² = a² + b²; for a missing leg use a² = c² − b².','Take the positive square root and check that each leg is shorter than the hypotenuse.'];
@@ -48,6 +50,7 @@ export function howTo(slug:string):string[]{
 
 /** Contextual reminders: intentionally about the generator's actual task, not generic SEO filler. */
 export function commonMistakes(slug:string):string[]{
+ if(slug==='function-tables-worksheets')return ['Treating an output as an input when solving backward.', 'Forgetting to subtract the constant before dividing by the coefficient.'];
  if(slug.includes('systems-equations'))return ['Combining equations with different coefficient scales without multiplying first.', 'Forgetting to check the solution in both original equations.'];
  if(slug.includes('domain-range'))return ['Including a repeated x-value more than once in the domain.', 'Assuming every relation is a function when the same input appears with different outputs.'];
  if(slug.includes('inequal'))return ['Forgetting to reverse the comparison sign after multiplying or dividing both sides by a negative number.', 'Using a closed dot for < or > instead of an open dot.'];

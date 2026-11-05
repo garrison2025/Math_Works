@@ -142,35 +142,41 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [CI REQUIRED] Firefox browser installation, A4 PDF download, new selectors and 390px viewport. Do NOT claim Firefox PASS until Actions succeeds and the artifact is reviewed.
 - [NOT RUN] Actual physical 50 mm protractor calibration and exhaustive human review of all possible PDFs. `PUBLIC_INDEXABLE=false` remains required on pages.dev.
 
-## R16: modified box plot drawing
+## R15 (2026-11-05): proportional systems and function classification
 
-- [IMPLEMENTED; CI PENDING] Blank graded construction axes and completed answer-key box/whisker/outlier overlays share the exact raw input and numeric scale.
-- [LOCAL PASS] 10,000 independent mathematical seed validations and 66 math/content/SEO regression tests; TypeScript passed.
-- [CI REQUIRED] Letter/A4 PDF generation and end-to-end Chrome download must pass the new workflow run. No physical print or exhaustive manual PDF signoff is implied.
-- [HOLD] Preview remains `noindex`, with no paid APIs, purchased domain, Search Console or advertising.
-
-## R17: answer-blind graph-the-line worksheets (2026-11-05)
-
-- [LOCAL PASS] 12,000 algebraic graph oracles validate intercepts, slopes, graph segments and separate question/answer SVG. Full math test suite 69/69 and TypeScript check passed.
-- [CI REQUIRED] Reproducible Letter/A4 PDFs, Chrome download/screenshot, Firefox browser behavior, Astro build and index audit. Check corresponding run; do not infer browser success from local tests.
-- [NOT RUN] Exhaustive manual PDF review, physical 50 mm protractor calibration and teacher signoff. Preview noindex remains mandatory.
-
-### R17 print-grid follow-up
-
-- [IMPLEMENTED, CI PENDING] PDF Cartesian panels now include light coordinate grid lines instead of bare tick axes; graphing practice uses one-unit grid spacing in SVG and vector PDF. Y-axis numbers are shown every 2 units to avoid label overlap on smaller paper diagrams.
-- [CI REQUIRED] Rerun the full PDF artifact and Chrome/Firefox smoke sequence, render representative Letter/A4 pages and verify the practice grid contains no answer line.
+- [LOCAL PASS] Independent exact integer determinant/rank checks of 24,000 proportional 2-variable systems, with no-solution and infinitely-many-solutions classes.
+- [LOCAL PASS] Independent relation-to-function checks of 12,000 ordered pair sets, and link/answer-map reproduction for v7.
+- [CI PENDING] Real Firefox downloads/viewport checks are moved into a separate required timed job; CI must report success to count as browser acceptance. New PDF golden fixtures include classification modes.
+- [NOT RUN] Physical protractor ruler measurement, exhaustive manual PDF visual acceptance, educator review. Preview indexing remains disabled.
 
 
-### R18: scatter plot problem fidelity
+## R16: modified box plot construction (2026-11-05)
 
-- [IMPLEMENTED] Six numerically labeled scatter points instead of three perfectly collinear points, with an explicit no-clear-linear-trend category.
-- [IMPLEMENTED] Answer-safe plotting mode: blank student grid vs six points drawn on answer SVG/PDF; shared fixed numeric scale.
-- [LOCAL PASS] R18 math regression and independent covariance checks; TypeScript passed.
-- [CI REQUIRED] Letter/A4 PDF, Chrome, Firefox and static build need GitHub Actions to confirm actual deployment.
-- [NOT RUN] Physical 50 mm protractor calibration or exhaustive manual visual inspection of all PDF pages.
-- [VERSION] Generator v8 changes old generator semantics; version-gated links warn on v7 mismatch.
+- [LOCAL DEVELOPMENT] Drawing-mode box-plot problems now expose only raw data/blank axes on practice sheets, and complete five-number-summary graphics only in answer mode, with outlier-aware whiskers.
+- [CI VERIFICATION REQUIRED] Independent 10k-seed quartile/whisker/outlier oracle, PDF Letter/A4 answer diagrams, and Chromium download regressions were added. Do not mark completed until the associated commit CI finishes successfully.
+- [NOT RUN] Physical protractor ruler calibration, exhaustive manual PDF proofing, classroom teacher approval. Cloudflare preview remains `noindex`.
+
+
+## R17: graph the line on an answer-blind coordinate grid (2026-11-05)
+
+- [LOCAL PASS] 12,000 graph-mode slope/intercept independent oracles checked algebraic line endpoints, source coordinates and separation between blank-practice SVG and completed-answer SVG.
+- [LOCAL PASS] Generator bounded quantity for limited signed/zero slopes; tests verify deterministic problem uniqueness and share-link preservation, plus 3,000 unchanged default evaluation examples.
+- [LOCAL PASS] Node math/content tests **69/69** and TypeScript static check; screenshot rendering of one negative-slope example confirmed blank versus completed graph.
+- [CI REQUIRED] PDF/Letter/A4 structural checks, built site, Chrome download + blank/answer screenshot, Firefox switch-mode behavior, and retained golden samples. Do not mark these passed based on local tests.
+- [NOT RUN] Physical print scale, every PDF page visual review and educator sign-off. Preview `noindex,nofollow` required.
+
+
+### R18 scatter-plot task and plotted-answer safety
+
+- [IMPLEMENTED] Six-point scatter plots use numerically labeled fixed axes (x 0-7, y 0-10); point positions are identical in SVG and vector PDF.
+- [IMPLEMENTED] Identify trend covers positive, negative, and no clear linear trend. Plot-points mode shows the six coordinate pairs with a blank graph on practice pages and points on answer pages.
+- [LOCAL TEST] Independent covariance checks, seed determinism, and answer-leak regressions are in tests/r18-scatter.test.mjs.
+- [CI REQUIRED] Letter/A4 generated PDF pairs and Chrome/Firefox interactions. Full visual PDF review and physical protractor calibration remain NOT RUN.
+- [VERSION] v8 intentionally invalidates v7 links for reproducible old generators; the UI warns rather than silently recreating a changed worksheet.
+
 
 ### R19 - Missing-leg Pythagorean worksheets
-- [IMPLEMENTED; CI REQUIRED] Missing-leg/mixed tasks, answer-masked right-triangle SVG and PDF, answer-key diagrams, teaching guidance, v9 seed identity.
-- [LOCAL PASS] 18,000 independent theorem checks, plus worksheet/link deterministic tests and 75/75 math/page-rule tests.
-- [NOT RUN] Physical 50 mm protractor calibration; exhaustive manual print inspection across all topics.
+
+- [IMPLEMENTED; CI VERIFICATION REQUIRED] Added leg/hypotenuse/mixed task modes, answer-blind triangle diagrams in SVG and vector PDF, answer key diagrams, updated teaching guidance and `v9` share identity.
+- [LOCAL TEST] Independent theorem oracles over 18,000 problem seeds, all difficulty levels and variants, plus deterministic worksheet/link replay checks. Re-run full test suite and GitHub CI after final commit.
+- [NOT RUN] Physical protractor calibration or exhaustive manual visual review of all 51 topic families.

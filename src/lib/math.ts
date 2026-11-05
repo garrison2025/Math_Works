@@ -1,9 +1,9 @@
 /** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
 import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicOptions} from './topic-options.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
-export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
+export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='9' as const;
+export const GENERATOR_VERSION='10' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -180,13 +180,28 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   const task=opts.task==='mixed'?r.pick(['evaluate','solve-input']):opts.task;
   if(task==='evaluate')make(`If f(x) = ${expression}, find f(${x}).`,value,`Substitute x = ${x}`,`${coeff} × ${x} + (${inter}) = ${value}`);
   else make(`If f(x) = ${expression} and f(x) = ${value}, find x.`,x,`Subtract ${inter}: ${coeff}x = ${value-inter}`,`Divide by ${coeff}: x = ${x}`);break}
- case 'function-tables-worksheets':{const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-4,8),inputs=[x-1,x,x+1],outputs=inputs.map(v=>coeff*v+inter),position=opts.missing==='first'?0:opts.missing==='last'?2:1;
-  const table=inputs.map((v,i)=>`${v}→${i===position?'____':outputs[i]}`).join(', ');
-  make(`Complete the input/output table for f(x) = ${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}: ${table}.`,outputs[position],`Substitute the missing input x = ${inputs[position]}`,`f(${inputs[position]}) = ${coeff} × ${inputs[position]} + (${inter}) = ${outputs[position]}`);break}
+ case 'function-tables-worksheets':{
+  const coeff=r.int(2,8),inter=r.int(-8,8),x=r.int(-4,8),inputs=[x-1,x,x+1],outputs=inputs.map(v=>coeff*v+inter);
+  const position=opts.missing==='first'?0:opts.missing==='last'?2:1;
+  const task=opts.task==='mixed'?r.pick(['input','output']):opts.task;
+  const expression=`${coeff}x ${inter<0?'−':'+'} ${Math.abs(inter)}`;
+  if(task==='output'){
+   make(`Complete the input/output table for f(x) = ${expression}. Find the missing output.`,outputs[position],
+    `Use the known input x = ${inputs[position]}.`,
+    `f(${inputs[position]}) = ${coeff} × ${inputs[position]} + (${inter}) = ${outputs[position]}.`);
+  }else{
+   make(`Complete the input/output table for f(x) = ${expression}. Find the missing input.`,inputs[position],
+    `Set ${coeff}x + (${inter}) = ${outputs[position]}.`,
+    `Subtract ${inter} from both sides: ${coeff}x = ${outputs[position]-inter}.`,
+    `Divide by ${coeff}: x = ${inputs[position]}.`);
+  }
+  diagram={kind:'function-table',values:[coeff,inter,...inputs,...outputs,position,task==='input'?1:0]};
+  break;
+ }
  case 'linear-equations-worksheets':{
   const graph=opts.task==='graph';
-  // Keep existing evaluation seeds stable; graph uses small slopes to permit
-  // plotting the intercept and a second integer point on the visible grid.
+  // Keep existing evaluation seeds stable; graph mode uses smaller coefficients
+  // so pupils can plot the intercept and a second integer point on the grid.
   const slope=opts.slope==='mixed'?r.int(graph?-3:-5,graph?3:5):opts.slope==='positive'?r.int(1,graph?3:5):opts.slope==='negative'?-r.int(1,graph?3:5):0;
   const inter=r.int(graph?-5:-9,graph?5:9),x=graph?0:r.int(-5,5);
   const equation=`y = ${slope}x ${inter<0?'−':'+'} ${Math.abs(inter)}`;
@@ -311,23 +326,20 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   let values=trend==='none'?[...r.pick(shapes)]:trend==='positive'?[2,3,4,5,6,7]:[7,6,5,4,3,2];
   const shift=r.int(-1,1);
   if(trend!=='none'){
+   // Introduce genuine variation; six perfectly collinear points are not a scatter sample.
    const jitterIndex=r.int(1,4),delta=r.int(0,1)===0?-1:1;
    values[jitterIndex]+=delta;
   }
   values=values.map(y=>y+shift);
   const coordinates=values.map((y,i)=>`(${i+1}, ${y})`).join(', ');
-  const avg=values.reduce((a,b)=>a+b,0)/6;
-  const covariance=values.reduce((cov,y,i)=>cov+(i+1-3.5)*(y-avg),0);
-  if((trend==='positive'&&covariance<=5)||(trend==='negative'&&covariance>=-5)||(trend==='none'&&Math.abs(covariance)>1e-9))throw Error('Invalid scatter trend');
-  if(task==='plot')make(`Plot these six points on the scatter grid: ${coordinates}.`,`Coordinates: ${coordinates}`,
-   'Locate each x-value on the horizontal axis and each y-value on the vertical axis.',
-   'Plot all six coordinate pairs; then check each marked point against the list.');
+  const actual=values.reduce((cov,y,i)=>cov+(i+1-3.5)*(y-values.reduce((a,b)=>a+b,0)/6),0);
+  if((trend==='positive'&&actual<=5)||(trend==='negative'&&actual>=-5)||(trend==='none'&&Math.abs(actual)>1e-9))throw Error('Scatter generator produced an invalid trend');
+  if(task==='plot')make(`Plot these six points on the scatter grid: ${coordinates}.`,`Coordinates: ${coordinates}`,`Locate each x-value on the horizontal axis and each y-value on the vertical axis.`,`Plot all six coordinate pairs; then check each marked point against the list.`);
   else make('Describe the overall linear trend in the scatter plot.',trend==='none'?'no clear linear trend':trend,
-   'Examine all six points from left to right, not just one pair.',
+   `Examine all six points from left to right, not just one pair.`,
    trend==='none'?'The points do not rise or fall overall in a linear pattern.':`The points generally ${trend==='positive'?'rise':'fall'} as x increases.`);
-  diagram={kind:'scatter',values:values.flatMap((y,i)=>[i+1,y]),labels:task==='plot'?['plot']:['identify']};
-  break;
- }
+  diagram={kind:'scatter',values:values.flatMap((y,i)=>[i+1,y]),labels:task==='plot'?['plot']:['identify']};break}
+
  case 'printable-protractor':{const deg=opts.angleRange==='acute'?r.int(1,89):opts.angleRange==='obtuse'?r.int(91,179):r.int(0,180);make(`Locate the ${deg}° mark on a printed protractor.`,`${deg}°`,`Read degrees counterclockwise from the right-hand 0° baseline`,`Print at actual size (100%) and measure the 50 mm verification line.`);diagram={kind:'protractor',values:[50]};break}
  default: throw Error(`Topic not implemented: ${topicId}`)
  }

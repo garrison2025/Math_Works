@@ -1,5 +1,6 @@
 import {quartiles,type Diagram} from './math.ts';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry} from './graph.ts';
+import {functionTableGeometry} from './function-table.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Vector graphics are generated from the same diagramSpec as the answer object. */
@@ -15,6 +16,21 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
  const text=(x:number,y:number,s:string)=>`<text x="${x}" y="${y}" fill="#172337" font-size="17" text-anchor="middle">${esc(s)}</text>`;
  const poly=(points:string)=>`<polygon points="${points}" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
  switch(d.kind){
+  case 'function-table':{
+   const g=functionTableGeometry(d),left=46,top=43,cellW=90,cellH=66;
+   parts=`<rect x="${left}" y="${top}" width="${cellW*4}" height="${cellH*2}" rx="8" fill="white" stroke="#1b64a5" stroke-width="2"/><rect x="${left}" y="${top}" width="${cellW}" height="${cellH*2}" rx="8" fill="#e9f2f9"/>`;
+   for(let i=1;i<4;i++)parts+=`<path d="M${left+i*cellW} ${top}V${top+cellH*2}" stroke="#9aadc0" stroke-width="1.6"/>`;
+   parts+=`<path d="M${left} ${top+cellH}H${left+4*cellW}" stroke="#9aadc0" stroke-width="1.6"/>`;
+   const render=(value:string,c:number,row:number)=>`<text x="${left+(c+.5)*cellW}" y="${top+(row+.64)*cellH}" font-size="23" font-family="ui-monospace,Consolas,monospace" font-weight="600" fill="#172337" text-anchor="middle">${esc(value)}</text>`;
+   parts+=render('x',0,0)+render('f(x)',0,1);
+   for(let i=0;i<3;i++){
+    const hideX=!showSolution&&g.missingRole==='input'&&g.position===i;
+    const hideY=!showSolution&&g.missingRole==='output'&&g.position===i;
+    parts+=render(hideX?'____':String(g.inputs[i]),i+1,0);
+    parts+=render(hideY?'____':String(g.outputs[i]),i+1,1);
+   }
+   break;
+  }
   case 'column-multiplication':{
    if(v.length!==2||!v.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid multiplication diagram');
    const top=String(v[0]),bottom=String(v[1]);

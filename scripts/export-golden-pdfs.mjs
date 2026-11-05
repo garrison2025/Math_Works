@@ -35,7 +35,9 @@ const fixtures=[
  {slug:'systems-equations-worksheets',quantity:8,options:{method:'coincident',solutions:'mixed'}},
  {slug:'domain-range-worksheets',quantity:8,options:{task:'function-test',relation:'not-function'}},
  {slug:'pythagorean-worksheets',quantity:8,options:{scale:'small',task:'missing-leg'}},
- {slug:'pythagorean-worksheets',quantity:8,options:{scale:'large',task:'mixed'}}
+ {slug:'pythagorean-worksheets',quantity:8,options:{scale:'large',task:'mixed'}},
+ {slug:'function-tables-worksheets',quantity:8,options:{task:'input',missing:'middle'}},
+ {slug:'function-tables-worksheets',quantity:8,options:{task:'output',missing:'first'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){

@@ -127,27 +127,38 @@ Triangle interior-angle pictures now use mathematically constructed vertex coord
 - Generator/share identifier is **v6**. Earlier `gv` links warn that exact question reproduction is not guaranteed; newly copied links use v6 and preserve both topic settings.
 - CI has an independent **Firefox** smoke suite: A4 question-PDF download, new algebra selector behavior, answer visibility toggle and 390px mobile layout. Firefox smoke tests use a locally served static build. Physical protractor print accuracy remains unverified.
 
-### R16: construct modified box plots with independently verified answer diagrams
+### R15: advanced system and relation classification
 
-- Box Plots now offers **Draw modified box plot** along with Q1/median/Q3/IQR/outlier tasks.
-- Practice shows only the source data and a blank numeric axis. The answer view and PDF overlay the correct quartile box, median line, non-outlier whiskers and separate outlier markers on the identical scale.
-- An independent 10,000-seed oracle verifies the five-number information and 1.5xIQR outlier fences. Letter/A4 PDF and Chromium download regressions are included.
-- Generator version 7 remains unchanged because existing topic algorithms and saved links retain their meaning. Preview URLs remain noindex.
+- Systems worksheets now practice **no solution** (parallel lines) and **infinitely many solutions** (coincident equations) alongside unique integer solutions. Generated coefficient determinants and augmented conditions are independently tested.
+- Domain/range worksheets include **Is this relation a function?** with repeated-input counterexamples.
+- New semantics use generator **v7**, with distinct reproducible links and matched answer keys.
+- GitHub CI separates Firefox into a required job with bounded installation so stalled browser setup cannot block core mathematical, PDF, Chromium or static site results. Do not treat core CI success as Firefox success.
 
-### R17: independent linear-function plotting practice (2026-11-05)
+### R16: construct modified box plots with verified answer graphics (2026-11-05)
 
-- The Linear Equations topic now has a task selector: default Evaluate preserves its legacy seeded questions, while Graph displays a numbered blank coordinate grid on questions and the mathematically exact vector line plus two points only on the answer key.
-- Restricted graph domains cap the maximum unique exercise count (horizontal: 10, strictly positive/negative: 30, mixed: 40). The UI disables impossible quantities.
-- Added 12,000 independently checked slope/intercept seeds, seeded URL replay, Letter/A4 PDF pairs, Chrome and Firefox visual/download regressions, and golden PDF fixtures.
-- Generator v7 is unchanged: existing Evaluate question semantics are preserved, and new links record opt_task=graph.
-- The preview remains noindex until physical printing and complete release gates are satisfied.
+- The Box Plots topic now offers **Draw modified box plot**, alongside Q1, median, Q3, IQR and outlier calculations. The practice sheet carries only the original values and a graduated blank axis; the answer view and PDF display the computed quartile box, median line, non-outlier whiskers, and separate outlier markers on the same scale.
+- New test coverage independently recalculates quartiles, 1.5×IQR fences, whisker endpoints and outliers for 10,000 seeds, and checks seeded URLs and PDFs on both US Letter and A4.
+- The existing generator v7 identity is preserved: previously generated topics and option settings are not changed. `PUBLIC_INDEXABLE=false` remains required on the preview domain.
 
 
-### R18: six-point scatter plots and plotting worksheets
+### R17: actual linear-function plotting exercises (2026-11-05)
 
-Scatter Plot Worksheets now offers Identify the trend (positive, negative, no clear linear trend) and Plot the data. For plotting, the practice SVG/PDF shows six ordered pairs and a blank 0-7 by 0-10 coordinate grid; the answer sheet uses the same numerical scale to plot each point. Generator v8 replaces v7 because seed-to-question semantics changed. Old share links show the existing incompatibility warning and must not be represented as exact reproductions. Physical protractor calibration and comprehensive manual PDF review remain pending.
+- `Linear Equations Worksheets` now has a **Linear function task** selector: the existing **Evaluate y** mode remains the default, while **Graph** generates an actual blank coordinate grid to draw `y = mx + b`.
+- In graph mode the **practice** SVG and questions PDF never draw the target solution line; the **answer key** plots the exact vector line and two algebraically verified points `(0,b)` and `(1,m+b)`. PDF coordinate axes include numbered tick marks.
+- Limited choice pools are explicitly capped (10 horizontal, 30 strictly positive/negative, 40 mixed); the client disables impossible question counts, preventing timeout/duplicate attempts.
+- Added 12,000 independent graph slope/intercept examples, long-worksheet uniqueness and reproducible link tests, Letter/A4 PDF roundtrips, Chrome and Firefox smoke tests, and three representative PDF-golden fixture families.
+- Retains generator `v7` because existing **evaluate** seed/question semantics are unchanged; graph mode is opt-in and part of the reproducible URL's explicit `opt_task` value. Older versions remain not guaranteed reproducible.
+- CI/manual browser evidence and physical printer verification remain separate gates; this feature must not trigger indexing or custom-domain rollout.
+
+
+### R18 scatter plotting and trend interpretation
+
+On `/scatter-plot-worksheets/`, teachers can choose **Identify the trend** (positive, negative, or no clear linear trend) or **Plot the data**. The latter shows labeled numerical axes but no points on practice sheets; matching answer PDFs plot the six exact ordered pairs. SVG and vector PDF share the same 0-7 by 0-10 scale. This changes the worksheet generator to **v8**, so previous v7 shares must be regenerated using the current engine; the site does not claim backwards reproducibility. Browser QA and physical printer signoff must still be checked separately.
+
 
 ### R19: Pythagorean missing-leg practice (2026-11-05)
-- Hypotenuse, missing leg and mixed tasks use scaled Pythagorean triples. Solutions for missing legs subtract the known leg squared from hypotenuse squared.
-- Practice SVG/vector PDF marks the unknown leg '?'; the answer diagram shows the solved value. Generator/share identity is v9.
-- Mathematics, browser interaction and PDF structure are regression-tested. Physical protractor calibration and complete printed-page review are separate release gates.
+
+- Pythagorean worksheets now support **Find hypotenuse**, **Find missing leg**, and **Mixed**. Missing-leg questions have integer sides from scaled triples, and the separate answer/steps PDFs derive the unknown from `c² − known²`.
+- The question-only triangle labels the unknown leg as `?` while the hypotenuse and other leg stay visible; answer mode includes the reconstructed side. PDF question/answer diagrams use the same contract and respect paper dimensions.
+- Independent mathematical oracles and deterministic URL/worksheet consistency tests cover all three tasks; the generator and share-link format are now v9, deliberately not claiming compatibility with earlier seeded worksheet IDs.
+- Classroom print accuracy remains subject to human review; physical protractor calibration is not programmatically verified.
