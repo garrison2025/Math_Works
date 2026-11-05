@@ -445,3 +445,13 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Measurements entered by the user locally produce a ±1 mm X/Y screening result; invalid and anisotropically scaled reports are flagged. The website never claims it observed the printer and sends no measurements to a server.
 - [CI REQUIRED] Download actual PDF in Chromium/Firefox; use PyMuPDF on exported page vectors (not source constants), intentionally incorrect vector regression tests, and preserve the 468 PDF pressure test / static noindex gates.
 - [NOT RUN] Actual printed lengths, paper cropping, alignment across physical printers, teacher curriculum assessment and formal domain/indexing readiness remain pending.
+
+
+### R53 — long division writing-space verification (CI SUCCESS: 42127798473)
+
+- [IMPLEMENTED & VERIFIED] Three-digit dividends have 4 ruled pencil rows, four-digit dividends 5, with matching SVG preview and vector PDF geometry; quotient/remainder are never revealed on question sheets.
+- [INDEPENDENT PHYSICAL-PDF VECTOR AUDIT] 4 long-division max-size stress PDFs, **80 pages, 160 questions, 708 ruled vectors** inspected using PyMuPDF; wrong/missing guide regression tests pass. The audit verifies exported PDF geometry, **not actual paper**.
+- [REGRESSION] 51 topics / 102 stress cases / **468 PDFs and 3,776 pages**. PDF text-content check 35,060 segments; visual-text audit 108,926 spans, 0 detected collisions. 167 math Node tests, 39 PDF Node tests, Chromium 73 evidence checks, Firefox job success, and 488 keyword-route SEO/noindex audit pass.
+- [COMPATIBILITY] Generator v18, mathematical answers and share links unchanged; PDF layout identifier stays v2; the additional 12 PDF pages are intentional for writing room.
+- [OPEN] Teacher-led pedagogy review, student handwriting usability, 100% physical printer measurements, purchased domain and go-live/indexability approval.
+- [EVIDENCE] https://github.com/garrison2025/Math_Works/actions/runs/42127798473
