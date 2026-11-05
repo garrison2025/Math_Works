@@ -10,7 +10,7 @@ export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
 const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.89]};
 const ink=rgb(.09,.14,.22),sub=rgb(.35,.43,.52),accent=rgb(.105,.39,.65);
-export function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,'/').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/→/g,' -> ').replace(/←/g,' <- ').replace(/↔/g,' <-> ').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
+export function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,' divided by ').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/→/g,' -> ').replace(/←/g,' <- ').replace(/↔/g,' <-> ').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
 /** Wrap using font metrics rather than character counts; even a long unspaced
  * token is split before it can reach a page margin. */
 export function wrapPdfText(input:string,font:PDFFont,size:number,maxWidth:number):string[]{

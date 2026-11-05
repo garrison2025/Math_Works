@@ -34,7 +34,7 @@ test('R21: 24,000 distinct independent statistics oracles across all modal patte
  assert.deepEqual([...parity].sort(),[0,1],'Both even and odd samples must be represented');
 });
 test('R21: mixed mode selection and exact non-integer means remain reproducible',()=>{
- assert.equal(GENERATOR_VERSION,'13');
+ assert.equal(GENERATOR_VERSION,'14');
  let fractionCount=0;
  for(let seed=0;seed<1500;seed++){
   const p=sampleProblem(topic,seed,'challenge',{statistic:'mean',modePattern:'mixed'});
@@ -47,7 +47,7 @@ test('R21: mixed mode selection and exact non-integer means remain reproducible'
   const sheet=makeWorksheet(topic,20261105,20,'standard',options);
   const link=buildWorksheetLink('https://math-works.pages.dev/mean-median-mode-range-worksheets/',topic,{seed:sheet.seed,difficulty:'standard',quantity:20,paper:'A4',options});
   const parsed=parseWorksheetLink(link,topic);
-  assert.equal(new URL(link).searchParams.get('gv'),'13');
+  assert.equal(new URL(link).searchParams.get('gv'),'14');
   assert.deepEqual(parsed.options,options);
   assert.deepEqual(makeWorksheet(topic,parsed.seed,parsed.quantity,parsed.difficulty,parsed.options),sheet);
   assert.equal(new Set(sheet.problems.map(p=>p.payload.question)).size,20);

@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='13' as const;
+export const GENERATOR_VERSION='14' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -80,7 +80,36 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   const n=kind==='proper'?r.int(1,d-1):r.int(d+1,d*2),v=kind==='proper'?r.int(1,e-1):r.int(e+1,e*2);
   const res=mulR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(e)));
   make(`${n}/${d} × ${v}/${e} = ____`,asText(res),`Multiply numerators and denominators: ${n*v}/${d*e}`,`Reduce: ${asText(res)}`);break}
- case 'fractions-worksheets':{const d=r.int(2,12),n=r.int(1,d),v=r.int(1,d),op=opts.operation==='mixed'?r.pick(['+','−','×']):({addition:'+',subtraction:'−',multiplication:'×'} as Record<string,string>)[opts.operation];const result=op==='+'?addR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(d))):op==='−'?addR(rational(BigInt(n),BigInt(d)),rational(-BigInt(v),BigInt(d))):mulR(rational(BigInt(n),BigInt(d)),rational(BigInt(v),BigInt(d)));make(`${n}/${d} ${op} ${v}/${d} = ____`,asText(result),op==='×'?`Multiply numerator ${n} × ${v} and denominator ${d} × ${d}`:op==='+'?`Add numerators ${n} + ${v}; keep denominator ${d}`:`Subtract numerators ${n} - ${v}; keep denominator ${d}`,`Reduce to ${asText(result)}`);break}
+ case 'fractions-worksheets':{
+  const operation=opts.operation==='mixed'?r.pick(['addition','subtraction','multiplication','division']):opts.operation;
+  const op=({addition:'+',subtraction:'−',multiplication:'×',division:'÷'} as Record<string,string>)[operation];
+  const maxDen=difficulty==='easy'?8:difficulty==='standard'?12:20;
+  const d=r.int(2,maxDen);
+  const denominatorMode=opts.denominators==='mixed'?r.pick(['same','unlike']):opts.denominators;
+  // Select the second denominator without rejection sampling: even the narrowest
+  // unlike-denominator mode has a well-defined nonempty choice set.
+  const other=r.int(2,maxDen-1);
+  const e=denominatorMode==='same'?d:other>=d?other+1:other;
+  const n=r.int(1,d),v=r.int(1,e);
+  const left=rational(BigInt(n),BigInt(d)),right=rational(BigInt(v),BigInt(e));
+  const result=operation==='addition'?addR(left,right):
+    operation==='subtraction'?addR(left,rational(-right.n,right.d)):
+    operation==='multiplication'?mulR(left,right):divR(left,right);
+  const q=`${n}/${d} ${op} ${v}/${e} = ____`;
+  if(operation==='addition'||operation==='subtraction'){
+   const common=d*e/gcd(d,e),leftScaled=n*(common/d),rightScaled=v*(common/e);
+   const total=operation==='addition'?leftScaled+rightScaled:leftScaled-rightScaled;
+   make(q,asText(result),`Use common denominator ${common}: ${leftScaled}/${common} ${op} ${rightScaled}/${common}`,
+     `Combine numerators: ${leftScaled} ${op} ${rightScaled} = ${total}`,`Reduce ${total}/${common} to ${asText(result)}`);
+  }else if(operation==='multiplication'){
+   make(q,asText(result),`Multiply numerators: ${n} × ${v} = ${n*v}`,
+     `Multiply denominators: ${d} × ${e} = ${d*e}`,`Reduce ${n*v}/${d*e} to ${asText(result)}`);
+  }else{
+   make(q,asText(result),`Divide by ${v}/${e} by multiplying by its reciprocal ${e}/${v}`,
+     `Multiply: ${n}/${d} × ${e}/${v} = ${n*e}/${d*v}`,
+     `Reduce ${n*e}/${d*v} to ${asText(result)}`);
+  }
+  break}
  case 'addition-worksheets':{
   let x=0,y=0,carry=false;
   for(let attempt=0;attempt<250;attempt++){

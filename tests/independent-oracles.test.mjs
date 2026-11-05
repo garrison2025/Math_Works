@@ -31,7 +31,7 @@ test('300 independent rational, percentages and notation oracles per route',()=>
  });
  verify('adding-unlike-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) \+ (\d+)\/(\d+)/);assert.notEqual(m[2],m[4]);return asText(addR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4]))));});
  verify('multiplying-fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) × (\d+)\/(\d+)/);return asText(mulR(rational(BigInt(m[1]),BigInt(m[2])),rational(BigInt(m[3]),BigInt(m[4]))));});
- verify('fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) ([+−×]) (\d+)\/(\d+)/);const a=rational(BigInt(m[1]),BigInt(m[2])),b=rational(BigInt(m[4]),BigInt(m[5]));return asText(m[3]==='+'?addR(a,b):m[3]==='−'?addR(a,rational(-b.n,b.d)):mulR(a,b));});
+ verify('fractions-worksheets',q=>{const m=re(q,/^(\d+)\/(\d+) ([+−×÷]) (\d+)\/(\d+)/);const a=rational(BigInt(m[1]),BigInt(m[2])),b=rational(BigInt(m[4]),BigInt(m[5]));return asText(m[3]==='+'?addR(a,b):m[3]==='−'?addR(a,rational(-b.n,b.d)):m[3]==='×'?mulR(a,b):rational(a.n*b.d,a.d*b.n));});
  verify('percentages-worksheets',q=>{
   let m=q.match(/^Convert (\d+)\/(\d+) into a percentage/);
   if(m)return `${Number((n(m[1])/n(m[2])*100).toFixed(6))}%`;

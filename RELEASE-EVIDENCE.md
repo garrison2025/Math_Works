@@ -208,3 +208,9 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED] Explicit percent-of-number and percent-change selector choices, original-value change denominator, precise hundredths arithmetic, and matching explanatory steps. Generator/share identity v13.
 - [LOCAL TEST REQUIRED] Independent arithmetic oracles, no duplicate 40-question sheets, shared question/answer PDF metadata, browser interaction in Chrome/Firefox. CI outcomes need independent verification before marking release-ready.
 - [NOT VERIFIED] Exhaustive physical print review, 50 mm calibration on real printer, and production-domain indexing.
+
+### R24 comprehensive fraction arithmetic
+
+- [IMPLEMENTED; CI PENDING] Addition/subtraction (same or unlike denominators), multiplication and division of nonzero fractions, exact rational answers, topic-specific teaching guidance, reviewed steps PDF and versioned v14 configuration identity.
+- [LOCAL PASS] 18,000 independent exact-arithmetic oracles, 40-question uniqueness and deterministic seeded links for all selectors; full local math suite 91/91 and TypeScript checks passed.
+- [NOT VERIFIED] Physical printer calibration or exhaustive visual audit of all 51 topics; the pages.dev preview remains noindex.

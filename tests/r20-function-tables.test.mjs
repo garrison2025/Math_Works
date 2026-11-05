@@ -31,12 +31,12 @@ test('R20: practice SVG leaves exactly the required cell blank, answer SVG compl
  }
 });
 test('R20: URLs roundtrip position and input/output mode with matching answers',()=>{
- assert.equal(GENERATOR_VERSION,'13');
+ assert.equal(GENERATOR_VERSION,'14');
  for(const task of ['input','output','mixed'])for(const missing of ['first','middle','last']){
   const options={task,missing},sheet=makeWorksheet(topic,120932,16,'challenge',options);
   const url=buildWorksheetLink('https://math-works.pages.dev/function-tables-worksheets/',topic,{seed:sheet.seed,difficulty:'challenge',quantity:16,paper:'A4',options});
   const parsed=parseWorksheetLink(url,topic);
-  assert.equal(new URL(url).searchParams.get('gv'),'13');
+  assert.equal(new URL(url).searchParams.get('gv'),'14');
   assert.deepEqual(parsed.options,options);
   assert.deepEqual(makeWorksheet(topic,parsed.seed,parsed.quantity,parsed.difficulty,parsed.options),sheet);
   assert.equal(new Set(sheet.problems.map(p=>p.payload.question)).size,16);

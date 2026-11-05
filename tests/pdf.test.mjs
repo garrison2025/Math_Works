@@ -5,7 +5,7 @@ import {makeWorksheet} from '../src/lib/math.ts';
 import {createWorksheetPdf,createBlankProtractorPdf,ascii} from '../src/lib/pdf.ts';
 import {hasVerifiedSteps} from '../src/lib/capabilities.ts';
 const mathTopics=[
- 'two-step-equations-worksheets','adding-unlike-fractions-worksheets',
+ 'two-step-equations-worksheets','adding-unlike-fractions-worksheets','fractions-worksheets',
  'two-digit-multiplication-worksheets','pythagorean-worksheets',
  'box-plots-worksheets','printable-protractor',
  'triangle-angle-sum-worksheets','volume-of-rectangular-prisms-worksheets',
@@ -46,6 +46,7 @@ test('multipage output has no zero-page or lost-page failures',async()=>{
 
 test('PDF text transliteration preserves function-table arrows',()=>{
  assert.equal(ascii('1→2; -3 ← 4; 5 × 6'), '1 -> 2; -3  <-  4; 5 x 6');
+ assert.equal(ascii('3/4 ÷ 5/6'), '3/4  divided by  5/6', 'Fraction division in ASCII PDF must remain unambiguous');
 });
 test('blank protractor PDF is single page on Letter and A4',async()=>{
  for(const paper of ['Letter','A4']){
@@ -92,6 +93,7 @@ test('selected topic choices keep practice and answer PDF metadata aligned',asyn
   ['percentages-worksheets',{direction:'percent-to-fraction'}],
   ['percentages-worksheets',{direction:'percent-of-number'}],
   ['percentages-worksheets',{direction:'percent-change'}],
+  ['fractions-worksheets',{operation:'division',denominators:'unlike'}],
   ['functions-worksheets',{task:'solve-input'}],
   ['volume-of-rectangular-prisms-worksheets',{task:'missing-height'}],
   ['scientific-notation-worksheets',{direction:'to-standard'}]
@@ -136,7 +138,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v13'),`${topic} missing version-thirteen identity`);
+    assert.ok(doc.getTitle()?.includes('v14'),`${topic} missing version-fourteen identity`);
    }
   }
  }
@@ -205,14 +207,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'13');
+  assert.equal(sheet.generatorVersion,'14');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v13'));
+   assert.ok(document.getTitle()?.includes('v14'));
   }
  }
 });
@@ -228,7 +230,7 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v13/);
+   assert.match(parsed.getTitle()??'',/generator v14/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
@@ -248,7 +250,7 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
    assert.ok(pdf.getPageCount()>0);
-   assert.match(pdf.getTitle()??'',/generator v13/);
+   assert.match(pdf.getTitle()??'',/generator v14/);
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
    assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }
@@ -315,7 +317,7 @@ test('R19: missing Pythagorean leg uses the same config identity in A4/Letter pr
    const pdf=await PDFDocument.load(bytes);
    assert.ok(pdf.getPageCount()>=1);
    assert.ok(pdf.getTitle().includes(sheet.optionsHash));
-   assert.match(pdf.getTitle(),/generator v13/);
+   assert.match(pdf.getTitle(),/generator v14/);
    assert.ok(bytes.length>2000);
   }
  }
@@ -329,7 +331,7 @@ test('R20: input/output function tables produce answer-separated vector PDFs in 
    const bytes=await createWorksheetPdf(sheet,'Function Tables Worksheets',mode,paper);
    const doc=await PDFDocument.load(bytes);
    assert.ok(doc.getPageCount()>0);
-   assert.match(doc.getTitle()??'',/generator v13/);
+   assert.match(doc.getTitle()??'',/generator v14/);
    assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
    for(const page of doc.getPages())assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<.02);
   }
@@ -346,7 +348,28 @@ test('R21 varied-mode statistics export paired Letter/A4 PDFs with the same exac
    const [q,a]=await Promise.all([PDFDocument.load(questions),PDFDocument.load(answers)]);
    assert.ok(q.getPageCount()>=1&&a.getPageCount()>=1);
    assert.ok(q.getTitle()?.includes(sheet.optionsHash)&&a.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(q.getTitle()?.includes('v13')&&a.getTitle()?.includes('v13'));
+   assert.ok(q.getTitle()?.includes('v14')&&a.getTitle()?.includes('v14'));
+  }
+ }
+});
+
+test('R24: fraction division and unlike subtraction provide aligned question, answer and reviewed-steps PDFs',async()=>{
+ const topic='fractions-worksheets';
+ for(const operation of ['division','subtraction'])for(const denominators of ['same','unlike']){
+  const set=makeWorksheet(topic,20261105,20,'challenge',{operation,denominators});
+  for(const paper of ['Letter','A4']){
+   const outputs=await Promise.all(['questions','answers','steps'].map(mode=>createWorksheetPdf(set,'Fraction Practice',mode,paper)));
+   const docs=await Promise.all(outputs.map(bytes=>PDFDocument.load(bytes)));
+   docs.forEach((doc,i)=>{
+    assert.ok(doc.getPageCount()>=1);
+    assert.match(doc.getTitle()??'',/generator v14/);
+    assert.ok(doc.getTitle()?.includes(set.optionsHash));
+    for(const page of doc.getPages()){
+     assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<0.02);
+     assert.ok(Math.abs(page.getHeight()-sizes[paper][1])<0.02);
+    }
+    assert.ok(outputs[i].length>1200);
+   });
   }
  }
 });

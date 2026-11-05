@@ -182,3 +182,7 @@ Function Tables now supports missing outputs, missing inputs, and mixed practice
 ### R23 percentage teaching modes
 
 `Percentages Worksheets` now generates four distinct mathematical tasks: fraction to percent, percent to simplest fraction, exact percent of an amount (no premature rounding), and percentage increase/decrease measured against the ORIGINAL value. Each task preserves the same matching answer key and PDF export in Letter/A4; share links are marked generator v13. Preview pages remain noindex until domain and manual release QA.
+
+### R24 fraction arithmetic and division
+
+The general **Fractions Worksheets** generator now supports exact addition, subtraction, multiplication and division (including unlike denominators). Denominator relation is a separate selector (mixed/same/unlike). A fraction division problem never has a zero divisor; answers reduce to exact lowest terms and subtraction may yield negative results. A reviewed worked-steps PDF is available for this topic, with independent BigInt math oracle coverage. Generator and share links now use v14; historical generator links only warn and cannot guarantee exact old worksheet restoration.
