@@ -225,6 +225,23 @@ try{
   const m=q.match(/bases (\d+), (\d+)/);return m&&m[1]!==m[2];
  }),'Firefox exclusive trapezoid setting failed');
  checks.push({name:'R45 Firefox opt-in exclusive trapezoid definition generates unequal bases',status:'pass'});
+ // R52: independent Firefox check that the local-only physical ruler prompt
+ // downloads a one-page Letter vector PDF; no measurement is auto-observed.
+ await open('addition-worksheets');
+ await page.locator('[data-print-calibration] summary').click();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ const scaleEvent=page.waitForEvent('download',{timeout:45000});
+ await page.locator('[data-action="calibration"]').click();
+ const scaleDl=await scaleEvent;
+ const scalePath=join(out,scaleDl.suggestedFilename());await scaleDl.saveAs(scalePath);
+ const scalePdf=await PDFDocument.load(readFileSync(scalePath));
+ assert.equal(scalePdf.getPageCount(),1);
+ assert.ok(Math.abs(scalePdf.getPage(0).getWidth()-612)<.1);
+ await page.locator('[data-calibration-axis="horizontal"]').fill('100');
+ await page.locator('[data-calibration-axis="vertical"]').fill('100');
+ await page.locator('[data-action="check-calibration"]').click();
+ assert.match(await page.locator('[data-calibration-result]').innerText(),/user-reported screening result/);
+ checks.push({name:'R52 Firefox Letter actual-size printer PDF and self-reported ruler checker',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});

@@ -437,3 +437,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Seven additional authorized worked-step topics reconstruct the complete arithmetic trace from student-visible problem strings. Existing eight full step-family audits remain, giving an independently verified 15/15 step-PDF scope, alongside the 51/51 final-answer math gate.
 - [TEST REQUIRED] 200 seeds per new option and difficulty, adversarial step-only mutations that leave final answers correct, real A4/Letter teacher steps PDFs, full PDF stress and cross-browser QA.
 - [LIMITATION] Independent agreement with current textual templates is not a substitute for an external educator's review of pedagogy, grade alignment and wording. Printable protractor real-paper measurement remains pending; Cloudflare preview stays noindex/nofollow.
+
+
+### R52 — physical print scale self-check and digital geometry gate (CI pending)
+
+- [IMPLEMENTED] All 51 worksheet pages expose a collapsed actual-paper calibration helper. The matching A4/Letter PDF includes 100 mm horizontal and vertical bars, a 50 mm cross-check and a 25×25 mm square, with Actual size / 100% instructions.
+- [IMPLEMENTED] Measurements entered by the user locally produce a ±1 mm X/Y screening result; invalid and anisotropically scaled reports are flagged. The website never claims it observed the printer and sends no measurements to a server.
+- [CI REQUIRED] Download actual PDF in Chromium/Firefox; use PyMuPDF on exported page vectors (not source constants), intentionally incorrect vector regression tests, and preserve the 468 PDF pressure test / static noindex gates.
+- [NOT RUN] Actual printed lengths, paper cropping, alignment across physical printers, teacher curriculum assessment and formal domain/indexing readiness remain pending.

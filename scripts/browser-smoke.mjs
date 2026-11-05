@@ -348,6 +348,30 @@ try {
  assert.equal(protractor.getPageCount(),1);
  events.push({kind:'interaction',name:'blank 180-degree protractor PDF download (physical measurement still NOT RUN)',status:'pass'});
 
+ // R52: common physical printer check is exposed even on normal worksheets,
+ // and its self-reported scale comparison never claims actual printer control.
+ await page.goto(`${base}/one-step-equations-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-print-calibration] summary').click();
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const scalePdf=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="calibration"]').click();
+ const scaleDownload=await scalePdf;
+ assert.match(scaleDownload.suggestedFilename(),/printer-calibration-a4.pdf$/);
+ const scaleDoc=await verifyPdf(scaleDownload,'R52 one-page A4 actual-size scale PDF');
+ assert.equal(scaleDoc.getPageCount(),1);
+ assert.ok(Math.abs(scaleDoc.getPage(0).getWidth()-595.28)<0.1);
+ assert.match(scaleDoc.getTitle()??'',/printer calibration/);
+ await page.locator('[data-calibration-axis="horizontal"]').fill('100.3');
+ await page.locator('[data-calibration-axis="vertical"]').fill('99.5');
+ await page.locator('[data-action="check-calibration"]').click();
+ assert.match(await page.locator('[data-calibration-result]').innerText(),/within \+\/- 1 mm/i);
+ await page.locator('[data-calibration-axis="horizontal"]').fill('96');
+ await page.locator('[data-action="check-calibration"]').click();
+ assert.match(await page.locator('[data-calibration-result]').innerText(),/outside \+\/- 1 mm/i);
+ await page.locator('[data-calibration-axis="vertical"]').fill('');
+ await page.locator('[data-action="check-calibration"]').click();
+ assert.match(await page.locator('[data-calibration-result]').innerText(),/Enter physical ruler measurements/i);
+ events.push({kind:'interaction',name:'R52 printer calibration A4 PDF and self-entered horizontal/vertical scale checks (no real printer used)',status:'pass'});
  // R12 browser regression: true interior-angle geometry and masked missing-height PDF.
  await page.goto(`${base}/triangle-angle-sum-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="thirdAngle"]').selectOption('obtuse');

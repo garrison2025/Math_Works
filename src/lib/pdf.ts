@@ -7,7 +7,7 @@ import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {assertWorksheetMath} from './math-release-oracle.ts';
 import {assertWorksheetSteps} from './step-release-oracle.ts';
-import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
+import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT,POINTS_PER_MM} from './protractor.ts';
 import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
@@ -444,4 +444,54 @@ export async function createBlankProtractorPdf(paper:Paper):Promise<Uint8Array>{
  page.drawText('Use the 50 mm line to check printer scaling. Accuracy is not guaranteed until measured.',{x:40,y:52,size:8,font,color:sub});
  pdf.setTitle('Calibrated 180 Degree Printable Protractor - 50 mm check');
  pdf.setCreator('Math Worksheet Studio');return pdf.save();
+}
+
+/** R52 one-page, all-vector physical print scale reference for any worksheet.
+ * Digital PDF dimensions are audited independently. Only a user with a
+ * printer and a physical ruler can establish actual print scale.
+ */
+export async function createPrinterCalibrationPdf(paper:Paper):Promise<Uint8Array>{
+ const pdf=await PDFDocument.create(),[w,h]=PAGE_SIZE[paper],page=pdf.addPage([w,h]);
+ const font=await pdf.embedFont(StandardFonts.Helvetica);
+ const bold=await pdf.embedFont(StandardFonts.HelveticaBold);
+ const mm=(n:number)=>n*POINTS_PER_MM;
+ page.drawText('Printer scale check - Math Worksheet Studio',
+  {x:40,y:h-57,font:bold,size:16,color:ink});
+ page.drawText('Paper: '+paper+' | Print at Actual size / 100%. Disable Fit, Shrink and Scale to page.',
+  {x:40,y:h-80,font,size:10,color:ink});
+ page.drawText('Use a physical ruler on this PRINTED page, not a screen ruler or screenshot.',
+  {x:40,y:h-97,font,size:9,color:sub});
+ page.drawText('1. Check the horizontal 100 mm bar.',{x:74,y:h-172,font,size:10,color:ink});
+ const xy=(len:number,x:number,y:number,vertical=false)=>{
+  page.drawLine({start:{x,y},end:vertical?{x,y:y+mm(len)}:{x:x+mm(len),y},
+   color:accent,thickness:1.4});
+ };
+ xy(100,74,h-213);
+ page.drawText('100 mm horizontal reference',{x:74,y:h-195,font,size:9,color:sub});
+ page.drawText('2. Check the vertical 100 mm bar.',{x:74,y:h-232,font,size:10,color:ink});
+ xy(100,74,h-531,true);
+ page.drawText('100 mm vertical',{x:94,y:h-405,font,size:9,color:sub});
+ xy(50,74,h-610);
+ page.drawText('50 mm cross-check (also used by the printable protractor)',
+  {x:74,y:h-590,font,size:9,color:sub});
+ // A 25 x 25 mm square is a second, independent X/Y scale cross-check.
+ const sx=387,sy=h-477,side=mm(25);
+ for(const [x1,y1,x2,y2] of [
+  [sx,sy,sx+side,sy],[sx+side,sy,sx+side,sy+side],
+  [sx+side,sy+side,sx,sy+side],[sx,sy+side,sx,sy]
+ ])page.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2},
+  color:accent,thickness:1.2});
+ page.drawText('25 x 25 mm square',{x:380,y:h-496,font,size:9,color:sub});
+ page.drawText('3. Enter both 100 mm measured values in the on-page checker.',
+  {x:74,y:h-645,font,size:9,color:ink});
+ page.drawText('Within +/- 1 mm on both axes is a screening check, not printer certification.',
+  {x:74,y:h-662,font,size:8.5,color:sub});
+ page.drawText('If outside tolerance: disable scaling, select the matching paper size and reprint.',
+  {x:40,y:69,font,size:8.5,color:ink});
+ page.drawText('Digital vector size only. Physical printer output has NOT been independently measured.',
+  {x:40,y:54,font,size:8,color:sub});
+ pdf.setTitle('Math Worksheet Studio - '+paper+' printer calibration - 100 mm');
+ pdf.setSubject('One page physical ruler test - digital vectors do not prove printer accuracy');
+ pdf.setCreator('Math Worksheet Studio');
+ return pdf.save();
 }

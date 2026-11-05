@@ -1,7 +1,8 @@
 import {makeWorksheet,type Difficulty,type Worksheet,GENERATOR_VERSION} from '../lib/math';
 import {diagramSVG} from '../lib/diagram';
 import {titleFor} from '../lib/site';
-import {createWorksheetPdf,createBlankProtractorPdf,type PdfMode,type Paper} from '../lib/pdf';
+import {createWorksheetPdf,createBlankProtractorPdf,createPrinterCalibrationPdf,type PdfMode,type Paper} from '../lib/pdf';
+import {checkPrintScale} from '../lib/print-calibration';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
 import {buildWorksheetLink,parseWorksheetLink} from '../lib/worksheet-link';
@@ -128,6 +129,29 @@ function setup(root:HTMLElement){
    setTimeout(()=>URL.revokeObjectURL(url),600000);
   }catch(e){if(tab&&!tab.closed)tab.close();inform(e instanceof Error?`Print-ready PDF failed: ${e.message}`:'Print-ready PDF failed.',true);}
   finally{printButton.disabled=false;}
+ });
+ const calibrationButton=root.querySelector<HTMLButtonElement>('[data-action="calibration"]')!;
+ calibrationButton.addEventListener('click',async()=>{
+  const targetPaper=paper.value as Paper;
+  try{
+   calibrationButton.disabled=true;inform('Creating a one-page vector printer scale check…');
+   const bytes=await createPrinterCalibrationPdf(targetPaper);
+   const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});
+   const url=URL.createObjectURL(blob),a=document.createElement('a');
+   a.href=url;a.download=`math-worksheet-printer-calibration-${targetPaper.toLowerCase()}.pdf`;
+   document.body.append(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),60000);
+   inform('Printer calibration PDF downloaded. Print at 100% on '+targetPaper+' paper, measure both 100 mm bars, then enter the readings below.');
+  }catch(e){inform(e instanceof Error?`Calibration PDF failed: ${e.message}`:'Calibration PDF failed.',true);}
+  finally{calibrationButton.disabled=false;}
+ });
+ root.querySelector<HTMLButtonElement>('[data-action="check-calibration"]')!.addEventListener('click',()=>{
+  const h=root.querySelector<HTMLInputElement>('[data-calibration-axis="horizontal"]')!.value;
+  const v=root.querySelector<HTMLInputElement>('[data-calibration-axis="vertical"]')!.value;
+  const result=checkPrintScale(h,v);
+  const output=root.querySelector<HTMLElement>('[data-calibration-result]')!;
+  output.textContent=result.message;
+  output.classList.toggle('calibration-warning',result.status!=='within-tolerance');
  });
  const protractorButton=root.querySelector<HTMLButtonElement>('[data-action="protractor"]');
  if(topic==='printable-protractor'&&protractorButton){protractorButton.addEventListener('click',async()=>{

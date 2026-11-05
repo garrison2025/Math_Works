@@ -38,6 +38,8 @@ jobs:
         run: npm run qa:pdf-stress
       - name: Export Letter and A4 blank actual-size protractor PDFs
         run: npm run qa:protractor-instruments
+      - name: Export Letter and A4 universal printer calibration PDFs
+        run: npm run qa:print-calibration
       - name: Ensure Poppler PDF text geometry reader is available
         shell: bash
         run: |
@@ -54,6 +56,10 @@ jobs:
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
       - name: Enforce 36-point vector-drawing safe margins on every stress PDF
         run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
+      - name: R52 adversarial tests for actual exported print calibration geometry
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_print_calibration_audit.py' -v
+      - name: R52 check real PDF 100 mm X/Y and 50 mm vector segments
+        run: .venv-pdf-audit/bin/python scripts/check-print-calibration.py qa-artifacts/print-calibration
       - name: R43 reject ambiguous PDF math labels (adversarial tests)
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_diagram_glyphs.py' -v
       - name: R43 check printed degree and multiplication glyphs in every relevant stress PDF
@@ -78,6 +84,14 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
         run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive R52 printable calibration sheets and independently checked geometry
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r52-printer-scale-check
+          path: qa-artifacts/print-calibration/
+          retention-days: 14
+          if-no-files-found: error
       - name: Archive blank Letter and A4 calibrated protractors with geometry report
         uses: actions/upload-artifact@v4
         if: always()
