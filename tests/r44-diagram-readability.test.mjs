@@ -36,7 +36,7 @@ test('R44 long division has intermediate writing guides, still masks answers',()
   const p=sampleProblem('long-division-worksheets',seed,'standard',{divisorDigits:'two',dividendDigits:'four',remainder:'yes'});
   const svg=diagramSVG(p.diagramSpec);
   assert.match(svg,/class="division-work-guides"/);
-  assert.match(svg,/M178 145H344 M178 168H344/);
+  assert.equal((svg.match(/M178 \\d+H360/g)||[]).length,5,'Four-digit division must leave 5 rows for successive subtraction');
   assert.match(svg,/quotient: ______/);
   assert.match(svg,/remainder: ______/);
   assert.ok(!svg.includes(p.expectedAnswer),'Solution leaked in diagram');
