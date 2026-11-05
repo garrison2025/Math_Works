@@ -246,3 +246,8 @@ PDF export retains native Helvetica-compatible ×, ÷, °, ², ³ and ½ instead
 ### R34 — exact online arithmetic practice
 
 When all answers are scalar integers, decimals or fractions, **Practice online** enables local answer inputs with checked feedback and a clear-responses control. Equivalent forms (such as `2/4`, `0.5`, `1/2`) are compared using exact BigInt rational arithmetic, not floating-point approximations, external APIs or `eval()`. Uncheckable graphs, diagrams, expressions, percentage formats and decimal-rounding precision exercises remain PDF/answer-key tasks. Scores and responses are not stored or sent to a server, and regenerating a worksheet clears previous responses. PDF/print exports never include practice input fields.
+
+
+### R35 — specific static teaching copy across every live route
+
+All 51 live worksheet routes now have a distinct, generator-grounded English introduction instead of generic template filler. The introductory paragraph also supplies each page's static meta description. Specialists and broader generator hubs are described as different tasks, not keyword-only clones. The build test fails whenever an active topic falls back to the generic introduction. This improves content specificity but does not itself approve the 24 parent/child conflicts for indexing. Preview continues `noindex,nofollow`; measured ranking and traffic are unverified.

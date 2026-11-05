@@ -297,3 +297,10 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [CI REQUIRED] Unit tests and real Chromium interaction for answer correctness, clearing and regeneration; full Astro/PDF/Firefox gates must pass.
 - [NOT IMPLEMENTED] Algebraic-expression equivalence, graph drawing automatic grading and percentage-format grading. These are deliberately not shown as supported.
 - [NOT VERIFIED] Physical printer and complete human UI/accessibility review. Preview must remain noindex.
+
+
+### R35 — topic-specific static content guard (CI verification required)
+
+- [IMPLEMENTED] Added task-specific introductions to 31 previously generic live routes; 20 existing specialized introductions remain unchanged. All 51 live routes should now present distinct descriptions sourced from documented generator capabilities.
+- [IMPLEMENTED] Node regression rejects a missing/generic description, duplicate copy or pathological length before release.
+- [CI REQUIRED] Re-run Astro static build and content tests. The 24 parent/child route approval decisions, full manual content review and live indexing are NOT VERIFIED.
