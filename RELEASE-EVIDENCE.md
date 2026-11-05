@@ -229,3 +229,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL TEST TARGET] An independent digit-by-digit oracle checks division algorithm traces, including internal zero quotient digits; narrow presets are tested in 40-question worksheets.
 - [CI REQUIRED] v17 build and share identity, Chrome/Firefox A4 browser downloads, paired Letter/A4 PDFs including worked steps, golden PDF artifacts and `noindex` gate.
 - [NOT VERIFIED] Physical printer calibration, whole-library visual inspection and full teacher acceptance.
+
+### R28 whole-number and decimal place value (CI pending)
+
+- [IMPLEMENTED] Whole-number digit/value questions span ones through billions. For decimal positions, digit/value/round tasks support tenths through thousandths on four-place decimals, using integer half-up rounding with retained trailing zeros.
+- [LOCAL PASS] 106 math/content/indexation/link tests including 18,000 independent whole-place and 13,500 decimal-place mathematical oracles; TypeScript check and browser-script syntax check passed.
+- [CI REQUIRED] A4/Letter 40-question PDF exports, browser-selected billion/rounding options with downloads, 51-page Astro static build and `noindex,nofollow` audit. Verify before claiming deployment.
+- [NOT VERIFIED] Physical 50 mm protractor print calibration, exhaustive PDF manual review and production-domain release; previews remain `noindex,nofollow`.

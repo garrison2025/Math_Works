@@ -28,8 +28,8 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'subtraction-worksheets':[entry('borrowing','Subtraction borrowing','Target subtraction requiring a borrow or no borrow.',mixed('yes','no'))],
  'decimal-multiplication-worksheets':[entry('places','Decimal places','Number of decimal places in each factor.',[{value:'mixed',label:'Mixed 1–2 places'},{value:'1',label:'1 place each'},{value:'2',label:'2 places each'}])],
  'multiplying-fractions-worksheets':[entry('result','Fraction result','Select a proper or improper product.',mixed('proper','improper'))],
- 'place-value-worksheets':[entry('place','Place to practice','Choose which digit position to identify.',mixed('ones','tens','hundreds','thousands'))],
- 'decimal-place-value-worksheets':[entry('place','Decimal place','Choose tenths, hundredths or thousandths.',mixed('tenths','hundredths','thousandths'))],
+ 'place-value-worksheets':[entry('place','Whole-number place','Practice ones through billions, including the millions and billions digits.',mixed('ones','tens','hundreds','thousands','millions','billions')),entry('task','Place-value skill','Identify the digit or calculate its value in whole-number units.',mixed('digit','value'))],
+ 'decimal-place-value-worksheets':[entry('place','Decimal place','Choose tenths, hundredths or thousandths.',mixed('tenths','hundredths','thousandths')),entry('task','Decimal place-value skill','Identify the digit, find its fractional value or round to the selected decimal place.',mixed('digit','value','round'))],
  'percentages-worksheets':[entry('direction','Percentage skill','Convert fractions and percentages, find a percent of an amount, or calculate a percentage increase/decrease.',[
   {value:'mixed',label:'Mixed percentage skills'},
   {value:'fraction-to-percent',label:'Fraction to percent'},

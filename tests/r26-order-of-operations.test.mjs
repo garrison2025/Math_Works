@@ -44,13 +44,13 @@ test('R26: 40-problem worksheets remain unique in all narrow modes',()=>{
 });
 
 test('R26: new modes are truly distinct and share-links preserve skill and grouping',()=>{
- assert.equal(GENERATOR_VERSION,'17');
+ assert.equal(GENERATOR_VERSION,'18');
  const config={seed:20261105,difficulty:'challenge',paper:'A4',quantity:20,options:{skill:'powers',grouping:'parentheses'}};
  const link=buildWorksheetLink(`https://math-works.pages.dev/${topic}/`,topic,config);
  assert.deepEqual(parseWorksheetLink(link,topic),config);
  assert.match(link,/opt_skill=powers/);
  assert.match(link,/opt_grouping=parentheses/);
- assert.match(link,/gv=17/);
+ assert.match(link,/gv=18/);
  const a=makeWorksheet(topic,144,8,'standard',{skill:'powers',grouping:'parentheses'});
  const b=makeWorksheet(topic,144,8,'standard',{skill:'division',grouping:'parentheses'});
  assert.notEqual(a.optionsHash,b.optionsHash);

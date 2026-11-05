@@ -76,11 +76,11 @@ test('R25 40-question sheets never collapse to repeated scientific notation ques
 });
 
 test('R25 share links encode all three scientific notation selectors and a new version',()=>{
- assert.equal(GENERATOR_VERSION,'17');
+ assert.equal(GENERATOR_VERSION,'18');
  const opts={direction:'to-standard',exponentSign:'negative',significantDigits:'4'};
  const settings={seed:4257,difficulty:'challenge',paper:'A4',quantity:20,options:opts};
  const url=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,settings);
- assert.equal(new URL(url).searchParams.get('gv'),'17');
+ assert.equal(new URL(url).searchParams.get('gv'),'18');
  assert.deepEqual(parseWorksheetLink(url,slug),settings);
  assert.match(url,/opt_exponentSign=negative/);
  assert.match(url,/opt_significantDigits=4/);

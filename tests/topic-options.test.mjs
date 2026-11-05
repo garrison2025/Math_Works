@@ -47,8 +47,8 @@ const captures={
   const [,n,d,j,e]=p.payload.question.match(/^(\d+)\/(\d+) × (\d+)\/(\d+)/).map(Number);
   return (n*j < d*e)===(v==='proper');
  },
- 'place-value-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`the ${v} digit`),
- 'decimal-place-value-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`the ${v} digit`),
+ 'place-value-worksheets':(p,v)=>v==='mixed'||(v==='digit'?p.payload.question.startsWith('What digit is in '):v==='value'?p.payload.question.startsWith('What is the value of '):p.payload.question.includes(`the ${v} `)),
+ 'decimal-place-value-worksheets':(p,v)=>v==='mixed'||(v==='digit'?p.payload.question.startsWith('What digit is in '):v==='value'?p.payload.question.startsWith('What is the value of '):v==='round'?p.payload.question.startsWith('Round '):p.payload.question.includes(`the ${v} `)||p.payload.question.includes(`nearest ${v}`)),
  'percentages-worksheets':(p,v)=>v==='mixed'||(v==='percent-to-fraction'?p.payload.question.includes('% into a fraction'):v==='fraction-to-percent'?p.payload.question.includes('into a percentage'):v==='percent-of-number'?/^Find \d+% of \d+\.$/.test(p.payload.question):v==='percent-change'?/^Find the percentage (increase|decrease) from \d+ to \d+\.$/.test(p.payload.question):false),
  'scientific-notation-worksheets':(p,v)=>{
   if(v==='mixed')return true;

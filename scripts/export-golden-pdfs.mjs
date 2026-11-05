@@ -54,7 +54,11 @@ const fixtures=[
  {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-of-number'}},
  {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-change'}},
  {slug:'scientific-notation-worksheets',quantity:20,options:{direction:'to-standard',exponentSign:'negative',significantDigits:'4'}},
- {slug:'scientific-notation-worksheets',quantity:20,options:{direction:'to-scientific',exponentSign:'positive',significantDigits:'3'}}
+ {slug:'scientific-notation-worksheets',quantity:20,options:{direction:'to-scientific',exponentSign:'positive',significantDigits:'3'}},
+ {slug:'place-value-worksheets',quantity:40,options:{place:'billions',task:'value'}},
+ {slug:'place-value-worksheets',quantity:20,options:{place:'millions',task:'digit'}},
+ {slug:'decimal-place-value-worksheets',quantity:40,options:{place:'thousandths',task:'round'}},
+ {slug:'decimal-place-value-worksheets',quantity:20,options:{place:'hundredths',task:'value'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){
@@ -66,5 +70,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R27 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R28 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

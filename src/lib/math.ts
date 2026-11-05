@@ -1,10 +1,11 @@
 /** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
 import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicOptions} from './topic-options.ts';
 import {scientificNotationPair} from './scientific-notation.ts';
+import {integerPlaces,decimalPlaces,commaNumber,integerDigitValue,fourPlaceDecimal,decimalDigitValue,roundFourPlaceDecimal,type IntegerPlace,type DecimalPlace} from './place-value.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='17' as const;
+export const GENERATOR_VERSION='18' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -197,13 +198,43 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   diagram={kind:'long-division',values:[dividend,divisor]};break}
 
  case 'place-value-worksheets':{
-  const x=r.int(1000,9999),place=opts.place==='mixed'?r.pick([1,10,100,1000]):({ones:1,tens:10,hundreds:100,thousands:1000} as Record<string,number>)[opts.place];
-  make(`What is the value of the ${place===1?'ones':place===10?'tens':place===100?'hundreds':'thousands'} digit in ${x}?`,Math.floor(x/place)%10*place,
-   `Digit: ${Math.floor(x/place)%10}`,`Place value: ${Math.floor(x/place)%10} × ${place}`);break}
+  const place=(opts.place==='mixed'?r.pick(Object.keys(integerPlaces)):opts.place) as IntegerPlace;
+  const task=opts.task==='mixed'?r.pick(['digit','value']):opts.task;
+  // Generate each decimal digit separately: a 32-bit PRNG modulo a 10-digit
+  // numeric interval would otherwise exclude much of the billions range.
+  const digitsCount=r.int(Math.max(4,String(integerPlaces[place]).length),10);
+  const digits=[r.int(1,9),...Array.from({length:digitsCount-1},()=>r.int(0,9))];
+  const value=Number(digits.join(''));
+  const known=integerDigitValue(value,place),display=commaNumber(value);
+  if(task==='digit')make(`What digit is in the ${place} place of ${display}?`,known.digit,
+   `Read the whole-number places from right to left.`, `The ${place} digit is ${known.digit}.`);
+  else make(`What is the value of the ${place} digit in ${display}?`,known.value,
+   `Identify the ${place} digit: ${known.digit}.`,
+   `Multiply by ${commaNumber(integerPlaces[place])}: ${known.digit} × ${commaNumber(integerPlaces[place])} = ${commaNumber(known.value)}.`);
+  break;
+ }
  case 'decimal-place-value-worksheets':{
-  const x=r.int(100,999),place=opts.place==='mixed'?r.pick([1,10,100]):({tenths:100,hundredths:10,thousandths:1} as Record<string,number>)[opts.place];
-  const name=place===100?'tenths':place===10?'hundredths':'thousandths';
-  make(`Find the ${name} digit in 4.${x}`,Math.floor(x/place)%10,'Digits right of decimal: tenths, hundredths, thousandths',`The ${name} digit is ${Math.floor(x/place)%10}`);break}
+  const place=(opts.place==='mixed'?r.pick(Object.keys(decimalPlaces)):opts.place) as DecimalPlace;
+  const task=opts.task==='mixed'?r.pick(['digit','value','round']):opts.task;
+  const whole=r.int(0,difficulty==='easy'?19:difficulty==='standard'?99:999);
+  const fraction=r.int(0,9999),display=fourPlaceDecimal(whole,fraction);
+  const known=decimalDigitValue(fraction,place);
+  if(task==='digit')make(`What digit is in the ${place} place of ${display}?`,known.digit,
+   `The digits right of the decimal point are tenths, hundredths, thousandths, then ten-thousandths.`,
+   `The ${place} digit is ${known.digit}.`);
+  else if(task==='value')make(`What is the value of the ${place} digit in ${display}?`,known.value,
+   `Find the digit in the ${place} position: ${known.digit}.`,
+   `Write its exact value: ${known.value}.`);
+  else{
+   const result=roundFourPlaceDecimal(whole,fraction,place);
+   const roundUp=known.nextDigit>=5;
+   make(`Round ${display} to the nearest ${place}.`,result,
+    `Check the next digit to the right of the ${place} position: ${known.nextDigit}.`,
+    roundUp?'It is 5 or more, so round the selected place up.':'It is less than 5, so keep the selected place.',
+    `Write the result with the correct number of decimal places: ${result}.`);
+  }
+  break;
+ }
  case 'percentages-worksheets':{
   const den=r.pick([4,5,8,10,20,25,40,50,100]),num=r.int(1,den-1),percentage=normal(100*num/den);
   const direction=opts.direction==='mixed'?r.pick(['fraction-to-percent','percent-to-fraction','percent-of-number','percent-change']):opts.direction;

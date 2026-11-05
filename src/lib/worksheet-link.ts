@@ -1,4 +1,4 @@
-export const SHARE_GENERATOR_VERSION='17' as const;
+export const SHARE_GENERATOR_VERSION='18' as const;
 /** Reproducibility link: only public worksheet settings, never student content. */
 import {normalizeTopicOptions,topicOptionsFor,type TopicOptions} from './topic-options.ts';
 export type LinkSettings = {seed:number;difficulty:'easy'|'standard'|'challenge';quantity:number;paper:'Letter'|'A4';options:TopicOptions};

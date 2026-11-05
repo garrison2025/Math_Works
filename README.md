@@ -195,3 +195,10 @@ Scientific notation worksheets now offer positive/negative exponent focus and 2â
 ### R27: long division at classroom scale
 
 Long Division Worksheets now offer one- or two-digit divisors and three- or four-digit dividends, in addition to exact-division and remainder choices. All values are generated as exact integers. Worked steps explicitly carry down each digit and retain zero quotient digits once division has begun. The problem SVG/PDF shows the answer-blind division bracket; practice and answer PDFs use matching v17 configuration hashes. Firefox/Chrome/browser and Letter/A4 golden fixture checks run on GitHub CI; they are not a substitute for physical print verification.
+
+### R28: large whole-number and exact decimal place-value practice
+
+- **Place Value Worksheets** now supports ones, tens, hundreds, thousands, millions and billions. Teachers can ask for the *digit* or its *numerical value*. The generator creates up to ten-digit safe integers by drawing individual digits; it does not reduce the accessible billions interval through a 32-bit PRNG modulo operation.
+- **Decimal Place Value Worksheets** now supports identifying digits, calculating exact fractional digit values, and rounding to tenths/hundredths/thousandths. Each problem displays four fractional digits so thousandth rounding genuinely inspects the ten-thousandth. Rounding is based on integer ten-thousandths and preserves precision zeros (e.g., `9.9995 -> 10.000`).
+- Both new controls are carried in URL fingerprints and matching question/answer PDFs under generator/share **v18**. R27 and earlier generator links intentionally cannot guarantee identical old questions.
+- `tests/r28-place-value.test.mjs` runs 31,500 independently parsed mathematical checks plus full 40-question reproducibility, selected-step and link checks. CI must still verify Letter/A4 PDF pagination, Chrome/Firefox downloads, static build and preview noindex. Neither test execution nor a CI pass substitutes for physical protractor calibration or entire-PDF human review.

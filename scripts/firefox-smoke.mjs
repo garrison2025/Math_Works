@@ -45,7 +45,7 @@ try{
  const dl=await qa,filepath=join(out,dl.suggestedFilename());
  await dl.saveAs(filepath);const pdf=await PDFDocument.load(readFileSync(filepath));
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
- assert.match(pdf.getTitle()??'',/generator v17/);
+ assert.match(pdf.getTitle()??'',/generator v18/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
 
  await page.locator('[data-option="method"]').selectOption('parallel');
@@ -65,7 +65,7 @@ try{
  const r26File=await r26Download;
  const r26Path=join(out,r26File.suggestedFilename());await r26File.saveAs(r26Path);
  const r26PDF=await PDFDocument.load(readFileSync(r26Path));
- assert.match(r26PDF.getTitle()??'',/generator v17/);
+ assert.match(r26PDF.getTitle()??'',/generator v18/);
  assert.ok(Math.abs(r26PDF.getPage(0).getWidth()-595.28)<0.1);
  checks.push({name:'R26 Firefox exact division and grouped expressions A4 PDF',status:'pass'});
 
@@ -82,7 +82,7 @@ try{
  const longFile=await longEvent;
  const longPath=join(out,longFile.suggestedFilename());await longFile.saveAs(longPath);
  const longPdf=await PDFDocument.load(readFileSync(longPath));
- assert.ok(longPdf.getTitle()?.includes('generator v17'));
+ assert.ok(longPdf.getTitle()?.includes('generator v18'));
  assert.ok(Math.abs(longPdf.getPage(0).getWidth()-595.28)<0.1);
  checks.push({name:'R27 Firefox long division two-digit divisors, four-digit dividends and A4 PDF',status:'pass'});
 
@@ -115,7 +115,7 @@ try{
  const pct=await pctDownload,pctPath=join(out,pct.suggestedFilename());
  await pct.saveAs(pctPath);
  const pctDoc=await PDFDocument.load(readFileSync(pctPath));
- assert.ok(pctDoc.getTitle()?.includes('v17'));
+ assert.ok(pctDoc.getTitle()?.includes('v18'));
  assert.ok(pctDoc.getPageCount()>=1);
  checks.push({name:'R23 Firefox percent change, exact percent of amount, worksheet PDF',status:'pass'});
  await open('scientific-notation-worksheets');
@@ -139,7 +139,7 @@ try{
  const fracDl=await fracDownload,fracPath=join(out,fracDl.suggestedFilename());
  await fracDl.saveAs(fracPath);
  const fracPdf=await PDFDocument.load(readFileSync(fracPath));
- assert.match(fracPdf.getTitle()??'',/generator v17/);
+ assert.match(fracPdf.getTitle()??'',/generator v18/);
  checks.push({name:'R24 Firefox fraction division with unlike denominators and steps PDF',status:'pass'});
  await open('linear-equations-worksheets');
  await page.locator('[data-option="task"]').selectOption('graph');
@@ -190,6 +190,20 @@ try{
  await page.locator('[data-mode="answers"]').click();
  assert.equal(await page.locator('.problem .answer-text').count(),8);
  checks.push({name:'R22 fractional MAD and six-value sample selector in Firefox',status:'pass'});
+ await open('decimal-place-value-worksheets');
+ await page.locator('[data-option="place"]').selectOption('thousandths');
+ await page.locator('[data-option="task"]').selectOption('round');
+ assert.match(await page.locator('.problem .q').first().innerText(),/^Round \d+\.\d{4} to the nearest thousandths\.$/);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const decimalR28Download=page.waitForEvent('download',{timeout:45000});
+ await page.locator('[data-action="answers"]').click();
+ const decimalR28=await decimalR28Download,decimalR28File=join(out,decimalR28.suggestedFilename());
+ await decimalR28.saveAs(decimalR28File);
+ const roundDoc=await PDFDocument.load(readFileSync(decimalR28File));
+ assert.ok(roundDoc.getTitle()?.includes('generator v18'));
+ assert.ok(Math.abs(roundDoc.getPage(0).getWidth()-595.28)<.1);
+ checks.push({name:'R28 Firefox exact thousandths rounding and A4 answer PDF',status:'pass'});
+
  await open('linear-equations-worksheets');
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:'networkidle'});

@@ -72,13 +72,13 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v17'));
- assert.ok(answers.getTitle()?.includes('v17'));
+ assert.ok(questions.getTitle()?.includes('v18'));
+ assert.ok(answers.getTitle()?.includes('v18'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=17/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=18/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v17 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v18 clipboard link',status:'pass'});
  // R26: four-operation precedence and powers use the same real downloadable PDF.
  await page.goto(`${base}/order-of-operations-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="skill"]').selectOption('powers');
@@ -93,7 +93,7 @@ try {
  const orderD=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
  const orderPDF=await verifyPdf(await orderD,'R26 exponent precedence',{paper:'A4'});
- assert.match(orderPDF.getTitle()??'',/v17/);
+ assert.match(orderPDF.getTitle()??'',/v18/);
  await page.locator('[data-action="share"]').click();
  const orderLink=await page.evaluate(()=>navigator.clipboard.readText());
  assert.match(orderLink,/opt_skill=powers/);assert.match(orderLink,/opt_grouping=parentheses/);
@@ -117,14 +117,14 @@ try {
  const percentADownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const percentAnswers=await verifyPdf(await percentADownload,'R23 percent-of-number answers',{paper:'A4'});
- assert.ok(percentQuestions.getTitle()?.includes('v17')&&percentAnswers.getTitle()?.includes('v17'));
+ assert.ok(percentQuestions.getTitle()?.includes('v18')&&percentAnswers.getTitle()?.includes('v18'));
  await page.locator('[data-option="direction"]').selectOption('percent-change');
  assert.match(await page.locator('.problem .q').first().innerText(),/^Find the percentage (increase|decrease) from \d+ to \d+\.$/);
  await page.locator('[data-mode="questions"]').click();
  assert.equal(await page.locator('.problem .answer-text').count(),0);
  await page.locator('[data-action="share"]').click();
  const pctLink=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(pctLink,/gv=17/);assert.match(pctLink,/opt_direction=percent-change/);
+ assert.match(pctLink,/gv=18/);assert.match(pctLink,/opt_direction=percent-change/);
  events.push({kind:'interaction',name:'R23 percentage of number and percent change options, A4 practice/answer PDFs, versioned share link',status:'pass'});
 
  // R25: negative exponents must survive from page controls to A4 PDF and link.
@@ -138,7 +138,7 @@ try {
  const notationDl=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
  const notationPdf=await verifyPdf(await notationDl,'R25 scientific notation negative-exponent practice',{paper:'A4'});
- assert.match(notationPdf.getTitle()??'',/v17/);
+ assert.match(notationPdf.getTitle()??'',/v18/);
  await page.locator('[data-mode="answers"]').click();
  assert.equal(await page.locator('.problem .answer-text').count(),8);
  await page.locator('[data-action="share"]').click();
@@ -163,10 +163,10 @@ try {
  const fracSDl=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="steps"]').click();
  const fracS=await verifyPdf(await fracSDl,'R24 fraction division worked steps',{paper:'A4'});
- assert.ok([fracQ,fracA,fracS].every(doc=>doc.getTitle()?.includes('v17')));
+ assert.ok([fracQ,fracA,fracS].every(doc=>doc.getTitle()?.includes('v18')));
  await page.locator('[data-action="share"]').click();
  const fracLink=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(fracLink,/gv=17/);assert.match(fracLink,/opt_operation=division/);assert.match(fracLink,/opt_denominators=unlike/);
+ assert.match(fracLink,/gv=18/);assert.match(fracLink,/opt_operation=division/);assert.match(fracLink,/opt_denominators=unlike/);
  await page.locator('[data-option="operation"]').selectOption('subtraction');
  assert.match(await page.locator('.problem .q').first().innerText(),/^\d+\/\d+ − \d+\/\d+ = ____$/);
  events.push({kind:'interaction',name:'R24 fraction division/subtraction, A4 question/answer/steps PDFs and versioned sharing',status:'pass'});
@@ -190,7 +190,7 @@ try {
  const tableAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const tableAnswerPdf=await verifyPdf(await tableAnswerDownload,'R20 function-table missing-input answers',{paper:'A4'});
- assert.ok(tableQuestionPdf.getTitle()?.includes('v17')&&tableAnswerPdf.getTitle()?.includes('v17'));
+ assert.ok(tableQuestionPdf.getTitle()?.includes('v18')&&tableAnswerPdf.getTitle()?.includes('v18'));
  events.push({kind:'interaction',name:'R20 inverse function table blank-cell SVG, completed answer SVG and paired PDF',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
@@ -224,7 +224,7 @@ try {
  const longAnswersEvent=page.waitForEvent('download',{timeout:45000});
  await page.locator('[data-action="answers"]').click();
  const longAnswers=await verifyPdf(await longAnswersEvent,'R27 long division A4 answers',{paper:'A4'});
- assert.ok(longPractice.getTitle()?.includes('v17')&&longAnswers.getTitle()?.includes('v17'));
+ assert.ok(longPractice.getTitle()?.includes('v18')&&longAnswers.getTitle()?.includes('v18'));
  await page.locator('[data-mode="questions"]').click();
  events.push({kind:'interaction',name:'R27 two-digit divisor/four-digit dividend/remainder options and paired A4 PDFs',status:'pass'});
 
@@ -397,7 +397,7 @@ try {
  const madAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const madA=await verifyPdf(await madAnswerDownload,'R22 skewed MAD answers',{paper:'A4'});
- assert.ok(madQ.getTitle()?.includes('v17')&&madA.getTitle()?.includes('v17'));
+ assert.ok(madQ.getTitle()?.includes('v18')&&madA.getTitle()?.includes('v18'));
  assert.ok(await page.locator('[data-action="steps"]').isEnabled(),'Verified MAD steps PDF should be available');
  const madStepsDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="steps"]').click();
@@ -405,6 +405,43 @@ try {
  assert.ok(madS.getTitle()?.includes('steps'));
  await page.screenshot({path:join(out,'r22-eight-value-mad-answers.png'),fullPage:true});
  events.push({kind:'interaction',name:'R22 eight-observation skewed MAD and paired A4 PDF downloads',status:'pass'});
+
+ // R28: real whole-number billions and exact decimal-rounding workflows.
+ await page.goto(`${base}/place-value-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="place"]').selectOption('billions');
+ await page.locator('[data-option="task"]').selectOption('value');
+ assert.match(await page.locator('.problem .q').first().innerText(),/value of the billions digit in [\d,]+\?/);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const wholePractice=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const wholeQ=await verifyPdf(await wholePractice,'R28 billions place practice',{paper:'A4'});
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ const wholeAnswer=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ const wholeA=await verifyPdf(await wholeAnswer,'R28 billions place answer key',{paper:'A4'});
+ assert.ok(wholeQ.getTitle()?.includes('v18')&&wholeA.getTitle()?.includes('v18'));
+ await page.locator('[data-action="share"]').click();
+ const wholeLink=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.match(wholeLink,/gv=18/);assert.match(wholeLink,/opt_place=billions/);assert.match(wholeLink,/opt_task=value/);
+ events.push({kind:'interaction',name:'R28 billion-digit place value and A4 worksheet/answer downloads',status:'pass'});
+
+ await page.goto(`${base}/decimal-place-value-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="place"]').selectOption('thousandths');
+ await page.locator('[data-option="task"]').selectOption('round');
+ assert.match(await page.locator('.problem .q').first().innerText(),/^Round \d+\.\d{4} to the nearest thousandths\.$/);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const decimalPractice=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await decimalPractice,'R28 four-place rounding worksheet',{paper:'A4'});
+ await page.locator('[data-mode="answers"]').click();
+ const roundingAnswer=await page.locator('.problem .answer-text').first().innerText();
+ assert.match(roundingAnswer,/\d+\.\d{3}/,'Answer should preserve requested decimal precision');
+ const decimalAnswer=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ await verifyPdf(await decimalAnswer,'R28 four-place rounding answers',{paper:'A4'});
+ await page.screenshot({path:join(out,'r28-decimal-rounding.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R28 four-place decimals and precise A4 rounding answer PDF',status:'pass'});
 
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});

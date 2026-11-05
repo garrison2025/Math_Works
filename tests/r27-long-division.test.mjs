@@ -67,12 +67,12 @@ test('R27: 40 questions remain distinct and reproducible in narrow choices',()=>
 });
 
 test('R27: share-link and educational text describe real two-digit long division',()=>{
- assert.equal(GENERATOR_VERSION,'17');
+ assert.equal(GENERATOR_VERSION,'18');
  const options={remainder:'yes',divisorDigits:'two',dividendDigits:'four'};
  const config={seed:20261105,difficulty:'challenge',paper:'A4',quantity:20,options};
  const link=buildWorksheetLink(`https://math-works.pages.dev/${topic}/`,topic,config);
  assert.deepEqual(parseWorksheetLink(link,topic),config);
- assert.match(link,/gv=17/);
+ assert.match(link,/gv=18/);
  assert.match(link,/opt_divisorDigits=two/);
  assert.match(link,/opt_dividendDigits=four/);
  assert.equal(maxQuantityForTopic(topic,options,'challenge'),40);
