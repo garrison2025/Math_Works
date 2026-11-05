@@ -346,3 +346,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Reciprocal, task-specific links under active topic pages; a parent/child link is based on observed classroom task differences, not on a fabricated SEO target.
 - [CI REQUIRED] Recheck 24 distinct pairs, page existence, meaningful source-question differences over three fixed seeds, generated metadata distinctness and fail-closed noindex for HOLD / unapproved hubs.
 - [NOT APPROVED] Production simultaneous parent + child indexation, real SERP intent evidence, final human SEO decision, custom domain and GSC submission. Preserve preview noindex.
+
+
+### R41 — actual static HTML and all 488 keyword mappings (CI verification required)
+
+- [IMPLEMENTED] Parse the owner-supplied 488-row CSV correctly, including 11 quoted rank-type fields containing commas; require 488 distinct keywords, volume >0, integer KD 0–29 and a valid source/intent route.
+- [IMPLEMENTED] Verify 437 keyword rows route to currently built topic pages, and 51 keyword rows map only to the four deliberately unbuilt HOLD routes; all 55 planned route targets exist. The HOLDs remain unindexable.
+- [IMPLEMENTED] Inspect the actual Astro static HTML for all 48 directional comparison links that implement the documented 24 parent/specialist relations, instead of trusting only source-code metadata.
+- [CI REQUIRED] New Node 22 `audit:static` runs with TS stripping enabled, then 468 PDF, Chromium and Firefox gates. Actual Google search intent, keyword freshness and index release remain NOT VERIFIED.

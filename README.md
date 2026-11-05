@@ -279,3 +279,8 @@ R39 also has an independent PyMuPDF *exported PDF* release gate, checking exact 
 ### R40 — 24 verified parent/specialist skill comparisons
 
 The owner V2 SEO plan defines 24 overlapping parent/child search-intent pairs. `src/lib/intent-relations.ts` now preserves each exact pair and its concrete classroom task distinction; relevant built topic pages display reciprocal, task-labeled links in a dedicated “Compare related practice skills” section. Automated tests reject missing/HOLD routes, duplicate pairs, duplicate descriptions and indistinguishable representative generated tasks. This is a usable navigation improvement—not an assertion of SEO ranking, revenue, ownership of a custom domain, manual educator approval or indexation permission. Unapproved `CONDITIONAL_HUB`/HOLD routes remain noindex, and production release still uses the fail-closed allowlist.
+
+
+### R41 — source keyword and built reciprocal-link release gate
+
+The existing `npm run audit:static` now reads the original supplied 488-row keyword evidence CSV with proper handling of quoted commas, verifies unique terms, positive source search volume, Semrush KD ≤29, valid competitor source fields, and a real mapping to every one of the 55 route intents. It explicitly identifies **437 rows mapped to the 51 active generators** and **51 rows mapped to four held, unpublished routes**. The actual built Astro HTML is independently checked for all 48 reciprocal links across the 24 documented parent/specialist pairs. Preview `noindex,nofollow` stays required, and this audit makes no claim about current live SERPs or future organic traffic. Counts are a deliberate source-baseline contract: changes require documented review rather than silent keyword loss.

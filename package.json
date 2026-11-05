@@ -14,7 +14,7 @@
     "qa:pdf-samples": "node --experimental-strip-types scripts/export-golden-pdfs.mjs",
     "qa:pdf-stress": "node --experimental-strip-types scripts/qa-pdf-stress.mjs",
     "test": "npm run typecheck && npm run test:math",
-    "audit:static": "node scripts/audit-static.mjs",
+    "audit:static": "node --experimental-strip-types scripts/audit-static.mjs",
     "qa:browser": "node scripts/browser-smoke.mjs",
     "qa:firefox": "node scripts/firefox-smoke.mjs",
     "qa:protractor-instruments": "node --experimental-strip-types scripts/export-protractor-instruments.mjs"
