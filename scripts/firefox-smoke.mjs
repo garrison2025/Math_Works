@@ -225,6 +225,12 @@ try{
   const m=q.match(/bases (\d+), (\d+)/);return m&&m[1]!==m[2];
  }),'Firefox exclusive trapezoid setting failed');
  checks.push({name:'R45 Firefox opt-in exclusive trapezoid definition generates unequal bases',status:'pass'});
+ // R53: Firefox shows five independent work rows for four-digit division.
+ await open('long-division-worksheets');
+ await page.locator('[data-option="dividendDigits"]').selectOption('four');
+ const r53Figure=page.locator('svg.long-division-vector').first();
+ assert.equal([...(await r53Figure.locator('.division-work-guides').getAttribute('d')).matchAll(/M178 \d+H360/g)].length,5);
+ checks.push({name:'R53 Firefox five-row long division writing workspace',status:'pass'});
  // R52: independent Firefox check that the local-only physical ruler prompt
  // downloads a one-page Letter vector PDF; no measurement is auto-observed.
  await open('addition-worksheets');
