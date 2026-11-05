@@ -335,3 +335,6 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Matching stacked math in browser questions preview and PDF practice, with original text retained and verified semantic text identity. Vector PDF bars are measured and page-height reserved explicitly.
 - [CI REQUIRED] Test source/parser, A4 and Letter exports, Firefox/Chromium previews, all 468 PDF stress outputs, 36pt margins, visual text collisions and content extraction.
 - [NOT DONE] Physical printer ruler calibration, comprehensive human visual review, 24 SEO intent collisions decisions or public-domain indexing.
+
+
+- [R39 INDEPENDENT GATE ADDED] Inspect extracted real-PDF vector paths for exactly one 1.15pt bar per fraction token in every supported question, zero bars in answers/steps, and no stroked bar intersecting a text glyph. Four adversarial synthetic PyMuPDF tests cover missing/superfluous bars and text crossing. CI result pending after final commit.

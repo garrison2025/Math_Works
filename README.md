@@ -271,3 +271,6 @@ Practice questions requiring calculations now reserve one or two thin pencil rul
 ### R39 — true stacked fractions for printable practice
 
 Four active fraction families plus fraction-to-percentage conversion now show an additional *display-style* numerator / fraction bar / denominator equation on practice worksheets. The HTML preview uses safe deterministic token rendering; the physical PDF draws real vector bars and exact numeral text. Every original question remains visible and extractable for accessibility, search, answer integrity and all existing mathematical checks. Visual duplication is marked `aria-hidden` in browser previews. Unknown formats do not render extra math. The PDF reserves 49pt per stacked equation **before pagination**, preserving writing rules and both Letter/A4 margins. All answers, steps, generator seeds and URL fingerprints are unchanged; full CI and physical/visual review remain independent release gates.
+
+
+R39 also has an independent PyMuPDF *exported PDF* release gate, checking exact expected fraction-bar counts against the 102-case stress manifest and detecting bars that cross printed glyphs. It inspects fraction practice plus answers/steps to catch missing or answer-leaking vector art. Audit output is retained as `fraction-vector-audit.json` in the private CI PDF artifact; no public SEO URLs are added.
