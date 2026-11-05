@@ -231,6 +231,23 @@ try{
  const r53Figure=page.locator('svg.long-division-vector').first();
  assert.equal([...(await r53Figure.locator('.division-work-guides').getAttribute('d')).matchAll(/M178 \d+H360/g)].length,5);
  checks.push({name:'R53 Firefox five-row long division writing workspace',status:'pass'});
+ // R54 Firefox verifies opt-in pencil space in actual A4 worksheet PDF.
+ await open('addition-worksheets');
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const r54Before=await page.locator('.problem .q').allInnerTexts();
+ await page.locator('[data-field="writing-room"]').selectOption('extra');
+ assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),r54Before);
+ const r54Event=page.waitForEvent('download',{timeout:45000});
+ await page.locator('[data-action="worksheet"]').click();
+ const r54Download=await r54Event;
+ assert.match(r54Download.suggestedFilename(),/extra-room\.pdf$/);
+ const r54Path=join(out,r54Download.suggestedFilename());
+ await r54Download.saveAs(r54Path);
+ const r54Pdf=await PDFDocument.load(readFileSync(r54Path));
+ assert.equal(r54Pdf.getPageCount()>=1,true);
+ assert.ok(Math.abs(r54Pdf.getPage(0).getWidth()-595.28)<.1);
+ assert.match(r54Pdf.getTitle()??'',/extra writing room/);
+ checks.push({name:'R54 Firefox extra writing room A4 vector PDF and unchanged questions',status:'pass'});
  // R52: independent Firefox check that the local-only physical ruler prompt
  // downloads a one-page Letter vector PDF; no measurement is auto-observed.
  await open('addition-worksheets');
