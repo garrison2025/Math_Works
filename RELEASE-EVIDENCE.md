@@ -455,3 +455,12 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [COMPATIBILITY] Generator v18, mathematical answers and share links unchanged; PDF layout identifier stays v2; the additional 12 PDF pages are intentional for writing room.
 - [OPEN] Teacher-led pedagogy review, student handwriting usability, 100% physical printer measurements, purchased domain and go-live/indexability approval.
 - [EVIDENCE] https://github.com/garrison2025/Math_Works/actions/runs/42127798473
+
+
+### R54 — optional PDF writing-room setting (CI pending)
+
+- [IMPLEMENTED] Print-only `Standard` (default) or `Extra room` for all 51 topics. Two additional blank horizontal pencil lines under text-only problems; one additional ruled line after most schematic diagrams. Physical calibration instruments and long-division specialized work areas remain unchanged.
+- [IMPLEMENTED] PDF height estimator and writer use the SAME extra-line count, preserving safe pagination; no changes to generator v18, questions, answers, complete steps or the standard-print mode.
+- [IMPLEMENTED] Share links round-trip optional `room=extra` without changing existing default URLs or answer fingerprints. Extra mode marked explicitly in PDF title and browser filenames; normal answer PDFs do not gain student writing lines.
+- [CI REQUIRED] Extra/standard A4/Letter exported files, independent real-vector audit, browser download/clipboard link round-trip, legacy all-51 stress PDFs and noindex audit.
+- [OPEN] Physical classroom writing usability and actual printer/teacher signoff. No formal domain launch or indexability change.
