@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {sampleProblem,makeWorksheet} from '../src/lib/math.ts';
+import {sampleProblem,makeWorksheet,GENERATOR_VERSION} from '../src/lib/math.ts';
 import {diagramSVG} from '../src/lib/diagram.ts';
 import {scatterGeometry} from '../src/lib/graph.ts';
 import {maxQuantityForTopic,normalizeTopicOptions} from '../src/lib/topic-options.ts';
@@ -57,11 +57,11 @@ test('R18: all scatter settings reproduce answer maps at their maximum distinct 
  }
 });
 
-test('R18: plot-points share links retain task, trend, seed, and version eight',()=>{
+test('R18: plot-points share links retain task, trend, seed, and current generator version',()=>{
  for(const trend of ['mixed','positive','negative','none']){
   const opts={task:'plot',trend},data={seed:20261105,difficulty:'challenge',quantity:8,paper:'A4',options:normalizeTopicOptions(topic,opts)};
   const link=buildWorksheetLink(`https://math-works.pages.dev/${topic}/`,topic,data);
-  assert.equal(new URL(link).searchParams.get('gv'),'11');
+  assert.equal(new URL(link).searchParams.get('gv'),GENERATOR_VERSION);
   assert.deepEqual(parseWorksheetLink(link,topic),data);
   assert.deepEqual(makeWorksheet(topic,data.seed,8,'challenge',opts),makeWorksheet(topic,data.seed,8,'challenge',parseWorksheetLink(link,topic).options));
  }
