@@ -216,6 +216,24 @@ try{
  assert.ok(geometry.preview<geometry.controls,'Preview must precede settings on mobile');
  await page.screenshot({path:join(out,'firefox-mobile-390.png'),fullPage:true});
  checks.push({name:'390px mobile viewport and visual evidence',status:'pass'});
+ // R42: independently verify the JS-disabled SSR fallback on four different
+ // mathematics categories in Firefox, not only in Chromium.
+ const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ const staticPage=await fallback.newPage();
+ const firefoxStaticTopics=[
+  'addition-worksheets','two-step-equations-worksheets',
+  'pythagorean-worksheets','box-plots-worksheets'
+ ];
+ for(const slug of firefoxStaticTopics){
+  const response=await staticPage.goto(`${address}/${slug}/`,{waitUntil:'load'});
+  assert.equal(response?.status(),200,`Firefox no-JS route failed: ${slug}`);
+  assert.equal(await staticPage.locator('.problem .q').count(),8,`Firefox no-JS question fallback failed: ${slug}`);
+  assert.equal(await staticPage.locator('.sample-img').count(),1,`Firefox no-JS sample image missing: ${slug}`);
+  assert.equal(await staticPage.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ }
+ await staticPage.screenshot({path:join(out,'r42-firefox-nojs-static.png'),fullPage:true});
+ await fallback.close();
+ checks.push({name:'R42 Firefox four categories work without JavaScript at 390px',status:'pass'});
  assert.deepEqual(errors,[],'Firefox uncaught JavaScript errors');
  writeFileSync(join(out,'report.json'),JSON.stringify({status:'PASS',checks,errors},null,2));
  console.log(`FIREFOX QA PASS: ${checks.length} checks`);

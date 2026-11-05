@@ -48,6 +48,19 @@ try {
  if(!executablePath)throw Error('Chromium/Google Chrome not found on runner; browser QA cannot be marked PASS');
  browser=await chromium.launch({executablePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  const context=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
+ // R42: request-level privacy evidence, including failed local assets. Collect
+ // before the very first navigation, not after page loading has finished.
+ const httpRequests=[],offsiteRequests=[],badResponses=[];
+ context.on('request',request=>{
+  if(!/^https?:\/\//i.test(request.url()))return;
+  const target=new URL(request.url());
+  const item={url:request.url(),method:request.method(),resourceType:request.resourceType()};
+  httpRequests.push(item);
+  if(target.origin!==base)offsiteRequests.push(item);
+ });
+ context.on('response',response=>{
+  if(response.status()>=400)badResponses.push({url:response.url(),status:response.status()});
+ });
  const page=await context.newPage();
  const pageErrors=[];page.on('pageerror',error=>pageErrors.push(error.message));
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
@@ -521,6 +534,64 @@ try {
   if(width===360)await page.screenshot({path:join(out,'two-step-mobile-360.png'),fullPage:true});
   events.push({kind:'responsive',width,overflow:boxes.overflow,status:'pass'});
  }
+ // R42: verify all live teaching pages remain useful with JavaScript switched
+ // off. Astro's build-time preview must not depend on client hydration.
+ const routes=JSON.parse(readFileSync(resolve('src/data/routes.json'),'utf8'))
+  .filter(route=>route.type!=='HOLD');
+ assert.equal(routes.length,51,'Full-catalog no-JavaScript QA must cover 51 tools');
+ const noJs=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ const staticPage=await noJs.newPage();
+ const screenshots=new Set([
+  'addition-worksheets','two-step-equations-worksheets',
+  'fractions-worksheets','pythagorean-worksheets',
+  'box-plots-worksheets'
+ ]);
+ const staticChecks=[];
+ for(const route of routes){
+  const response=await staticPage.goto(`${base}/${route.slug}/`,{waitUntil:'load'});
+  assert.equal(response?.status(),200,`JS-off page HTTP error: ${route.slug}`);
+  assert.equal(await staticPage.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  assert.equal(await staticPage.locator('h1').count(),1,`Missing server-rendered H1: ${route.slug}`);
+  assert.equal(await staticPage.locator('.problem .q').count(),8,`Missing server-rendered exercises: ${route.slug}`);
+  assert.equal(await staticPage.locator('.sample-img').count(),1,`Missing original fixed-seed image: ${route.slug}`);
+  const img=await staticPage.locator('.sample-img').getAttribute('src');
+  assert.equal(img,`/images/worksheets/${route.slug}-sample.webp`);
+  const imageResponse=await staticPage.request.get(`${base}${img}`);
+  assert.equal(imageResponse.status(),200,`JS-off preview image failed: ${route.slug}`);
+  assert.ok((await imageResponse.body()).length>1000,`JS-off preview image empty: ${route.slug}`);
+  assert.ok((await staticPage.locator('section[aria-label="Worked example and common mistakes"]').innerText()).length>90,
+   `JS-off educational explanation missing: ${route.slug}`);
+  assert.equal(await staticPage.locator('.problem .answer-text').count(),0,
+   `JS-off answers leaked on practice sheet: ${route.slug}`);
+  if(screenshots.has(route.slug))
+   await staticPage.screenshot({path:join(out,`r42-nojs-${route.slug}.png`),fullPage:true});
+  staticChecks.push(route.slug);
+ }
+ await noJs.close();
+ // The opt-in answer checker, seed changes and PDF export must not send any
+ // student response, score, generator seed or configuration over HTTP.
+ await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
+ const beforeInteractiveRequests=httpRequests.length;
+ await page.locator('[data-action="regenerate"]').click();
+ await page.locator('[data-action="practice"]').click();
+ await page.locator('[data-practice-input="0"]').fill('13/17');
+ await page.locator('[data-action="check-practice"]').click();
+ const privacyPdf=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const privacyDownload=await privacyPdf;
+ assert.match(privacyDownload.suggestedFilename(),/\.pdf$/i);
+ assert.equal(httpRequests.length,beforeInteractiveRequests,
+  'A local-only generate/check/export interaction unexpectedly issued HTTP requests');
+ assert.deepEqual(offsiteRequests,[],'Third-party requests violate the initial-release privacy disclosure');
+ assert.deepEqual(badResponses,[],'Missing or failed local assets');
+ const r42={status:'PASS',scope:'Chromium built SSG only; not production network',
+  disabledJavaScriptRoutes:staticChecks.length,screenshots:[...screenshots],
+  totalLocalHttpRequests:httpRequests.length,thirdPartyRequests:offsiteRequests.length,
+  interactionHttpRequests:httpRequests.length-beforeInteractiveRequests,
+  failedHttpResponses:badResponses.length,
+  privacyClaim:'Seed generation, exact grading and PDF export produced zero HTTP requests after page load'};
+ writeFileSync(join(out,'r42-release-browser-preflight.json'),JSON.stringify(r42,null,2));
+ events.push({kind:'release-preflight',...r42});
  assert.deepEqual(pageErrors,[],'Browser encountered uncaught JavaScript exceptions');
  events.push({kind:'runtime',pageErrors});
  await context.close();
