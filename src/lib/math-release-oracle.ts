@@ -667,14 +667,15 @@ function computed(p:Problem):string{
   return String(m[2]==='+'?a+b:a-b);
  }
  case 'place-value-worksheets':{
-  const m=match(q,/^What (digit is in|is the value of) the (ones|tens|hundreds|thousands|millions|billions) (?:place|digit) of ((?:\d+|\d{1,3}(?:,\d{3})+))\?$/);
-  // "What digit is in the ones place of..." or
-  // "What is the value of the ones digit in..." are separate grammar shapes.
+  const digit=q.match(/^What digit is in the (ones|tens|hundreds|thousands|millions|billions) place of ((?:\d+|\d{1,3}(?:,\d{3})+))\?$/);
+  const amount=q.match(/^What is the value of the (ones|tens|hundreds|thousands|millions|billions) digit in ((?:\d+|\d{1,3}(?:,\d{3})+))\?$/);
+  if(!digit&&!amount)throw Error('Math oracle: unrecognized whole-number place question');
+  const place=(digit??amount)![1],raw=(digit??amount)![2];
   const magnitude:{
    [key:string]:bigint
   }={ones:1n,tens:10n,hundreds:100n,thousands:1000n,millions:1000000n,billions:1000000000n};
-  const value=readWhole(m[3]),digit=(value/magnitude[m[2]])%10n;
-  return m[1]==='digit is in'?String(digit):String(digit*magnitude[m[2]]);
+  const value=readWhole(raw),selected=(value/magnitude[place])%10n;
+  return digit?String(selected):String(selected*magnitude[place]);
  }
  case 'decimal-place-value-worksheets':{
   const m=match(q,/^(?:What digit is in the|What is the value of the|Round) .*$/);
