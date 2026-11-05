@@ -273,3 +273,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [NOT RUN] A printed 50 mm ruler measurement and full human visual QA of all pages. Do not enable Google indexing or purchase a custom domain on the basis of vector QA alone.
 
 R31 visual spot-check follow-up: 0° and 180° captions were previously on the horizontal baseline. The vector SVG/PDF labels are now shifted above it, and the independent PDF inspector asserts two correctly positioned text boxes on **every instrument page**. Actual physical printer measurement remains NOT RUN.
+
+### R32: exported PDF text/answer/steps integrity gate (CI evidence required)
+
+- [IMPLEMENTED] Added an independent PyMuPDF text-stream check for the full R29 stress set. It reads each real PDF instead of trusting the source worksheet object, matches numbered problems in order, and verifies the exact printed question plus every expected answer and every verified worked step within its own problem block.
+- [IMPLEMENTED] Every exported PDF must retain its manifest SHA-256, page count, generator version, layout version, and configuration identity. The audit still requires 51 topics, 102 standard/challenge cases and at least 408 paired A4/Letter documents (468 with the current reviewed-step coverage).
+- [TESTED LOCALLY; CI REQUIRED] Six fault-injection checks cover questions/answers/steps export, broken enumeration, dropped answer, omitted step, and tampered bytes. GitHub CI runs both this unit suite and the full-content check using the pinned PyMuPDF environment; it archives `content-integrity-audit.json` alongside the R29 stress manifest.
+- [NOT VERIFIED] Physical printer scaling, all-pages human visual review, classroom acceptance, and custom-domain rollout. Keep Cloudflare preview `noindex,nofollow`; a PDF text extraction PASS does not establish visual quality.
