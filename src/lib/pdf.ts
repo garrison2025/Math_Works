@@ -214,14 +214,18 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  }
  if(d.kind==='trapezoid'){
   const g=trapezoidLayout(d);
-  l(g.bottomLeft,g.bottomY,g.bottomRight,g.bottomY);
-  l(g.bottomRight,g.bottomY,g.topRight,g.topY);
-  l(g.topRight,g.topY,g.topLeft,g.topY);
-  l(g.topLeft,g.topY,g.bottomLeft,g.bottomY);
-  l(g.altitudeX,g.topY,g.altitudeX,g.bottomY);
-  label(String(d.values[0]),.48,g.bottomY-.105);
-  label(String(d.values[1]),.48,g.topY+.075);
-  label(d.values[2]===undefined?'?':String(d.values[2]),g.altitudeX+.04,(g.topY+g.bottomY)/2);
+  // Shared layout is SVG top-down; PDF coordinates run from the BOTTOM.
+  // Flip the y coordinate, or the printed BASE VALUES swap physically even
+  // though the outline appears plausible. R44 independent fitz audit guards it.
+  const fy=(topDown:number)=>1-topDown;
+  l(g.bottomLeft,fy(g.bottomY),g.bottomRight,fy(g.bottomY));
+  l(g.bottomRight,fy(g.bottomY),g.topRight,fy(g.topY));
+  l(g.topRight,fy(g.topY),g.topLeft,fy(g.topY));
+  l(g.topLeft,fy(g.topY),g.bottomLeft,fy(g.bottomY));
+  l(g.altitudeX,fy(g.topY),g.altitudeX,fy(g.bottomY));
+  label(String(d.values[0]),.48,fy(g.bottomY)-.105);
+  label(String(d.values[1]),.48,fy(g.topY)+.075);
+  label(d.values[2]===undefined?'?':String(d.values[2]),g.altitudeX+.04,fy((g.topY+g.bottomY)/2));
   page.drawText('Schematic - not to scale',{x:x+w*.31,y:y+h*.065,size:7,font,color:sub});
   return;
  }

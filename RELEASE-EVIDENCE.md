@@ -381,3 +381,7 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Two faint, answer-blind writing rules in long division work area; move remainder label out of the work rows in both previews and PDF.
 - [CI REQUIRED] Correctness, diagram-vector and PDF-bound checks, 468-file/51-topic full-catalog stress, Chromium and Firefox evidence must all pass.
 - [LIMITATION] This preserves generator v18 values, including rare equal-base trapezoid examples (an inclusive-definition classroom convention); a definition-specific generator change needs separately versioned share compatibility and teacher sign-off.
+
+
+- [ACTUAL R44 PDF RE-RENDER] Caught a PDF-only inversion after the initial commit: diagrams displayed numeric bottom bases physically at the top. Corrected top-down SVG to bottom-up PDF y conversion; this was **not** detected by existing visual text-overlap and drawing margin checks.
+- [INDEPENDENT GATE ADDED] Real-vector audit of all trapezoid question PDFs and source-manifest parallel-base values, including equal-base edge cases, with separate adversarial unit tests. CI verification pending on corrected commit.
