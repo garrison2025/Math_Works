@@ -476,10 +476,10 @@ test('R29 layout v2 PDFs identify generator, sheet configuration and print layou
 test('R29 refuses a problem too tall for even a fresh printable page instead of clipping it',async()=>{
  // R46 isolates pagination from semantic validation of equation grammar.
  // Unparseable two-step equation prompts now correctly fail earlier at export.
- const sheet=makeWorksheet('one-step-equations-worksheets',20261105,1);
+ const sheet=makeWorksheet('order-of-operations-worksheets',20261105,1);
  sheet.problems[0].payload.question='LONGTOKEN'.repeat(750);
  for(const paper of ['Letter','A4']){
-  await assert.rejects(()=>createWorksheetPdf(sheet,'One Step Equations Worksheets','questions',paper),/cannot fit on a .* page/);
+  await assert.rejects(()=>createWorksheetPdf(sheet,'Order Of Operations Worksheets','questions',paper),/cannot fit on a .* page/);
  }
  const steps=makeWorksheet('long-division-worksheets',20261105,1);
  steps.problems[0].solutionSteps=['VERY_LONG_EXPLANATION'.repeat(400)];

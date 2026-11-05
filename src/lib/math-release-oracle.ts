@@ -16,7 +16,20 @@ export const VERIFIED_AT_PDF_BOUNDARY=Object.freeze([
  'area-of-trapezoids-worksheets',
  'pythagorean-worksheets',
  'mean-median-mode-range-worksheets',
- 'percentages-worksheets'
+ 'percentages-worksheets',
+ 'decimal-multiplication-worksheets',
+ 'scientific-notation-worksheets',
+ 'area-of-triangles-worksheets',
+ 'area-of-parallelograms-worksheets',
+ 'area-worksheets',
+ 'volume-of-rectangular-prisms-worksheets',
+ 'surface-area-worksheets',
+ 'functions-worksheets',
+ 'linear-equations-worksheets',
+ 'one-step-equations-worksheets',
+ 'division-worksheets',
+ 'coordinate-plane-worksheets',
+ 'function-tables-worksheets'
 ] as const);
 const verified=new Set<string>(VERIFIED_AT_PDF_BOUNDARY);
 const integer=(raw:string)=>BigInt(raw);
@@ -49,6 +62,46 @@ function checkDiagram(p:Problem,kind:string,values:readonly number[]):void{
  if(p.diagramSpec?.kind!==kind||p.diagramSpec.values.length!==values.length||
   !values.every((v,i)=>p.diagramSpec?.values[i]===v))
   throw Error(`Math oracle: mismatch between ${kind} diagram and question`);
+}
+/** Exact decimal representation; no binary floating point or rounding. */
+function decimalParts(raw:string):[bigint,number]{
+ const m=raw.match(/^(\d+)(?:\.(\d+))?$/);
+ if(!m)throw Error('Math oracle: non-decimal operand');
+ return [BigInt(m[1]+(m[2]??'')),(m[2]??'').length];
+}
+function decimalString(n:bigint,places:number):string{
+ if(!Number.isInteger(places)||places<0||places>24)throw Error('Math oracle: unsafe decimal places');
+ const sign=n<0n?'-':'',digits=String(abs(n)).padStart(places+1,'0');
+ if(places===0)return sign+digits;
+ return sign+(digits.slice(0,-places)+'.'+digits.slice(-places)).replace(/0+$/,'').replace(/\.$/,'');
+}
+function signedOffset(sign:string,magnitude:string):bigint{
+ return BigInt(magnitude)*(sign==='−'?-1n:1n);
+}
+function safeInt(raw:string):number{
+ const n=Number(raw);
+ if(!Number.isSafeInteger(n))throw Error('Math oracle: unsafe integer');
+ return n;
+}
+/** Reconstruct normalized scientific notation from displayed decimal digits. */
+function scientificFromStandard(raw:string):string{
+ if(!/^(?:\d+)(?:\.\d+)?$/.test(raw))throw Error('Math oracle: invalid standard notation');
+ const dot=raw.indexOf('.'),integerPlaces=dot<0?raw.length:dot;
+ const all=raw.replace('.',''),first=all.search(/[1-9]/);
+ if(first<0)throw Error('Math oracle: zero has no finite normalized exponent');
+ const significant=all.slice(first).replace(/0+$/,'');
+ if(significant.length<2||significant.length>4)
+  throw Error('Math oracle: scientific problem must have 2-4 significant figures');
+ return `${significant[0]}.${significant.slice(1)} × 10^${integerPlaces-first-1}`;
+}
+function standardFromScientific(coefficient:string,powerRaw:string):string{
+ const m=coefficient.match(/^([1-9])\.(\d{1,3})$/);
+ if(!m||m[2].endsWith('0'))throw Error('Math oracle: non-normalized scientific coefficient');
+ const power=safeInt(powerRaw);
+ if(power< -8||power>8)throw Error('Math oracle: exponent out of supported range');
+ const all=m[1]+m[2],shift=power-m[2].length,place=all.length+shift;
+ if(shift>=0)return all+'0'.repeat(shift);
+ return place>0?all.slice(0,place)+'.'+all.slice(place):'0.'+'0'.repeat(-place)+all;
 }
 function computed(p:Problem):string{
  const q=p.payload.question;
@@ -162,6 +215,151 @@ function computed(p:Problem):string{
   if(from===0n||delta*100n%from!==0n||(change[1]==='increase'&&to<=from)||(change[1]==='decrease'&&to>=from))
    throw Error('Math oracle: invalid percent change');
   return `${delta*100n/from}%`;
+ }
+ case 'decimal-multiplication-worksheets':{
+  const m=match(q,/^(\d+\.\d+) × (\d+\.\d+) = ____$/);
+  const [a,da]=decimalParts(m[1]),[b,db]=decimalParts(m[2]);
+  if(da!==db||(da!==1&&da!==2))throw Error('Math oracle: invalid decimal-factor precision');
+  return decimalString(a*b,da+db);
+ }
+ case 'scientific-notation-worksheets':{
+  const input=q.match(/^Write (\d+(?:\.\d+)?) in scientific notation\.$/);
+  if(input)return scientificFromStandard(input[1]);
+  const output=match(q,/^Write (\d+\.\d+) × 10\^(-?\d+) in standard form\.$/);
+  return standardFromScientific(output[1],output[2]);
+ }
+ case 'area-of-triangles-worksheets':{
+  const forward=q.match(/^Find the area of a triangle with base (\d+) and height (\d+)\.$/);
+  if(forward){
+   const x=safeInt(forward[1]),h=safeInt(forward[2]);
+   checkDiagram(p,'triangle',[x,h]);
+   return halfString(x*h);
+  }
+  const inverse=match(q,/^A triangle has base (\d+) and area (\d+(?:\.5)?) square units\. Find its perpendicular height\.$/);
+  const x=safeInt(inverse[1]),twiceArea=parseDouble(inverse[2]);
+  if(x<=0||twiceArea%x!==0)throw Error('Math oracle: impossible triangle height');
+  checkDiagram(p,'triangle',[x]);
+  return String(twiceArea/x);
+ }
+ case 'area-of-parallelograms-worksheets':{
+  const forward=q.match(/^Find the area of a parallelogram with base (\d+) and perpendicular height (\d+)\.$/);
+  if(forward){
+   const x=safeInt(forward[1]),h=safeInt(forward[2]);
+   checkDiagram(p,'parallelogram',[x,h]);
+   return String(x*h);
+  }
+  const inverse=match(q,/^A parallelogram has base (\d+) and area (\d+) square units\. Find its perpendicular height\.$/);
+  const x=safeInt(inverse[1]),area=safeInt(inverse[2]);
+  if(x<=0||area%x!==0)throw Error('Math oracle: impossible parallelogram height');
+  checkDiagram(p,'parallelogram',[x]);
+  return String(area/x);
+ }
+ case 'area-worksheets':{
+  const square=q.match(/^Find the area of a square with side (\d+)\.$/);
+  if(square){
+   const x=safeInt(square[1]);checkDiagram(p,'rectangle',[x,x]);
+   if(p.diagramSpec?.labels?.[0]!=='square')throw Error('Math oracle: square diagram label mismatch');
+   return String(x*x);
+  }
+  const rect=match(q,/^Find the area of a (\d+) by (\d+) rectangle\.$/);
+  const x=safeInt(rect[1]),y=safeInt(rect[2]);
+  checkDiagram(p,'rectangle',[x,y]);
+  if(p.diagramSpec?.labels?.[0]!=='rectangle')throw Error('Math oracle: rectangle diagram label mismatch');
+  return String(x*y);
+ }
+ case 'volume-of-rectangular-prisms-worksheets':{
+  const inverse=q.match(/^A rectangular prism has volume (\d+) cubic units, length (\d+) and width (\d+)\. Find its height\.$/);
+  if(inverse){
+   const volume=safeInt(inverse[1]),length=safeInt(inverse[2]),width=safeInt(inverse[3]);
+   if(length<=0||width<=0||volume%(length*width)!==0)
+    throw Error('Math oracle: impossible prism height');
+   checkDiagram(p,'prism',[length,width]);
+   return String(volume/(length*width));
+  }
+  const forward=match(q,/^Find the volume of a rectangular prism (\d+) × (\d+) × (\d+)\.$/);
+  const x=safeInt(forward[1]),y=safeInt(forward[2]),z=safeInt(forward[3]);
+  checkDiagram(p,'prism',[x,y,z]);
+  return String(x*y*z);
+ }
+ case 'surface-area-worksheets':{
+  const cube=q.match(/^Find surface area of a cube with side (\d+)\.$/);
+  if(cube){
+   const x=safeInt(cube[1]);
+   checkDiagram(p,'prism',[x,x,x]);
+   if(p.diagramSpec?.labels?.[0]!=='cube')throw Error('Math oracle: cube drawing is not marked cube');
+   return String(6*x*x);
+  }
+  const prism=match(q,/^Find surface area of a rectangular prism: (\d+) × (\d+) × (\d+)\.$/);
+  const [x,y,z]=prism.slice(1).map(safeInt);
+  checkDiagram(p,'prism',[x,y,z]);
+  if(p.diagramSpec?.labels?.[0]!=='rectangular-prism')
+   throw Error('Math oracle: prism drawing is mislabeled');
+  return String(2*(x*y+x*z+y*z));
+ }
+ case 'functions-worksheets':{
+  const evaluate=q.match(/^If f\(x\) = (\d+)x ([+−]) (\d+), find f\((-?\d+)\)\.$/);
+  if(evaluate){
+   const a=integer(evaluate[1]),b=signedOffset(evaluate[2],evaluate[3]),x=integer(evaluate[4]);
+   return String(a*x+b);
+  }
+  const inverse=match(q,/^If f\(x\) = (\d+)x ([+−]) (\d+) and f\(x\) = (-?\d+), find x\.$/);
+  const a=integer(inverse[1]),b=signedOffset(inverse[2],inverse[3]),v=integer(inverse[4]);
+  if(a===0n||(v-b)%a!==0n)throw Error('Math oracle: noninteger function inverse');
+  return String((v-b)/a);
+ }
+ case 'linear-equations-worksheets':{
+  const graph=q.match(/^Graph the line y = (-?\d+)x ([+−]) (\d+) on the coordinate grid\.$/);
+  if(graph){
+   const m=safeInt(graph[1]),b=safeInt(graph[3])*(graph[2]==='−'?-1:1);
+   checkDiagram(p,'linear-function',[m,b,0,b]);
+   if(!p.diagramSpec?.labels?.includes('draw'))throw Error('Math oracle: missing blank-graph label');
+   return `slope = ${m}; y-intercept = (0, ${b})`;
+  }
+  const evaluate=match(q,/^For y = (-?\d+)x ([+−]) (\d+), find y when x = (-?\d+)\.$/);
+  const m=safeInt(evaluate[1]),b=safeInt(evaluate[3])*(evaluate[2]==='−'?-1:1),x=safeInt(evaluate[4]);
+  const y=m*x+b;
+  checkDiagram(p,'linear-function',[m,b,x,y]);
+  if(p.diagramSpec?.labels?.includes('draw'))throw Error('Math oracle: answer graph unexpectedly marked blank');
+  return String(y);
+ }
+ case 'one-step-equations-worksheets':{
+  const addition=q.match(/^Solve: x ([+−]) (\d+) = (-?\d+)$/);
+  if(addition){
+   const b=signedOffset(addition[1],addition[2]),c=integer(addition[3]);
+   return `x = ${c-b}`;
+  }
+  const multiplied=match(q,/^Solve: (-?\d+)x = (-?\d+)$/);
+  const a=integer(multiplied[1]),c=integer(multiplied[2]);
+  if(a===0n||c%a!==0n)throw Error('Math oracle: invalid one-step equation');
+  return `x = ${c/a}`;
+ }
+ case 'division-worksheets':{
+  const m=match(q,/^(\d+) ÷ (\d+) = ____$/);
+  const a=integer(m[1]),d=integer(m[2]);
+  if(d===0n||a%d!==0n)throw Error('Math oracle: inexact division fact');
+  return String(a/d);
+ }
+ case 'coordinate-plane-worksheets':{
+  const m=match(q,/^Which quadrant contains \((-?\d+), (-?\d+)\)\?$/);
+  const x=safeInt(m[1]),y=safeInt(m[2]);
+  if(x===0||y===0)throw Error('Math oracle: point lies on axis');
+  checkDiagram(p,'coordinate',[x,y]);
+  return x>0?(y>0?'I':'IV'):(y>0?'II':'III');
+ }
+ case 'function-tables-worksheets':{
+  const m=match(q,/^Complete the input\/output table for f\(x\) = (\d+)x ([+−]) (\d+)\. Find the missing (input|output)\.$/);
+  const a=safeInt(m[1]),b=safeInt(m[3])*(m[2]==='−'?-1:1),role=m[4];
+  const d=p.diagramSpec;
+  if(d?.kind!=='function-table'||d.values.length!==10)throw Error('Math oracle: malformed function table');
+  const [coef,inter,...tail]=d.values;
+  const xs=tail.slice(0,3),ys=tail.slice(3,6),position=tail[6],missingInput=tail[7];
+  if(coef!==a||inter!==b||![0,1,2].includes(position)||
+   missingInput!==(role==='input'?1:0)||
+   !xs.every(Number.isSafeInteger)||!ys.every(Number.isSafeInteger)||
+   !xs.every((v,i)=>i===0||v===xs[i-1]+1)||
+   !ys.every((v,i)=>v===a*xs[i]+b))
+   throw Error('Math oracle: function table contradicts visible linear function');
+  return String(role==='input'?xs[position]:ys[position]);
  }
  default: throw Error(`Math oracle: unsupported topic ${p.topicId}`);
  }

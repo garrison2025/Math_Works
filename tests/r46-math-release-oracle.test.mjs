@@ -25,7 +25,8 @@ const settings={
  'percentages-worksheets':[{direction:'fraction-to-percent'},{direction:'percent-to-fraction'},{direction:'percent-of-number'},{direction:'percent-change'}]
 };
 test('R46 explicitly scopes 10 answer families and recomputes thousands of seeded questions',()=>{
- assert.deepEqual([...VERIFIED_AT_PDF_BOUNDARY].sort(),coverage.sort());
+ for(const slug of coverage)assert.ok(VERIFIED_AT_PDF_BOUNDARY.includes(slug),`R46 topic no longer protected: ${slug}`);
+ assert.equal(VERIFIED_AT_PDF_BOUNDARY.length,23,'R47 expands the original ten-topic safeguard to 23');
  let checked=0;
  for(const topic of coverage)for(const options of [{},...settings[topic]])for(let seed=1;seed<=270;seed++){
   const p=sampleProblem(topic,seed,seed%3===0?'challenge':seed%3===1?'easy':'standard',options);
