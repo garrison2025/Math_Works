@@ -47,6 +47,14 @@ try{
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
  assert.match(pdf.getTitle()??'',/generator v16/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
+
+ await page.locator('[data-option="method"]').selectOption('parallel');
+ await page.locator('[data-mode="answers"]').click();
+ assert.match((await page.locator('.problem .answer-text').first().innerText()).trim(),/Answer:\s*no solution$/);
+ await page.locator('[data-option="method"]').selectOption('coincident');
+ assert.match((await page.locator('.problem .answer-text').first().innerText()).trim(),/Answer:\s*infinitely many solutions$/);
+ await page.locator('[data-mode="questions"]').click();
+ checks.push({name:'parallel and coincident systems in Firefox',status:'pass'});
  await open('order-of-operations-worksheets');
  await page.locator('[data-option="skill"]').selectOption('division');
  await page.locator('[data-option="grouping"]').selectOption('parentheses');
@@ -61,13 +69,6 @@ try{
  assert.ok(Math.abs(r26PDF.getPage(0).getWidth()-595.28)<0.1);
  checks.push({name:'R26 Firefox exact division and grouped expressions A4 PDF',status:'pass'});
 
- await page.locator('[data-option="method"]').selectOption('parallel');
- await page.locator('[data-mode="answers"]').click();
- assert.match((await page.locator('.problem .answer-text').first().innerText()).trim(),/Answer:\s*no solution$/);
- await page.locator('[data-option="method"]').selectOption('coincident');
- assert.match((await page.locator('.problem .answer-text').first().innerText()).trim(),/Answer:\s*infinitely many solutions$/);
- await page.locator('[data-mode="questions"]').click();
- checks.push({name:'parallel and coincident systems in Firefox',status:'pass'});
  await open('domain-range-worksheets');
  await page.locator('[data-option="relation"]').selectOption('not-function');
  await page.locator('[data-option="task"]').selectOption('function-test');
