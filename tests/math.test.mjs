@@ -94,6 +94,11 @@ test('boxplot vector shows whisker range and each outlier as separate marker',()
 });
 
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM,PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT,POINTS_PER_MM} from '../src/lib/protractor.ts';
+test('protractor SVG 0-degree and 180-degree endpoint captions sit above the baseline',()=>{
+ const svg=diagramSVG({kind:'protractor',values:[50]});
+ assert.match(svg,/<text x=\"142\.00\" y=\"81\.00\"[^>]*>0<\/text>/);
+ assert.match(svg,/<text x=\"38\.00\" y=\"81\.00\"[^>]*>180<\/text>/);
+});
 test('protractor physical geometry contract is exactly 72 mm radius and 50 mm ruler',()=>{
  assert.equal(PROTRACTOR_RADIUS_MM,72);assert.equal(PROTRACTOR_CALIBRATION_MM,50);
  assert.ok(Math.abs(PROTRACTOR_RADIUS_PT/POINTS_PER_MM-72)<1e-10);

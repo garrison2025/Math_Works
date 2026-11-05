@@ -271,3 +271,5 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL PASS] Added an **independent exported-PDF** dimension verifier; adversarial unit tests reject incorrectly scaled rulers, incorrect radii and missing end ticks/apex, while accepting a correct synthetic instrument.
 - [CI REQUIRED] Generate two actual-size blank protractors (Letter/A4) and verify all 160 maximal practice PDF instrument pages plus the two blanks with PyMuPDF; preserve SHA-256 checked manifests and audit reports.
 - [NOT RUN] A printed 50 mm ruler measurement and full human visual QA of all pages. Do not enable Google indexing or purchase a custom domain on the basis of vector QA alone.
+
+R31 visual spot-check follow-up: 0° and 180° captions were previously on the horizontal baseline. The vector SVG/PDF labels are now shifted above it, and the independent PDF inspector asserts two correctly positioned text boxes on **every instrument page**. Actual physical printer measurement remains NOT RUN.

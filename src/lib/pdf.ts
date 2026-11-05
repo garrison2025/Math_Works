@@ -52,7 +52,10 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    page.drawLine({start:{x:cx+inner*cos,y:cy+inner*sin},end:{x:cx+r*cos,y:cy+r*sin},color:ink,thickness:a%10===0?.8:.35});
    if(a>0){const p=(a-1)*Math.PI/180;page.drawLine({start:{x:cx+r*Math.cos(p),y:cy+r*Math.sin(p)},end:{x:cx+r*cos,y:cy+r*sin},color:ink,thickness:.7});}
    if(a%10===0){const label=String(a),fSize=7,lr=r-27;
-    page.drawText(label,{x:cx+lr*cos-font.widthOfTextAtSize(label,fSize)/2,y:cy+lr*sin-2.5,size:fSize,font,color:ink});}
+    // The 0 and 180-degree captions must sit fully ABOVE the baseline;
+    // placing their text on the baseline made the printed digits hard to read.
+    const labelY=a===0||a===180?cy+11:cy+lr*sin-2.5;
+    page.drawText(label,{x:cx+lr*cos-font.widthOfTextAtSize(label,fSize)/2,y:labelY,size:fSize,font,color:ink});}
   }
   page.drawCircle({x:cx,y:cy,size:2,borderColor:ink,borderWidth:.7});
   const sx=x+15,sy=y+11,len=PROTRACTOR_CALIBRATION_PT;
@@ -258,7 +261,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    page.drawLine({start:pt(a),end:pt(b),color,thickness:width});
   draw(g.vertex,g.baseline);draw(g.vertex,g.ray);
   for(let i=1;i<g.arc.length;i++)draw(g.arc[i-1],g.arc[i],rgb(.09,.48,.41),.9);
-  const [lx,ly]=g.label,labelPt=pt([lx,ly]),labelText=String(g.degrees)+' deg';
+  const [lx,ly]=g.label,labelPt=pt([lx,ly]),labelText=`${g.degrees} deg`;
   page.drawText(labelText,{x:labelPt.x-font.widthOfTextAtSize(labelText,7.5)/2,y:labelPt.y-2,size:7.5,font,color:ink});
   return;
  }

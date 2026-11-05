@@ -72,6 +72,18 @@ def validate_page(page, context='protractor'):
             raise AssertionError(f'{context}: 50 mm bar lacks an endpoint tick')
     if '50 mm check' not in page.get_text():
         raise AssertionError(f'{context}: missing visible 50 mm calibration label')
+    # Text-safety is distinct from page-edge safety: 0°/180° digits must not
+    # touch the long horizontal protractor baseline. Inspect printed glyph boxes.
+    spans = [span for block in page.get_text('dict')['blocks']
+             for line in block.get('lines', []) for span in line['spans']]
+    for tick in ('0', '180'):
+        matches = [span for span in spans if span['text'].strip() == tick
+                   and abs((span['bbox'][0] + span['bbox'][2])/2 -
+                           (center_x + (RADIUS_PT - 27) * (1 if tick == '0' else -1))) < 10]
+        if len(matches) != 1:
+            raise AssertionError(f'{context}: missing {tick}-degree endpoint caption')
+        if matches[0]['bbox'][3] > center_y - 2:
+            raise AssertionError(f'{context}: {tick}-degree caption collides with baseline')
     # A PDF coordinate proof is not valid if the drawing itself is outside the
     # printable safe zone or has been cropped by a narrower MediaBox.
     if min(a.x, b.x, ca.x, cb.x) < 36 - TOLERANCE_PT:

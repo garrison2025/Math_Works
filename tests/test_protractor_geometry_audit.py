@@ -10,7 +10,7 @@ audit = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(audit)
 
 
-def fake_page(radius_mm=72, bar_mm=50, shift_top_pt=0, include_tick=True):
+def fake_page(radius_mm=72, bar_mm=50, shift_top_pt=0, include_tick=True, label_overlap=False):
     doc=fitz.open()
     page=doc.new_page(width=595.28,height=841.89)
     cx, cy=295,425
@@ -23,6 +23,9 @@ def fake_page(radius_mm=72, bar_mm=50, shift_top_pt=0, include_tick=True):
         page.draw_line((x,y-3),(x,y+3))
         page.draw_line((x+length,y-3),(x+length,y+3))
     page.insert_text((210,520),'50 mm check')
+    label_y=cy+2 if label_overlap else cy-12
+    page.insert_text((cx+r-27,label_y),'0',fontsize=7)
+    page.insert_text((cx-r+24,label_y),'180',fontsize=7)
     return doc
 
 
@@ -43,6 +46,11 @@ class ProtractorGeometryAuditTests(unittest.TestCase):
             with self.subTest(radius=radius),fake_page(radius_mm=radius) as doc:
                 with self.assertRaisesRegex(AssertionError,'144 mm protractor baseline'):
                     audit.validate_page(doc[0])
+
+    def test_endpoint_captions_touching_baseline_rejected(self):
+        with fake_page(label_overlap=True) as doc:
+            with self.assertRaisesRegex(AssertionError,'caption collides with baseline'):
+                audit.validate_page(doc[0])
 
     def test_missing_apex_or_end_tics_rejected(self):
         with fake_page(shift_top_pt=1) as doc:
