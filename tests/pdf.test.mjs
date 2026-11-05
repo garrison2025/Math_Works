@@ -401,7 +401,7 @@ test('R26 precedence practice, answer and verified steps export A4/Letter PDF wi
    }
   }
  }
- assert.match(ascii('(2 + 3)² − 4 ÷ 2'),/\^2 - 4  divided by  2/);
+ assert.equal(ascii('(2 + 3)² − 4 ÷ 2'), '(2 + 3)² - 4 ÷ 2');
 });
 
 
