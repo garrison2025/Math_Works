@@ -25,7 +25,7 @@ SINGLE_X=re.compile(r'(?m)^x$')
 
 def check_text(topic,mode,question_count,text):
     """Only the question-mode PDF includes the actual diagrams."""
-    if mode!='questions' or topic not in ANGLE_TOPICS|MULTIPLICATION_TOPICS:
+    if mode!='questions' or topic not in (set(ANGLE_TOPICS)|MULTIPLICATION_TOPICS):
         return []
     issues=[]
     if topic in ANGLE_TOPICS:
@@ -49,7 +49,7 @@ def run(folder):
     cases={(case['topic'],case['difficulty']):case for case in manifest['cases']}
     if manifest['summary']['topics']!=51 or len(cases)!=102 or len(manifest['files'])!=468:
         raise AssertionError('Full-stress scope changed; cannot verify font release')
-    files=[r for r in manifest['files'] if r['topic'] in ANGLE_TOPICS|MULTIPLICATION_TOPICS]
+    files=[r for r in manifest['files'] if r['topic'] in (set(ANGLE_TOPICS)|MULTIPLICATION_TOPICS)]
     if len(files)<28:
         raise AssertionError('Missing required angle/multiplication diagram coverage')
     checked=0
