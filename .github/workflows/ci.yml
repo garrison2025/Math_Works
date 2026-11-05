@@ -36,6 +36,15 @@ jobs:
         run: npm run qa:pdf-samples
       - name: Stress test all 51 live worksheet PDFs at maximum count
         run: npm run qa:pdf-stress
+      - name: Ensure Poppler PDF text geometry reader is available
+        shell: bash
+        run: |
+          if ! command -v pdftotext >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq poppler-utils
+          fi
+      - name: Enforce 36-point text-safe printable margins on every stress PDF
+        run: python3 scripts/check-pdf-margins.py qa-artifacts/pdf-stress
       - name: Retain exhaustive PDF audit and exact problem/answer manifest
         uses: actions/upload-artifact@v4
         if: always()

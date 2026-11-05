@@ -280,7 +280,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  const bottomSafety=margin+18;
  let page:PDFPage;let currentY=0;let pageNum=0;
  function newPage(){
-  page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-48;
+  page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-54;
   const heading=ascii(topicName).slice(0,74);
   if(bold.widthOfTextAtSize(heading,15)>bodyW)throw new Error('PDF topic title exceeds the printable content width');
   page.drawText(heading,{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=20;
@@ -321,7 +321,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,STEP_FONT_SIZE,bodyW-18)){page.drawText(line,{x:xx+10,y,size:STEP_FONT_SIZE,font,color:sub});y-=STEP_LINE_HEIGHT;}y-=STEP_GAP;}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;
  }
- const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:19,size:7,font,color:sub});}
+ const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:margin,size:7,font,color:sub});}
  pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed} - generator v${sheet.generatorVersion} - config ${sheet.optionsHash} - layout ${sheet.layoutVersion}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
 }
 
