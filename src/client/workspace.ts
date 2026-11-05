@@ -3,6 +3,7 @@ import {diagramSVG} from '../lib/diagram';
 import {titleFor} from '../lib/site';
 import {createWorksheetPdf,createBlankProtractorPdf,createPrinterCalibrationPdf,type PdfMode,type Paper} from '../lib/pdf';
 import {checkPrintScale} from '../lib/print-calibration';
+import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
 import {buildWorksheetLink,parseWorksheetLink} from '../lib/worksheet-link';
@@ -14,7 +15,7 @@ function setup(root:HTMLElement){
  const stepsEnabled=hasVerifiedSteps(topic);
  const topicDefs=topicOptionsFor(topic);
  const field=<T extends HTMLElement>(name:string)=>root.querySelector<T>(`[data-field="${name}"]`)!;
- const difficulty=field<HTMLSelectElement>('difficulty'),quantity=field<HTMLSelectElement>('quantity'),paper=field<HTMLSelectElement>('paper'),seedInput=field<HTMLInputElement>('seed');
+ const difficulty=field<HTMLSelectElement>('difficulty'),quantity=field<HTMLSelectElement>('quantity'),paper=field<HTMLSelectElement>('paper'),writingRoom=field<HTMLSelectElement>('writing-room'),seedInput=field<HTMLInputElement>('seed');
  const status=root.querySelector<HTMLElement>('[data-status]')!;
  const list=root.querySelector<HTMLElement>('[data-problems]')!;
  const summary=root.querySelector<HTMLElement>('[data-summary]')!;
@@ -64,7 +65,7 @@ function setup(root:HTMLElement){
     wrap.append(label,input,feedback);cards[i]?.append(wrap);
    });
   }
-  summary.textContent=`${s.problems.length} questions · ${difficulty.value} · ${paper.value} · Engine v${s.generatorVersion} · Config ${s.optionsHash}`;sheetCaption.textContent=`${mode==='questions'?'Practice worksheet':mode==='answers'?'Answer key':'Worked solutions'} · Sheet ID ${s.seed}`;sheetFooter.textContent=`${mode.toUpperCase()} · Engine v${s.generatorVersion} · Seed ${s.seed} · Config ${s.optionsHash} · ${s.problems.length} questions`;
+  summary.textContent=`${s.problems.length} questions · ${difficulty.value} · ${paper.value}${writingRoom.value==='extra'?' · Extra writing room (PDF only)':''} · Engine v${s.generatorVersion} · Config ${s.optionsHash}`;sheetCaption.textContent=`${mode==='questions'?'Practice worksheet':mode==='answers'?'Answer key':'Worked solutions'} · Sheet ID ${s.seed}`;sheetFooter.textContent=`${mode.toUpperCase()} · Engine v${s.generatorVersion} · Seed ${s.seed} · Config ${s.optionsHash} · ${s.problems.length} questions`;
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
   updatePracticeUI();
  }
@@ -75,7 +76,7 @@ function setup(root:HTMLElement){
    inform(e instanceof Error?e.message:'Could not create worksheet.',true);updatePracticeUI();
   }}
  function randomSeed(){const a=new Uint32Array(1);crypto.getRandomValues(a);seedInput.value=String(a[0]);rebuild();}
- difficulty.addEventListener('change',rebuild);quantity.addEventListener('change',rebuild);seedInput.addEventListener('change',rebuild);paper.addEventListener('change',render);
+ difficulty.addEventListener('change',rebuild);quantity.addEventListener('change',rebuild);seedInput.addEventListener('change',rebuild);paper.addEventListener('change',render);writingRoom.addEventListener('change',render);
  root.querySelectorAll<HTMLSelectElement>('[data-option]').forEach(el=>el.addEventListener('change',rebuild));
  root.querySelector<HTMLButtonElement>('[data-action="regenerate"]')!.addEventListener('click',randomSeed);
  root.querySelector<HTMLButtonElement>('[data-action="practice"]')!.addEventListener('click',()=>{
@@ -111,18 +112,18 @@ function setup(root:HTMLElement){
   // the asynchronous pdf-lib render. Unlike window.print(), this uses the SAME
   // paginated, margin-audited vector PDF as the downloaded worksheet.
   const printButton=root.querySelector<HTMLButtonElement>('[data-action="print"]')!;
-  const current=worksheet,currentMode=mode,currentPaper=paper.value as Paper;
+  const current=worksheet,currentMode=mode,currentPaper=paper.value as Paper,currentRoom=writingRoom.value as WritingRoom;
   const tab=window.open('','_blank');
   if(tab){tab.document.title='Preparing printable worksheet';tab.document.body.textContent='Preparing your printable PDF…';}
   try{
    printButton.disabled=true;inform('Preparing print-ready PDF…');
-   const bytes=await createWorksheetPdf(current,titleFor(topic),currentMode,currentPaper);
+   const bytes=await createWorksheetPdf(current,titleFor(topic),currentMode,currentPaper,currentRoom);
    const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
    if(tab&&!tab.closed){tab.location.replace(url);inform('Print-ready PDF opened. In the PDF viewer choose Print, Actual size / 100% (especially for protractors).');}
    else {
     // Browser may block new tabs; always preserve access to the exact same PDF.
     const a=document.createElement('a');a.href=url;
-    a.download=`${topic}-v${current.generatorVersion}-${currentMode}-${current.seed}-${current.optionsHash}-${currentPaper.toLowerCase()}-print.pdf`;
+    a.download=`${topic}-v${current.generatorVersion}-${currentMode}-${current.seed}-${current.optionsHash}-${currentPaper.toLowerCase()}${currentMode==='questions'&&currentRoom==='extra'?'-extra-room':''}-print.pdf`;
     document.body.append(a);a.click();a.remove();
     inform('Your browser blocked the print tab, so the print-ready PDF was downloaded instead.');
    }
@@ -162,10 +163,10 @@ function setup(root:HTMLElement){
    inform('Blank protractor downloaded. Print at Actual size (100%) and measure the 50 mm line.');
   }catch(e){inform(e instanceof Error?`Protractor PDF failed: ${e.message}`:'Protractor PDF failed.',true)}finally{protractorButton.disabled=false;}
  });}
- for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
+ for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper,writingRoom.value as WritingRoom);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}${m==='questions'&&writingRoom.value==='extra'?'-extra-room':''}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded${m==='questions'&&writingRoom.value==='extra'?' with extra pencil lines':''} · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
  root.querySelector<HTMLButtonElement>('[data-action="share"]')?.addEventListener('click',async()=>{
   if(!worksheet)rebuild();if(!worksheet)return;
-  const params=state();const url=buildWorksheetLink(window.location.href,topic,{seed:params.n,difficulty:params.difficulty,quantity:params.q,paper:paper.value as Paper,options:params.options});
+  const params=state();const url=buildWorksheetLink(window.location.href,topic,{seed:params.n,difficulty:params.difficulty,quantity:params.q,paper:paper.value as Paper,options:params.options,writingRoom:writingRoom.value==='extra'?'extra':undefined});
   try{await navigator.clipboard.writeText(url);inform('Reproducible worksheet link copied. Only your settings are in the URL; no student information.');}
   catch {window.prompt('Copy this worksheet link:',url);inform('Share link prepared; copy it from the dialog.');}
  });
@@ -174,6 +175,7 @@ function setup(root:HTMLElement){
  if(loaded.difficulty)difficulty.value=loaded.difficulty;
  if(loaded.quantity!==undefined)quantity.value=String(loaded.quantity);
  if(loaded.paper)paper.value=loaded.paper;
+ if(loaded.writingRoom)writingRoom.value=loaded.writingRoom;
  for(const def of topicDefs){const value=loaded.options?.[def.key];const el=root.querySelector<HTMLSelectElement>(`[data-option="${def.key}"]`);if(value&&el)el.value=value;}
  rebuild();
  const params=new URL(window.location.href).searchParams;
