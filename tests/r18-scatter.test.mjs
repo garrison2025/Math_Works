@@ -41,11 +41,11 @@ test('R18: restricted scatter modes generate a full unique deterministic workshe
   }
  }
 });
-test('R18: plot mode is encoded in v8 share links',()=>{
+test('R18: plot mode is encoded in v9 share links',()=>{
  for(const trend of ['mixed','positive','negative','none']){
   const opts={task:'plot',trend},settings={seed:20261105,difficulty:'challenge',quantity:8,paper:'A4',options:normalizeTopicOptions(topic,opts)};
   const link=buildWorksheetLink('https://math-works.pages.dev/scatter-plot-worksheets/',topic,settings);
-  assert.equal(new URL(link).searchParams.get('gv'),'8');
+  assert.equal(new URL(link).searchParams.get('gv'),'9');
   assert.deepEqual(parseWorksheetLink(link,topic),settings);
   assert.deepEqual(makeWorksheet(topic,settings.seed,8,'challenge',opts),makeWorksheet(topic,settings.seed,8,'challenge',parseWorksheetLink(link,topic).options));
  }
