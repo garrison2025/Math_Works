@@ -9,6 +9,7 @@ import {assertWorksheetMath} from './math-release-oracle.ts';
 import {assertWorksheetSteps} from './step-release-oracle.ts';
 import {longDivisionPracticeRows,longDivisionDiagramHeight} from './long-division-layout.ts';
 import {extraWritingRules,type WritingRoom} from './writing-room.ts';
+import {prismDimensions} from './prism-dimensions.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT,POINTS_PER_MM} from './protractor.ts';
 import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
@@ -258,19 +259,33 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   return;
  }
  if(d.kind==='prism'){
-  if(d.labels?.[0]==='cube'){
-   // A cube has a genuinely square front face, not a generic rectangle.
-   const side=Math.min(w*.43,h*.58),left=x+w*.29,bottom=y+h*.14,depth=side*.28;
+  const dim=prismDimensions(d),cube=dim.kind==='cube';
+  if(cube){
+   const side=Math.min(w*.43,h*.58),left=x+w*.29,bottom=y+h*.17,depth=side*.28;
+   // A cubic front face must be mathematically square in the printed vector.
    page.drawRectangle({x:left,y:bottom,width:side,height:side,borderColor:accent,borderWidth:1.4});
-   for(const [x1,y1,x2,y2] of [[left,bottom+side,left+depth,bottom+side+depth],[left+side,bottom+side,left+side+depth,bottom+side+depth],[left+side,bottom,left+side+depth,bottom+depth],[left+depth,bottom+side+depth,left+side+depth,bottom+side+depth],[left+side+depth,bottom+depth,left+side+depth,bottom+side+depth]]){
-    page.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2},color:accent,thickness:1.1});
-   }
+   for(const [x1,y1,x2,y2] of [
+    [left,bottom+side,left+depth,bottom+side+depth],
+    [left+side,bottom+side,left+side+depth,bottom+side+depth],
+    [left+side,bottom,left+side+depth,bottom+depth],
+    [left+depth,bottom+side+depth,left+side+depth,bottom+side+depth],
+    [left+side+depth,bottom+depth,left+side+depth,bottom+side+depth]
+   ])page.drawLine({start:{x:x1,y:y1},end:{x:x2,y:y2},color:accent,thickness:1.1});
   }else{
-   page.drawRectangle({x:x+w*.13,y:y+h*.12,width:w*.6,height:h*.65,borderColor:accent,borderWidth:1.4});
-   l(.13,.77,.32,.94);l(.32,.94,.91,.94);l(.91,.94,.73,.77);l(.91,.94,.91,.28);l(.91,.28,.73,.12);
+   // Indent the upright front edge so "Height: n" is outside the face.
+   page.drawRectangle({x:x+w*.24,y:y+h*.17,width:w*.47,height:h*.60,
+    borderColor:accent,borderWidth:1.4});
+   l(.24,.77,.40,.91);l(.40,.91,.87,.91);l(.87,.91,.71,.77);
+   l(.87,.91,.87,.31);l(.87,.31,.71,.17);
   }
-  label(String(d.values[0]),.38,.03);label(String(d.values[1]),.77,.19);
-  label(d.values[2]===undefined?'?':String(d.values[2]),.04,.48);
+  const named=(value:string,xf:number,yf:number,size=7.4)=>
+   page.drawText(value,{x:x+xf*w,y:y+yf*h,size,font,color:ink});
+  named(dim.lengthLabel,.38,.055,8);
+  if(dim.widthLabel)named(dim.widthLabel,.78,.23);
+  if(dim.heightLabel)named(dim.heightLabel,.015,.46);
+  const warning='Schematic - not to scale',size=6.5;
+  page.drawText(warning,{x:x+w-font.widthOfTextAtSize(warning,size)-2,
+   y:y+.04*h,size,font,color:sub});
   return;
  }
  if(d.kind==='box-practice'){
