@@ -16,6 +16,11 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
  const line=(x1:number,y1:number,x2:number,y2:number)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#1b64a5" stroke-width="3" stroke-linecap="round"/>`;
  const text=(x:number,y:number,s:string)=>`<text x="${x}" y="${y}" fill="#172337" font-size="17" text-anchor="middle">${esc(s)}</text>`;
  const poly=(points:string)=>`<polygon points="${points}" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/>`;
+ // R55: a true right-angle square makes the *perpendicular* height explicit;
+ // avoid suggesting the sloping edge is the height. Dimensions stay schematic.
+ const altitudeSquare=(footX:number,footY:number)=>
+  `<path class="altitude-right-angle" d="M${footX.toFixed(2)} ${(footY-12).toFixed(2)}h12v12" stroke="#187b68" stroke-width="2.1" fill="none"/>`;
+ const scaleNote=()=>`<text class="diagram-scale-note" x="225" y="210" fill="#62738a" font-size="12" text-anchor="middle">Schematic - not to scale</text>`;
  switch(d.kind){
   case 'function-table':{
    const g=functionTableGeometry(d),left=46,top=43,cellW=90,cellH=66;
@@ -47,7 +52,13 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    const workLines=Array.from({length:rows},(_,i)=>`M178 ${140+i*20}H360`).join(' ');
    parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H360 M151 72V123" fill="none" stroke="#172337" stroke-width="2.8"/><path class="division-work-guides" d="${workLines}" fill="none" stroke="#cad9e5" stroke-width="1.2"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="252">remainder: ______</text></g>`;
    break}
-  case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]===undefined?'?':v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
+  case 'triangle':{
+   parts=poly('120,155 330,155 225,40')+line(225,40,225,155)
+    +altitudeSquare(225,155)
+    +text(225,182,`${v[0]} base`)
+    +text(267,108,`${v[1]===undefined?'?':v[1]} height`)
+    +scaleNote();break;
+  }
   case 'right-triangle':{
    const [a,b,c]=v,missingBase=d.labels?.includes('missing-base'),missingVertical=d.labels?.includes('missing-vertical');
    if(missingBase||missingVertical){if(v.length!==3||Math.abs(a*a+b*b-c*c)>.000001)throw Error('Invalid missing-leg right triangle');}
@@ -69,7 +80,13 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
     +text(225,square?192:178,`${v[0]} units`)+text(square?310:345,105,`${v[1]}`);
    break}
 
-  case 'parallelogram':parts=poly('130,155 310,155 350,48 170,48')+line(170,48,170,155)+text(225,179,`${v[0]}`)+text(151,111,v[1]===undefined?'?':`${v[1]}`);break;
+  case 'parallelogram':{
+   parts=poly('130,155 310,155 350,48 170,48')
+    +line(170,48,170,155)+altitudeSquare(170,155)
+    +text(225,179,`${v[0]}`)
+    +text(151,111,v[1]===undefined?'?':`${v[1]}`)
+    +scaleNote();break;
+  }
   case 'trapezoid':{
    const g=trapezoidLayout(d),px=(u:number)=>450*u,py=(u:number)=>220*u;
    const coords=[
@@ -78,6 +95,7 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    ].map(([u,v])=>`${px(u).toFixed(2)},${py(v).toFixed(2)}`).join(' ');
    parts=poly(coords)
     +line(px(g.altitudeX),py(g.topY),px(g.altitudeX),py(g.bottomY))
+    +altitudeSquare(px(g.altitudeX),py(g.bottomY))
     +text(225,py(g.bottomY)+24,String(v[0]))
     +text(225,py(g.topY)-10,String(v[1]))
     +text(px(g.altitudeX)+25,py((g.bottomY+g.topY)/2)+5,v[2]===undefined?'?':String(v[2]))

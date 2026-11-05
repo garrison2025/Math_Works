@@ -464,3 +464,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Share links round-trip optional `room=extra` without changing existing default URLs or answer fingerprints. Extra mode marked explicitly in PDF title and browser filenames; normal answer PDFs do not gain student writing lines.
 - [CI REQUIRED] Extra/standard A4/Letter exported files, independent real-vector audit, browser download/clipboard link round-trip, legacy all-51 stress PDFs and noindex audit.
 - [OPEN] Physical classroom writing usability and actual printer/teacher signoff. No formal domain launch or indexability change.
+
+
+### R55 — altitude-as-perpendicular visual teaching cue (CI pending)
+
+- [IMPLEMENTED] A two-segment right-angle square joins the perpendicular altitude to the horizontal base in triangle, parallelogram and trapezoid practice diagrams (SVG and true vector PDF), including missing-height variants; no calculated heights are disclosed.
+- [IMPLEMENTED] Triangle and parallelogram gain a **Schematic - not to scale** disclaimer consistent with trapezoid. Existing numeric labels and answer keys remain exact; no re-seeding, layout change or indexing change.
+- [CI REQUIRED] PyMuPDF inspections of actual exported geometry PDF vectors, independent marker-size and perpendicularity verification, 51-topic stress audit and cross-browser checks. R44 must continue checking five unchanged base/altitude outline strokes.
+- [OPEN] Classroom teacher validation, real printer scaling and student visual interpretation cannot be established from digital geometry tests alone.

@@ -72,6 +72,8 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_long_division_guides.py' -v
       - name: R53 check true-PDF guide rows against all 160 printed division questions
         run: .venv-pdf-audit/bin/python scripts/check-pdf-long-division-guides.py qa-artifacts/pdf-stress
+      - name: R55 independently audit printed perpendicular-height right-angle squares
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-altitude-markers.py qa-artifacts/pdf-stress
       - name: R44 adversarial tests for real PDF trapezoid base ordering
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_trapezoid_audit.py' -v
       - name: R44 verify physical PDF top/bottom bases against exact generated questions

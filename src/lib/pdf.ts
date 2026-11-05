@@ -99,6 +99,21 @@ export function wrapPdfText(input:string,font:PDFFont,size:number,maxWidth:numbe
 function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,font:PDFFont,showSolution=false){
  const stroke={color:accent,thickness:1.1};const l=(a:number,b:number,c:number,e:number)=>page.drawLine({start:{x:x+a*w,y:y+b*h},end:{x:x+c*w,y:y+e*h},...stroke});
  const dot=(xx:number,yy:number)=>page.drawCircle({x:x+xx*w,y:y+yy*h,size:3,color:accent});
+ // R55: two orthogonal, joined PDF-vector strokes; a separate 0.82pt
+ // thickness distinguishes the square from the 1.1pt diagram outline.
+ // R44's independently verified five trapezoid outline segments stay intact.
+ const altitudeSquare=(footX:number,footY:number)=>{
+  const dx=.055,dy=.10;
+  page.drawLine({start:{x:x+footX*w,y:y+(footY+dy)*h},
+   end:{x:x+(footX+dx)*w,y:y+(footY+dy)*h},color:accent,thickness:.82});
+  page.drawLine({start:{x:x+(footX+dx)*w,y:y+(footY+dy)*h},
+   end:{x:x+(footX+dx)*w,y:y+footY*h},color:accent,thickness:.82});
+ };
+ const scaleNote=()=>{
+  const note='Schematic - not to scale',size=7;
+  page.drawText(note,{x:x+w-font.widthOfTextAtSize(note,size)-4,
+   y:y+h-10,size,font,color:sub});
+ };
  const label=(text:string,xx:number,yy:number,size=8)=>{
   page.drawText(ascii(text),{x:x+xx*w,y:y+yy*h,size,font,color:ink});
  };
@@ -184,8 +199,10 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  }
  if(d.kind==='triangle'){
   l(.15,.16,.85,.16);l(.15,.16,.50,.88);l(.50,.88,.85,.16);l(.50,.88,.50,.16);
+  altitudeSquare(.50,.16);
   label(`${d.values[0]} base`,.38,.03);
   label(`${d.values[1]===undefined?'?':d.values[1]} height`,.53,.53);
+  scaleNote();
   return;
  }
  if(d.kind==='right-triangle'){
@@ -217,7 +234,9 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  }
  if(d.kind==='parallelogram'){
   l(.12,.15,.74,.15);l(.74,.15,.89,.88);l(.89,.88,.28,.88);l(.28,.88,.12,.15);l(.28,.15,.28,.88);
+  altitudeSquare(.28,.15);
   label(String(d.values[0]),.36,.04);label(d.values[1]===undefined?'?':String(d.values[1]),.30,.48);
+  scaleNote();
   return;
  }
  if(d.kind==='trapezoid'){
@@ -231,6 +250,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   l(g.topRight,fy(g.topY),g.topLeft,fy(g.topY));
   l(g.topLeft,fy(g.topY),g.bottomLeft,fy(g.bottomY));
   l(g.altitudeX,fy(g.topY),g.altitudeX,fy(g.bottomY));
+  altitudeSquare(g.altitudeX,fy(g.bottomY));
   label(String(d.values[0]),.48,fy(g.bottomY)-.105);
   label(String(d.values[1]),.48,fy(g.topY)+.075);
   label(d.values[2]===undefined?'?':String(d.values[2]),g.altitudeX+.04,fy((g.topY+g.bottomY)/2));
