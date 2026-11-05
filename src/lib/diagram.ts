@@ -2,6 +2,7 @@ import {quartiles,type Diagram} from './math.ts';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {functionTableGeometry} from './function-table.ts';
 import {longDivisionPracticeRows} from './long-division-layout.ts';
+import {prismDimensions} from './prism-dimensions.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Vector graphics are generated from the same diagramSpec as the answer object. */
@@ -103,11 +104,19 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    break;
   }
   case 'prism':{
-   const cube=d.labels?.[0]==='cube';
-   parts=(cube?`<rect x="129" y="59" width="116" height="116" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M129 59 L177 21 H293 V137 L245 175 M245 59 L293 21" fill="none" stroke="#1b64a5" stroke-width="3"/>`:`<rect x="100" y="72" width="190" height="100" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M100 72 L149 35 H339 V135 L290 172 M290 72 L339 35" fill="none" stroke="#1b64a5" stroke-width="3"/>`)
-   +text(cube?190:195,191,`${v[0]}`)+text(cube?267:310,160,`${v[1]}`)+text(cube?111:88,120,v[2]===undefined?'?':`${v[2]}`);
-   break}
-
+   const dim=prismDimensions(d),cube=dim.kind==='cube';
+   const caption=(role:'length'|'width'|'height',cx:number,cy:number,value:string)=>
+    `<text class="prism-dimension prism-${role}" x="${cx}" y="${cy}" font-size="17" fill="#172337" text-anchor="middle">${esc(value)}</text>`;
+   // Each visible value is explicitly associated with its edge.
+   parts=(cube?
+    `<rect x="145" y="59" width="115" height="115" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M145 59L190 24H305V139L260 174M260 59L305 24" fill="none" stroke="#1b64a5" stroke-width="3"/>`:
+    `<rect x="145" y="76" width="155" height="88" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M145 76L189 41H344V129L300 164M300 76L344 41" fill="none" stroke="#1b64a5" stroke-width="3"/>`)
+    +caption('length',cube?203:223,cube?196:192,dim.lengthLabel);
+   if(dim.widthLabel)parts+=caption('width',382,153,dim.widthLabel);
+   if(dim.heightLabel)parts+=caption('height',82,128,dim.heightLabel);
+   parts+=`<text class="prism-scale-note" x="225" y="217" fill="#62738a" font-size="12" text-anchor="middle">Schematic - not to scale</text>`;
+   break;
+  }
   case 'numberline':{
    const n=v[0],op=d.labels?.[0],step=Math.max(1,Math.ceil(Math.abs(n)/5)),extent=step*5,px=(z:number)=>225+z/extent*170;
    parts=line(55,105,395,105)+`<path d="M55 105l9 -6v12zM395 105l-9 -6v12z" fill="#1b64a5"/>`;
@@ -204,5 +213,6 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
   default:return '';
  }
  const taller=d.kind==='long-division';
- return `<svg class="diagram-vector${taller?' long-division-vector':''}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Worksheet ${esc(d.kind)} diagram" viewBox="0 0 450 ${taller?270:220}" width="450" height="${taller?270:220}">${parts}</svg>`;
+ const alternative=d.kind==='prism'?prismDimensions(d).accessibleDescription:`Worksheet ${d.kind} diagram`;
+ return `<svg class="diagram-vector${taller?' long-division-vector':''}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(alternative)}" viewBox="0 0 450 ${taller?270:220}" width="450" height="${taller?270:220}">${parts}</svg>`;
 }
