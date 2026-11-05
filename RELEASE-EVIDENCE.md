@@ -221,3 +221,11 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL TEST REQUIRED] 27,000 independent mathematical question-text oracles; 40-question uniqueness per selector combination; link roundtrips and TypeScript tests.
 - [CI REQUIRED] Recheck PDF A4/Letter, Chrome/Firefox mode controls, build and robots noindex audit for the new commit.
 - [NOT DONE] Full PDF human visual review and physical 50 mm protractor calibration.
+
+
+### R27 long-division extension (pending GitHub CI)
+
+- [IMPLEMENTED] One- and two-digit divisors, three-/four-digit dividends, optional remainder; exact quotient-generation bounds keep every problem within the selected digit count.
+- [LOCAL TEST TARGET] An independent digit-by-digit oracle checks division algorithm traces, including internal zero quotient digits; narrow presets are tested in 40-question worksheets.
+- [CI REQUIRED] v17 build and share identity, Chrome/Firefox A4 browser downloads, paired Letter/A4 PDFs including worked steps, golden PDF artifacts and `noindex` gate.
+- [NOT VERIFIED] Physical printer calibration, whole-library visual inspection and full teacher acceptance.

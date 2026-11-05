@@ -18,6 +18,8 @@ const fixtures=[
  {slug:'fractions-worksheets',quantity:20,options:{operation:'subtraction',denominators:'unlike'}},
  {slug:'two-digit-multiplication-worksheets',quantity:20,options:{factorRange:'small'}},
  {slug:'long-division-worksheets',quantity:20,options:{remainder:'yes'}},
+ {slug:'long-division-worksheets',quantity:40,options:{remainder:'yes',divisorDigits:'two',dividendDigits:'four'}},
+ {slug:'long-division-worksheets',quantity:20,options:{remainder:'no',divisorDigits:'two',dividendDigits:'three'}},
  {slug:'three-digit-by-two-digit-multiplication-worksheets',quantity:20,options:{multiplierRange:'high'}},
  {slug:'box-plots-worksheets',quantity:8,options:{statistic:'Q1'}},
  {slug:'box-plots-worksheets',quantity:8,options:{statistic:'draw'}},
@@ -64,5 +66,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R26 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R27 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

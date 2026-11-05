@@ -12,7 +12,13 @@ const captures={
  'equivalent-fractions-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes('____/')===(v==='numerator'),
  'fractions-worksheets':(p,v)=>v==='mixed'||(v==='same'||v==='unlike'?(()=>{const m=p.payload.question.match(/^(\d+)\/(\d+) [^ ]+ (\d+)\/(\d+)/);return (m[2]===m[4])===(v==='same');})():p.payload.question.includes(({addition:' + ',subtraction:' − ',multiplication:' × ',division:' ÷ '})[v])),
  'multiplication-tables-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith(`${v} × `),
- 'long-division-worksheets':(p,v)=>v==='mixed'||Number(p.expectedAnswer.split(' R ')[1])>0===(v==='yes'),
+ 'long-division-worksheets':(p,v)=>{
+  if(v==='mixed')return true;
+  if(v==='yes'||v==='no')return (Number(p.expectedAnswer.split(' R ')[1])>0)===(v==='yes');
+  const match=p.payload.question.match(/^(\d+) ÷ (\d+) = ____/);
+  return v==='one'||v==='two'?(Number(match[2])<10)===(v==='one'):
+   String(match[1]).length===(v==='three'?3:4);
+ },
  'mean-median-mode-range-worksheets':(p,v)=>{if(['mixed','mean','median','mode','range'].includes(v))return v==='mixed'||p.payload.question.startsWith(`Find the ${v} of`);const numbers=p.payload.question.match(/\[([\d, ]+)\]/)[1].split(', ').map(Number);const counts=new Map();for(const x of numbers)counts.set(x,(counts.get(x)??0)+1);const maximum=Math.max(...counts.values());return v==='none'?maximum===1:v==='single'?maximum===3&&[...counts.values()].filter(x=>x===maximum).length===1:maximum===2&&[...counts.values()].filter(x=>x===maximum).length===2;},
  'scatter-plot-worksheets':(p,v)=>v==='mixed'||(v==='identify'?p.payload.question.startsWith('Describe'):v==='plot'?p.payload.question.startsWith('Plot these six points'):p.diagramSpec.labels?.includes('plot')||p.expectedAnswer===(v==='none'?'no clear linear trend':v)),
  'number-line-worksheets':(p,v)=>v==='mixed'||(Number(p.expectedAnswer)>0)===(v==='positive'),

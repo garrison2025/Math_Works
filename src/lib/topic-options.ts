@@ -14,7 +14,11 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'equivalent-fractions-worksheets':[entry('missing','Missing part','Choose which part of the equivalent fraction is blank.',mixed('numerator','denominator'))],
  'fractions-worksheets':[entry('operation','Fraction operation','Choose addition, subtraction, multiplication or division.',mixed('addition','subtraction','multiplication','division')),entry('denominators','Denominator relationship','Practice equal or unequal denominator pairs for all four fraction operations.',mixed('same','unlike'))],
  'multiplication-tables-worksheets':[entry('table','Times table','Target one times table or mix all tables 1 through 12.',[{value:'mixed',label:'Mixed 1–12'},...Array.from({length:12},(_,i)=>({value:String(i+1),label:`${i+1} times table`}))])],
- 'long-division-worksheets':[entry('remainder','Remainder practice','Choose exact divisions, remainders, or both.',mixed('yes','no'))],
+ 'long-division-worksheets':[
+  entry('remainder','Remainder practice','Choose exact divisions, remainders, or both.',mixed('yes','no')),
+  entry('divisorDigits','Divisor size','Practice one-digit or two-digit divisors.',mixed('one','two')),
+  entry('dividendDigits','Dividend size','Choose three- or four-digit dividends.',mixed('three','four'))
+ ],
  'mean-median-mode-range-worksheets':[entry('statistic','Statistics skill','Target one statistic or practice the full set.',mixed('mean','median','mode','range')),entry('modePattern','Data frequency pattern','Practice one mode, two modes, or no mode. Mean, median and range questions use the same varied datasets.',mixed('single','two','none'))],
  'scatter-plot-worksheets':[entry('task','Scatter task','Read a scatter plot to identify its trend, or plot six coordinate pairs on a blank grid.',choice('identify','plot')),entry('trend','Linear trend','Practice positive, negative, or no clear linear trend.',mixed('positive','negative','none'))],
  'number-line-worksheets':[entry('sign','Target number sign','Practice placing negative or positive integers.',mixed('positive','negative'))],

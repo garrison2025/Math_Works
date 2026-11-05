@@ -67,7 +67,7 @@ test('R23: mixed mode actually covers all four percentage skills',()=>{
 });
 
 test('R23: all four selectors generate 40 distinct problems with roundtrip share identity',()=>{
- assert.equal(GENERATOR_VERSION,'16');
+ assert.equal(GENERATOR_VERSION,'17');
  for(const direction of ['mixed',...modes])for(const seed of [1,5,54,215,20261105]){
   const options={direction};
   const set=makeWorksheet(topic,seed,40,'challenge',options);
@@ -76,7 +76,7 @@ test('R23: all four selectors generate 40 distinct problems with roundtrip share
   assert.deepEqual(makeWorksheet(topic,seed,40,'challenge',options),set);
   assert.deepEqual(set.answerMap.map(row=>row.answer),set.problems.map(p=>p.expectedAnswer));
   const url=buildWorksheetLink(`https://math-works.pages.dev/${topic}/`,topic,{seed,quantity:40,difficulty:'challenge',paper:'A4',options});
-  assert.equal(new URL(url).searchParams.get('gv'),'16');
+  assert.equal(new URL(url).searchParams.get('gv'),'17');
   assert.deepEqual(parseWorksheetLink(url,topic).options,options);
  }
 });

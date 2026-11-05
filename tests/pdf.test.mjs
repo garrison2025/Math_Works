@@ -138,7 +138,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v16'),`${topic} missing version-fifteen identity`);
+    assert.ok(doc.getTitle()?.includes('v17'),`${topic} missing version-fifteen identity`);
    }
   }
  }
@@ -207,14 +207,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'16');
+  assert.equal(sheet.generatorVersion,'17');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v16'));
+   assert.ok(document.getTitle()?.includes('v17'));
   }
  }
 });
@@ -230,7 +230,7 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v16/);
+   assert.match(parsed.getTitle()??'',/generator v17/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
@@ -250,7 +250,7 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
    assert.ok(pdf.getPageCount()>0);
-   assert.match(pdf.getTitle()??'',/generator v16/);
+   assert.match(pdf.getTitle()??'',/generator v17/);
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
    assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }
@@ -317,7 +317,7 @@ test('R19: missing Pythagorean leg uses the same config identity in A4/Letter pr
    const pdf=await PDFDocument.load(bytes);
    assert.ok(pdf.getPageCount()>=1);
    assert.ok(pdf.getTitle().includes(sheet.optionsHash));
-   assert.match(pdf.getTitle(),/generator v16/);
+   assert.match(pdf.getTitle(),/generator v17/);
    assert.ok(bytes.length>2000);
   }
  }
@@ -331,7 +331,7 @@ test('R20: input/output function tables produce answer-separated vector PDFs in 
    const bytes=await createWorksheetPdf(sheet,'Function Tables Worksheets',mode,paper);
    const doc=await PDFDocument.load(bytes);
    assert.ok(doc.getPageCount()>0);
-   assert.match(doc.getTitle()??'',/generator v16/);
+   assert.match(doc.getTitle()??'',/generator v17/);
    assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
    for(const page of doc.getPages())assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<.02);
   }
@@ -348,7 +348,7 @@ test('R21 varied-mode statistics export paired Letter/A4 PDFs with the same exac
    const [q,a]=await Promise.all([PDFDocument.load(questions),PDFDocument.load(answers)]);
    assert.ok(q.getPageCount()>=1&&a.getPageCount()>=1);
    assert.ok(q.getTitle()?.includes(sheet.optionsHash)&&a.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(q.getTitle()?.includes('v16')&&a.getTitle()?.includes('v16'));
+   assert.ok(q.getTitle()?.includes('v17')&&a.getTitle()?.includes('v17'));
   }
  }
 });
@@ -362,7 +362,7 @@ test('R24: fraction division and unlike subtraction provide aligned question, an
    const docs=await Promise.all(outputs.map(bytes=>PDFDocument.load(bytes)));
    docs.forEach((doc,i)=>{
     assert.ok(doc.getPageCount()>=1);
-    assert.match(doc.getTitle()??'',/generator v16/);
+    assert.match(doc.getTitle()??'',/generator v17/);
     assert.ok(doc.getTitle()?.includes(set.optionsHash));
     for(const page of doc.getPages()){
      assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<0.02);
@@ -386,7 +386,7 @@ test('R26 precedence practice, answer and verified steps export A4/Letter PDF wi
     assert.ok(bytes.length>1000);
     const pdf=await PDFDocument.load(bytes);
     assert.ok(pdf.getPageCount()>0);
-    assert.ok(pdf.getTitle()?.includes('generator v16'));
+    assert.ok(pdf.getTitle()?.includes('generator v17'));
     assert.ok(pdf.getTitle()?.includes(worksheet.optionsHash));
     for(const page of pdf.getPages()){
      assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<0.03);
@@ -396,4 +396,24 @@ test('R26 precedence practice, answer and verified steps export A4/Letter PDF wi
   }
  }
  assert.match(ascii('(2 + 3)² − 4 ÷ 2'),/\^2 - 4  divided by  2/);
+});
+
+
+test('R27: two-digit divisors and 4-digit dividends render complete long division PDF pairs',async()=>{
+ for(const paper of ['Letter','A4'])
+ for(const remainder of ['yes','no']){
+  const set=makeWorksheet('long-division-worksheets',20261105,40,'challenge',{
+   divisorDigits:'two',dividendDigits:'four',remainder
+  });
+  assert.ok(set.problems.every(p=>p.diagramSpec?.values[0]>=1000&&p.diagramSpec.values[1]>=11));
+  const [q,a,steps]=await Promise.all(['questions','answers','steps'].map(mode=>createWorksheetPdf(set,'Long Division Worksheets',mode,paper)));
+  const docs=await Promise.all([q,a,steps].map(buf=>PDFDocument.load(buf)));
+  assert.ok(docs.every(d=>d.getPageCount()>1),'Long diagrams should paginate rather than compress onto one sheet');
+  for(const doc of docs){
+   assert.ok(doc.getTitle()?.includes('generator v17'));
+   assert.ok(doc.getTitle()?.includes(set.optionsHash));
+   const [w,h]=sizes[paper];
+   assert.ok(doc.getPages().every(p=>Math.abs(p.getWidth()-w)<.02&&Math.abs(p.getHeight()-h)<.02));
+  }
+ }
 });

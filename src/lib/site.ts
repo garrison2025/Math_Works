@@ -20,6 +20,7 @@ export const topicIntro=(slug:string)=>{
   'box-plots-worksheets':'Calculate quartiles and outliers or construct a modified box plot from data, with a separate completed answer diagram.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
+  'long-division-worksheets':'Practice long division with one- or two-digit divisors and three- or four-digit dividends. Choose exact quotients or remainders, with matching worked steps and printable brackets.',
   'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',
   'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.',
   'linear-equations-worksheets':'Evaluate linear functions or graph y = mx + b on a blank coordinate plane, then compare with a separately plotted answer key.',
@@ -52,7 +53,7 @@ export function howTo(slug:string):string[]{
  if(slug.includes('mean-median-mode-range'))return ['Sort the observations before finding the median.','Divide their sum by the number of observations for the mean; count frequencies for mode.','Subtract minimum from maximum for the range.'];
  if(slug.includes('printable-protractor'))return ['Print using Actual size or 100%, with page fitting switched off.','Measure the printed 50 mm calibration line with a real ruler before using the scale.','Align the center and zero baseline to the angle before reading degrees.'];
  if(slug.includes('pythagorean'))return ['Identify the hypotenuse opposite the right angle: it is always the longest side.','For a missing hypotenuse use c² = a² + b²; for a missing leg use a² = c² − b².','Take the positive square root and check that each leg is shorter than the hypotenuse.'];
- if(slug.includes('long-division'))return ['Divide the leading digits by the divisor.','Multiply, subtract, then bring down the next digit.','Check dividend = divisor × quotient + remainder, with remainder less than divisor.'];
+ if(slug.includes('long-division'))return ['Begin with the first dividend digits large enough to divide by the divisor; two-digit divisors may need more leading digits.','Divide, multiply, subtract and bring down each following digit; write a zero in the quotient when a later partial dividend is too small.','Verify dividend = divisor × quotient + remainder. The remainder must be nonnegative and strictly less than the divisor.'];
  if(slug.includes('number-recognition'))return ['Read whether this question shows dots or a number word.','Count each dot once, or identify the numeral represented by the word.','Write the numeral and check it against the separate answer key.'];
  return ['Choose a difficulty and number of practice questions.','Solve the questions on your printable worksheet.','Use the separate answer key to verify each answer.'];
 }
@@ -84,7 +85,7 @@ export function commonMistakes(slug:string):string[]{
  if(slug.includes('scientific-notation'))return ['Using a positive exponent for a number between zero and one, or a negative exponent for a number greater than ten.', 'Dropping place-holder zeros or rounding away required significant digits.'];
  if(slug.includes('number-line'))return ['Placing negative numbers to the right of zero.', 'Counting tick marks without checking their scale.'];
  if(slug.includes('coordinate-plane'))return ['Swapping x and y coordinates.', 'Mixing up quadrant II and IV.'];
- if(slug.includes('long-division'))return ['Forgetting a zero in the quotient.', 'Writing a remainder as large as the divisor.'];
+ if(slug.includes('long-division'))return ['Skipping a zero digit in the middle of the quotient.', 'Choosing a partial quotient digit larger than 9 or leaving a remainder at least as large as the divisor.'];
  if(slug.includes('multiplication'))return ['Misaligning tens and ones in partial products.', 'Ignoring carried digits.'];
  if(slug.includes('division'))return ['Confusing dividend with divisor.', 'Skipping the multiplication check.'];
  return ['Not checking the requested unit or answer form.', 'Skipping the inverse or substitution check when one is available.'];

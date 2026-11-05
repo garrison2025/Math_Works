@@ -190,3 +190,8 @@ The general **Fractions Worksheets** generator now supports exact addition, subt
 ### R25: exact scientific notation
 
 Scientific notation worksheets now offer positive/negative exponent focus and 2–4 significant-digit coefficients, with both standard-to-scientific and scientific-to-standard conversions. Standard decimal strings are shifted exactly (no floating-point rounding), even for exponents down to -8. Generator/share identity is v15; older seeds do not claim backwards compatibility. Tests independently parse the question and recalculate the answer.
+
+
+### R27: long division at classroom scale
+
+Long Division Worksheets now offer one- or two-digit divisors and three- or four-digit dividends, in addition to exact-division and remainder choices. All values are generated as exact integers. Worked steps explicitly carry down each digit and retain zero quotient digits once division has begun. The problem SVG/PDF shows the answer-blind division bracket; practice and answer PDFs use matching v17 configuration hashes. Firefox/Chrome/browser and Letter/A4 golden fixture checks run on GitHub CI; they are not a substitute for physical print verification.

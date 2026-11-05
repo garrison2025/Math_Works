@@ -4,7 +4,7 @@ import {scientificNotationPair} from './scientific-notation.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='16' as const;
+export const GENERATOR_VERSION='17' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -166,7 +166,36 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'division-worksheets':{
   const d=opts.divisor==='mixed'?r.int(2,12):Number(opts.divisor),q=r.int(2,12);
   make(`${d*q} ÷ ${d} = ____`,q,`Because ${d} × ${q} = ${d*q}`);break}
- case 'long-division-worksheets':{const divisor=r.int(2,9),quotient=r.int(12,85),rem=opts.remainder==='no'?0:opts.remainder==='yes'?r.int(1,divisor-1):r.int(0,divisor-1),dividend=divisor*quotient+rem;let carry=0;const trace:string[]=[];for(const digit of String(dividend)){const value=carry*10+Number(digit),part=Math.floor(value/divisor);carry=value-part*divisor;trace.push(`Bring down ${digit}: ${value} ÷ ${divisor} gives ${part}; subtract ${part*divisor}, remainder ${carry}`);}make(`${dividend} ÷ ${divisor} = ____ (quotient R remainder)`,`${quotient} R ${rem}`,...trace,`Check: ${divisor}×${quotient}+${rem}=${dividend}`);diagram={kind:'long-division',values:[dividend,divisor]};break}
+ case 'long-division-worksheets':{
+  const divisorType=opts.divisorDigits==='mixed'?r.pick(['one','two']):opts.divisorDigits;
+  const digitCount=opts.dividendDigits==='mixed'?r.pick([3,4]):opts.dividendDigits==='three'?3:4;
+  const divisor=divisorType==='one'?r.int(2,9):r.int(11,49);
+  const lower=10**(digitCount-1),upper=10**digitCount-1;
+  // Choose the quotient first. Leave room for every possible remainder while
+  // guaranteeing the displayed dividend has exactly the requested digit count.
+  const lowestQuotient=Math.max(10,Math.ceil(lower/divisor));
+  const highestQuotient=Math.floor((upper-(divisor-1))/divisor);
+  if(lowestQuotient>highestQuotient)throw Error('No quotients for selected dividend and divisor');
+  const quotient=r.int(lowestQuotient,highestQuotient);
+  const rem=opts.remainder==='no'?0:opts.remainder==='yes'?r.int(1,divisor-1):r.int(0,divisor-1);
+  const dividend=divisor*quotient+rem;
+  if(String(dividend).length!==digitCount)throw Error('Long division digit count mismatch');
+  const trace:string[]=[];let carry=0,started=false;
+  for(const [index,digit] of [...String(dividend)].entries()){
+   const partial=carry*10+Number(digit),quotientDigit=Math.floor(partial/divisor);
+   carry=partial-quotientDigit*divisor;
+   if(!started&&quotientDigit===0){
+    trace.push(`Bring down ${digit}: ${partial} is below ${divisor}; use the next dividend digit.`);
+   }else{
+    started=true;
+    trace.push(`Step ${index+1}, bring down ${digit}: ${partial} ÷ ${divisor} gives quotient digit ${quotientDigit}; subtract ${quotientDigit*divisor}; carry ${carry}.`);
+   }
+  }
+  if(carry!==rem)throw Error('Long division remainder mismatch');
+  make(`${dividend} ÷ ${divisor} = ____ (quotient R remainder)`,`${quotient} R ${rem}`,
+   ...trace,`Check: ${divisor} × ${quotient} + ${rem} = ${dividend}`);
+  diagram={kind:'long-division',values:[dividend,divisor]};break}
+
  case 'place-value-worksheets':{
   const x=r.int(1000,9999),place=opts.place==='mixed'?r.pick([1,10,100,1000]):({ones:1,tens:10,hundreds:100,thousands:1000} as Record<string,number>)[opts.place];
   make(`What is the value of the ${place===1?'ones':place===10?'tens':place===100?'hundreds':'thousands'} digit in ${x}?`,Math.floor(x/place)%10*place,
