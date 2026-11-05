@@ -6,6 +6,7 @@ import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,inters
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {assertWorksheetMath} from './math-release-oracle.ts';
+import {assertWorksheetSteps} from './step-release-oracle.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
 import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
@@ -370,6 +371,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  assertWorksheetIntegrity(sheet);
  assertWorksheetMath(sheet);
  if(mode==='steps'&&!hasVerifiedSteps(sheet.topicId))throw new Error('Worked steps are not yet verified for this topic');
+ if(mode==='steps')assertWorksheetSteps(sheet);
  const pdf=await PDFDocument.create();const [pw,ph]=PAGE_SIZE[paper];const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
  const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode==='questions'&&!hasDiagrams;
  const bottomSafety=margin+18;

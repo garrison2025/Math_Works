@@ -422,3 +422,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Unknown PDF topic fails closed (instead of bypassing the math oracle), and the source generator's 51 switch cases are compared programmatically against export validators.
 - [IMPLEMENTED] Adversarial tests for changed-but-consistent answers, visual metadata corruption, unknown topics, A4/Letter output and all option categories.
 - [VALIDATION STILL REQUIRED] Full GitHub CI, 468 real PDF stress files / 3,764 pages, two browsers, print geometry and manual teacher/physical calibration.
+
+
+### R50 — step-by-step mathematics integrity gate (CI validation pending)
+
+- [IMPLEMENTED] `createWorksheetPdf(...,'steps',...)` now calls `assertWorksheetSteps` after the independent final-answer oracle. All 15 step-capable topics reject blank, invalid or unsafe teaching prose.
+- [IMPLEMENTED] Eight named topics independently reconstruct every intermediate step from the student-facing question: 2-digit column multiplication, 3-digit by 2-digit multiplication, two-step equations, mixed fractions, unlike-fraction addition, fraction multiplication, long division and exact mean absolute deviation.
+- [TEST REQUIRED] Reproduce many seeds and option types; mutation tests preserve correct final answers but deliberately damage the teaching trace, requiring the real worked-steps PDF exporter to reject it. Check A4/Letter and full 468-document regression.
+- [OPEN] The other seven step-enabled topics lack independent *full step-chain* reconstruction; physical printing and teacher review remain release gates.
