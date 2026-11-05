@@ -79,6 +79,7 @@ function setup(root:HTMLElement){
  root.querySelector<HTMLButtonElement>('[data-action="practice"]')!.addEventListener('click',()=>{
   if(!canPractice())return;
   practiceMode=!practiceMode;mode='questions';render();
+  if(practiceMode)root.querySelector<HTMLInputElement>('[data-practice-input="0"]')?.focus();
  });
  root.querySelector<HTMLButtonElement>('[data-action="check-practice"]')!.addEventListener('click',()=>{
   if(!worksheet||!practiceMode||mode!=='questions'||!canPractice())return;
@@ -99,6 +100,7 @@ function setup(root:HTMLElement){
   for(const input of root.querySelectorAll<HTMLInputElement>('[data-practice-input]')){input.value='';input.removeAttribute('aria-invalid');}
   for(const feedback of root.querySelectorAll<HTMLElement>('[data-practice-feedback]'))feedback.textContent='';
   root.querySelector<HTMLElement>('[data-practice-summary]')!.textContent='Responses cleared from this page.';
+  root.querySelector<HTMLInputElement>('[data-practice-input="0"]')?.focus();
  });
  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.mode==='steps'&&!stepsEnabled)return;mode=b.dataset.mode as PdfMode;render();}));
  root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',async()=>{

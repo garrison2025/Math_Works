@@ -51,6 +51,13 @@ try {
  const page=await context.newPage();
  const pageErrors=[];page.on('pageerror',error=>pageErrors.push(error.message));
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
+ // R36: keyboard users can bypass the repeated masthead; reduced-motion is effective.
+ await page.keyboard.press('Tab');
+ assert.equal(await page.locator(':focus').getAttribute('href'),'#main-content');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ const reducedDuration=await page.locator('.btn').first().evaluate(el=>getComputedStyle(el).transitionDuration);
+ assert.ok(parseFloat(reducedDuration)<=.001,`Reduced motion not honored: ${reducedDuration}`);
+ await page.emulateMedia({reducedMotion:'no-preference'});
  assert.equal(await page.title(),'Two Step Equations Worksheets – Free Printable PDF & Answer Key | Math Worksheet Studio');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('[data-workspace]').count(),1);
@@ -79,6 +86,26 @@ try {
  assert.match(link,/gv=18/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
  events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v18 clipboard link',status:'pass'});
+ // R36: prove that print-preview actually opens the already audited PDF renderer,
+ // not an independently paginated HTML print layout, and respects answer/A4 mode.
+ await page.locator('[data-mode="answers"]').click();
+ await page.evaluate(()=>{
+  window.__mathR36PrintBlob='';
+  window.open=()=>({closed:false,document:{title:'',body:{textContent:''}},location:{replace(url){window.__mathR36PrintBlob=url;}}});
+ });
+ await page.locator('[data-action="print"]').click();
+ await page.waitForFunction(()=>Boolean(window.__mathR36PrintBlob),{timeout:30000});
+ const printBytes=Uint8Array.from(await page.evaluate(async()=>{
+  const response=await fetch(window.__mathR36PrintBlob);
+  if(!response.ok)throw Error('Print-ready PDF blob inaccessible');
+  return [...new Uint8Array(await response.arrayBuffer())];
+ }));
+ const printDoc=await PDFDocument.load(printBytes);
+ assert.equal(printDoc.getPage(0).getWidth(),595.28);
+ assert.match(printDoc.getTitle()??'',/ - answers - seed /);
+ assert.ok(printDoc.getTitle()?.includes('generator v18'));
+ await page.locator('[data-mode="questions"]').click();
+ events.push({kind:'interaction',name:'R36 print mode uses actual vector PDF, answers view and A4 paper',status:'pass'});
  // R34: local-only answer checker grades exact scalar numbers and resets on regeneration.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-action="practice"]').isVisible(),true);

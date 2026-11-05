@@ -304,3 +304,10 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Added task-specific introductions to 31 previously generic live routes; 20 existing specialized introductions remain unchanged. All 51 live routes should now present distinct descriptions sourced from documented generator capabilities.
 - [IMPLEMENTED] Node regression rejects a missing/generic description, duplicate copy or pathological length before release.
 - [CI REQUIRED] Re-run Astro static build and content tests. The 24 parent/child route approval decisions, full manual content review and live indexing are NOT VERIFIED.
+
+
+### R36 — accessibility and print-action browser QA (CI verification required)
+
+- [IMPLEMENTED] Visible-on-focus skip link to main content; online practice and clear actions move focus to the first answer input for keyboard usability.
+- [CI REQUIRED] Chromium test checks first Tab focus target, computed reduced-motion duration, and intercepts the print-ready blob to verify that PDF mode='answers', correct generator identity and A4 MediaBox survive the UI action.
+- [NOT VERIFIED] Screen-reader audit, physical 50mm measurement, complete 51-topic human visual proofing and production custom-domain release.

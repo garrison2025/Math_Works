@@ -14,3 +14,8 @@
 .practice-answer small{min-height:15px;font-size:.74rem;color:#43596d}
 .practice-actions[hidden],.practice-answer[hidden]{display:none!important}
 @media print{.practice-answer,.practice-actions{display:none!important}}
+
+/* R36 keyboard discoverability and accessible content jump. */
+.skip-link{position:absolute;z-index:9999;top:-120px;left:14px;background:#172337;color:#fff;border:2px solid #fff;padding:10px 16px;border-radius:9px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.25)}
+.skip-link:focus,.skip-link:focus-visible{top:12px;color:#fff;outline:3px solid #1b64a5;outline-offset:2px}
+@media print{.skip-link{display:none!important}}

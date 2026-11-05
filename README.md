@@ -251,3 +251,8 @@ When all answers are scalar integers, decimals or fractions, **Practice online**
 ### R35 — specific static teaching copy across every live route
 
 All 51 live worksheet routes now have a distinct, generator-grounded English introduction instead of generic template filler. The introductory paragraph also supplies each page's static meta description. Specialists and broader generator hubs are described as different tasks, not keyword-only clones. The build test fails whenever an active topic falls back to the generic introduction. This improves content specificity but does not itself approve the 24 parent/child conflicts for indexing. Preview continues `noindex,nofollow`; measured ranking and traffic are unverified.
+
+
+### R36 — keyboard access, reduced motion and print/preview parity
+
+Every page now has a keyboard-visible **Skip to main content** link. The local practice toggle and reset action place keyboard focus on the first available answer field. Chromium QA checks this keyboard route, confirms reduced-motion preferences disable decorative transitions, and intercepts the PDF print action to load and inspect the actual exported A4 answer-key PDF. This is digital browser QA; it cannot certify screen-reader usability, physical printer scaling or classroom acceptance.
