@@ -381,7 +381,7 @@ try {
   const diagram=page.locator('.problem svg.long-division-vector').first();
   assert.equal(await diagram.count(),1);
   const guides=await diagram.locator('.division-work-guides').getAttribute('d');
-  assert.equal([...guides.matchAll(/M178 \\d+H360/g)].length,rows,
+  assert.equal([...guides.matchAll(/M178 \d+H360/g)].length,rows,
    `R53 ${digits}-digit long division missing pencil rows`);
   assert.equal(await diagram.getAttribute('viewBox'),'0 0 450 270');
  }
