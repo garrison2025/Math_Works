@@ -372,6 +372,24 @@ try {
  await page.locator('[data-action="check-calibration"]').click();
  assert.match(await page.locator('[data-calibration-result]').innerText(),/Enter physical ruler measurements/i);
  events.push({kind:'interaction',name:'R52 printer calibration A4 PDF and self-entered horizontal/vertical scale checks (no real printer used)',status:'pass'});
+ // R53: 4/5 blank intermediate-work rows must appear for actual 3/4-digit
+ // dividends, and their PDF must remain printable with no revealed answer.
+ await page.goto(`${base}/long-division-worksheets/`,{waitUntil:'networkidle'});
+ for(const [digits,rows] of [['three',4],['four',5]]){
+  await page.locator('[data-option="dividendDigits"]').selectOption(digits);
+  await page.locator('[data-option="divisorDigits"]').selectOption('two');
+  const diagram=page.locator('.problem svg.long-division-vector').first();
+  assert.equal(await diagram.count(),1);
+  const guides=await diagram.locator('.division-work-guides').getAttribute('d');
+  assert.equal([...guides.matchAll(/M178 \\d+H360/g)].length,rows,
+   `R53 ${digits}-digit long division missing pencil rows`);
+  assert.equal(await diagram.getAttribute('viewBox'),'0 0 450 270');
+ }
+ const r53Event=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const r53Doc=await verifyPdf(await r53Event,'R53 long division with five pencil rows');
+ assert.ok(r53Doc.getPageCount()>0);
+ events.push({kind:'interaction',name:'R53 3/4 digit long division adaptive SVG guide rows and printable PDF',status:'pass'});
  // R12 browser regression: true interior-angle geometry and masked missing-height PDF.
  await page.goto(`${base}/triangle-angle-sum-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="thirdAngle"]').selectOption('obtuse');
