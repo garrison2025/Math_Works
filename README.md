@@ -166,3 +166,11 @@ On `/scatter-plot-worksheets/`, teachers can choose **Identify the trend** (posi
 ### R20: printable function-table cells
 
 Function Tables now supports missing outputs, missing inputs, and mixed practice, with first/middle/last blank cell choices. Worksheet diagrams show a real 2 × 4 math table, not inline arrow text. Only the answer key fills the missing input or output; the table is drawn as vectors in both SVG and PDF. New generator version v10 protects reproducible share links; see `tests/r20-function-tables.test.mjs` and the R20 PDF fixtures. Browser and physical-print signoff remain separate from automated testing.
+
+
+### R22: Exact mean absolute deviation worksheets
+
+- MAD exercises now support symmetric and right-skewed integer datasets with 5, 6 or 8 observations. The sample-size choice is part of the deterministic worksheet identity and v12 share links.
+- Exact rational arithmetic computes the mean and MAD from the raw integer totals (`Σ|n·xᵢ − Σx| / n²`). The generator never rounds the mean while computing deviations.
+- Practice PDFs keep the answer separate. Worked explanatory steps show the exact mean, every deviation and the final simplest fraction. GitHub CI tests both paper sizes and independent 18,000-sample mathematical oracles.
+- Previous generator v11 links are intentionally not guaranteed to recreate v12 exercises. Do not enable preview indexing.

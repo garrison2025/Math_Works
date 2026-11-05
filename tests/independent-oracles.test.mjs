@@ -81,7 +81,7 @@ test('300 independent geometry and statistics oracles per route',()=>{
  verify('vertical-angles-worksheets',q=>{const m=re(q,/angle of (\d+)°/);return `${m[1]}°`;});
  verify('angle-worksheets',q=>{const m=re(q,/Classify a (\d+)°/);return n(m[1])<90?'acute':n(m[1])===90?'right':'obtuse';});
  verify('mean-median-mode-range-worksheets',q=>{const m=re(q,/Find the (mean|median|mode|range) of \[([\d, ]+)\]/);const v=m[2].split(', ').map(n).sort((a,b)=>a-b),total=v.reduce((a,b)=>a+b,0);if(m[1]==='mean')return frac(total,v.length);if(m[1]==='median')return (v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2);if(m[1]==='range')return v.at(-1)-v[0];const f=new Map();for(const x of v)f.set(x,(f.get(x)??0)+1);const high=Math.max(...f.values());return high===1?'no mode':[...f].filter(([,c])=>c===high).map(([x])=>x).sort((a,b)=>a-b).join(', ');});
- verify('mean-absolute-deviation-worksheets',q=>{const m=re(q,/deviation of \[([-\d, ]+)\]/);const vals=m[1].split(', ').map(n),mean=vals.reduce((a,b)=>a+b)/vals.length,absSum=vals.reduce((acc,x)=>acc+Math.abs(x-mean),0);return frac(absSum,vals.length);});
+ verify('mean-absolute-deviation-worksheets',q=>{const m=re(q,/deviation of \[([-\d, ]+)\]/);const vals=m[1].split(', ').map(n),count=vals.length,total=vals.reduce((a,b)=>a+b,0);return frac(vals.reduce((acc,x)=>acc+Math.abs(count*x-total),0),count*count);});
  verify('box-plots-worksheets',q=>{const m=re(q,/Find (Q1|median|Q3|IQR|outliers) for \[([\d, ]+)\]/);const vals=m[2].split(', ').map(n),v=quartiles(vals);return m[1]==='outliers'?(v.outliers.join(', ')||'none'):String(v[m[1]==='Q1'?'q1':m[1]==='Q3'?'q3':m[1]==='IQR'?'iqr':'median']);});
 });
 

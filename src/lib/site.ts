@@ -13,6 +13,7 @@ export const topicIntro=(slug:string)=>{
   'equivalent-fractions-worksheets':'Find a missing numerator or denominator in equivalent fractions using the same scale factor on top and bottom.',
   'adding-unlike-fractions-worksheets':'Build confidence with common denominators, fraction addition and reducing exact answers.',
   'mean-median-mode-range-worksheets':'Calculate mean, median, mode and range from realistic data sets: even or odd sample counts, one mode, two modes or no mode, with exact fractional means.',
+  'mean-absolute-deviation-worksheets':'Measure variability from 5, 6 or 8 observations, including balanced and right-skewed samples. Mean and mean absolute deviation are calculated as exact simplified fractions.',
   'box-plots-worksheets':'Calculate quartiles and outliers or construct a modified box plot from data, with a separate completed answer diagram.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
   'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
@@ -24,6 +25,7 @@ export const topicIntro=(slug:string)=>{
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
+ if(slug==='mean-absolute-deviation-worksheets')return ['Add every observation and divide by the sample size to find the exact mean.', 'For each observation subtract the mean and take the absolute value; keep any fractional results exact.', 'Add all the absolute deviations and divide by the total number of observations. Do not round until after checking the exact fraction.'];
  if(slug==='mean-median-mode-range-worksheets')return ['Order the observations from smallest to largest; keep repeated values.', 'For mean, divide the exact sum by the count. For median, average the middle two values when the count is even.', 'For mode, compare frequencies: zero, one or two values can have the highest frequency. For range, subtract minimum from maximum.'];
  if(slug==='function-tables-worksheets')return ['Read the rule f(x) = mx + b and locate the blank cell in the table.', 'For a missing output, substitute x into the rule. For a missing input, set mx + b equal to the visible output and solve for x.', 'Write the result in the empty cell and check with the separate completed answer table.'];
  if(slug.includes('systems-equations'))return ['Compare the coefficients of both equations to decide whether they are proportional.', 'If they are not proportional, eliminate a variable to find the unique solution.', 'If they are proportional, compare the constant terms: identical lines have infinitely many solutions; distinct parallel lines have none.'];
@@ -51,6 +53,7 @@ export function howTo(slug:string):string[]{
 
 /** Contextual reminders: intentionally about the generator's actual task, not generic SEO filler. */
 export function commonMistakes(slug:string):string[]{
+ if(slug==='mean-absolute-deviation-worksheets')return ['Dividing the total absolute deviation by the number of distinct values instead of the full sample size.', 'Rounding a fractional mean early, which changes every absolute deviation.'];
  if(slug==='function-tables-worksheets')return ['Treating an output as an input when solving backward.', 'Forgetting to subtract the constant before dividing by the coefficient.'];
  if(slug.includes('systems-equations'))return ['Combining equations with different coefficient scales without multiplying first.', 'Forgetting to check the solution in both original equations.'];
  if(slug.includes('domain-range'))return ['Including a repeated x-value more than once in the domain.', 'Assuming every relation is a function when the same input appears with different outputs.'];

@@ -40,7 +40,10 @@ const fixtures=[
  {slug:'function-tables-worksheets',quantity:8,options:{task:'output',missing:'first'}},
  {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mode',modePattern:'two'}},
  {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mode',modePattern:'none'}},
- {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mean',modePattern:'mixed'}}
+ {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mean',modePattern:'mixed'}},
+ {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'symmetric',size:'5'}},
+ {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'6'}},
+ {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'8'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){
@@ -52,5 +55,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R21 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R22 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

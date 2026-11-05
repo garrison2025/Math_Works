@@ -48,7 +48,7 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'domain-range-worksheets':[entry('task','Identify','Find the domain or range, or determine whether the relation is a function.',mixed('domain','range','function-test')),entry('relation','Relation type','Compare a function (one output per input) with a non-function (one input has two outputs).',choice('function','not-function'))],
  'angle-worksheets':[entry('kind','Angle category','Practice acute, obtuse or mixed angle classification.',mixed('acute','obtuse'))],
  'vertical-angles-worksheets':[entry('task','Angle to find','Find a vertically opposite or an adjacent supplementary angle.',choice('vertical','adjacent'))],
- 'mean-absolute-deviation-worksheets':[entry('distribution','Data pattern','Choose symmetric or skewed datasets with an exact mean.',choice('symmetric','skewed'))],
+ 'mean-absolute-deviation-worksheets':[entry('distribution','Data pattern','Choose symmetric datasets or skewed datasets with an outlier.',choice('symmetric','skewed')),entry('size','Sample size','Practice 5, 6 or 8 observations; mixed varies the count.',[{value:'mixed',label:'Mixed (5, 6 or 8)'},...['5','6','8'].map(value=>({value,label:`${value} observations`}))])],
  'multiplication-worksheets':[entry('factors','Multiplication facts','Practice mixed, times-table or two-digit-by-one-digit products.',mixed('times-tables','two-digit-by-one-digit'))],
  'surface-area-worksheets':[entry('solid','Solid type','Find the surface area of a rectangular prism or cube.',choice('rectangular-prism','cube'))],
  'mixed-addition-subtraction-worksheets':[entry('operation','Operation','Mix addition and subtraction, or focus on one operation.',mixed('addition','subtraction'))],

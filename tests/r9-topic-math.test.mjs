@@ -104,9 +104,9 @@ test('angle triangles, supplementary angles and MAD obey exact invariants for ev
   for(const distribution of ['symmetric','skewed']){
    const p=pick('mean-absolute-deviation-worksheets','distribution',distribution,seed);
    const m=read(p.payload.question,/\[([-\d, ]+)\]/),xs=m[1].split(', ').map(Number);
-   const mean=xs.reduce((a,b)=>a+b,0)/3;
-   const abs=xs.reduce((a,b)=>a+Math.abs(b-mean),0);
-   assert.equal(p.expectedAnswer,asText(rational(BigInt(abs),3n)));
+   const size=xs.length,total=xs.reduce((a,b)=>a+b,0);
+   const numerator=xs.reduce((a,b)=>a+Math.abs(size*b-total),0);
+   assert.equal(p.expectedAnswer,asText(rational(BigInt(numerator),BigInt(size*size))));
   }
  }
 });
@@ -117,7 +117,7 @@ test('R9 selector state and currently versioned shared links reproduce the same 
   const cap=maxQuantityForTopic(slug,options,'standard');const quantity=cap>=8?8:4;
   const settings={seed:1765,difficulty:'standard',quantity,paper:'A4',options};
   const link=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,settings);
-  assert.equal(new URL(link).searchParams.get('gv'),'11');
+  assert.equal(new URL(link).searchParams.get('gv'),'12');
   const restored=parseWorksheetLink(link,slug);
   assert.deepEqual(restored.options,options);
   const lhs=makeWorksheet(slug,1765,quantity,'standard',options);

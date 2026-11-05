@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='11' as const;
+export const GENERATOR_VERSION='12' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -332,8 +332,39 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   make(`Find the ${task} of [${values.join(', ')}].`,answer,
    `There are ${values.length} values, ordered from least to greatest.`,how,`Answer: ${answer}`);
   break}
- case 'mean-absolute-deviation-worksheets':{const mid=r.int(4,12),delta=r.int(1,6),skewed=opts.distribution==='skewed',values=skewed?[mid-2*delta,mid+delta,mid+delta]:[mid-delta,mid,mid+delta],deviation=skewed?4*delta:2*delta;
-  make(`Find the mean absolute deviation of [${values.join(', ')}].`,frac(deviation,3),`Mean = ${mid}`,`Absolute deviations: ${values.map(v=>Math.abs(v-mid)).join(', ')}`,`MAD = ${deviation}/3 = ${frac(deviation,3)}`);break}
+ case 'mean-absolute-deviation-worksheets':{
+  const size=opts.size==='mixed'?r.pick([5,6,8]):Number(opts.size);
+  const center=r.int(difficulty==='easy'?12:20,difficulty==='easy'?28:50);
+  const spread=difficulty==='easy'?4:difficulty==='standard'?7:11;
+  const values:number[]=[];
+  if(opts.distribution==='symmetric'){
+   // Balanced pairs around an integer mean; odd samples contain the mean itself.
+   for(let i=0;i<Math.floor(size/2);i++){
+    const distance=r.int(1,spread);
+    values.push(center-distance,center+distance);
+   }
+   if(size%2)values.push(center);
+  }else{
+   // A long right tail, with an actual extreme observation. The sample mean
+   // generally is fractional; never round it before calculating deviations.
+   for(let i=0;i<size-1;i++)values.push(center+r.int(-spread,spread));
+   values.push(center+4*spread+r.int(1,spread));
+  }
+  const ordered=sorted(values),total=sum(ordered),n=ordered.length;
+  // For integer observations x_i, MAD = Σ|n*x_i - Σx_j| / n².
+  // Integer arithmetic avoids floating-point errors and gives exact fractions.
+  const deviationNumerators=ordered.map(value=>Math.abs(n*value-total));
+  const deviationSum=sum(deviationNumerators);
+  const meanExact=frac(total,n),answerExact=frac(deviationSum,n*n);
+  const deviations=deviationNumerators.map(value=>frac(value,n));
+  const firstHalf=deviations.slice(0,Math.ceil(n/2)).join(', ');
+  const secondHalf=deviations.slice(Math.ceil(n/2)).join(', ');
+  make(`Find the mean absolute deviation of [${ordered.join(', ')}].`,answerExact,
+   `There are ${n} observations; mean = ${total}/${n} = ${meanExact}.`,
+   `Absolute deviations (first group): ${firstHalf}.`,
+   `Absolute deviations (remaining): ${secondHalf}.`,
+   `Sum the absolute deviations and divide by ${n}: ${deviationSum}/${n*n} = ${answerExact}.`);
+  break}
  case 'box-plots-worksheets':{
   const values=r.int(0,4)===0?[1,2,3,4,5,6,7,30].map(v=>v+r.int(0,1)) : sorted([r.int(1,3),r.int(4,6),r.int(7,9),r.int(10,12),r.int(13,15),r.int(16,18),r.int(19,21),r.int(22,25)]);
   const q=quartiles(values),task=opts.statistic==='mixed'?r.pick(['Q1','median','Q3','IQR','outliers']):opts.statistic;

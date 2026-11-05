@@ -45,7 +45,7 @@ try{
  const dl=await qa,filepath=join(out,dl.suggestedFilename());
  await dl.saveAs(filepath);const pdf=await PDFDocument.load(readFileSync(filepath));
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
- assert.match(pdf.getTitle()??'',/generator v11/);
+ assert.match(pdf.getTitle()??'',/generator v12/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
  await page.locator('[data-option="method"]').selectOption('parallel');
  await page.locator('[data-mode="answers"]').click();
@@ -110,6 +110,14 @@ try{
  assert.match(await page.locator('.problem .answer-text').first().innerText(),/Answer:.*\d+, \d+/);
  checks.push({name:'R21 bimodal and no-mode statistics in Firefox',status:'pass'});
  await page.locator('[data-mode="questions"]').click();
+ await open('mean-absolute-deviation-worksheets');
+ await page.locator('[data-option="distribution"]').selectOption('skewed');
+ await page.locator('[data-option="size"]').selectOption('6');
+ const madText=await page.locator('.problem .q').first().innerText();
+ assert.equal(madText.match(/\[([\d, ]+)\]/)?.[1]?.split(', ').length,6);
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ checks.push({name:'R22 fractional MAD and six-value sample selector in Firefox',status:'pass'});
  await open('linear-equations-worksheets');
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:'networkidle'});

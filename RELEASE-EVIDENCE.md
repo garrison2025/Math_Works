@@ -187,3 +187,11 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL TEST REQUIRED] 18,000 independent inverse/forward algebra checks, question-only blank cell, answer-only full table, share links and wrong-data rejection.
 - [CI REQUIRED] Full PDF smoke, Chrome/Firefox QA, Letter/A4 golden fixtures and Astro/noindex audit.
 - [NOT RUN] Physical printer checks and exhaustive manual inspection of all topic PDF variations.
+
+
+### R22: Exact MAD variance examples and sample size
+
+- [IMPLEMENTED] Replaced three-observation MAD exercises with datasets of 5, 6 and 8 observations (user-selected or mixed); supports symmetric and right-skewed distributions.
+- [LOCAL PASS] 18,000 independent BigInt rational oracles validate exact mean and MAD; 40-question distinct/reproducible sheets tested for each selection; legacy math suite run.
+- [CI REQUIRED] TypeScript, full PDF generation for A4/Letter, static Astro build, Chrome/Firefox controls and PDF downloads, and noindex audit must succeed on the new commit before claiming R22 deployed.
+- [NOT VERIFIED] Exhaustive manual check of all PDF pages, physical 50 mm protractor print calibration and production domain SEO release.

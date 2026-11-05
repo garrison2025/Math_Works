@@ -40,7 +40,7 @@ test('R16: draw-mode share links and answer keys exactly reproduce the same seed
  const slug='box-plots-worksheets',options={statistic:'draw'};
  const payload={seed:0xfab52,difficulty:'challenge',paper:'A4',quantity:8,options};
  const link=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,payload);
- assert.equal(new URL(link).searchParams.get('gv'),'11','v11 sharing must record the new generator version');
+ assert.equal(new URL(link).searchParams.get('gv'),'12','v12 sharing must record the new generator version');
  assert.deepEqual(parseWorksheetLink(link,slug),payload);
  const sheet=makeWorksheet(slug,payload.seed,payload.quantity,payload.difficulty,options);
  const repeat=makeWorksheet(slug,payload.seed,payload.quantity,payload.difficulty,options);

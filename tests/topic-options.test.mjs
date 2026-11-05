@@ -65,7 +65,7 @@ const captures={
  'domain-range-worksheets':(p,v)=>v==='mixed'||(v==='function-test'?p.payload.question.startsWith('Is the relation '):p.payload.question.startsWith(`List the ${v} of`)),
  'angle-worksheets':(p,v)=>v==='mixed'||p.expectedAnswer===v,
  'vertical-angles-worksheets':(p,v)=>p.payload.question.includes('adjacent supplementary')===(v==='adjacent'),
- 'mean-absolute-deviation-worksheets':(p,v)=>{const m=p.payload.question.match(/\[([-\d, ]+)\]/);const vals=m[1].split(', ').map(Number);return (vals[1]===vals[2])===(v==='skewed')},
+ 'mean-absolute-deviation-worksheets':(p,v)=>{const m=p.payload.question.match(/\[([-\d, ]+)\]/);const vals=m[1].split(', ').map(Number);if(v==='mixed')return true;if(['5','6','8'].includes(v))return vals.length===Number(v);const mean=vals.reduce((a,b)=>a+b,0)/vals.length;const mirrored=vals.every((x,i)=>Math.abs(x+vals.at(-i-1)-2*mean)<1e-9);return (v==='symmetric')===mirrored;},
  'multiplication-worksheets':(p,v)=>v==='mixed'||(()=>{const m=p.payload.question.match(/^(\d+) × (\d+)/);return v==='times-tables'?[Number(m[1]),Number(m[2])].every(x=>x<=12):Number(m[1])>=12&&Number(m[2])<=9})(),
  'surface-area-worksheets':(p,v)=>p.payload.question.includes('cube with side')===(v==='cube'),
  'mixed-addition-subtraction-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(v==='addition'?' + ':' − '),

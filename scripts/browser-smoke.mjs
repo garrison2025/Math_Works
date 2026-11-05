@@ -72,13 +72,13 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v11'));
- assert.ok(answers.getTitle()?.includes('v11'));
+ assert.ok(questions.getTitle()?.includes('v12'));
+ assert.ok(answers.getTitle()?.includes('v12'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=11/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=12/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v11 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v12 clipboard link',status:'pass'});
 
  // R20: a missing INPUT must be blank in practice, but completed in both SVG and PDF answer keys.
  await page.goto(`${base}/function-tables-worksheets/`,{waitUntil:'networkidle'});
@@ -99,7 +99,7 @@ try {
  const tableAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const tableAnswerPdf=await verifyPdf(await tableAnswerDownload,'R20 function-table missing-input answers',{paper:'A4'});
- assert.ok(tableQuestionPdf.getTitle()?.includes('v11')&&tableAnswerPdf.getTitle()?.includes('v11'));
+ assert.ok(tableQuestionPdf.getTitle()?.includes('v12')&&tableAnswerPdf.getTitle()?.includes('v12'));
  events.push({kind:'interaction',name:'R20 inverse function table blank-cell SVG, completed answer SVG and paired PDF',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
@@ -268,6 +268,27 @@ try {
  await page.locator('[data-mode="answers"]').click();
  assert.match(await page.locator('.problem .answer-text').first().innerText(),/no mode/);
  events.push({kind:'interaction',name:'R21 single/two/none mode controls and paired A4 PDF downloads',status:'pass'});
+
+ // R22: exact-fraction mean absolute deviation with a chosen 8-value sample.
+ await page.goto(`${base}/mean-absolute-deviation-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="distribution"]').selectOption('skewed');
+ await page.locator('[data-option="size"]').selectOption('8');
+ assert.equal(await page.locator('.problem').count(),8);
+ const madQuestion=await page.locator('.problem .q').first().innerText();
+ const madItems=madQuestion.match(/\[([\d, ]+)\]/)?.[1]?.split(', ');
+ assert.equal(madItems?.length,8,'Selected size did not generate eight observations');
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const madQuestionDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const madQ=await verifyPdf(await madQuestionDownload,'R22 skewed MAD practice',{paper:'A4'});
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ const madAnswerDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ const madA=await verifyPdf(await madAnswerDownload,'R22 skewed MAD answers',{paper:'A4'});
+ assert.ok(madQ.getTitle()?.includes('v12')&&madA.getTitle()?.includes('v12'));
+ await page.screenshot({path:join(out,'r22-eight-value-mad-answers.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R22 eight-observation skewed MAD and paired A4 PDF downloads',status:'pass'});
 
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
