@@ -40,7 +40,7 @@ export function howTo(slug:string):string[]{
  if(slug.includes('scatter-plot'))return ['For plotting tasks, mark each ordered pair (x, y) on the correctly numbered axes.','For interpretation tasks, read the plotted points and look for an overall upward, downward or absent linear trend.','A curved pattern need not have a clear linear trend; check all six observations.'];
  if(slug.includes('mean-median-mode-range'))return ['Sort the observations before finding the median.','Divide their sum by the number of observations for the mean; count frequencies for mode.','Subtract minimum from maximum for the range.'];
  if(slug.includes('printable-protractor'))return ['Print using Actual size or 100%, with page fitting switched off.','Measure the printed 50 mm calibration line with a real ruler before using the scale.','Align the center and zero baseline to the angle before reading degrees.'];
- if(slug.includes('pythagorean'))return ['Locate the right angle; the opposite side is the hypotenuse.','Use a² + b² = c² with legs a and b.','Take the nonnegative square root to find the hypotenuse length.'];
+ if(slug.includes('pythagorean'))return ['Identify the hypotenuse opposite the right angle: it is always the longest side.','For a missing hypotenuse use c² = a² + b²; for a missing leg use a² = c² − b².','Take the positive square root and check that each leg is shorter than the hypotenuse.'];
  if(slug.includes('long-division'))return ['Divide the leading digits by the divisor.','Multiply, subtract, then bring down the next digit.','Check dividend = divisor × quotient + remainder, with remainder less than divisor.'];
  if(slug.includes('number-recognition'))return ['Read whether this question shows dots or a number word.','Count each dot once, or identify the numeral represented by the word.','Write the numeral and check it against the separate answer key.'];
  return ['Choose a difficulty and number of practice questions.','Solve the questions on your printable worksheet.','Use the separate answer key to verify each answer.'];
@@ -61,7 +61,7 @@ export function commonMistakes(slug:string):string[]{
  if(slug.includes('mean-median-mode-range'))return ['Using the number of distinct values instead of the observation count for the mean.', 'Assuming a single mode always exists.'];
  if(slug.includes('decimal'))return ['Shifting the decimal point in the wrong direction.', 'Dropping zero placeholders that determine place value.'];
  if(slug.includes('protractor'))return ['Printing with Fit to page instead of Actual size (100%).', 'Reading the inner scale rather than the scale that starts at the chosen zero baseline.'];
- if(slug.includes('pythagorean'))return ['Treating one leg as the hypotenuse.', 'Taking the square root of the sum of legs instead of the sum of their squares.'];
+ if(slug.includes('pythagorean'))return ['Treating one leg as the hypotenuse instead of the longest side.', 'Adding the squares when finding a missing leg; subtract from the hypotenuse squared instead.'];
  if(slug.includes('surface-area'))return ['Computing volume instead of total area of faces.', 'Using cubic rather than square units.'];
  if(slug.includes('area')||slug.includes('volume'))return ['Confusing slant length with perpendicular height.', 'Using the wrong square or cubic units.'];
  if(slug.includes('linear-equations'))return ['Plotting the y-intercept on the x-axis instead of the y-axis.', 'Reversing rise and run when applying the slope.'];

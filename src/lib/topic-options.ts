@@ -44,7 +44,7 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'area-of-trapezoids-worksheets':[entry('task','Trapezoid task','Find the area or find an unknown perpendicular height.',choice('area','missing-height'))],
  'area-worksheets':[entry('shape','Area shape','Practice rectangles or squares.',choice('rectangle','square'))],
  'triangle-angle-sum-worksheets':[entry('thirdAngle','Third-angle type','Practice triangles whose missing angle is acute, right or obtuse.',mixed('acute','right','obtuse'))],
- 'pythagorean-worksheets':[entry('scale','Triangle sizes','Practice smaller or larger scaled Pythagorean triples.',mixed('small','large'))],
+ 'pythagorean-worksheets':[entry('scale','Triangle sizes','Practice smaller or larger scaled Pythagorean triples.',mixed('small','large')),entry('task','Missing side','Find the hypotenuse, the missing leg, or a mix of both.',choice('hypotenuse','missing-leg','mixed'))],
  'domain-range-worksheets':[entry('task','Identify','Find the domain or range, or determine whether the relation is a function.',mixed('domain','range','function-test')),entry('relation','Relation type','Compare a function (one output per input) with a non-function (one input has two outputs).',choice('function','not-function'))],
  'angle-worksheets':[entry('kind','Angle category','Practice acute, obtuse or mixed angle classification.',mixed('acute','obtuse'))],
  'vertical-angles-worksheets':[entry('task','Angle to find','Find a vertically opposite or an adjacent supplementary angle.',choice('vertical','adjacent'))],

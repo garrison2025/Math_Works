@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='8' as const;
+export const GENERATOR_VERSION='9' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -230,7 +230,25 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   }else{make('Count the dots shown below.',n,`Count each dot once: ${n}`);diagram={kind:'dots',values:[n]};}break}
  case 'number-line-worksheets':{const n=opts.sign==='mixed'?r.int(-9,9):opts.sign==='positive'?r.int(1,9):r.int(-9,-1);make(`Mark ${n} on the number line.`,String(n),n===0?'Zero is the origin':`${n<0?'Left':'Right'} of zero for ${n<0?'negative':'positive'} numbers`);diagram={kind:'numberline',values:[n]};break}
  case 'coordinate-plane-worksheets':{const preferred=opts.quadrant==='mixed'?r.pick(['I','II','III','IV']):opts.quadrant;const a=r.int(1,8),b=r.int(1,8),x=preferred==='I'||preferred==='IV'?a:-a,y=preferred==='I'||preferred==='II'?b:-b;const quad=x>0?(y>0?'I':'IV'):(y>0?'II':'III');make(`Which quadrant contains (${x}, ${y})?`,quad,`x is ${x>0?'positive':'negative'} and y is ${y>0?'positive':'negative'}`,`Quadrant ${quad}`);diagram={kind:'coordinate',values:[x,y]};break}
- case 'pythagorean-worksheets':{const triples=[[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,40,41],[12,35,37],[20,21,29],[11,60,61],[28,45,53],[33,56,65],[16,63,65]];const pool=difficulty==='easy'?triples.slice(0,3):difficulty==='standard'?triples.slice(0,9):triples;const k=opts.scale==='small'?r.int(1,3):opts.scale==='large'?r.int(4,8):r.int(1,difficulty==='challenge'?8:6),triple=r.pick(pool),[x,y,z]=triple.map(v=>v*k);make(`A right triangle has legs ${x} and ${y}. Find its hypotenuse.`,z,`a² + b² = c²`,`${x}² + ${y}² = ${z*z}`,`c = ${z}`);diagram={kind:'right-triangle',values:[x,y]};break}
+ case 'pythagorean-worksheets':{
+  const triples=[[3,4,5],[5,12,13],[8,15,17],[7,24,25],[9,40,41],[12,35,37],[20,21,29],[11,60,61],[28,45,53],[33,56,65],[16,63,65]];
+  const pool=difficulty==='easy'?triples.slice(0,3):difficulty==='standard'?triples.slice(0,9):triples;
+  const k=opts.scale==='small'?r.int(1,3):opts.scale==='large'?r.int(4,8):r.int(1,difficulty==='challenge'?8:6);
+  const [x,y,z]=r.pick(pool).map(v=>v*k);
+  const task=opts.task==='mixed'?r.pick(['hypotenuse','missing-leg']):opts.task;
+  if(task==='missing-leg'){
+   const missing=r.pick(['base','vertical']),unknown=missing==='base'?x:y,known=missing==='base'?y:x;
+   make(`A right triangle has hypotenuse ${z} and one leg ${known}. Find the other leg.`,unknown,
+    `Use a² + b² = c²; rearrange to missing leg² = ${z}² − ${known}²`,
+    `Missing leg² = ${z*z} − ${known*known} = ${unknown*unknown}`,
+    `Take the positive square root: missing leg = ${unknown}`);
+   diagram={kind:'right-triangle',values:[x,y,z],labels:[missing==='base'?'missing-base':'missing-vertical']};
+  }else{
+   make(`A right triangle has legs ${x} and ${y}. Find its hypotenuse.`,z,`a² + b² = c²`,`${x}² + ${y}² = ${z*z}`,`c = ${z}`);
+   diagram={kind:'right-triangle',values:[x,y]};
+  }
+  break;
+ }
  case 'area-of-triangles-worksheets':{const x=r.int(4,20),y=r.int(2,20),area=normal(x*y/2);
   if(opts.task==='missing-height')make(`A triangle has base ${x} and area ${area} square units. Find its perpendicular height.`,y,'Area = base × height / 2',`Height = 2 × ${area} / ${x} = ${y} units`);
   else make(`Find the area of a triangle with base ${x} and height ${y}.`,area,'A = ½ × base × height',`A = ${x} × ${y} ÷ 2 = ${area} square units`);

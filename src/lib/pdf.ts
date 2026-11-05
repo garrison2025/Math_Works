@@ -95,7 +95,17 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   label(`${d.values[1]===undefined?'?':d.values[1]} height`,.53,.53);
   return;
  }
- if(d.kind==='right-triangle'){const [a,b]=d.values,s=Math.min(w*.57/a,h*.67/b),dx=a*s/w,dy=b*s/h;const x0=.16,y0=.14;l(x0,y0,x0+dx,y0);l(x0,y0,x0,y0+dy);l(x0+dx,y0,x0,y0+dy);l(x0+.03,y0,x0+.03,y0+.06);l(x0+.03,y0+.06,x0,y0+.06);page.drawText(String(a),{x:x+(x0+dx/2)*w-4,y:y+2,size:8,font,color:ink});page.drawText(String(b),{x:x+(x0-.10)*w,y:y+(y0+dy/2)*h,size:8,font,color:ink});return;}
+ if(d.kind==='right-triangle'){
+  const [a,b,c]=d.values,missingBase=d.labels?.includes('missing-base'),missingVertical=d.labels?.includes('missing-vertical');
+  if(missingBase||missingVertical){if(d.values.length!==3||Math.abs(a*a+b*b-c*c)>.000001)throw Error('Invalid missing-leg triangle PDF');}
+  const s=Math.min(w*.57/a,h*.67/b),dx=a*s/w,dy=b*s/h;const x0=.16,y0=.14;
+  l(x0,y0,x0+dx,y0);l(x0,y0,x0,y0+dy);l(x0+dx,y0,x0,y0+dy);
+  l(x0+.03,y0,x0+.03,y0+.06);l(x0+.03,y0+.06,x0,y0+.06);
+  const baseLabel=missingBase&&!showSolution?'?':String(a),verticalLabel=missingVertical&&!showSolution?'?':String(b);
+  label(baseLabel,x0+dx/2,.02);label(verticalLabel,.035,y0+dy/2);
+  label(c===undefined?'?':String(c),x0+dx/2+.12,y0+dy/2+.04);
+  return;
+ }
  if(d.kind==='triangle-angles'){
   const g=angleTriangleLayout(d);
   const px=(z:number)=>z/450,py=(z:number)=>(220-z)/220;
@@ -259,7 +269,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
   if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
-  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))?150:0);
+  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,9,bodyW-18).length,0);
   return common+13+answerLines*12+stepLines*11+24;
@@ -273,7 +283,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
   if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
-   if(p.diagramSpec&&(['numberline','box-practice'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot')))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
+   if(p.diagramSpec&&(['numberline','box-practice'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-'))))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,9,bodyW-18)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;

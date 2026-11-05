@@ -29,7 +29,16 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H344 M151 72V130" fill="none" stroke="#172337" stroke-width="2.8"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="163">remainder: ______</text></g>`;
    break}
   case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]===undefined?'?':v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
-  case 'right-triangle':{const [a,b]=v,s=Math.min(210/a,110/b),xx=120+a*s,yy=160-b*s;parts=poly(`120,160 ${xx},160 120,${yy}`)+line(120,160,135,160)+line(135,160,135,145)+line(135,145,120,145)+text((120+xx)/2,188,`${a} units`)+text(79,(160+yy)/2,`${b} units`);break}
+  case 'right-triangle':{
+   const [a,b,c]=v,missingBase=d.labels?.includes('missing-base'),missingVertical=d.labels?.includes('missing-vertical');
+   if(missingBase||missingVertical){if(v.length!==3||Math.abs(a*a+b*b-c*c)>.000001)throw Error('Invalid missing-leg right triangle');}
+   const s=Math.min(210/a,110/b),xx=120+a*s,yy=160-b*s;
+   const baseLabel=missingBase&&!showSolution?'?':String(a),verticalLabel=missingVertical&&!showSolution?'?':String(b);
+   parts=poly(`120,160 ${xx},160 120,${yy}`)+line(120,160,135,160)+line(135,160,135,145)+line(135,145,120,145)
+    +text((120+xx)/2,188,`${baseLabel} units`)+text(79,(160+yy)/2,`${verticalLabel} units`)
+    +text((120+xx)/2+33,(160+yy)/2,`${c===undefined?'?':c} units`);
+   break;
+  }
   case 'triangle-angles':{
    const g=angleTriangleLayout(d),coords=g.vertices.map(p=>p.map(x=>x.toFixed(3)).join(',')).join(' ');
    parts=poly(coords)+g.labelPositions.map(([x,y],i)=>text(x,y+5,i===2?'?':`${v[i]}°`)).join('');
