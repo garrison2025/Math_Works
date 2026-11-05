@@ -7,6 +7,7 @@ import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {assertWorksheetMath} from './math-release-oracle.ts';
 import {assertWorksheetSteps} from './step-release-oracle.ts';
+import {longDivisionPracticeRows,longDivisionDiagramHeight} from './long-division-layout.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT,POINTS_PER_MM} from './protractor.ts';
 import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
@@ -162,18 +163,22 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  }
  if(d.kind==='long-division'){
   if(d.values.length!==2||!d.values.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid long-division diagram');
-  const [dividend,divisor]=d.values,base=y+h*.48;
+  const [dividend,divisor]=d.values;
+  const rows=longDivisionPracticeRows(d.values);
+  const base=y+35+18*rows;
   page.drawText(String(divisor),{x:x+w*.18,y:base,size:18,font,color:ink});
   page.drawText(String(dividend),{x:x+w*.47,y:base,size:18,font,color:ink});
   page.drawLine({start:{x:x+w*.39,y:base+30},end:{x:x+w*.86,y:base+30},color:ink,thickness:1.7});
   page.drawLine({start:{x:x+w*.39,y:base+30},end:{x:x+w*.39,y:base-8},color:ink,thickness:1.7});
   page.drawText('Quotient: ______',{x:x+w*.18,y:base+47,size:9,font,color:sub});
-  // Two blank subtraction-work rows fit within the already reserved diagram
-  // rectangle. No quotient/remainder values are drawn on practice pages.
-  for(const offset of [20,39])page.drawLine({
-   start:{x:x+w*.46,y:base-offset},end:{x:x+w*.86,y:base-offset},
+  // Digit-aware scratch space: one row per digit plus a spare for correction.
+  // The quotient and remainder remain blank on student copies.
+  for(let row=0;row<rows;row++)page.drawLine({
+   start:{x:x+w*.46,y:base-19-18*row},
+   end:{x:x+w*.86,y:base-19-18*row},
    color:paperRule,thickness:.55});
-  page.drawText('Remainder: ______',{x:x+w*.18,y:base-57,size:9,font,color:sub});
+  page.drawText('Remainder: ______',
+   {x:x+w*.18,y:base-(18*rows+18),size:9,font,color:sub});
   return;
  }
  if(d.kind==='triangle'){
@@ -396,7 +401,13 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  function heightFor(p:Problem){
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
-  if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+(fractionLayoutFor(sheet.topicId,p.payload.question)?FRACTION_LINE_HEIGHT:0)+worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)*RULE_SPACING+18;
+  if(mode==='questions'){
+   const diagramSpace=!p.diagramSpec?0:p.diagramSpec.kind==='protractor'?305
+    :p.diagramSpec.kind==='long-division'?longDivisionDiagramHeight(p.diagramSpec.values)+22:150;
+   return common+diagramSpace+
+    (fractionLayoutFor(sheet.topicId,p.payload.question)?FRACTION_LINE_HEIGHT:0)+
+    worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)*RULE_SPACING+18;
+  }
   if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,STEP_FONT_SIZE,bodyW-18).length,0);
@@ -411,7 +422,14 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const xx=margin+(twoCols?col*(colW+colGap):0),yy=twoCols?rowY:currentY;
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
-  if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
+  if(mode==='questions'&&p.diagramSpec){
+   const full=p.diagramSpec.kind==='protractor';
+   const division=p.diagramSpec.kind==='long-division';
+   const height=full?280:division?longDivisionDiagramHeight(p.diagramSpec.values):128;
+   const width=full?colW-12:Math.min(division?315:235,colW-12);
+   plotDiagram(page,p.diagramSpec,xx,y-height-(full?10:8),width,height,font);
+   y-=height+(full?25:22);
+  }
   if(mode==='questions'){
    const layout=fractionLayoutFor(sheet.topicId,p.payload.question);
    if(layout){drawStackedFraction(page,layout,xx+10,y-1,colW-24,font);y-=FRACTION_LINE_HEIGHT;}
