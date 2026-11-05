@@ -1,9 +1,10 @@
 /** Pure, deterministic worksheet engine. No Math.random, eval, network, or user data collection. */
 import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicOptions} from './topic-options.ts';
+import {scientificNotationPair} from './scientific-notation.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='14' as const;
+export const GENERATOR_VERSION='15' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -174,10 +175,18 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   }else throw Error('Unsupported percentage practice type');
   break}
  case 'scientific-notation-worksheets':{
-  const mantissa=r.int(11,99),power=r.int(-4,5),value=mantissa/10*10**power,coef=normal(mantissa/10),standard=normal(value);
+  const digits=opts.significantDigits==='mixed'?r.pick([2,3,4]):Number(opts.significantDigits);
+  const range=difficulty==='easy'?3:difficulty==='standard'?5:8;
+  const power=opts.exponentSign==='positive'?r.int(1,range):opts.exponentSign==='negative'?r.int(-range,-1):r.int(-range,range);
+  const lower=10**(digits-1),upper=10**digits-1;
+  // A nonzero final digit makes the written number of significant figures
+  // recoverable from the standard decimal form, even for positive exponents.
+  let significand=r.int(lower,upper);
+  while(significand%10===0)significand=r.int(lower,upper);
+  const {coefficient,standard}=scientificNotationPair(significand,digits,power);
   const direction=opts.direction==='mixed'?r.pick(['to-scientific','to-standard']):opts.direction;
-  if(direction==='to-scientific')make(`Write ${standard} in scientific notation.`,`${coef} × 10^${power}`,'Move decimal so the coefficient is at least 1 and below 10',`Exponent is ${power}`);
-  else make(`Write ${coef} × 10^${power} in standard form.`,standard,`Move the decimal ${Math.abs(power)} places ${power<0?'left':'right'}`,`Standard form: ${standard}`);break}
+  if(direction==='to-scientific')make(`Write ${standard} in scientific notation.`,`${coefficient} × 10^${power}`,`Place the decimal after the first nonzero digit: ${coefficient}`,`Count decimal places: ${Math.abs(power)}; the exponent is ${power}`,`Check: ${coefficient} × 10^${power} = ${standard}`);
+  else make(`Write ${coefficient} × 10^${power} in standard form.`,standard,`Move the decimal ${Math.abs(power)} places ${power<0?'left':power>0?'right':'(zero places)'}`,`Insert any needed zeros without rounding`, `Exact standard form: ${standard}`);break}
  case 'gcf-worksheets':{
   let x=0,y=0,g=0;
   for(let attempt=0;attempt<300;attempt++){

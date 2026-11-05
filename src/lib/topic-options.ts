@@ -33,7 +33,14 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
   {value:'percent-of-number',label:'Find percent of a number'},
   {value:'percent-change',label:'Percentage increase / decrease'}
  ])],
- 'scientific-notation-worksheets':[entry('direction','Conversion direction','Convert numbers to or from scientific notation.',mixed('to-scientific','to-standard'))],
+ 'scientific-notation-worksheets':[
+  entry('direction','Conversion direction','Convert numbers to or from scientific notation.',mixed('to-scientific','to-standard')),
+  entry('exponentSign','Exponent sign','Practice powers of ten above one, below one, or both.',mixed('positive','negative')),
+  entry('significantDigits','Significant figures','Set 2, 3 or 4 significant digits in the coefficient.',[
+   {value:'mixed',label:'Mixed (2–4 digits)'},{value:'2',label:'2 significant digits'},
+   {value:'3',label:'3 significant digits'},{value:'4',label:'4 significant digits'}
+  ])
+ ],
  'functions-worksheets':[entry('task','Function task','Evaluate a function or find its input from the output.',mixed('evaluate','solve-input'))],
  'slope-worksheets':[entry('line','Line orientation','Practice vertical lines with undefined slopes or non-vertical slopes.',mixed('vertical','nonvertical'))],
  'volume-of-rectangular-prisms-worksheets':[entry('task','Prism task','Find the volume or solve for the missing height.',mixed('volume','missing-height'))],

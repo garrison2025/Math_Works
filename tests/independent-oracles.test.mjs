@@ -47,9 +47,19 @@ test('300 independent rational, percentages and notation oracles per route',()=>
  });
  verify('scientific-notation-worksheets',q=>{
   let m=q.match(/^Write (\d+(?:\.\d+)?) in scientific notation/);
-  if(m){const value=n(m[1]);let exponent=Math.floor(Math.log10(value));const mantissa=Number((value/10**exponent).toFixed(8));return `${mantissa} × 10^${exponent}`;}
+  if(m){
+   const parts=m[1].split('.'),digits=parts.join('');
+   const first=digits.search(/[1-9]/);assert.ok(first>=0);
+   const significant=digits.slice(first).replace(/0+$/,'');
+   const exponent=parts[0].length-first-1;
+   return `${significant[0]}.${significant.slice(1)} × 10^${exponent}`;
+  }
   m=re(q,/^Write (\d+(?:\.\d+)?) × 10\^(-?\d+) in standard form/);
-  return String(Number((n(m[1])*10**n(m[2])).toFixed(6)));
+  const coefficient=m[1],scale=coefficient.split('.')[1]?.length??0;
+  const mantissa=BigInt(coefficient.replace('.','')),shift=Number(m[2])-scale;
+  if(shift>=0)return String(mantissa*10n**BigInt(shift));
+  const decimal=String(mantissa),place=decimal.length+shift;
+  return place>0?decimal.slice(0,place)+'.'+decimal.slice(place):'0.'+'0'.repeat(-place)+decimal;
  });
 });
 

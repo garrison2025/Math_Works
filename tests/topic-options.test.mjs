@@ -44,7 +44,15 @@ const captures={
  'place-value-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`the ${v} digit`),
  'decimal-place-value-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`the ${v} digit`),
  'percentages-worksheets':(p,v)=>v==='mixed'||(v==='percent-to-fraction'?p.payload.question.includes('% into a fraction'):v==='fraction-to-percent'?p.payload.question.includes('into a percentage'):v==='percent-of-number'?/^Find \d+% of \d+\.$/.test(p.payload.question):v==='percent-change'?/^Find the percentage (increase|decrease) from \d+ to \d+\.$/.test(p.payload.question):false),
- 'scientific-notation-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('in standard form')===(v==='to-standard')),
+ 'scientific-notation-worksheets':(p,v)=>{
+  if(v==='mixed')return true;
+  if(v==='to-scientific'||v==='to-standard')return p.payload.question.includes('in standard form')===(v==='to-standard');
+  const scientific=p.payload.question.match(/(\d+\.\d+) × 10\^(-?\d+)/)??p.expectedAnswer.match(/(\d+\.\d+) × 10\^(-?\d+)/);
+  if(!scientific)return false;
+  if(v==='positive'||v==='negative')return (Number(scientific[2])>0)===(v==='positive');
+  if(['2','3','4'].includes(v))return scientific[1].replace('.','').length===Number(v);
+  return false;
+ },
  'functions-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('find x.')===(v==='solve-input')),
  'slope-worksheets':(p,v)=>v==='mixed'||(p.expectedAnswer==='undefined')===(v==='vertical'),
  'volume-of-rectangular-prisms-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('Find its height')===(v==='missing-height')),

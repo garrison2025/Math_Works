@@ -52,7 +52,7 @@ test('R22: 40-question print sets are distinct and reproducible for every sample
 });
 
 test('R22: teaching notes teach exact nonrounded MAD, and new engine version is recorded',()=>{
- assert.equal(GENERATOR_VERSION,'14');
+ assert.equal(GENERATOR_VERSION,'15');
  assert.match(topicIntro(topic),/5, 6 or 8/);
  assert.match(howTo(topic).join(' '),/exact mean/i);
  assert.match(commonMistakes(topic).join(' '),/Rounding a fractional mean/i);

@@ -47,7 +47,9 @@ const fixtures=[
  {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'6'}},
  {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'8'}},
  {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-of-number'}},
- {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-change'}}
+ {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-change'}},
+ {slug:'scientific-notation-worksheets',quantity:20,options:{direction:'to-standard',exponentSign:'negative',significantDigits:'4'}},
+ {slug:'scientific-notation-worksheets',quantity:20,options:{direction:'to-scientific',exponentSign:'positive',significantDigits:'3'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){
@@ -59,5 +61,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R24 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R25 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

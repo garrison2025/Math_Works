@@ -212,5 +212,5 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 ### R24 comprehensive fraction arithmetic
 
 - [IMPLEMENTED; CI PENDING] Addition/subtraction (same or unlike denominators), multiplication and division of nonzero fractions, exact rational answers, topic-specific teaching guidance, reviewed steps PDF and versioned v14 configuration identity.
-- [LOCAL PASS] 18,000 independent exact-arithmetic oracles, 40-question uniqueness and deterministic seeded links for all selectors; full local math suite 91/91 and TypeScript checks passed.
+- [LOCAL TEST REQUIRED] 18,000 independent exact-arithmetic oracles, 40-question uniqueness and deterministic seeded links for all selectors. Full math suite, TypeScript, PDF and browser QA must pass before release claims.
 - [NOT VERIFIED] Physical printer calibration or exhaustive visual audit of all 51 topics; the pages.dev preview remains noindex.

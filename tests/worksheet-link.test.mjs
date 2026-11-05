@@ -16,7 +16,7 @@ test('share links round-trip every active worksheet topic option',()=>{
   const expected={seed:425776,quantity:8,difficulty:'challenge',paper:'A4',options:normalizeTopicOptions(topic,setting)};
   const link=buildWorksheetLink(`https://math-works.pages.dev/${topic}/?old=1#preview`,topic,expected);
   assert.ok(!link.includes('old=1')&&!link.includes('#preview'));
-  assert.ok(link.includes('gv=14'),'generator version absent from share link');
+  assert.ok(link.includes('gv=15'),'generator version absent from share link');
   assert.ok(!link.includes('student')&&!link.includes('Name='));
   const received=parseWorksheetLink(link,topic);
   assert.deepEqual(received,expected);

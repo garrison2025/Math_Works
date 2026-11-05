@@ -22,6 +22,7 @@ export const topicIntro=(slug:string)=>{
   'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',
   'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.',
   'linear-equations-worksheets':'Evaluate linear functions or graph y = mx + b on a blank coordinate plane, then compare with a separately plotted answer key.',
+  'scientific-notation-worksheets':'Practice exact conversions between standard decimal form and scientific notation with positive and negative exponents and 2–4 significant digits. No premature rounding.',
   'function-tables-worksheets':'Complete printable two-row function tables by calculating a missing output or solving backward for a missing input. Separate answer tables reveal the correct cell.'
  };
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
@@ -43,7 +44,7 @@ export function howTo(slug:string):string[]{
  if(slug.includes('order-of-operations'))return ['Work inside parentheses first.','Evaluate multiplication and division before addition and subtraction, working left to right at each priority.','Check that the final value matches the original expression structure.'];
  if(slug.includes('slope'))return ['Label both points (x₁, y₁) and (x₂, y₂).','Compute rise over run: (y₂ − y₁) / (x₂ − x₁).','If the two x-coordinates match, the vertical line has undefined slope.'];
  if(slug.includes('linear-equations'))return ['For a graphing worksheet, plot the y-intercept (0, b), then use slope m to locate another point.','Draw the line through the two plotted points; the answer key shows the completed graph.','For evaluation worksheets, substitute the specified x-value and check that (x, y) lies on the line.'];
- if(slug.includes('scientific-notation'))return ['Move the decimal point until the leading number is at least 1 but less than 10.','Count the places moved to find the power of ten.','Use a negative exponent for numbers between zero and one.'];
+ if(slug.includes('scientific-notation'))return ['Write the coefficient with exactly the selected 2, 3 or 4 significant digits; its absolute value must be at least 1 and below 10.','Move the decimal to recover standard form: positive exponents to the right, negative exponents to the left. Insert zeros without rounding.','To convert back, count how many positions the decimal moves and choose the exponent sign. Verify the original value and any significant zeros.'];
  if(slug.includes('number-line'))return ['Find zero and the tick spacing.','Count left for negative values, right for positive values.','Mark the requested location, not its mirror image.'];
  if(slug.includes('coordinate-plane'))return ['Find the x- and y-axes and the origin.','Move right for positive x and up for positive y; move left or down for negative coordinates.','Check the quadrant against the two coordinate signs.'];
  if(slug.includes('scatter-plot'))return ['For plotting tasks, mark each ordered pair (x, y) on the correctly numbered axes.','For interpretation tasks, read the plotted points and look for an overall upward, downward or absent linear trend.','A curved pattern need not have a clear linear trend. Check all six observations, not just two points.'];
@@ -79,7 +80,7 @@ export function commonMistakes(slug:string):string[]{
  if(slug.includes('area')||slug.includes('volume'))return ['Confusing slant length with perpendicular height.', 'Using the wrong square or cubic units.'];
  if(slug.includes('linear-equations'))return ['Plotting the y-intercept on the x-axis instead of the y-axis.', 'Reversing rise and run when applying the slope.'];
  if(slug.includes('slope'))return ['Subtracting x-values and y-values in different orders.', 'Dividing by zero when points lie on a vertical line.'];
- if(slug.includes('scientific-notation'))return ['Writing a leading coefficient outside the 1 to 10 range.', 'Choosing the wrong exponent sign for a value below one.'];
+ if(slug.includes('scientific-notation'))return ['Using a positive exponent for a number between zero and one, or a negative exponent for a number greater than ten.', 'Dropping place-holder zeros or rounding away required significant digits.'];
  if(slug.includes('number-line'))return ['Placing negative numbers to the right of zero.', 'Counting tick marks without checking their scale.'];
  if(slug.includes('coordinate-plane'))return ['Swapping x and y coordinates.', 'Mixing up quadrant II and IV.'];
  if(slug.includes('long-division'))return ['Forgetting a zero in the quotient.', 'Writing a remainder as large as the divisor.'];
