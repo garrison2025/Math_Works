@@ -274,3 +274,8 @@ Four active fraction families plus fraction-to-percentage conversion now show an
 
 
 R39 also has an independent PyMuPDF *exported PDF* release gate, checking exact expected fraction-bar counts against the 102-case stress manifest and detecting bars that cross printed glyphs. It inspects fraction practice plus answers/steps to catch missing or answer-leaking vector art. Audit output is retained as `fraction-vector-audit.json` in the private CI PDF artifact; no public SEO URLs are added.
+
+
+### R40 — 24 verified parent/specialist skill comparisons
+
+The owner V2 SEO plan defines 24 overlapping parent/child search-intent pairs. `src/lib/intent-relations.ts` now preserves each exact pair and its concrete classroom task distinction; relevant built topic pages display reciprocal, task-labeled links in a dedicated “Compare related practice skills” section. Automated tests reject missing/HOLD routes, duplicate pairs, duplicate descriptions and indistinguishable representative generated tasks. This is a usable navigation improvement—not an assertion of SEO ranking, revenue, ownership of a custom domain, manual educator approval or indexation permission. Unapproved `CONDITIONAL_HUB`/HOLD routes remain noindex, and production release still uses the fail-closed allowlist.

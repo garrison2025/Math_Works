@@ -28,3 +28,15 @@
 .stacked-op{flex:0 0 auto;white-space:nowrap}
 @media(max-width:630px){.stacked-equation{font-size:.88rem;gap:5px;margin-top:8px}}
 @media print{.stacked-equation{font-size:11pt;overflow:visible;break-inside:avoid}}
+
+/* R40: concise task-oriented cross-links, not keyword-only duplication. */
+.skill-route-section{margin:28px 0 42px;padding:24px;background:#fff;border:1px solid var(--border);border-radius:16px}
+.skill-route-section h2{font-size:1.4rem;letter-spacing:-.025em;margin:0 0 7px}
+.skill-route-section p{color:var(--muted);margin:0 0 16px;font-size:.91rem}
+.skill-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.skill-link{display:flex;flex-direction:column;gap:6px;border:1px solid #d5e1ec;border-radius:10px;padding:13px 15px;background:#f7fafc;color:var(--ink)}
+.skill-link strong{color:var(--primary);font-size:.9rem}
+.skill-link span{color:var(--muted);font-size:.8rem;line-height:1.5}
+.skill-link:hover{border-color:var(--primary);background:#eff6fc;text-decoration:none}
+@media(max-width:630px){.skill-route-section{padding:17px}.skill-links{grid-template-columns:1fr}}
+@media print{.skill-route-section{display:none!important}}

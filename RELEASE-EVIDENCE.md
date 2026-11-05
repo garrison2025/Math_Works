@@ -338,3 +338,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 
 
 - [R39 INDEPENDENT GATE ADDED] Inspect extracted real-PDF vector paths for exactly one 1.15pt bar per fraction token in every supported question, zero bars in answers/steps, and no stroked bar intersecting a text glyph. Four adversarial synthetic PyMuPDF tests cover missing/superfluous bars and text crossing. CI result pending after final commit.
+
+
+### R40 — parent/child search-intent differentiation gate (CI evidence required)
+
+- [IMPLEMENTED] Record the precise 24 owner-planned parent/specialist keyword-conflict relationships as source-controlled, documented generator contrasts.
+- [IMPLEMENTED] Reciprocal, task-specific links under active topic pages; a parent/child link is based on observed classroom task differences, not on a fabricated SEO target.
+- [CI REQUIRED] Recheck 24 distinct pairs, page existence, meaningful source-question differences over three fixed seeds, generated metadata distinctness and fail-closed noindex for HOLD / unapproved hubs.
+- [NOT APPROVED] Production simultaneous parent + child indexation, real SERP intent evidence, final human SEO decision, custom domain and GSC submission. Preserve preview noindex.
