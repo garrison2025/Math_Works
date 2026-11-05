@@ -2,7 +2,7 @@
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import {quartiles,type Worksheet, type Problem, type Diagram} from './math.ts';
 import {functionTableGeometry} from './function-table.ts';
-import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout} from './graph.ts';
+import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
@@ -166,7 +166,12 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   page.drawLine({start:{x:x+w*.39,y:base+30},end:{x:x+w*.86,y:base+30},color:ink,thickness:1.7});
   page.drawLine({start:{x:x+w*.39,y:base+30},end:{x:x+w*.39,y:base-8},color:ink,thickness:1.7});
   page.drawText('Quotient: ______',{x:x+w*.18,y:base+47,size:9,font,color:sub});
-  page.drawText('Remainder: ______',{x:x+w*.18,y:base-27,size:9,font,color:sub});
+  // Two blank subtraction-work rows fit within the already reserved diagram
+  // rectangle. No quotient/remainder values are drawn on practice pages.
+  for(const offset of [20,39])page.drawLine({
+   start:{x:x+w*.46,y:base-offset},end:{x:x+w*.86,y:base-offset},
+   color:paperRule,thickness:.55});
+  page.drawText('Remainder: ______',{x:x+w*.18,y:base-57,size:9,font,color:sub});
   return;
  }
  if(d.kind==='triangle'){
@@ -208,9 +213,16 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   return;
  }
  if(d.kind==='trapezoid'){
-  l(.1,.15,.9,.15);l(.9,.15,.7,.85);l(.7,.85,.3,.85);l(.3,.85,.1,.15);l(.3,.15,.3,.85);
-  label(String(d.values[0]),.44,.04);label(String(d.values[1]),.44,.88);
-  label(d.values[2]===undefined?'?':String(d.values[2]),.32,.50);
+  const g=trapezoidLayout(d);
+  l(g.bottomLeft,g.bottomY,g.bottomRight,g.bottomY);
+  l(g.bottomRight,g.bottomY,g.topRight,g.topY);
+  l(g.topRight,g.topY,g.topLeft,g.topY);
+  l(g.topLeft,g.topY,g.bottomLeft,g.bottomY);
+  l(g.altitudeX,g.topY,g.altitudeX,g.bottomY);
+  label(String(d.values[0]),.48,g.bottomY-.105);
+  label(String(d.values[1]),.48,g.topY+.075);
+  label(d.values[2]===undefined?'?':String(d.values[2]),g.altitudeX+.04,(g.topY+g.bottomY)/2);
+  page.drawText('Schematic - not to scale',{x:x+w*.31,y:y+h*.065,size:7,font,color:sub});
   return;
  }
  if(d.kind==='prism'){

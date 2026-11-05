@@ -112,3 +112,29 @@ export function intersectingAngleGeometry(d:Diagram):IntersectingAngleGeometry {
   givenDegrees:degrees,unknownDegrees:adjacent?180-degrees:degrees,task:adjacent?'adjacent':'vertical'
  };
 }
+
+/** R44 common SVG/PDF schematic layout for an area-of-trapezoid prompt.
+ * Width ordering reflects the given parallel bases, including a wider TOP
+ * base. A legibility floor prevents tiny two-unit edges from disappearing
+ * on a printable sheet; dimensions are therefore explicitly NOT TO SCALE.
+ * Existing deterministic question/answer engine inputs are unchanged.
+ */
+export type TrapezoidLayout={
+ bottomLeft:number;bottomRight:number;topLeft:number;topRight:number;
+ topY:number;bottomY:number;altitudeX:number;bottomWidth:number;topWidth:number;
+};
+export function trapezoidLayout(d:Diagram):TrapezoidLayout{
+ if(d.kind!=='trapezoid'||(d.values.length!==2&&d.values.length!==3)||
+  !d.values.every(v=>Number.isFinite(v)&&v>0))
+  throw Error('Trapezoid diagram requires two positive parallel bases and optional height');
+ const [bottom,top]=d.values;
+ const biggest=Math.max(bottom,top),maxWidth=.76,minWidth=.18;
+ const bottomWidth=Math.max(minWidth,maxWidth*bottom/biggest);
+ const topWidth=Math.max(minWidth,maxWidth*top/biggest);
+ const bottomLeft=(1-bottomWidth)/2,topLeft=(1-topWidth)/2;
+ const bottomRight=1-bottomLeft,topRight=1-topLeft;
+ const altitudeX=Math.max(bottomLeft,topLeft);
+ const topY=.23,bottomY=.72;
+ return {bottomLeft,bottomRight,topLeft,topRight,
+  topY,bottomY,altitudeX,bottomWidth,topWidth};
+}

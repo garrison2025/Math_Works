@@ -372,3 +372,12 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Correct angle, triangle and intersecting-line diagram labels and three column-multiplication specialist charts with correct Helvetica-encodable glyphs.
 - [CI REQUIRED] Independent extracted-stress-PDF audit fails on old `deg`, lowercase `x` multiplication operator or missing expected math glyph repetitions. Four adversarial tests, math, full PDF semantics, 36pt visual/vector margins and two browsers must all pass.
 - [STILL OPEN] Human teacher review of complete multi-page PDFs and real printer calibration bar measurement within ±1mm, custom-domain release and 24 pair SERP intent manual adjudication.
+
+
+### R44 — 51-topic PDF visual review follow-through (CI pending)
+
+- [MANUAL DIGITAL OBSERVATION] Previous R43 A4 PDF samples showed an upper trapezoid base labeled `11` but geometrically shorter than a lower base `3`, with no schematic-scale caveat. Long division practice had no explicit written intermediate subtraction guide.
+- [IMPLEMENTED] Shared PDF and SVG trapezoid geometry responds monotonically to given top/bottom base lengths, preserves parallel bases and vertical altitude, and marks that sketches are not to scale.
+- [IMPLEMENTED] Two faint, answer-blind writing rules in long division work area; move remainder label out of the work rows in both previews and PDF.
+- [CI REQUIRED] Correctness, diagram-vector and PDF-bound checks, 468-file/51-topic full-catalog stress, Chromium and Firefox evidence must all pass.
+- [LIMITATION] This preserves generator v18 values, including rare equal-base trapezoid examples (an inclusive-definition classroom convention); a definition-specific generator change needs separately versioned share compatibility and teacher sign-off.

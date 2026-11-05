@@ -1,5 +1,5 @@
 import {quartiles,type Diagram} from './math.ts';
-import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout} from './graph.ts';
+import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {functionTableGeometry} from './function-table.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -42,7 +42,9 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
   case 'long-division':{
    if(v.length!==2||!v.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid division diagram');
    const [dividend,divisor]=v;
-   parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H344 M151 72V130" fill="none" stroke="#172337" stroke-width="2.8"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="163">remainder: ______</text></g>`;
+   // Keep the dividend and bracket fixed, but reserve two unobtrusive pencil
+   // guides beneath the dividend for intermediate subtraction steps.
+   parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H344 M151 72V130" fill="none" stroke="#172337" stroke-width="2.8"/><path class="division-work-guides" d="M178 145H344 M178 168H344" fill="none" stroke="#cad9e5" stroke-width="1.1"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="202">remainder: ______</text></g>`;
    break}
   case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]===undefined?'?':v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
   case 'right-triangle':{
@@ -67,7 +69,20 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    break}
 
   case 'parallelogram':parts=poly('130,155 310,155 350,48 170,48')+line(170,48,170,155)+text(225,179,`${v[0]}`)+text(151,111,v[1]===undefined?'?':`${v[1]}`);break;
-  case 'trapezoid':parts=poly('100,155 360,155 300,49 160,49')+text(230,179,`${v[0]}`)+text(230,40,`${v[1]}`)+text(375,111,v[2]===undefined?'?':`${v[2]}`);break;
+  case 'trapezoid':{
+   const g=trapezoidLayout(d),px=(u:number)=>450*u,py=(u:number)=>220*u;
+   const coords=[
+    [g.bottomLeft,g.bottomY],[g.bottomRight,g.bottomY],
+    [g.topRight,g.topY],[g.topLeft,g.topY]
+   ].map(([u,v])=>`${px(u).toFixed(2)},${py(v).toFixed(2)}`).join(' ');
+   parts=poly(coords)
+    +line(px(g.altitudeX),py(g.topY),px(g.altitudeX),py(g.bottomY))
+    +text(225,py(g.bottomY)+24,String(v[0]))
+    +text(225,py(g.topY)-10,String(v[1]))
+    +text(px(g.altitudeX)+25,py((g.bottomY+g.topY)/2)+5,v[2]===undefined?'?':String(v[2]))
+    +`<text class="diagram-scale-note" x="225" y="209" fill="#62738a" font-size="12" text-anchor="middle">Schematic - not to scale</text>`;
+   break;
+  }
   case 'prism':{
    const cube=d.labels?.[0]==='cube';
    parts=(cube?`<rect x="129" y="59" width="116" height="116" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M129 59 L177 21 H293 V137 L245 175 M245 59 L293 21" fill="none" stroke="#1b64a5" stroke-width="3"/>`:`<rect x="100" y="72" width="190" height="100" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M100 72 L149 35 H339 V135 L290 172 M290 72 L339 35" fill="none" stroke="#1b64a5" stroke-width="3"/>`)
