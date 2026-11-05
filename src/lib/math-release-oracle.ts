@@ -29,7 +29,20 @@ export const VERIFIED_AT_PDF_BOUNDARY=Object.freeze([
  'one-step-equations-worksheets',
  'division-worksheets',
  'coordinate-plane-worksheets',
- 'function-tables-worksheets'
+ 'function-tables-worksheets',
+ 'number-line-worksheets',
+ 'number-recognition-worksheets',
+ 'gcf-worksheets',
+ 'triangle-angle-sum-worksheets',
+ 'complementary-supplementary-angles-worksheets',
+ 'vertical-angles-worksheets',
+ 'angle-worksheets',
+ 'mean-absolute-deviation-worksheets',
+ 'box-plots-worksheets',
+ 'scatter-plot-worksheets',
+ 'slope-worksheets',
+ 'domain-range-worksheets',
+ 'systems-equations-worksheets'
 ] as const);
 const verified=new Set<string>(VERIFIED_AT_PDF_BOUNDARY);
 const integer=(raw:string)=>BigInt(raw);
@@ -102,6 +115,45 @@ function standardFromScientific(coefficient:string,powerRaw:string):string{
  const all=m[1]+m[2],shift=power-m[2].length,place=all.length+shift;
  if(shift>=0)return all+'0'.repeat(shift);
  return place>0?all.slice(0,place)+'.'+all.slice(place):'0.'+'0'.repeat(-place)+all;
+}
+/** Parse only supported integer sample listings, with bounded observation count. */
+function valuesFromList(raw:string,min=2,max=16):number[]{
+ if(!/^\d+(?:, \d+)*$/.test(raw))throw Error('Math oracle: invalid integer data list');
+ const values=raw.split(', ').map(safeInt);
+ if(values.length<min||values.length>max)throw Error('Math oracle: observation count out of bounds');
+ return values;
+}
+/** Parse a displayed point-set string; do not read generated answer fields. */
+function listedPairs(raw:string):[number,number][]{
+ if(!/^\(-?\d+,-?\d+\)(?:, \(-?\d+,-?\d+\))*$/.test(raw))
+  throw Error('Math oracle: invalid point relation');
+ return raw.split(', ').map(part=>{
+  const m=match(part,/^\((-?\d+),(-?\d+)\)$/);
+  return [safeInt(m[1]),safeInt(m[2])];
+ });
+}
+function halfValue(twoTimesValue:number):string{
+ if(!Number.isSafeInteger(twoTimesValue)||twoTimesValue<0)
+  throw Error('Math oracle: invalid half value');
+ return halfString(twoTimesValue);
+}
+function medianDouble(xs:number[]):number{
+ const s=[...xs].sort((a,b)=>a-b),n=s.length;
+ if(n<1)throw Error('Math oracle: empty median data');
+ return n%2===0?s[n/2-1]+s[n/2]:2*s[Math.floor(n/2)];
+}
+function twoEquationResult(a:bigint,b:bigint,c:bigint,d:bigint,r:bigint,s:bigint):string{
+ const det=a*d-b*c;
+ if(det===0n)
+  return a*s===c*r&&b*s===d*r?'infinitely many solutions':'no solution';
+ const numeratorX=r*d-b*s,numeratorY=a*s-r*c;
+ if(numeratorX%det!==0n||numeratorY%det!==0n)
+  throw Error('Math oracle: noninteger system solution');
+ return `x = ${numeratorX/det}, y = ${numeratorY/det}`;
+}
+function readEquation(raw:string):[bigint,bigint,bigint]{
+ const m=match(raw,/^(-?\d+)x ([+−]) (\d+)y = (-?\d+)$/);
+ return [integer(m[1]),signedOffset(m[2],m[3]),integer(m[4])];
 }
 function computed(p:Problem):string{
  const q=p.payload.question;
@@ -360,6 +412,142 @@ function computed(p:Problem):string{
    !ys.every((v,i)=>v===a*xs[i]+b))
    throw Error('Math oracle: function table contradicts visible linear function');
   return String(role==='input'?xs[position]:ys[position]);
+ }
+ case 'number-line-worksheets':{
+  const m=match(q,/^Mark (-?\d+) on the number line\.$/);
+  const n=safeInt(m[1]);
+  checkDiagram(p,'numberline',[n]);
+  if(p.diagramSpec?.labels?.length)throw Error('Math oracle: unexpected ray on numberline');
+  return String(n);
+ }
+ case 'number-recognition-worksheets':{
+  const words=['one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+  if(q==='Count the dots shown below.'){
+   if(p.diagramSpec?.kind!=='dots'||p.diagramSpec.values.length!==1||
+    !Number.isSafeInteger(p.diagramSpec.values[0])||p.diagramSpec.values[0]<1||
+    p.diagramSpec.values[0]>12)throw Error('Math oracle: invalid dot count diagram');
+   return String(p.diagramSpec.values[0]);
+  }
+  const m=match(q,/^Write the numeral for “([a-z]+)”\.$/);
+  const pos=words.indexOf(m[1]);
+  if(pos<0||p.diagramSpec)throw Error('Math oracle: unrecognized number word or unexpected diagram');
+  return String(pos+1);
+ }
+ case 'gcf-worksheets':{
+  const m=match(q,/^Find the GCF of (\d+) and (\d+)\.$/);
+  return String(gcd(integer(m[1]),integer(m[2])));
+ }
+ case 'triangle-angle-sum-worksheets':{
+  const m=match(q,/^Triangle angles are (\d+)° and (\d+)°\. Find the third angle\.$/);
+  const a=safeInt(m[1]),b=safeInt(m[2]),c=180-a-b;
+  if(a<=0||b<=0||c<=0)throw Error('Math oracle: invalid triangle angle sum');
+  checkDiagram(p,'triangle-angles',[a,b,c]);
+  return `${c}°`;
+ }
+ case 'complementary-supplementary-angles-worksheets':{
+  const m=match(q,/^Find the angle (complementary|supplementary) to (\d+)°\.$/);
+  const x=safeInt(m[2]),total=m[1]==='complementary'?90:180,y=total-x;
+  if(x<=0||y<=0)throw Error('Math oracle: invalid complementary/supplementary pair');
+  checkDiagram(p,'angle',[x,y]);
+  return `${y}°`;
+ }
+ case 'vertical-angles-worksheets':{
+  const m=match(q,/^Intersecting lines make an angle of (\d+)°\. Find its (adjacent supplementary|vertical) angle\.$/);
+  const x=safeInt(m[1]),adjacent=m[2]==='adjacent supplementary';
+  if(x<=0||x>=180)throw Error('Math oracle: intersecting angle out of range');
+  checkDiagram(p,'intersecting-lines',[x,adjacent?1:0]);
+  return `${adjacent?180-x:x}°`;
+ }
+ case 'angle-worksheets':{
+  const m=match(q,/^Classify a (\d+)° angle\.$/);
+  const x=safeInt(m[1]);
+  if(x<1||x>179)throw Error('Math oracle: unsupported angle measure');
+  checkDiagram(p,'angle',[x]);
+  return x<90?'acute':x===90?'right':'obtuse';
+ }
+ case 'mean-absolute-deviation-worksheets':{
+  const m=match(q,/^Find the mean absolute deviation of \[([\d, ]+)\]\.$/);
+  const values=valuesFromList(m[1],5,8),n=BigInt(values.length);
+  const sum=values.reduce((a,b)=>a+BigInt(b),0n);
+  const deviations=values.reduce((a,v)=>a+abs(BigInt(v)*n-sum),0n);
+  return exact(deviations,n*n);
+ }
+ case 'box-plots-worksheets':{
+  const draw=q.match(/^Draw a modified box plot for \[([\d, ]+)\]\. Use median-of-halves and 1\.5×IQR for outliers\.$/);
+  const m=draw??match(q,/^Find (Q1|median|Q3|IQR|outliers) for \[([\d, ]+)\] using median-of-halves\.$/);
+  const raw=draw?draw[1]:m[2],values=valuesFromList(raw,8,8);
+  const order=[...values].sort((a,b)=>a-b);
+  checkDiagram(p,'box-practice',values);
+  const q1Twice=medianDouble(order.slice(0,4)),medianTwice=medianDouble(order),
+    q3Twice=medianDouble(order.slice(4)),iqrTwice=q3Twice-q1Twice;
+  const good=order.filter(v=>4*v>=2*q1Twice-3*iqrTwice&&4*v<=2*q3Twice+3*iqrTwice);
+  if(good.length===0)throw Error('Math oracle: no inside-fence whiskers');
+  const outliers=order.filter(v=>4*v<2*q1Twice-3*iqrTwice||4*v>2*q3Twice+3*iqrTwice);
+  if(draw)
+   return `Q1=${halfValue(q1Twice)}, median=${halfValue(medianTwice)}, Q3=${halfValue(q3Twice)}; whiskers=${good[0]} to ${good.at(-1)}; outliers=${outliers.join(', ')||'none'}`;
+  if(m[1]==='Q1')return halfValue(q1Twice);
+  if(m[1]==='median')return halfValue(medianTwice);
+  if(m[1]==='Q3')return halfValue(q3Twice);
+  if(m[1]==='IQR')return halfValue(iqrTwice);
+  return outliers.join(', ')||'none';
+ }
+ case 'scatter-plot-worksheets':{
+  const d=p.diagramSpec;
+  if(d?.kind!=='scatter'||d.values.length!==12||
+   !d.values.every(Number.isSafeInteger))throw Error('Math oracle: invalid scatter data');
+  const ys:number[]=[];
+  for(let i=0;i<6;i++){
+   if(d.values[i*2]!==i+1||d.values[i*2+1]<0||d.values[i*2+1]>10)
+    throw Error('Math oracle: wrong scatter axis or point coordinates');
+   ys.push(d.values[i*2+1]);
+  }
+  const coordinates=ys.map((y,i)=>`(${i+1}, ${y})`).join(', ');
+  if(q.startsWith('Plot these six points on the scatter grid: ')){
+   if(q!==`Plot these six points on the scatter grid: ${coordinates}.`||
+    d.labels?.[0]!=='plot')throw Error('Math oracle: scatter plotting instructions contradict diagram');
+   return `Coordinates: ${coordinates}`;
+  }
+  if(q!=='Describe the overall linear trend in the scatter plot.'||
+   d.labels?.[0]!=='identify')throw Error('Math oracle: scatter trend question mislabeled');
+  const twiceCov=ys.reduce((sum,y,i)=>sum+(2*(i+1)-7)*y,0);
+  return twiceCov===0?'no clear linear trend':twiceCov>0?'positive':'negative';
+ }
+ case 'slope-worksheets':{
+  const m=match(q,/^Find the slope through \((-?\d+), (-?\d+)\) and \((-?\d+), (-?\d+)\)\.$/);
+  const x1=integer(m[1]),y1=integer(m[2]),x2=integer(m[3]),y2=integer(m[4]);
+  checkDiagram(p,'coordinate',[Number(x1),Number(y1),Number(x2),Number(y2)]);
+  if(x1===x2)return 'undefined';
+  return exact(y2-y1,x2-x1);
+ }
+ case 'domain-range-worksheets':{
+  const m=match(q,/^(?:List the (domain|range) of|Is the relation) \{([^}]+)\}(?:\.| a function\? Answer yes or no\.)$/);
+  const pairs=listedPairs(m[2]),unique=(xs:number[])=>[...new Set(xs)].sort((a,b)=>a-b);
+  const functionMaps=new Map<number,number>();
+  let isFunction=true;
+  for(const [x,y] of pairs){
+   if(functionMaps.has(x)&&functionMaps.get(x)!==y)isFunction=false;
+   functionMaps.set(x,y);
+  }
+  if(q.startsWith('Is the relation '))return isFunction?'yes':'no';
+  return `{${unique(pairs.map(v=>m[1]==='domain'?v[0]:v[1])).join(', ')}}`;
+ }
+ case 'systems-equations-worksheets':{
+  const simple=q.match(/^Solve: x \+ y = (-?\d+); x − y = (-?\d+)$/);
+  if(simple){
+   const plus=integer(simple[1]),minus=integer(simple[2]),xs=plus+minus,ys=plus-minus;
+   if(xs%2n!==0n||ys%2n!==0n)throw Error('Math oracle: noninteger simple system');
+   return `x = ${xs/2n}, y = ${ys/2n}`;
+  }
+  const full=match(q,/^(Solve the system:|Classify and solve the system:) ([^.]+)\.$/);
+  const equations=full[2].split('; ');
+  if(equations.length!==2)throw Error('Math oracle: two equations required');
+  const [a,b,rhs]=readEquation(equations[0]),[c,d,rhs2]=readEquation(equations[1]);
+  const result=twoEquationResult(a,b,c,d,rhs,rhs2);
+  if(full[1]==='Solve the system:'&&result.includes('solutions'))
+   throw Error('Math oracle: unique system unexpectedly has zero determinant');
+  if(full[1]==='Classify and solve the system:'&&!result.includes('solutions'))
+   throw Error('Math oracle: nonunique system unexpectedly has nonzero determinant');
+  return result;
  }
  default: throw Error(`Math oracle: unsupported topic ${p.topicId}`);
  }

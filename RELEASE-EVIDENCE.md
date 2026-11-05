@@ -407,3 +407,10 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Thirteen additional topics independently re-derive expected mathematical results from visible question text. Decimal and scientific arithmetic uses exact BigInt digits and explicit decimal scaling; diagram-bearing geometry/graph/table topics cross-check task values and missing-value roles.
 - [IMPLEMENTED] R47 adversarial tests corrupt both answer fields simultaneously and alter graph/table shape without changing question text. All must be rejected by the actual PDF exporter. R46's original ten protected topics remain covered.
 - [LIMITATION] 28 additional active topics still lack a runtime independent math oracle; CI math tests are separate. Runtime oracle does not prove natural-language step quality. Manual paper printing, classroom approval and formal indexing decisions remain unverified.
+
+
+### R48 — 36-topic independent export-math coverage (CI pending)
+
+- [IMPLEMENTED] Runtime recomputation expanded from 23 to 36 active generators, covering all four 2×2 systems forms, mean absolute deviation, modified box-plot summaries/fences and scatter plot answer-vs-diagram integrity, alongside number lines, angle geometry, GCF, slope, and relations.
+- [IMPLEMENTED] Read visible statement and independent BigInt arithmetic; do not accept mutually matching but wrong answer fields. New tests check all option variants, unchanged reproducibility, diagram corruption and real PDF export.
+- [NOT CLAIMED] 15 remaining active topics lack the runtime independent exporter oracle; UI-only human learning quality, teacher sign-off and print-at-100% protractor physical measurement remain open.

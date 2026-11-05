@@ -24,7 +24,7 @@ const variants={
 const added=Object.keys(variants);
 
 test('R47 13 new families independently verify real question text across choices and difficulties',()=>{
- assert.equal(VERIFIED_AT_PDF_BOUNDARY.length,23);
+ assert.ok(VERIFIED_AT_PDF_BOUNDARY.length>=23,'R47 original 23-topic safeguard must remain covered');
  for(const slug of added)assert.ok(VERIFIED_AT_PDF_BOUNDARY.includes(slug),slug);
  let samples=0;
  for(const [slug,options] of Object.entries(variants))
