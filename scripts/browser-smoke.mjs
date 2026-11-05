@@ -72,13 +72,13 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v7'));
- assert.ok(answers.getTitle()?.includes('v7'));
+ assert.ok(questions.getTitle()?.includes('v8'));
+ assert.ok(answers.getTitle()?.includes('v8'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=7/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=8/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v7 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v8 clipboard link',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
  await page.goto(`${base}/number-recognition-worksheets/`,{waitUntil:'networkidle'});
@@ -192,6 +192,21 @@ try {
  await verifyPdf(await graphAnswers,'R17 solved linear graph PDF');
  await page.screenshot({path:join(out,'r17-linear-graph-answers.png'),fullPage:true});
  events.push({kind:'interaction',name:'graph-a-line blank practice and completed answer key',status:'pass'});
+ await page.goto(`${base}/scatter-plot-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('plot');
+ await page.locator('[data-option="trend"]').selectOption('none');
+ assert.equal(await page.locator('.scatter-solution-point').count(),0,'Scatter practice leaked plotted coordinates');
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const scatterPracticeEvent=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await scatterPracticeEvent,'R18 blank scatter PDF',{paper:'A4'});
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.scatter-solution-point').count(),48,'Scatter answers need six plotted points per question');
+ const scatterAnswerEvent=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ await verifyPdf(await scatterAnswerEvent,'R18 scatter answer PDF',{paper:'A4'});
+ await page.screenshot({path:join(out,'r18-scatter-solution.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R18 scatter task blanks practice and plots six points in answer PDF',status:'pass'});
  await page.setViewportSize({width:390,height:844});
  await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
  const coords=await page.evaluate(()=>({preview:document.querySelector('.preview-panel')?.getBoundingClientRect().y,settings:document.querySelector('.settings')?.getBoundingClientRect().y,overflow:document.documentElement.scrollWidth-window.innerWidth}));

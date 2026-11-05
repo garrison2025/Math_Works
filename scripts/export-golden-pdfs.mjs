@@ -16,6 +16,8 @@ const fixtures=[
  {slug:'three-digit-by-two-digit-multiplication-worksheets',quantity:20,options:{multiplierRange:'high'}},
  {slug:'box-plots-worksheets',quantity:8,options:{statistic:'Q1'}},
  {slug:'box-plots-worksheets',quantity:8,options:{statistic:'draw'}},
+ {slug:'scatter-plot-worksheets',quantity:8,options:{task:'plot',trend:'mixed'}},
+ {slug:'scatter-plot-worksheets',quantity:4,options:{task:'identify',trend:'none'}},
  {slug:'printable-protractor',quantity:4,options:{angleRange:'acute'}},
  {slug:'linear-equations-worksheets',quantity:8,options:{slope:'negative'}},
  {slug:'linear-equations-worksheets',quantity:8,options:{slope:'positive',task:'graph'}},
@@ -43,5 +45,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R17 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R18 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

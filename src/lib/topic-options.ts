@@ -16,7 +16,7 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'multiplication-tables-worksheets':[entry('table','Times table','Target one times table or mix all tables 1 through 12.',[{value:'mixed',label:'Mixed 1–12'},...Array.from({length:12},(_,i)=>({value:String(i+1),label:`${i+1} times table`}))])],
  'long-division-worksheets':[entry('remainder','Remainder practice','Choose exact divisions, remainders, or both.',mixed('yes','no'))],
  'mean-median-mode-range-worksheets':[entry('statistic','Statistics skill','Target one statistic or practice the full set.',mixed('mean','median','mode','range'))],
- 'scatter-plot-worksheets':[entry('trend','Trend direction','Focus on positive or negative linear relationships.',mixed('positive','negative'))],
+ 'scatter-plot-worksheets':[entry('task','Scatter task','Read a scatter plot to identify its trend, or plot six coordinate pairs on a blank grid.',choice('identify','plot')),entry('trend','Linear trend','Practice positive, negative, or no clear linear trend.',mixed('positive','negative','none'))],
  'number-line-worksheets':[entry('sign','Target number sign','Practice placing negative or positive integers.',mixed('positive','negative'))],
  'coordinate-plane-worksheets':[entry('quadrant','Quadrant','Practice a specific quadrant or all four.',[{value:'mixed',label:'Mixed quadrants'},...['I','II','III','IV'].map(value=>({value,label:`Quadrant ${value}`}))])],
  'two-digit-by-one-digit-multiplication-worksheets':[entry('regrouping','Regrouping','Choose multiplication with or without a carry.',mixed('yes','no'))],
@@ -90,6 +90,7 @@ export function maxQuantityForTopic(topic:string, options:TopicOptions={}, diffi
  // A horizontal line is determined by its intercept (11 choices), while
  // each signed slope subset yields only 33 unique lines. Leave a safety margin.
  if(topic==='linear-equations-worksheets'&&value.task==='graph')return value.slope==='zero'?10:value.slope==='mixed'?40:30;
+ if(topic==='scatter-plot-worksheets')return value.trend==='none'?10:value.trend==='mixed'?40:20;
  if(topic==='multiplication-tables-worksheets'&&value.table!=='mixed')return 12;
  if(topic==='two-digit-by-one-digit-multiplication-worksheets'&&value.regrouping==='no')return 20;
  if(topic==='division-worksheets'&&value.divisor!=='mixed')return 11;

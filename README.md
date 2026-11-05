@@ -141,3 +141,8 @@ Triangle interior-angle pictures now use mathematically constructed vertex coord
 - Added 12,000 independently checked slope/intercept seeds, seeded URL replay, Letter/A4 PDF pairs, Chrome and Firefox visual/download regressions, and golden PDF fixtures.
 - Generator v7 is unchanged: existing Evaluate question semantics are preserved, and new links record opt_task=graph.
 - The preview remains noindex until physical printing and complete release gates are satisfied.
+
+
+### R18: six-point scatter plots and plotting worksheets
+
+Scatter Plot Worksheets now offers Identify the trend (positive, negative, no clear linear trend) and Plot the data. For plotting, the practice SVG/PDF shows six ordered pairs and a blank 0-7 by 0-10 coordinate grid; the answer sheet uses the same numerical scale to plot each point. Generator v8 replaces v7 because seed-to-question semantics changed. Old share links show the existing incompatibility warning and must not be represented as exact reproductions. Physical protractor calibration and comprehensive manual PDF review remain pending.

@@ -121,11 +121,13 @@ test('scatter plots preserve correlation direction and stay inside plot bounds',
  for(let seed=0;seed<2000;seed++){
   const p=sampleProblem('scatter-plot-worksheets',seed);
   const pts=scatterGeometry(p.diagramSpec);
-  assert.equal(pts.length,3);
+  assert.equal(pts.length,6);
   assert.ok(pts.every(([x,y])=>x>=0&&x<=1&&y>=0&&y<=1));
-  const sign=p.expectedAnswer==='positive'?1:-1;
-  assert.equal(Math.sign(pts.at(-1)[1]-pts[0][1]),sign);
+  const raw=p.diagramSpec.values.filter((_,i)=>i%2===1);
+  const cov=raw.reduce((acc,y,i)=>acc+(i+1-3.5)*y,0);
+  const classification=Math.abs(cov)<1e-9?'no clear linear trend':cov>0?'positive':'negative';
+  assert.equal(p.expectedAnswer,classification);
   const svg=diagramSVG(p.diagramSpec);
-  assert.equal((svg.match(/<circle/g)||[]).length,3);
+  assert.equal((svg.match(/<circle/g)||[]).length,6);
  }
 });

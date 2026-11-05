@@ -45,7 +45,7 @@ try{
  const dl=await qa,filepath=join(out,dl.suggestedFilename());
  await dl.saveAs(filepath);const pdf=await PDFDocument.load(readFileSync(filepath));
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
- assert.match(pdf.getTitle()??'',/generator v7/);
+ assert.match(pdf.getTitle()??'',/generator v8/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
  await page.locator('[data-option="method"]').selectOption('parallel');
  await page.locator('[data-mode="answers"]').click();
@@ -76,6 +76,14 @@ try{
  assert.equal(await page.locator('.solution-linear-line').count(),8);
  checks.push({name:'linear graph blank practice and answer visibility in Firefox',status:'pass'});
  await page.locator('[data-mode="questions"]').click();
+ await open('scatter-plot-worksheets');
+ await page.locator('[data-option="task"]').selectOption('plot');
+ assert.equal(await page.locator('.scatter-solution-point').count(),0);
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.scatter-solution-point').count(),48);
+ checks.push({name:'R18 Firefox scatter practice blank, matching plotted answer key',status:'pass'});
+ await page.locator('[data-mode="questions"]').click();
+ await open('linear-equations-worksheets');
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:'networkidle'});
  const geometry=await page.evaluate(()=>({

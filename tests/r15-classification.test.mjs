@@ -35,7 +35,7 @@ test('R15: 12,000 function classifications independently check repeated-input co
  }
 });
 
-test('R15: classification modes round-trip links, answer map and generator v7 identity',()=>{
+test('R15: classification modes round-trip links, answer map and generator v8 identity',()=>{
  for(const [slug,options] of [
   ['systems-equations-worksheets',{method:'parallel',solutions:'mixed'}],
   ['systems-equations-worksheets',{method:'coincident',solutions:'mixed'}],
@@ -44,12 +44,12 @@ test('R15: classification modes round-trip links, answer map and generator v7 id
  ]){
   const payload={seed:0x98765432,quantity:20,difficulty:'challenge',paper:'A4',options};
   const url=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,payload);
-  assert.equal(new URL(url).searchParams.get('gv'),'7');
+  assert.equal(new URL(url).searchParams.get('gv'),'8');
   const restored=parseWorksheetLink(url,slug);
   assert.deepEqual(restored,payload);
   const sheet=makeWorksheet(slug,payload.seed,payload.quantity,payload.difficulty,options);
   const rerun=makeWorksheet(slug,restored.seed,restored.quantity,restored.difficulty,restored.options);
-  assert.equal(sheet.generatorVersion,'7');assert.deepEqual(sheet.answerMap,rerun.answerMap);
+  assert.equal(sheet.generatorVersion,'8');assert.deepEqual(sheet.answerMap,rerun.answerMap);
   assert.equal(sheet.optionsHash,rerun.optionsHash);
  }
 });

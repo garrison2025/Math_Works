@@ -104,7 +104,18 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    if(n===2)parts+=`<circle cx="145" cy="110" r="5" fill="#172337"/><circle cx="300" cy="110" r="5" fill="#172337"/>`;
    parts+=text(n===2?145:80,90,left)+text(n===2?300:n===1?269:365,90,right);
    break}
-  case 'scatter':{const pts=scatterGeometry(d);parts=line(75,175,400,175)+line(75,175,75,20);for(const [u,z] of pts){const x=85+u*300,y=160-z*125;parts+=`<circle cx="${x}" cy="${y}" r="6" fill="#187b68"/>`;}break}
+  case 'scatter':{
+   const px=(n:number)=>80+(n/7)*315,py=(n:number)=>176-(n/10)*150;
+   for(let i=0;i<=7;i++){parts+=`<line x1="${px(i)}" y1="26" x2="${px(i)}" y2="176" stroke="#e1e8ee" stroke-width="1"/>`+text(px(i),199,String(i));}
+   for(let j=0;j<=10;j+=2){parts+=`<line x1="80" y1="${py(j)}" x2="395" y2="${py(j)}" stroke="#e1e8ee" stroke-width="1"/>`+text(59,py(j)+5,String(j));}
+   parts+=line(80,176,398,176)+line(80,176,80,23)+text(412,177,'x')+text(82,19,'y');
+   if(!d.labels?.includes('plot')||showSolution){
+    for(const [u,z] of scatterGeometry(d)){
+     parts+=`<circle class="${d.labels?.includes('plot')?'scatter-solution-point':'scatter-data-point'}" cx="${80+u*315}" cy="${176-z*150}" r="5" fill="#187b68"/>`;
+    }
+   }
+   break;
+  }
   case 'box-practice':{
    const axis=boxPracticeAxis(v),toX=(value:number)=>75+300*axis.position(value);
    parts=line(65,112,395,112)+`<path d="M65 112l9 -6v12zM395 112l-9 -6v12z" fill="#1b64a5"/>`;

@@ -29,6 +29,20 @@ for(const topic of mathTopics)test(`PDF roundtrip: ${topic}`,async()=>{
   assert.ok(doc.getTitle()?.includes(sheet.optionsHash),`PDF config identity missing: ${topic} ${paper} ${mode}`);
  }
 });
+test('R18: scatter plotting exports matching questions and plotted-answer PDFs for Letter/A4',async()=>{
+ for(const paper of ['Letter','A4'])for(const trend of ['positive','negative','none']){
+  const sheet=makeWorksheet('scatter-plot-worksheets',20261105,8,'standard',{task:'plot',trend});
+  for(const mode of ['questions','answers']){
+   const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,'Scatter Plot Worksheets',mode,paper));
+   assert.ok(pdf.getPageCount()>=1);
+   const [w,h]=sizes[paper];
+   for(const page of pdf.getPages()){assert.ok(Math.abs(page.getWidth()-w)<.015);assert.ok(Math.abs(page.getHeight()-h)<.015);}
+   assert.ok(pdf.getTitle()?.includes('generator v8'));
+   assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
+  }
+ }
+});
+
 test('PDF steps reject unreviewed topics rather than imply verified solution',async()=>{
  const sheet=makeWorksheet('box-plots-worksheets',7,8);
  await assert.rejects(()=>createWorksheetPdf(sheet,'Box Plots','steps','Letter'),/not yet verified/);
@@ -134,7 +148,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v7'),`${topic} missing version-seven identity`);
+    assert.ok(doc.getTitle()?.includes('v8'),`${topic} missing version-eight identity`);
    }
   }
  }
@@ -203,14 +217,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'7');
+  assert.equal(sheet.generatorVersion,'8');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v7'));
+   assert.ok(document.getTitle()?.includes('v8'));
   }
  }
 });
@@ -226,7 +240,7 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v7/);
+   assert.match(parsed.getTitle()??'',/generator v8/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
@@ -246,7 +260,7 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
    assert.ok(pdf.getPageCount()>0);
-   assert.match(pdf.getTitle()??'',/generator v7/);
+   assert.match(pdf.getTitle()??'',/generator v8/);
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
    assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }

@@ -25,17 +25,17 @@ export function graphGeometry(d:Diagram):GraphGeometry {
  return {kind:d.kind,boundX,boundY,points,...(points.length===2?{segment:[points[0],points[1]] as [XY,XY]}:{})};
 }
 
-/** Return normalized scatter coordinates, preserving the sign of correlation
- * while keeping every point within both SVG and PDF plotting rectangles. */
+/** Shared scatter scale: ticks mark the actual values, not normalized sample minima. */
 export function scatterGeometry(d:Diagram):XY[]{
- if(d.kind!=='scatter'||d.values.length<4||d.values.length%2||!d.values.every(Number.isFinite))throw Error('Invalid scatter data');
- const points:XY[]=[];for(let i=0;i<d.values.length;i+=2)points.push([d.values[i],d.values[i+1]]);
- const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
- const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
- const spanX=maxX-minX||1,spanY=maxY-minY||1;
- return points.map(([x,y])=>[(x-minX)/spanX,(y-minY)/spanY]);
+ if(d.kind!=='scatter'||d.values.length!==12||!d.values.every(Number.isInteger))throw Error('Scatter diagram requires six integer pairs');
+ const pairs:XY[]=[];
+ for(let i=0;i<d.values.length;i+=2){
+  const x=d.values[i],y=d.values[i+1];
+  if(x!==i/2+1||y<0||y>10)throw Error('Scatter sample outside labeled 0-7 by 0-10 grid');
+  pairs.push([x/7,y/10]);
+ }
+ return pairs;
 }
-
 /** Empty five-number-summary axis. Inputs are observed raw values, never calculated
  * quartiles, whisker endpoints or outlier locations (which would disclose answers). */
 export function boxPracticeAxis(values:readonly number[]){

@@ -181,7 +181,20 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    for(const outlier of vals.slice(5))page.drawCircle({x:x+p(outlier)*w,y:y+.5*h,size:3,color:rgb(1,1,1),borderColor:accent,borderWidth:1});
   }return;
  }
- if(d.kind==='scatter'){l(.1,.17,.95,.17);l(.14,.1,.14,.94);for(const [u,v] of scatterGeometry(d))dot(.14+u*.78,.2+v*.69);return;}
+ if(d.kind==='scatter'){
+  const px=(n:number)=>.14+(n/7)*.8,py=(n:number)=>.15+(n/10)*.75,light=rgb(.87,.91,.95);
+  for(let i=0;i<=7;i++){
+   page.drawLine({start:{x:x+px(i)*w,y:y+.15*h},end:{x:x+px(i)*w,y:y+.9*h},color:light,thickness:.5});
+   const s=String(i);page.drawText(s,{x:x+px(i)*w-2,y:y+.05*h,size:7,font,color:sub});
+  }
+  for(let i=0;i<=10;i+=2){
+   page.drawLine({start:{x:x+.14*w,y:y+py(i)*h},end:{x:x+.94*w,y:y+py(i)*h},color:light,thickness:.5});
+   const s=String(i);page.drawText(s,{x:x+.08*w,y:y+py(i)*h-2,size:7,font,color:sub});
+  }
+  l(.14,.15,.94,.15);l(.14,.15,.14,.9);
+  if(!d.labels?.includes('plot')||showSolution)for(const [u,v] of scatterGeometry(d))dot(.14+u*.8,.15+v*.75);
+  return;
+ }
  if(d.kind==='coordinate'||d.kind==='linear-function'){
   const g=graphGeometry(d),mx=(z:number)=>.5+z/g.boundX*.44,my=(z:number)=>.5+z/g.boundY*.42;
   const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
@@ -246,7 +259,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
   if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
-  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))?150:0);
+  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,9,bodyW-18).length,0);
   return common+13+answerLines*12+stepLines*11+24;
@@ -260,7 +273,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
   if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
-   if(p.diagramSpec&&(['numberline','box-practice'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw')))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
+   if(p.diagramSpec&&(['numberline','box-practice'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot')))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,9,bodyW-18)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;

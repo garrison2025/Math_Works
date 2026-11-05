@@ -35,7 +35,7 @@ test('R16: share links preserve box-plot drawing settings and exact answer maps'
  const slug='box-plots-worksheets',options={statistic:'draw'};
  const payload={seed:20261105,quantity:8,difficulty:'challenge',paper:'A4',options};
  const url=buildWorksheetLink('https://math-works.pages.dev/box-plots-worksheets/',slug,payload);
- assert.equal(new URL(url).searchParams.get('gv'),'7');
+ assert.equal(new URL(url).searchParams.get('gv'),'8');
  assert.deepEqual(parseWorksheetLink(url,slug),payload);
  const a=makeWorksheet(slug,payload.seed,payload.quantity,payload.difficulty,options);
  const b=makeWorksheet(slug,payload.seed,payload.quantity,payload.difficulty,options);

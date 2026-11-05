@@ -159,3 +159,13 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 
 - [IMPLEMENTED, CI PENDING] PDF Cartesian panels now include light coordinate grid lines instead of bare tick axes; graphing practice uses one-unit grid spacing in SVG and vector PDF. Y-axis numbers are shown every 2 units to avoid label overlap on smaller paper diagrams.
 - [CI REQUIRED] Rerun the full PDF artifact and Chrome/Firefox smoke sequence, render representative Letter/A4 pages and verify the practice grid contains no answer line.
+
+
+### R18: scatter plot problem fidelity
+
+- [IMPLEMENTED] Six numerically labeled scatter points instead of three perfectly collinear points, with an explicit no-clear-linear-trend category.
+- [IMPLEMENTED] Answer-safe plotting mode: blank student grid vs six points drawn on answer SVG/PDF; shared fixed numeric scale.
+- [LOCAL PASS] R18 math regression and independent covariance checks; TypeScript passed.
+- [CI REQUIRED] Letter/A4 PDF, Chrome, Firefox and static build need GitHub Actions to confirm actual deployment.
+- [NOT RUN] Physical 50 mm protractor calibration or exhaustive manual visual inspection of all PDF pages.
+- [VERSION] Generator v8 changes old generator semantics; version-gated links warn on v7 mismatch.

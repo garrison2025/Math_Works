@@ -14,7 +14,7 @@ const captures={
  'multiplication-tables-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith(`${v} × `),
  'long-division-worksheets':(p,v)=>v==='mixed'||Number(p.expectedAnswer.split(' R ')[1])>0===(v==='yes'),
  'mean-median-mode-range-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith(`Find the ${v} of`),
- 'scatter-plot-worksheets':(p,v)=>v==='mixed'||p.expectedAnswer===v,
+ 'scatter-plot-worksheets':(p,v)=>v==='mixed'||(v==='identify'?p.payload.question.startsWith('Describe'):v==='plot'?p.payload.question.startsWith('Plot these six points'):p.diagramSpec.labels?.includes('plot')||p.expectedAnswer===(v==='none'?'no clear linear trend':v)),
  'number-line-worksheets':(p,v)=>v==='mixed'||(Number(p.expectedAnswer)>0)===(v==='positive'),
  'coordinate-plane-worksheets':(p,v)=>v==='mixed'||p.expectedAnswer===v,
  'two-digit-by-one-digit-multiplication-worksheets':(p,v)=>{
