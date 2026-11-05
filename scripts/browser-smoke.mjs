@@ -287,6 +287,11 @@ try {
  await page.locator('[data-action="answers"]').click();
  const madA=await verifyPdf(await madAnswerDownload,'R22 skewed MAD answers',{paper:'A4'});
  assert.ok(madQ.getTitle()?.includes('v12')&&madA.getTitle()?.includes('v12'));
+ assert.ok(await page.locator('[data-action="steps"]').isEnabled(),'Verified MAD steps PDF should be available');
+ const madStepsDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="steps"]').click();
+ const madS=await verifyPdf(await madStepsDownload,'R22 exact MAD worked solutions',{paper:'A4'});
+ assert.ok(madS.getTitle()?.includes('steps'));
  await page.screenshot({path:join(out,'r22-eight-value-mad-answers.png'),fullPage:true});
  events.push({kind:'interaction',name:'R22 eight-observation skewed MAD and paired A4 PDF downloads',status:'pass'});
 

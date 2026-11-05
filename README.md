@@ -8,7 +8,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
-- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 13 reviewed topics), direct printing, Letter/A4 paper.
+- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 14 reviewed topics), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-researched KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts).
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
@@ -174,3 +174,5 @@ Function Tables now supports missing outputs, missing inputs, and mixed practice
 - Exact rational arithmetic computes the mean and MAD from the raw integer totals (`Σ|n·xᵢ − Σx| / n²`). The generator never rounds the mean while computing deviations.
 - Practice PDFs keep the answer separate. Worked explanatory steps show the exact mean, every deviation and the final simplest fraction. GitHub CI tests both paper sizes and independent 18,000-sample mathematical oracles.
 - Previous generator v11 links are intentionally not guaranteed to recreate v12 exercises. Do not enable preview indexing.
+
+R22 follow-up: MAD is now on the 14-topic verified worked-step PDF allowlist, after independent rational crosschecks.

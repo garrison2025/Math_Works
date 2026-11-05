@@ -195,3 +195,5 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL PASS] 18,000 independent BigInt rational oracles validate exact mean and MAD; 40-question distinct/reproducible sheets tested for each selection; legacy math suite run.
 - [CI REQUIRED] TypeScript, full PDF generation for A4/Letter, static Astro build, Chrome/Firefox controls and PDF downloads, and noindex audit must succeed on the new commit before claiming R22 deployed.
 - [NOT VERIFIED] Exhaustive manual check of all PDF pages, physical 50 mm protractor print calibration and production domain SEO release.
+
+- [R22 FOLLOW-UP] Enabled worked-steps PDF for exact MAD; CI verifies full A4 steps download and Letter/A4 golden examples. Audit allowlist expanded from 13 to 14 independently tested topics.

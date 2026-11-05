@@ -13,7 +13,8 @@ const STEP_TOPICS=new Set([
  'pythagorean-worksheets',
  'area-of-triangles-worksheets',
  'area-of-parallelograms-worksheets',
- 'area-of-trapezoids-worksheets'
+ 'area-of-trapezoids-worksheets',
+ 'mean-absolute-deviation-worksheets'
 ]);
 export const hasVerifiedSteps=(topicId:string)=>STEP_TOPICS.has(topicId);
 export const verifiedStepTopics=()=>[...STEP_TOPICS];
