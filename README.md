@@ -206,13 +206,31 @@ Long Division Worksheets now offer one- or two-digit divisors and three- or four
 ### R29: PDF legibility and all-route maximum-length release audit
 
 - The worksheet generator is still **v18**: existing seeds, selected options and shared URLs retain the same questions and answers. The PDF layout contract is now **v2**, identified separately in the PDF metadata and readable two-line page header.
-- Verified step PDFs use 10 pt text, 14 pt line spacing and extra separation between reasoning steps rather than compact 9/11 pt lines. PDF pagination reserves the measured text height and refuses to emit a problem that cannot fit a fresh Letter/A4 page; it never silently clips a too-tall problem.
+- Verified step PDFs use 10 pt text, 14 pt line spacing and extra separation between reasoning steps rather than compact 9/11 pt lines. PDF pagination reserves the actual measured text height and refuses to emit a problem that cannot fit a fresh Letter/A4 page; it never silently clips a too-tall problem.
 - `npm run qa:pdf-stress` generates every live worksheet generator in two difficulty levels, at the maximum supported quantity, on both US Letter and A4. It creates distinct questions, answers and (where approved) reviewed-steps PDFs plus `qa-artifacts/pdf-stress/manifest.json`, which includes each worksheet's exact reproducible problem/answer sequence, page count, and SHA-256 of the produced PDF.
-- GitHub Actions uses Poppler to check every stress PDF glyph bounding box against the 36 pt printer-safe perimeter (a failing check blocks release). Both headers and footers were moved entirely inside the protected zone.
 - GitHub Actions archives this private CI-only evidence under `r29-all-51-topic-pdf-stress` with seven-day retention. It is **not** shipped to `dist/` or exposed to crawlers.
 - Physical printing, the 50 mm protractor ruler check and full human review of all generated pages remain incomplete. Do **not** enable `PUBLIC_INDEXABLE` or buy a custom domain until those gates are complete.
 
 
-### R30 independent vector geometry validation
+### R30 vector geometry and printing QA
 
-The R29 468-PDF text audit missed **84 vector-path violations** in angle and complementary/supplementary angle practice sheets. R30 uses shared, uniform-scale SVG/PDF geometry to draw actual degrees, and CI now checks the *drawing paths* of every generated stress PDF against the separate 36pt print-safe zone (PyMuPDF in an isolated pinned virtualenv). Both text and vector checks are mandatory. Actual physical 50mm printer calibration and full visual inspection remain outstanding.
+R29 checked 468 generated PDFs for *text* bounds, but vector figures were not
+part of that audit. R30 found 84 actual vector-path margins violations in
+`angle-worksheets` and `complementary-supplementary-angles-worksheets`: the
+older PDF renderer drew obtuse-angle rays off the left edge of Letter/A4 pages.
+The angle diagram now uses one shared, uniformly scaled coordinate system in
+SVG and PDF, preserving the actual angle in degrees and centering the vertex.
+`npm run test:math` independently checks 179 angle sizes and 3,000+ generated
+angle problems. GitHub CI now also runs
+`scripts/check-pdf-vector-margins.py` on **all** generated stress PDFs with an
+isolated, pinned PyMuPDF version, failing deployment QA if any vector drawing
+exits the 36pt safe margin. This supplements the existing text-bounds audit.
+Neither audit can prove physical printer calibration or fully replace visual
+review of individual diagrams.
+
+
+## R31 — exported-PDF protractor physical-size audit
+
+The protractor's physical dimensions now have a **separate, independent PDF-vector release gate**. `npm run qa:protractor-instruments` generates actual Letter and A4 blank protractor PDF files as private CI evidence; `scripts/check-protractor-geometry.py` uses PyMuPDF to inspect **each of the 160 maximum-count printable-protractor worksheet pages plus both standalone files**. For every page, it checks a 144 mm diameter (72 mm radius) baseline, a 50 mm horizontal calibration bar, endpoint ticks, the semicircle apex, visible calibration instructions and safe page margins. Missing pages, wrong page sizes and unexpected file SHA-256 values fail the release. `tests/test_protractor_geometry_audit.py` verifies that incorrect 49/50.5/51 mm calibration bars, wrong radii and missing geometry are rejected.
+
+This confirms **PDF vector geometry only**. It cannot verify printer fit-to-page settings or that the line measures 50 mm on a specific physical printer. Printing at Actual size (100%) and measuring with a physical ruler remains a mandatory, unperformed human release gate. Keep the preview `noindex,nofollow` until then.

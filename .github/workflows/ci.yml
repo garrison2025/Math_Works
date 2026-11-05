@@ -36,6 +36,8 @@ jobs:
         run: npm run qa:pdf-samples
       - name: Stress test all 51 live worksheet PDFs at maximum count
         run: npm run qa:pdf-stress
+      - name: Export Letter and A4 blank actual-size protractor PDFs
+        run: npm run qa:protractor-instruments
       - name: Ensure Poppler PDF text geometry reader is available
         shell: bash
         run: |
@@ -45,13 +47,25 @@ jobs:
           fi
       - name: Enforce 36-point text-safe printable margins on every stress PDF
         run: python3 scripts/check-pdf-margins.py qa-artifacts/pdf-stress
-      - name: Install isolated vector PDF geometry inspector
+      - name: Install isolated vector-PDF inspector (PyMuPDF pinned)
         shell: bash
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
       - name: Enforce 36-point vector-drawing safe margins on every stress PDF
         run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
+      - name: Test physical-PDF dimension audit against intentionally broken instruments
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
+      - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
+        run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive blank Letter and A4 calibrated protractors with geometry report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r31-physical-protractor-geometry
+          path: qa-artifacts/protractor-instruments/
+          retention-days: 14
+          if-no-files-found: error
       - name: Retain exhaustive PDF audit and exact problem/answer manifest
         uses: actions/upload-artifact@v4
         if: always()

@@ -244,9 +244,30 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED; CI REQUIRED] Full-catalog stress task asserts PDF page size, page count, worksheet seed/version/config identifiers, distinct question-answer IDs and output SHA-256, preserving a machine-readable QA manifest. Its actual PDF and browser checks must complete on GitHub Actions before marking them PASS.
 - [NOT VERIFIED] Exhaustive human page-by-page evaluation, classroom/teacher acceptance, physical printer 50 mm protractor calibration, and a custom production domain. Keep pages.dev preview `noindex,nofollow`.
 
-- [R29 AFTER FIRST CI STRESS] The initial 468 PDF/3,596-page batch exposed title and footer glyphs outside the V2 plan's required 36 pt physical print margin, despite no text leaving the paper MediaBox. Fixed title/footers and added a Poppler `pdftotext -bbox` mandatory CI gate; the follow-up CI must pass before marking the actual printer-safe margins verified.
+
+### R30: vector figures are a separate print-release gate
+
+- Root cause: R29's 36pt Poppler text boundary scan passed but did not inspect
+  PDF line and curve paths. Re-analysis of the unchanged 468 PDF R29 artifact
+  with PyMuPDF found **84 vector-bound violations** across angle and
+  complementary/supplementary angle practice sheets. Some obtuse rays reached
+  left-of-page coordinates. This is a newly found defect, not a regression in
+  the text scanner.
+- R30 fix: share faithful 1:1 angle-ray geometry between SVG and PDF, with a
+  centered vertex and bounded ray + arc. Avoid separate x/y stretching that
+  would misrepresent printed degree sizes.
+- Added `tests/r30-angle-geometry.test.mjs`, verifying 179 distinct angles,
+  physical aspect preservation and generated problem examples.
+- CI now installs pinned PyMuPDF into a throwaway Python venv and verifies
+  **all 468 stress PDF vector paths** against 36pt margins, reporting
+  `vector-bounds-audit.json`. The existing text check remains mandatory.
+- Limits: automated geometry checking cannot detect every visual collision or
+  replace the real 50 mm print-scale calibration and full visual review.
 
 
-### R30 vector-path release gate
+### R31: harden physical protractor dimensions (CI pending)
 
-Re-analysis of the R29 468-PDF archive found 84 drawings outside 36pt margins despite the passing text-only audit, restricted to angle and complementary/supplementary angles questions. R30 moved angle vertices to a centered, true-scale SVG/PDF layout and added a full-catalog vector-path CI audit (`vector-bounds-audit.json`). Machine checks do not replace physical 50mm print measurement or all-pages visual review.
+- [LOCAL PASS] Direct PyMuPDF inspection of a previously exported R30 printable-protractor A4 practice PDF found the exact horizontal 50 mm calibration line (141.732 pt) and 144 mm semicircle baseline (408.189 pt), confirming the existing layout is not trivially scaled on that sampled page. This is digital vector evidence, not a physical printer measurement.
+- [LOCAL PASS] Added an **independent exported-PDF** dimension verifier; adversarial unit tests reject incorrectly scaled rulers, incorrect radii and missing end ticks/apex, while accepting a correct synthetic instrument.
+- [CI REQUIRED] Generate two actual-size blank protractors (Letter/A4) and verify all 160 maximal practice PDF instrument pages plus the two blanks with PyMuPDF; preserve SHA-256 checked manifests and audit reports.
+- [NOT RUN] A printed 50 mm ruler measurement and full human visual QA of all pages. Do not enable Google indexing or purchase a custom domain on the basis of vector QA alone.
