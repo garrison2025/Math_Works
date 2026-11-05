@@ -45,6 +45,13 @@ jobs:
           fi
       - name: Enforce 36-point text-safe printable margins on every stress PDF
         run: python3 scripts/check-pdf-margins.py qa-artifacts/pdf-stress
+      - name: Install isolated vector PDF geometry inspector
+        shell: bash
+        run: |
+          python3 -m venv .venv-pdf-audit
+          .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: Enforce 36-point vector-drawing safe margins on every stress PDF
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
       - name: Retain exhaustive PDF audit and exact problem/answer manifest
         uses: actions/upload-artifact@v4
         if: always()

@@ -2,7 +2,7 @@
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import {quartiles,type Worksheet, type Problem, type Diagram} from './math.ts';
 import {functionTableGeometry} from './function-table.ts';
-import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry} from './graph.ts';
+import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
@@ -251,7 +251,17 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   for(const [vx,vy] of g.points){dot(mx(vx),my(vy));page.drawText(`(${vx},${vy})`,{x:x+mx(vx)*w+4,y:y+my(vy)*h+5,size:7,font,color:ink});}
   return;
  }
- if(d.kind==='angle'){l(.25,.15,.9,.15);const a=d.values[0]*Math.PI/180;l(.25,.15,.25+.6*Math.cos(a),.15+.6*Math.sin(a));return;}
+ if(d.kind==='angle'){
+  const g=angleRayLayout(d),scale=Math.min(w/450,h/220);
+  const pt=([px,py]:[number,number])=>({x:x+w/2+(px-225)*scale,y:y+h/2+(110-py)*scale});
+  const draw=(a:[number,number],b:[number,number],color=accent,width=1.1)=>
+   page.drawLine({start:pt(a),end:pt(b),color,thickness:width});
+  draw(g.vertex,g.baseline);draw(g.vertex,g.ray);
+  for(let i=1;i<g.arc.length;i++)draw(g.arc[i-1],g.arc[i],rgb(.09,.48,.41),.9);
+  const [lx,ly]=g.label,labelPt=pt([lx,ly]),labelText=String(g.degrees)+' deg';
+  page.drawText(labelText,{x:labelPt.x-font.widthOfTextAtSize(labelText,7.5)/2,y:labelPt.y-2,size:7.5,font,color:ink});
+  return;
+ }
  if(d.kind==='intersecting-lines'){
   const g=intersectingAngleGeometry(d),scale=Math.min(w/450,h/220),pt=([ax,ay]:[number,number])=>({x:x+w/2+(ax-225)*scale,y:y+h/2+(110-ay)*scale});
   const draw=([a,b]:[[number,number],[number,number]])=>page.drawLine({start:pt(a),end:pt(b),color:accent,thickness:1.2});

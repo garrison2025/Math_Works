@@ -1,5 +1,5 @@
 import {quartiles,type Diagram} from './math.ts';
-import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry} from './graph.ts';
+import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout} from './graph.ts';
 import {functionTableGeometry} from './function-table.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -110,7 +110,13 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    }
    for(const [x,y] of g.points){parts+=`<circle cx="${px(x)}" cy="${py(y)}" r="5" fill="#187b68" stroke="#fff" stroke-width="2"/>`+text(Math.min(399,px(x)+25),Math.max(18,py(y)-10),`(${x},${y})`);}
    break}
-  case 'angle':{const deg=v[0],t=deg*Math.PI/180;parts=line(170,165,380,165)+line(170,165,170+155*Math.cos(t),165-155*Math.sin(t))+`<path d="M220 165 A50 50 0 0 0 ${170+50*Math.cos(t)} ${165-50*Math.sin(t)}" fill="none" stroke="#187b68" stroke-width="2"/>`+text(245,187,`${deg}°`);break}
+  case 'angle':{
+   const g=angleRayLayout(d);
+   parts=line(...g.vertex,...g.baseline)+line(...g.vertex,...g.ray)
+    +`<polyline points="${g.arc.map(([ax,ay])=>`${ax.toFixed(3)},${ay.toFixed(3)}`).join(' ')}" fill="none" stroke="#187b68" stroke-width="2.4"/>`
+    +text(...g.label,`${g.degrees}°`);
+   break;
+  }
   case 'intersecting-lines':{
    const g=intersectingAngleGeometry(d),segment=([a,b]:[number[],number[]])=>line(a[0],a[1],b[0],b[1]);
    const arc=(points:number[][])=>`<polyline points="${points.map(([x,y])=>`${x.toFixed(3)},${y.toFixed(3)}`).join(' ')}" fill="none" stroke="#187b68" stroke-width="2.4"/>`;

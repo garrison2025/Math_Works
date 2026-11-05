@@ -2,6 +2,21 @@
  * Coordinates are in math units, not pixels; scaling happens only in the renderer. */
 import type {Diagram} from './math';
 export type XY = [number,number];
+/** R30 shared print-safe angle geometry: SVG and PDF must preserve true degrees.
+ * Center the vertex so even 179 degree rays stay within the printable region. */
+export type AngleRayLayout={vertex:XY;baseline:XY;ray:XY;arc:XY[];label:XY;degrees:number};
+export function angleRayLayout(d:Diagram):AngleRayLayout {
+ if(d.kind!=='angle'||d.values.length<1||!Number.isInteger(d.values[0])||d.values[0]<=0||d.values[0]>=180)
+  throw new Error('Angle diagram requires an integer in 1..179 degrees');
+ const degrees=d.values[0],theta=degrees*Math.PI/180;
+ const vx=225,vy=165,len=135,baselineLength=145,arcRadius=43;
+ const polar=(rad:number,radius:number):XY=>[vx+radius*Math.cos(rad),vy-radius*Math.sin(rad)];
+ const steps=Math.max(2,Math.ceil(degrees/5)),arc=Array.from({length:steps+1},(_,i)=>polar(theta*i/steps,arcRadius));
+ const label=polar(theta/2,76);
+ return {vertex:[vx,vy],baseline:[vx+baselineLength,vy],ray:polar(theta,len),arc,label:[label[0],label[1]-9],degrees};
+}
+
+
 export type GraphGeometry = {boundX:number;boundY:number;points:XY[];segment?:[XY,XY];kind:'coordinate'|'linear-function'};
 export function graphGeometry(d:Diagram):GraphGeometry {
  if(d.kind!=='coordinate'&&d.kind!=='linear-function')throw Error('Not a Cartesian graph');

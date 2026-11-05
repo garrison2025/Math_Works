@@ -211,3 +211,8 @@ Long Division Worksheets now offer one- or two-digit divisors and three- or four
 - GitHub Actions uses Poppler to check every stress PDF glyph bounding box against the 36 pt printer-safe perimeter (a failing check blocks release). Both headers and footers were moved entirely inside the protected zone.
 - GitHub Actions archives this private CI-only evidence under `r29-all-51-topic-pdf-stress` with seven-day retention. It is **not** shipped to `dist/` or exposed to crawlers.
 - Physical printing, the 50 mm protractor ruler check and full human review of all generated pages remain incomplete. Do **not** enable `PUBLIC_INDEXABLE` or buy a custom domain until those gates are complete.
+
+
+### R30 independent vector geometry validation
+
+The R29 468-PDF text audit missed **84 vector-path violations** in angle and complementary/supplementary angle practice sheets. R30 uses shared, uniform-scale SVG/PDF geometry to draw actual degrees, and CI now checks the *drawing paths* of every generated stress PDF against the separate 36pt print-safe zone (PyMuPDF in an isolated pinned virtualenv). Both text and vector checks are mandatory. Actual physical 50mm printer calibration and full visual inspection remain outstanding.

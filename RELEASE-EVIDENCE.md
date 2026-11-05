@@ -245,3 +245,8 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [NOT VERIFIED] Exhaustive human page-by-page evaluation, classroom/teacher acceptance, physical printer 50 mm protractor calibration, and a custom production domain. Keep pages.dev preview `noindex,nofollow`.
 
 - [R29 AFTER FIRST CI STRESS] The initial 468 PDF/3,596-page batch exposed title and footer glyphs outside the V2 plan's required 36 pt physical print margin, despite no text leaving the paper MediaBox. Fixed title/footers and added a Poppler `pdftotext -bbox` mandatory CI gate; the follow-up CI must pass before marking the actual printer-safe margins verified.
+
+
+### R30 vector-path release gate
+
+Re-analysis of the R29 468-PDF archive found 84 drawings outside 36pt margins despite the passing text-only audit, restricted to angle and complementary/supplementary angles questions. R30 moved angle vertices to a centered, true-scale SVG/PDF layout and added a full-catalog vector-path CI audit (`vector-bounds-audit.json`). Machine checks do not replace physical 50mm print measurement or all-pages visual review.
