@@ -6,6 +6,7 @@ import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,inters
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
+import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
 const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.89]};
@@ -39,6 +40,32 @@ export function worksheetWorkLines(topic:string,mode:PdfMode,hasDiagram:boolean)
 }
 const RULE_SPACING=21;
 const paperRule=rgb(.78,.84,.89);
+const FRACTION_LINE_HEIGHT=49;
+function drawStackedFraction(page:PDFPage,layout:FractionLayout,x:number,y:number,
+ maxWidth:number,font:PDFFont){
+ const size=10.5,innerGap=10,tokenGap=8;
+ const widths=layout.tokens.map(t=>t.kind==='fraction'
+  ?Math.max(font.widthOfTextAtSize(t.numerator,size),font.widthOfTextAtSize(t.denominator,size))+innerGap
+  :font.widthOfTextAtSize(ascii(t.value),size)+tokenGap);
+ const total=widths.reduce((a,b)=>a+b,0)+(layout.tokens.length-1)*3;
+ if(total>maxWidth)throw new Error('Stacked fraction exceeds printable column width');
+ let xx=x;
+ for(let i=0;i<layout.tokens.length;i++){
+  const t=layout.tokens[i],width=widths[i];
+  if(t.kind==='fraction'){
+   page.drawText(t.numerator,{x:xx+(width-font.widthOfTextAtSize(t.numerator,size))/2,
+    y:y-12,size,font,color:ink});
+   page.drawLine({start:{x:xx+2,y:y-20},end:{x:xx+width-2,y:y-20},
+    color:ink,thickness:1.15});
+   page.drawText(t.denominator,{x:xx+(width-font.widthOfTextAtSize(t.denominator,size))/2,
+    y:y-34,size,font,color:ink});
+  }else{
+   const v=ascii(t.value);
+   page.drawText(v,{x:xx+tokenGap/2,y:y-24,size,font,color:ink});
+  }
+  xx+=width+3;
+ }
+}
 /** Preserve the math glyphs supported by the built-in Helvetica WinAnsi encoding.
  * Unsupported glyphs still have explicit readable ASCII substitutions: no paid
  * font download, server, or user-provided document is required. */
@@ -349,7 +376,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  function heightFor(p:Problem){
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
   const common=17+questions.length*13;
-  if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)*RULE_SPACING+18;
+  if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+(fractionLayoutFor(sheet.topicId,p.payload.question)?FRACTION_LINE_HEIGHT:0)+worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)*RULE_SPACING+18;
   if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,STEP_FONT_SIZE,bodyW-18).length,0);
@@ -365,6 +392,10 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
   if(mode==='questions'&&p.diagramSpec){const full=p.diagramSpec.kind==='protractor';plotDiagram(page,p.diagramSpec,xx,y-(full?290:136),full?colW-12:Math.min(235,colW-12),full?280:128,font);y-=full?305:150;}
+  if(mode==='questions'){
+   const layout=fractionLayoutFor(sheet.topicId,p.payload.question);
+   if(layout){drawStackedFraction(page,layout,xx+10,y-1,colW-24,font);y-=FRACTION_LINE_HEIGHT;}
+  }
   // Writing rules use the same per-problem measured height as pagination,
   // and leave the first line well below the last line of the question.
   for(let rule=0;rule<worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec);rule++){
