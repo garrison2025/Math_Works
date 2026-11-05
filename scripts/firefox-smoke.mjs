@@ -45,8 +45,22 @@ try{
  const dl=await qa,filepath=join(out,dl.suggestedFilename());
  await dl.saveAs(filepath);const pdf=await PDFDocument.load(readFileSync(filepath));
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
- assert.match(pdf.getTitle()??'',/generator v15/);
+ assert.match(pdf.getTitle()??'',/generator v16/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
+ await open('order-of-operations-worksheets');
+ await page.locator('[data-option="skill"]').selectOption('division');
+ await page.locator('[data-option="grouping"]').selectOption('parentheses');
+ assert.match(await page.locator('.problem .q').first().innerText(),/^\(\d+ \+ \d+\) ÷ \d+ × \d+ = ____$/);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const r26Download=page.waitForEvent('download',{timeout:45000});
+ await page.locator('[data-action="worksheet"]').click();
+ const r26File=await r26Download;
+ const r26Path=join(out,r26File.suggestedFilename());await r26File.saveAs(r26Path);
+ const r26PDF=await PDFDocument.load(readFileSync(r26Path));
+ assert.match(r26PDF.getTitle()??'',/generator v16/);
+ assert.ok(Math.abs(r26PDF.getPage(0).getWidth()-595.28)<0.1);
+ checks.push({name:'R26 Firefox exact division and grouped expressions A4 PDF',status:'pass'});
+
  await page.locator('[data-option="method"]').selectOption('parallel');
  await page.locator('[data-mode="answers"]').click();
  assert.match((await page.locator('.problem .answer-text').first().innerText()).trim(),/Answer:\s*no solution$/);
@@ -82,7 +96,7 @@ try{
  const pct=await pctDownload,pctPath=join(out,pct.suggestedFilename());
  await pct.saveAs(pctPath);
  const pctDoc=await PDFDocument.load(readFileSync(pctPath));
- assert.ok(pctDoc.getTitle()?.includes('v15'));
+ assert.ok(pctDoc.getTitle()?.includes('v16'));
  assert.ok(pctDoc.getPageCount()>=1);
  checks.push({name:'R23 Firefox percent change, exact percent of amount, worksheet PDF',status:'pass'});
  await open('scientific-notation-worksheets');
@@ -106,7 +120,7 @@ try{
  const fracDl=await fracDownload,fracPath=join(out,fracDl.suggestedFilename());
  await fracDl.saveAs(fracPath);
  const fracPdf=await PDFDocument.load(readFileSync(fracPath));
- assert.match(fracPdf.getTitle()??'',/generator v15/);
+ assert.match(fracPdf.getTitle()??'',/generator v16/);
  checks.push({name:'R24 Firefox fraction division with unlike denominators and steps PDF',status:'pass'});
  await open('linear-equations-worksheets');
  await page.locator('[data-option="task"]').selectOption('graph');

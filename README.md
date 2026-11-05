@@ -186,3 +186,7 @@ Function Tables now supports missing outputs, missing inputs, and mixed practice
 ### R24 fraction arithmetic and division
 
 The general **Fractions Worksheets** generator now supports exact addition, subtraction, multiplication and division (including unlike denominators). Denominator relation is a separate selector (mixed/same/unlike). A fraction division problem never has a zero divisor; answers reduce to exact lowest terms and subtraction may yield negative results. A reviewed worked-steps PDF is available for this topic, with independent BigInt math oracle coverage. Generator and share links now use v14; historical generator links only warn and cannot guarantee exact old worksheet restoration.
+
+### R25: exact scientific notation
+
+Scientific notation worksheets now offer positive/negative exponent focus and 2–4 significant-digit coefficients, with both standard-to-scientific and scientific-to-standard conversions. Standard decimal strings are shifted exactly (no floating-point rounding), even for exponents down to -8. Generator/share identity is v15; older seeds do not claim backwards compatibility. Tests independently parse the question and recalculate the answer.

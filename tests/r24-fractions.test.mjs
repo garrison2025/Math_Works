@@ -68,14 +68,14 @@ test('R24: 40-question sheets remain unique, repeatable, with exact answer keys'
 });
 
 test('R24: new settings survive share links and distinguish the PDF configuration',()=>{
- assert.equal(GENERATOR_VERSION,'15');
+ assert.equal(GENERATOR_VERSION,'16');
  assert.ok(hasVerifiedSteps(topic));
  const signatures=new Set();
  for(const operation of ['mixed',...Object.keys(operations)])for(const denominators of denominatorModes){
   const options={operation,denominators};
   const parameters={seed:20261105,quantity:20,difficulty:'standard',paper:'A4',options};
   const url=buildWorksheetLink(`https://math-works.pages.dev/${topic}/`,topic,parameters);
-  assert.equal(new URL(url).searchParams.get('gv'),'15');
+  assert.equal(new URL(url).searchParams.get('gv'),'16');
   assert.deepEqual(parseWorksheetLink(url,topic),{...parameters,options:normalizeTopicOptions(topic,options)});
   const hash=makeWorksheet(topic,parameters.seed,parameters.quantity,parameters.difficulty,options).optionsHash;
   assert.ok(!signatures.has(hash));signatures.add(hash);

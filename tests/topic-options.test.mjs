@@ -8,7 +8,7 @@ const captures={
  'one-step-equations-worksheets': (p,v)=>v==='addition'?/^Solve: x [−+] /.test(p.payload.question):v==='multiplication'?/^Solve: -?\d+x =/.test(p.payload.question):true,
  'two-step-equations-worksheets':(p,v)=>v==='mixed'||(Number(p.payload.question.match(/Solve: (-?\d+)x/)?.[1])>0)===(v==='positive'),
  'inequalities-worksheets':(p,v)=>v==='mixed'||(Number(p.payload.question.match(/Solve: (-?\d+)x/)?.[1])>0)===(v==='positive'),
- 'order-of-operations-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith('(')===(v==='parentheses'),
+ 'order-of-operations-worksheets':(p,v)=>v==='mixed'||(v==='parentheses'||v==='no-parentheses'?p.payload.question.startsWith('(')===(v==='parentheses'):v==='division'?p.payload.question.includes(' ÷ '):v==='powers'?p.payload.question.includes('²'):p.payload.question.includes(' × ')&&!p.payload.question.includes('²')),
  'equivalent-fractions-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes('____/')===(v==='numerator'),
  'fractions-worksheets':(p,v)=>v==='mixed'||(v==='same'||v==='unlike'?(()=>{const m=p.payload.question.match(/^(\d+)\/(\d+) [^ ]+ (\d+)\/(\d+)/);return (m[2]===m[4])===(v==='same');})():p.payload.question.includes(({addition:' + ',subtraction:' − ',multiplication:' × ',division:' ÷ '})[v])),
  'multiplication-tables-worksheets':(p,v)=>v==='mixed'||p.payload.question.startsWith(`${v} × `),

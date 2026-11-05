@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {sampleProblem,quartiles,gcd,rational,addR,mulR,asText} from '../src/lib/math.ts';
 import {graphGeometry,scatterGeometry} from '../src/lib/graph.ts';
 import {diagramSVG} from '../src/lib/diagram.ts';
+import {evaluateOrderExpression} from './r26-order-oracle.mjs';
 const seeds=300;
 const verify=(slug,oracle)=>{for(let seed=0;seed<seeds;seed++){const p=sampleProblem(slug,seed);const expected=oracle(p.payload.question,p);assert.equal(p.expectedAnswer,String(expected),`${slug} seed ${seed}: ${p.payload.question}`)}};
 const n=Number;
@@ -17,7 +18,7 @@ test('300 independent arithmetic oracles per route (14 independent operations)',
  verify('division-worksheets',q=>{const m=re(q,/^(\d+) ÷ (\d+) =/);assert.equal(n(m[1])%n(m[2]),0);return n(m[1])/n(m[2]);});
  verify('long-division-worksheets',q=>{const m=re(q,/^(\d+) ÷ (\d+) =/);return `${Math.floor(n(m[1])/n(m[2]))} R ${n(m[1])%n(m[2])}`;});
  verify('decimal-multiplication-worksheets',q=>{const m=re(q,/^(\d+\.\d+) × (\d+\.\d+) =/);return Number((Math.round(n(m[1])*100)*Math.round(n(m[2])*100)/10000).toFixed(4));});
- verify('order-of-operations-worksheets',q=>{let m=q.match(/^\((\d+) \+ (\d+)\) × (\d+)/);if(m)return (n(m[1])+n(m[2]))*n(m[3]);m=re(q,/^(\d+) \+ (\d+) × (\d+)/);return n(m[1])+n(m[2])*n(m[3]);});
+ verify('order-of-operations-worksheets',q=>evaluateOrderExpression(q));
  verify('integer-operations-worksheets',q=>{let m=q.match(/^(-?\d+) ÷ \((-?\d+)\) =/);if(m)return n(m[1])/n(m[2]);m=re(q,/^(-?\d+) ([+−×]) \((-?\d+)\) =/);return m[2]==='+'?n(m[1])+n(m[3]):m[2]==='−'?n(m[1])-n(m[3]):n(m[1])*n(m[3]);});
  verify('gcf-worksheets',q=>{const m=re(q,/Find the GCF of (\d+) and (\d+)/);return gcd(n(m[1]),n(m[2]));});
 });

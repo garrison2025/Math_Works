@@ -72,13 +72,36 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v15'));
- assert.ok(answers.getTitle()?.includes('v15'));
+ assert.ok(questions.getTitle()?.includes('v16'));
+ assert.ok(answers.getTitle()?.includes('v16'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=15/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=16/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v15 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v16 clipboard link',status:'pass'});
+ // R26: four-operation precedence and powers use the same real downloadable PDF.
+ await page.goto(`${base}/order-of-operations-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="skill"]').selectOption('powers');
+ await page.locator('[data-option="grouping"]').selectOption('parentheses');
+ const orderPrompt=await page.locator('.problem .q').first().innerText();
+ assert.match(orderPrompt,/^\(\d+ \+ \d+\)² − \d+ = ____$/);
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ await page.locator('[data-mode="questions"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),0);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const orderD=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const orderPDF=await verifyPdf(await orderD,'R26 exponent precedence',{paper:'A4'});
+ assert.match(orderPDF.getTitle()??'',/v16/);
+ await page.locator('[data-action="share"]').click();
+ const orderLink=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.match(orderLink,/opt_skill=powers/);assert.match(orderLink,/opt_grouping=parentheses/);
+ await page.locator('[data-option="skill"]').selectOption('division');
+ await page.locator('[data-option="grouping"]').selectOption('no-parentheses');
+ assert.match(await page.locator('.problem .q').first().innerText(),/ ÷ /);
+ events.push({kind:'interaction',name:'R26 exponent / division controls, masked answers and A4 worksheet PDF',status:'pass'});
+
 
  // R23: percentage-of-amount and percent-change tasks must be distinct and keep matching PDF identity.
  await page.goto(`${base}/percentages-worksheets/`,{waitUntil:'networkidle'});
@@ -94,14 +117,14 @@ try {
  const percentADownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const percentAnswers=await verifyPdf(await percentADownload,'R23 percent-of-number answers',{paper:'A4'});
- assert.ok(percentQuestions.getTitle()?.includes('v15')&&percentAnswers.getTitle()?.includes('v15'));
+ assert.ok(percentQuestions.getTitle()?.includes('v16')&&percentAnswers.getTitle()?.includes('v16'));
  await page.locator('[data-option="direction"]').selectOption('percent-change');
  assert.match(await page.locator('.problem .q').first().innerText(),/^Find the percentage (increase|decrease) from \d+ to \d+\.$/);
  await page.locator('[data-mode="questions"]').click();
  assert.equal(await page.locator('.problem .answer-text').count(),0);
  await page.locator('[data-action="share"]').click();
  const pctLink=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(pctLink,/gv=15/);assert.match(pctLink,/opt_direction=percent-change/);
+ assert.match(pctLink,/gv=16/);assert.match(pctLink,/opt_direction=percent-change/);
  events.push({kind:'interaction',name:'R23 percentage of number and percent change options, A4 practice/answer PDFs, versioned share link',status:'pass'});
 
  // R25: negative exponents must survive from page controls to A4 PDF and link.
@@ -115,7 +138,7 @@ try {
  const notationDl=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
  const notationPdf=await verifyPdf(await notationDl,'R25 scientific notation negative-exponent practice',{paper:'A4'});
- assert.match(notationPdf.getTitle()??'',/v15/);
+ assert.match(notationPdf.getTitle()??'',/v16/);
  await page.locator('[data-mode="answers"]').click();
  assert.equal(await page.locator('.problem .answer-text').count(),8);
  await page.locator('[data-action="share"]').click();
@@ -140,10 +163,10 @@ try {
  const fracSDl=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="steps"]').click();
  const fracS=await verifyPdf(await fracSDl,'R24 fraction division worked steps',{paper:'A4'});
- assert.ok([fracQ,fracA,fracS].every(doc=>doc.getTitle()?.includes('v15')));
+ assert.ok([fracQ,fracA,fracS].every(doc=>doc.getTitle()?.includes('v16')));
  await page.locator('[data-action="share"]').click();
  const fracLink=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(fracLink,/gv=15/);assert.match(fracLink,/opt_operation=division/);assert.match(fracLink,/opt_denominators=unlike/);
+ assert.match(fracLink,/gv=16/);assert.match(fracLink,/opt_operation=division/);assert.match(fracLink,/opt_denominators=unlike/);
  await page.locator('[data-option="operation"]').selectOption('subtraction');
  assert.match(await page.locator('.problem .q').first().innerText(),/^\d+\/\d+ − \d+\/\d+ = ____$/);
  events.push({kind:'interaction',name:'R24 fraction division/subtraction, A4 question/answer/steps PDFs and versioned sharing',status:'pass'});
@@ -167,7 +190,7 @@ try {
  const tableAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const tableAnswerPdf=await verifyPdf(await tableAnswerDownload,'R20 function-table missing-input answers',{paper:'A4'});
- assert.ok(tableQuestionPdf.getTitle()?.includes('v15')&&tableAnswerPdf.getTitle()?.includes('v15'));
+ assert.ok(tableQuestionPdf.getTitle()?.includes('v16')&&tableAnswerPdf.getTitle()?.includes('v16'));
  events.push({kind:'interaction',name:'R20 inverse function table blank-cell SVG, completed answer SVG and paired PDF',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
@@ -354,7 +377,7 @@ try {
  const madAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const madA=await verifyPdf(await madAnswerDownload,'R22 skewed MAD answers',{paper:'A4'});
- assert.ok(madQ.getTitle()?.includes('v15')&&madA.getTitle()?.includes('v15'));
+ assert.ok(madQ.getTitle()?.includes('v16')&&madA.getTitle()?.includes('v16'));
  assert.ok(await page.locator('[data-action="steps"]').isEnabled(),'Verified MAD steps PDF should be available');
  const madStepsDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="steps"]').click();

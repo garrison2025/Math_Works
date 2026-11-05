@@ -4,7 +4,7 @@ import {scientificNotationPair} from './scientific-notation.ts';
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='15' as const;
+export const GENERATOR_VERSION='16' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -57,7 +57,34 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  case 'integer-operations-worksheets':{const x=signed(),y=signed()||2,op=opts.operation==='mixed'?r.pick(['+','−','×','÷']):({addition:'+',subtraction:'−',multiplication:'×',division:'÷'} as Record<string,string>)[opts.operation];if(op==='÷'){const q=r.int(-9,9),d=r.pick([-6,-5,-4,-3,-2,2,3,4,5,6]);make(`${q*d} ÷ (${d}) = ____`,q,`Division is the inverse of multiplication: ${d} × ${q} = ${q*d}`)}else make(`${x} ${op} (${y}) = ____`,op==='+'?x+y:op==='−'?x-y:x*y,`Apply integer sign rules`,`${x} ${op} (${y}) = ${op==='+'?x+y:op==='−'?x-y:x*y}`);break}
  case 'one-step-equations-worksheets':{const x=signed(),k=r.int(1,max)*(r.int(0,1)?-1:1);if((opts.operation==='mixed'?r.int(0,1):opts.operation==='addition'?1:0))make(`Solve: x ${k<0?'−':'+'} ${Math.abs(k)} = ${x+k}`,`x = ${x}`,`Subtract ${k} from both sides`,`x = ${x}`);else make(`Solve: ${k}x = ${k*x}`,`x = ${x}`,`Divide both sides by ${k}`,`x = ${x}`);break}
  case 'two-step-equations-worksheets':{const x=signed(),coef=r.pick(opts.coefficient==='mixed'?[-5,-4,-3,-2,2,3,4,5]:opts.coefficient==='positive'?[2,3,4,5]:[-5,-4,-3,-2]),k=signed(),c=coef*x+k;make(`Solve: ${coef}x ${k<0?'−':'+'} ${Math.abs(k)} = ${c}`,`x = ${x}`,`Subtract ${k} from both sides: ${coef}x = ${c-k}`,`Divide by ${coef}: x = ${x}`,`Check: ${coef} × ${x} + (${k}) = ${c}`);break}
- case 'order-of-operations-worksheets':{const x=a(),y=b(),z=r.int(2,8),br=opts.grouping==='mixed'?r.int(0,1):opts.grouping==='parentheses'?1:0;make(br?`(${x} + ${y}) × ${z} = ____`:`${x} + ${y} × ${z} = ____`,br?(x+y)*z:x+y*z,br?'Calculate the parentheses first':'Multiply before adding',`Result = ${br?(x+y)*z:x+y*z}`);break}
+ case 'order-of-operations-worksheets':{
+  const skill=opts.skill==='mixed'?r.pick(['multiplication','division','powers']):opts.skill;
+  const grouped=opts.grouping==='mixed'?r.int(0,1)===1:opts.grouping==='parentheses';
+  if(skill==='multiplication'){
+   const x=a(),y=b(),factor=r.int(2,8),subtract=r.int(1,9);
+   const value=grouped?(x+y)*factor-subtract:x+y*factor-subtract;
+   make(grouped?`(${x} + ${y}) × ${factor} − ${subtract} = ____`:`${x} + ${y} × ${factor} − ${subtract} = ____`,value,
+    ...(grouped?[`Parentheses first: ${x} + ${y} = ${x+y}.`]:[`Multiply first: ${y} × ${factor} = ${y*factor}.`]),
+    grouped?`Multiply: ${x+y} × ${factor} = ${(x+y)*factor}.`:`Add: ${x} + ${y*factor} = ${x+y*factor}.`,
+    `Subtract ${subtract}; answer = ${value}.`);
+  }else if(skill==='division'){
+   const divisor=r.int(2,8),base=r.int(2,max),quotient=r.int(2,10),factor=r.int(2,6);
+   const start=divisor*base,dividend=divisor*quotient;
+   const value=grouped?(base+quotient)*factor:start+quotient*factor;
+   make(grouped?`(${start} + ${dividend}) ÷ ${divisor} × ${factor} = ____`:`${start} + ${dividend} ÷ ${divisor} × ${factor} = ____`,value,
+    grouped?`Parentheses: ${start} + ${dividend} = ${start+dividend}.`:`Divide first: ${dividend} ÷ ${divisor} = ${quotient}.`,
+    grouped?`Division before multiplication: ${start+dividend} ÷ ${divisor} = ${base+quotient}.`:`Multiply next: ${quotient} × ${factor} = ${quotient*factor}.`,
+    grouped?`Multiply: ${base+quotient} × ${factor} = ${value}.`:`Add: ${start} + ${quotient*factor} = ${value}.`);
+  }else{
+   const x=r.int(2,max),y=r.int(2,8),factor=r.int(1,9);
+   const value=grouped?(x+y)**2-factor:x+y*y*factor;
+   make(grouped?`(${x} + ${y})² − ${factor} = ____`:`${x} + ${y}² × ${factor} = ____`,value,
+    grouped?`Parentheses: ${x} + ${y} = ${x+y}.`:`Exponent before multiplication: ${y}² = ${y*y}.`,
+    grouped?`Square: ${x+y}² = ${(x+y)**2}.`:`Multiply: ${y*y} × ${factor} = ${y*y*factor}.`,
+    grouped?`Subtract: ${(x+y)**2} − ${factor} = ${value}.`:`Add: ${x} + ${y*y*factor} = ${value}.`);
+  }
+  break;
+ }
  case 'inequalities-worksheets':{const coef=r.pick(opts.coefficient==='mixed'?[-5,-4,-3,-2,2,3,4,5]:opts.coefficient==='positive'?[2,3,4,5]:[-5,-4,-3,-2]),bound=signed(),offset=r.int(0,1)?signed():0,strict=r.int(0,1)?'<':'≤';const op=coef<0?(strict==='<'?'>':'≥'):strict;make(`Solve: ${coef}x ${offset<0?'−':'+'} ${Math.abs(offset)} ${strict} ${coef*bound+offset}`,`x ${op} ${bound}`,`Subtract ${offset} from both sides`, `Divide by ${coef}; ${coef<0?'reverse':'keep'} the inequality sign`,`Solution: x ${op} ${bound}`);diagram={kind:'numberline',values:[bound],labels:[op]};break}
  case 'decimal-multiplication-worksheets':{
   const places=opts.places==='mixed'?r.int(1,2):Number(opts.places),den=10**places;

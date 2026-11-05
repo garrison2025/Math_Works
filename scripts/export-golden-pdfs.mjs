@@ -10,6 +10,9 @@ const directory='qa-artifacts/pdf-samples';
 await mkdir(directory,{recursive:true});
 const fixtures=[
  {slug:'two-step-equations-worksheets',quantity:20,options:{coefficient:'negative'}},
+ {slug:'order-of-operations-worksheets',quantity:40,options:{grouping:'mixed',skill:'mixed'}},
+ {slug:'order-of-operations-worksheets',quantity:20,options:{grouping:'no-parentheses',skill:'division'}},
+ {slug:'order-of-operations-worksheets',quantity:20,options:{grouping:'parentheses',skill:'powers'}},
  {slug:'adding-unlike-fractions-worksheets',quantity:20,options:{sumType:'proper'}},
  {slug:'fractions-worksheets',quantity:20,options:{operation:'division',denominators:'unlike'}},
  {slug:'fractions-worksheets',quantity:20,options:{operation:'subtraction',denominators:'unlike'}},
@@ -61,5 +64,5 @@ for(const [index,item] of fixtures.entries()){
   files.push({name,topic:item.slug,mode,paper,seed:set.seed,config:set.optionsHash,questionCount:set.problems.length});
  }
 }
-await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R25 deterministic golden fixtures',files},null,2));
+await writeFile(join(directory,'manifest.json'),JSON.stringify({source:'R26 deterministic golden fixtures',files},null,2));
 console.log(`Generated ${files.length} PDF QA fixtures to ${directory}`);

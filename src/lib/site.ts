@@ -8,6 +8,7 @@ export function category(slug:string):string{
 }
 export const topicIntro=(slug:string)=>{
  const names:Record<string,string>={
+  'order-of-operations-worksheets':'Print mixed-operation arithmetic with parentheses, exact division and squares. Practice the order of operations using separate worked solutions.',
   'two-step-equations-worksheets':'Practice solving equations that require undoing two operations. Each sheet includes a matching answer key and worked steps.',
   'one-step-equations-worksheets':'Create addition or multiplication equations with a single unknown and a unique solution.',
   'equivalent-fractions-worksheets':'Find a missing numerator or denominator in equivalent fractions using the same scale factor on top and bottom.',
@@ -41,7 +42,7 @@ export function howTo(slug:string):string[]{
  if(slug.includes('equation') && !slug.includes('linear-equations') && !slug.includes('systems-equations'))return ['Identify the operations acting on the variable.','Apply inverse operations to isolate the variable on one side of the equals sign.','Substitute your answer into the original equation to check equality.'];
  if(slug.includes('area')||slug.includes('volume')||slug.includes('surface'))return ['Read the dimensions shown in the question.','Choose the appropriate area, volume or surface-area formula.','Record square or cubic units where appropriate.'];
  if(slug.includes('statistics')||slug.includes('mean')||slug.includes('box'))return ['Put the data values in order if needed.','Use the stated statistical convention to compute the result.','Check the answer and working steps.'];
- if(slug.includes('order-of-operations'))return ['Work inside parentheses first.','Evaluate multiplication and division before addition and subtraction, working left to right at each priority.','Check that the final value matches the original expression structure.'];
+ if(slug.includes('order-of-operations'))return ['Calculate inside parentheses first, followed by powers or exponents.','Evaluate multiplication and division at equal priority from left to right; only then evaluate addition and subtraction, also left to right.','Show the intermediate result after each stage and check against the answer key.'];
  if(slug.includes('slope'))return ['Label both points (x₁, y₁) and (x₂, y₂).','Compute rise over run: (y₂ − y₁) / (x₂ − x₁).','If the two x-coordinates match, the vertical line has undefined slope.'];
  if(slug.includes('linear-equations'))return ['For a graphing worksheet, plot the y-intercept (0, b), then use slope m to locate another point.','Draw the line through the two plotted points; the answer key shows the completed graph.','For evaluation worksheets, substitute the specified x-value and check that (x, y) lies on the line.'];
  if(slug.includes('scientific-notation'))return ['Write the coefficient with exactly the selected 2, 3 or 4 significant digits; its absolute value must be at least 1 and below 10.','Move the decimal to recover standard form: positive exponents to the right, negative exponents to the left. Insert zeros without rounding.','To convert back, count how many positions the decimal moves and choose the exponent sign. Verify the original value and any significant zeros.'];
@@ -66,7 +67,7 @@ export function commonMistakes(slug:string):string[]{
  if(slug.includes('inequal'))return ['Forgetting to reverse the comparison sign after multiplying or dividing both sides by a negative number.', 'Using a closed dot for < or > instead of an open dot.'];
  if(slug.includes('two-step-equations'))return ['Undoing multiplication before undoing the added or subtracted constant.', 'Missing the sign of a negative coefficient when dividing.'];
  if(slug.includes('one-step-equations'))return ['Applying an inverse operation on only one side of the equation.', 'Losing track of negative signs when dividing both sides by a negative coefficient.'];
- if(slug.includes('order-of-operations'))return ['Adding from left to right before completing multiplication.', 'Ignoring parentheses when the same numbers are regrouped.'];
+ if(slug.includes('order-of-operations'))return ['Treating multiplication as always preceding division instead of working left to right.', 'Forgetting to calculate a square or the contents of parentheses before multiplying.'];
  if(slug.includes('multiplying-fractions'))return ['Multiplying one numerator by a denominator instead of numerator × numerator and denominator × denominator.', 'Failing to reduce the final product to lowest terms.'];
  if(slug==='fractions-worksheets')return ['Adding denominators during fraction addition or subtraction instead of finding a common denominator.', 'Forgetting to invert the divisor before multiplying when dividing fractions.', 'Losing a negative sign in a fraction subtraction result.'];
  if(slug.includes('fraction'))return ['Adding denominators when adding fractions.', 'Forgetting to simplify the resulting numerator and denominator.'];

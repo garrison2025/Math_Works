@@ -214,3 +214,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [IMPLEMENTED; CI PENDING] Addition/subtraction (same or unlike denominators), multiplication and division of nonzero fractions, exact rational answers, topic-specific teaching guidance, reviewed steps PDF and versioned v14 configuration identity.
 - [LOCAL TEST REQUIRED] 18,000 independent exact-arithmetic oracles, 40-question uniqueness and deterministic seeded links for all selectors. Full math suite, TypeScript, PDF and browser QA must pass before release claims.
 - [NOT VERIFIED] Physical printer calibration or exhaustive visual audit of all 51 topics; the pages.dev preview remains noindex.
+
+### R25: exact scientific notation
+
+- [IMPLEMENTED; CI VERIFICATION REQUIRED] Scientific notation now supports positive/negative exponent selection, 2–4 significant-digit coefficients, and exact decimal conversion without JavaScript float rounding, using generator/share v15.
+- [LOCAL TEST REQUIRED] 27,000 independent mathematical question-text oracles; 40-question uniqueness per selector combination; link roundtrips and TypeScript tests.
+- [CI REQUIRED] Recheck PDF A4/Letter, Chrome/Firefox mode controls, build and robots noindex audit for the new commit.
+- [NOT DONE] Full PDF human visual review and physical 50 mm protractor calibration.
