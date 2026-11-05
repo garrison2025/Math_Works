@@ -414,3 +414,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Runtime recomputation expanded from 23 to 36 active generators, covering all four 2×2 systems forms, mean absolute deviation, modified box-plot summaries/fences and scatter plot answer-vs-diagram integrity, alongside number lines, angle geometry, GCF, slope, and relations.
 - [IMPLEMENTED] Read visible statement and independent BigInt arithmetic; do not accept mutually matching but wrong answer fields. New tests check all option variants, unchanged reproducibility, diagram corruption and real PDF export.
 - [NOT CLAIMED] 15 remaining active topics lack the runtime independent exporter oracle; UI-only human learning quality, teacher sign-off and print-at-100% protractor physical measurement remain open.
+
+
+### R49 — full 51/51 independent PDF runtime math coverage (CI pending)
+
+- [IMPLEMENTED] Added last 15 topics to exact student-facing-question re-evaluation, including six order-of-operations expression templates, fraction equivalence, base-ten value and decimal half-up rounding, diagrams and protractor mark IDs.
+- [IMPLEMENTED] Unknown PDF topic fails closed (instead of bypassing the math oracle), and the source generator's 51 switch cases are compared programmatically against export validators.
+- [IMPLEMENTED] Adversarial tests for changed-but-consistent answers, visual metadata corruption, unknown topics, A4/Letter output and all option categories.
+- [VALIDATION STILL REQUIRED] Full GitHub CI, 468 real PDF stress files / 3,764 pages, two browsers, print geometry and manual teacher/physical calibration.

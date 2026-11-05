@@ -42,7 +42,22 @@ export const VERIFIED_AT_PDF_BOUNDARY=Object.freeze([
  'scatter-plot-worksheets',
  'slope-worksheets',
  'domain-range-worksheets',
- 'systems-equations-worksheets'
+ 'systems-equations-worksheets',
+ 'two-digit-multiplication-worksheets',
+ 'three-digit-by-two-digit-multiplication-worksheets',
+ 'two-digit-by-one-digit-multiplication-worksheets',
+ 'integer-operations-worksheets',
+ 'order-of-operations-worksheets',
+ 'equivalent-fractions-worksheets',
+ 'addition-worksheets',
+ 'subtraction-worksheets',
+ 'mixed-addition-subtraction-worksheets',
+ 'multiplication-worksheets',
+ 'multiplication-tables-worksheets',
+ 'place-value-worksheets',
+ 'decimal-place-value-worksheets',
+ 'lines-rays-segments-worksheets',
+ 'printable-protractor'
 ] as const);
 const verified=new Set<string>(VERIFIED_AT_PDF_BOUNDARY);
 const integer=(raw:string)=>BigInt(raw);
@@ -154,6 +169,23 @@ function twoEquationResult(a:bigint,b:bigint,c:bigint,d:bigint,r:bigint,s:bigint
 function readEquation(raw:string):[bigint,bigint,bigint]{
  const m=match(raw,/^(-?\d+)x ([+−]) (\d+)y = (-?\d+)$/);
  return [integer(m[1]),signedOffset(m[2],m[3]),integer(m[4])];
+}
+
+/** Parse a well-grouped (or ungrouped) nonnegative integer from its printed text. */
+function readWhole(raw:string):bigint{
+ if(!/^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(raw))
+  throw Error('Math oracle: invalid grouped whole number');
+ return BigInt(raw.replace(/,/g,''));
+}
+function finiteBinary(question:string,operator:'+'|'−'|'×'|'÷'):[bigint,bigint]{
+ const m=match(question,/^(\d+) ([+−×÷]) (\d+) = ____$/);
+ if(m[2]!==operator)throw Error('Math oracle: mismatched specialist arithmetic operator');
+ return [integer(m[1]),integer(m[3])];
+}
+/** Retain requested trailing zeros in a rounded place-value answer. */
+function fixedDecimal(value:bigint,places:number):string{
+ const base=10n**BigInt(places);
+ return String(value/base)+'.'+String(value%base).padStart(places,'0');
 }
 function computed(p:Problem):string{
  const q=p.payload.question;
@@ -552,13 +584,139 @@ function computed(p:Problem):string{
    throw Error('Math oracle: expected a parallel or coincident system, got nonzero determinant');
   return result;
  }
+
+ case 'two-digit-multiplication-worksheets':
+ case 'three-digit-by-two-digit-multiplication-worksheets':
+ case 'two-digit-by-one-digit-multiplication-worksheets':
+ case 'multiplication-worksheets':
+ case 'multiplication-tables-worksheets':{
+  const [a,b]=finiteBinary(q,'×');
+  if(p.topicId==='two-digit-multiplication-worksheets'||
+    p.topicId==='three-digit-by-two-digit-multiplication-worksheets'||
+    p.topicId==='two-digit-by-one-digit-multiplication-worksheets'){
+   const num=Number(a),factor=Number(b);
+   if(p.topicId==='two-digit-multiplication-worksheets'&&(num<12||num>99||factor<12||factor>99)||
+      p.topicId==='three-digit-by-two-digit-multiplication-worksheets'&&(num<101||num>999||factor<11||factor>99)||
+      p.topicId==='two-digit-by-one-digit-multiplication-worksheets'&&(num<12||num>99||factor<2||factor>9))
+    throw Error('Math oracle: column multiplication factor outside topic range');
+   checkDiagram(p,'column-multiplication',[num,factor]);
+  }else{
+   if(p.diagramSpec)throw Error('Math oracle: unexpected multiplication diagram');
+   if(p.topicId==='multiplication-tables-worksheets'&&(a<1n||a>12n||b<1n||b>12n))
+    throw Error('Math oracle: multiplication table outside 1-12 range');
+  }
+  return String(a*b);
+ }
+ case 'integer-operations-worksheets':{
+  const direct=q.match(/^(-?\d+) ([+−×]) \((-?\d+)\) = ____$/);
+  if(direct){
+   const a=integer(direct[1]),b=integer(direct[3]);
+   return String(direct[2]==='+'?a+b:direct[2]==='−'?a-b:a*b);
+  }
+  const division=match(q,/^(-?\d+) ÷ \((-?\d+)\) = ____$/);
+  const a=integer(division[1]),b=integer(division[2]);
+  if(b===0n||a%b!==0n)throw Error('Math oracle: non-exact signed division');
+  return String(a/b);
+ }
+ case 'order-of-operations-worksheets':{
+  let m=q.match(/^\((\d+) \+ (\d+)\) × (\d+) − (\d+) = ____$/);
+  if(m){const [a,b,c,d]=m.slice(1).map(integer);return String((a+b)*c-d);}
+  m=q.match(/^(\d+) \+ (\d+) × (\d+) − (\d+) = ____$/);
+  if(m){const [a,b,c,d]=m.slice(1).map(integer);return String(a+b*c-d);}
+  m=q.match(/^\((\d+) \+ (\d+)\) ÷ (\d+) × (\d+) = ____$/);
+  if(m){
+   const [a,b,c,d]=m.slice(1).map(integer);
+   if(c===0n||(a+b)%c!==0n)throw Error('Math oracle: inexact grouped division expression');
+   return String((a+b)/c*d);
+  }
+  m=q.match(/^(\d+) \+ (\d+) ÷ (\d+) × (\d+) = ____$/);
+  if(m){
+   const [a,b,c,d]=m.slice(1).map(integer);
+   if(c===0n||b%c!==0n)throw Error('Math oracle: inexact division expression');
+   return String(a+b/c*d);
+  }
+  m=q.match(/^\((\d+) \+ (\d+)\)² − (\d+) = ____$/);
+  if(m){const [a,b,c]=m.slice(1).map(integer);return String((a+b)**2n-c);}
+  m=q.match(/^(\d+) \+ (\d+)² × (\d+) = ____$/);
+  if(m){const [a,b,c]=m.slice(1).map(integer);return String(a+b**2n*c);}
+  throw Error('Math oracle: unrecognized order-of-operations question');
+ }
+ case 'equivalent-fractions-worksheets':{
+  const numerator=q.match(/^(\d+)\/(\d+) = ____\/(\d+)$/);
+  if(numerator){
+   const [n,d,newD]=numerator.slice(1).map(integer);
+   if(d===0n||newD===0n||(n*newD)%d!==0n)
+    throw Error('Math oracle: invalid equivalent fraction numerator');
+   return String(n*newD/d);
+  }
+  const denominator=match(q,/^(\d+)\/(\d+) = (\d+)\/____$/);
+  const [n,d,newN]=denominator.slice(1).map(integer);
+  if(d===0n||n===0n||(d*newN)%n!==0n)
+   throw Error('Math oracle: invalid equivalent fraction denominator');
+  return String(d*newN/n);
+ }
+ case 'addition-worksheets':
+ case 'subtraction-worksheets':
+ case 'mixed-addition-subtraction-worksheets':{
+  const m=match(q,/^(\d+) ([+−]) (\d+) = ____$/);
+  if(p.topicId==='addition-worksheets'&&m[2]!=='+')
+   throw Error('Math oracle: addition specialist has subtraction');
+  if(p.topicId==='subtraction-worksheets'&&m[2]!=='−')
+   throw Error('Math oracle: subtraction specialist has addition');
+  const a=integer(m[1]),b=integer(m[3]);
+  return String(m[2]==='+'?a+b:a-b);
+ }
+ case 'place-value-worksheets':{
+  const m=match(q,/^What (digit is in|is the value of) the (ones|tens|hundreds|thousands|millions|billions) (?:place|digit) of ((?:\d+|\d{1,3}(?:,\d{3})+))\?$/);
+  // "What digit is in the ones place of..." or
+  // "What is the value of the ones digit in..." are separate grammar shapes.
+  const magnitude:{
+   [key:string]:bigint
+  }={ones:1n,tens:10n,hundreds:100n,thousands:1000n,millions:1000000n,billions:1000000000n};
+  const value=readWhole(m[3]),digit=(value/magnitude[m[2]])%10n;
+  return m[1]==='digit is in'?String(digit):String(digit*magnitude[m[2]]);
+ }
+ case 'decimal-place-value-worksheets':{
+  const m=match(q,/^(?:What digit is in the|What is the value of the|Round) .*$/);
+  const digit=q.match(/^What digit is in the (tenths|hundredths|thousandths) place of (\d+)\.(\d{4})\?$/);
+  const amount=q.match(/^What is the value of the (tenths|hundredths|thousandths) digit in (\d+)\.(\d{4})\?$/);
+  const round=q.match(/^Round (\d+)\.(\d{4}) to the nearest (tenths|hundredths|thousandths)\.$/);
+  if(!digit&&!amount&&!round)throw Error('Math oracle: unrecognized decimal place-value question');
+  const place=(round?round[3]:digit?digit[1]:amount![1]);
+  const n=place==='tenths'?1:place==='hundredths'?2:3;
+  const fractional=round?round[2]:digit?digit[3]:amount![3];
+  const selected=Number(fractional[n-1]);
+  if(digit)return String(selected);
+  if(amount)return selected===0?'0':'0.'+'0'.repeat(n-1)+String(selected);
+  const whole=integer(round![1]),raw=BigInt(fractional),unit=10n**BigInt(4-n);
+  const rounded=(whole*10000n+raw+unit/2n)/unit;
+  return fixedDecimal(rounded,n);
+ }
+ case 'lines-rays-segments-worksheets':{
+  if(q!=='Identify the pictured figure: line, ray, or segment.')
+   throw Error('Math oracle: invalid geometry identification question');
+  const d=p.diagramSpec;
+  if(d?.kind!=='line'||d.values.length!==1||
+   ![0,1,2].includes(d.values[0])||
+   d.labels?.length!==2||
+   !/^[A-K]$/.test(d.labels[0])||!/^[M-W]$/.test(d.labels[1]))
+   throw Error('Math oracle: invalid line-ray-segment diagram');
+  return d.values[0]===2?'line':d.values[0]===1?'ray':'segment';
+ }
+ case 'printable-protractor':{
+  const m=match(q,/^Locate the (\d+)° mark on a printed protractor\.$/);
+  const degrees=safeInt(m[1]);
+  if(degrees<0||degrees>180)throw Error('Math oracle: protractor marking outside half-circle');
+  checkDiagram(p,'protractor',[50]);
+  return String(degrees)+'°';
+ }
  default: throw Error(`Math oracle: unsupported topic ${p.topicId}`);
  }
 }
 /** Refuse to export a supported mathematical topic whose answer is wrong even
  * when the answerMap has been tampered with to match expectedAnswer. */
 export function assertWorksheetMath(sheet:Worksheet):void{
- if(!verified.has(sheet.topicId))return;
+ if(!verified.has(sheet.topicId))throw Error('Math oracle: unverified PDF topic '+sheet.topicId);
  for(const p of sheet.problems){
   const actual=computed(p);
   if(actual!==p.expectedAnswer)

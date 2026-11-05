@@ -162,7 +162,7 @@ const variants={
 const newTopics=Object.keys(variants);
 
 test('R48: independent export math oracle covers 36 active topics, retaining all 23 from R47',()=>{
- assert.equal(VERIFIED_AT_PDF_BOUNDARY.length,36);
+ assert.ok(VERIFIED_AT_PDF_BOUNDARY.length>=36,'R48 original 36 must remain verified');
  for(const topic of newTopics)assert.ok(VERIFIED_AT_PDF_BOUNDARY.includes(topic),topic);
 });
 test('R48: 13 additional maths families and all major options pass independent runtime recomputation',()=>{
