@@ -357,7 +357,7 @@ try {
  await page.locator('[data-action="calibration"]').click();
  const scaleDownload=await scalePdf;
  assert.match(scaleDownload.suggestedFilename(),/printer-calibration-a4.pdf$/);
- const scaleDoc=await verifyPdf(scaleDownload,'R52 one-page A4 actual-size scale PDF');
+ const scaleDoc=await verifyPdf(scaleDownload,'R52 one-page A4 actual-size scale PDF',{paper:'A4'});
  assert.equal(scaleDoc.getPageCount(),1);
  assert.ok(Math.abs(scaleDoc.getPage(0).getWidth()-595.28)<0.1);
  assert.match(scaleDoc.getTitle()??'',/printer calibration/);
