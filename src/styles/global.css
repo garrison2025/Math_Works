@@ -19,3 +19,12 @@
 .skip-link{position:absolute;z-index:9999;top:-120px;left:14px;background:#172337;color:#fff;border:2px solid #fff;padding:10px 16px;border-radius:9px;font-weight:700;box-shadow:0 3px 12px rgba(0,0,0,.25)}
 .skip-link:focus,.skip-link:focus-visible{top:12px;color:#fff;outline:3px solid #1b64a5;outline-offset:2px}
 @media print{.skip-link{display:none!important}}
+
+/* R39: stacked mathematical fractions with a plain-text accessible equivalent. */
+.stacked-equation{display:flex;align-items:center;flex-wrap:nowrap;gap:8px;max-width:100%;margin:12px 0 7px 1px;color:#172337;font-family:Arial,Helvetica,sans-serif;font-size:1.02rem;font-weight:650;overflow-x:auto;line-height:1.15}
+.stacked-frac{display:inline-flex;flex:0 0 auto;flex-direction:column;align-items:center;justify-content:center;min-width:28px;vertical-align:middle}
+.stacked-numerator,.stacked-denominator{display:block;padding:2px 6px;white-space:nowrap}
+.stacked-numerator{border-bottom:1.5px solid currentColor;min-width:100%;text-align:center}
+.stacked-op{flex:0 0 auto;white-space:nowrap}
+@media(max-width:630px){.stacked-equation{font-size:.88rem;gap:5px;margin-top:8px}}
+@media print{.stacked-equation{font-size:11pt;overflow:visible;break-inside:avoid}}

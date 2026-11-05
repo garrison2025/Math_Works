@@ -266,3 +266,8 @@ A new PyMuPDF CI release gate inspects **every page** of all 468 maximum-count s
 ### R38 — ruled handwriting space in printable question PDFs
 
 Practice questions requiring calculations now reserve one or two thin pencil rules underneath each prompt for showing working (e.g. multi-step equations, fractions, PEMDAS, percentage change and statistics). Fact drills stay compact; diagrams retain their native answer-blind drawing space. Rule spacing is included in the PDF layout's measured problem height **before** deciding page breaks, on both A4 and Letter. Answer keys and worked-step PDFs are unchanged. All output remains browser-local and vector-based. Stress PDFs, semantic checks, text/vector margins and the R37 text-collision gate must pass; actual classroom/physical printer approval remains outstanding.
+
+
+### R39 — true stacked fractions for printable practice
+
+Four active fraction families plus fraction-to-percentage conversion now show an additional *display-style* numerator / fraction bar / denominator equation on practice worksheets. The HTML preview uses safe deterministic token rendering; the physical PDF draws real vector bars and exact numeral text. Every original question remains visible and extractable for accessibility, search, answer integrity and all existing mathematical checks. Visual duplication is marked `aria-hidden` in browser previews. Unknown formats do not render extra math. The PDF reserves 49pt per stacked equation **before pagination**, preserving writing rules and both Letter/A4 margins. All answers, steps, generator seeds and URL fingerprints are unchanged; full CI and physical/visual review remain independent release gates.

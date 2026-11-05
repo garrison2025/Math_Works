@@ -194,6 +194,15 @@ try {
  assert.match(notationLink,/opt_significantDigits=4/);
  events.push({kind:'interaction',name:'R25 negative scientific exponents, four significant figures, A4 practice PDF and sharing',status:'pass'});
 
+ // R39: the plain-text question remains readable and display fractions are stacked.
+ await page.goto(`${base}/adding-unlike-fractions-worksheets/`,{waitUntil:'networkidle'});
+ assert.match(await page.locator('.problem .q').first().innerText(),/\d+\/\d+ \+ \d+\/\d+/);
+ assert.equal(await page.locator('.stacked-equation').count(),8);
+ assert.equal(await page.locator('.stacked-frac').count(),16);
+ assert.equal(await page.locator('.stacked-equation').first().getAttribute('aria-hidden'),'true');
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.stacked-equation').count(),0,'answer mode must hide decorative duplicates');
+ events.push({kind:'interaction',name:'R39 full original fraction text and styled stacked fractions',status:'pass'});
  // R24: exact fraction division and unlike-denominator subtraction with steps PDF.
  await page.goto(`${base}/fractions-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="operation"]').selectOption('division');

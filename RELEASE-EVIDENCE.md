@@ -327,3 +327,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Physical pagination reserves rule height before page break and rejects oversized exercises; both Letter/A4 use exactly the same writing-line geometry with the existing 36pt safe margins.
 - [CI REQUIRED] Run full 51-topic maximum-count stress, R32 semantic, R30 vector/text margins, R37 text-collision preflight and Chromium/Firefox checks on the final R38 commit. Avoid treating changed page counts as errors if all manifest identity checks still pass.
 - [NOT VERIFIED] Manual review of all 51 topics and physical printer calibration.
+
+
+### R39 — supplemental stacked-fraction typography (verify CI per commit)
+
+- [IMPLEMENTED] Conservative safe parser supports binary +, −, × and ÷ of fractions; missing numerator/denominator equivalence; and fraction-to-percent questions only. No invented expression parsing or unsafe HTML injection.
+- [IMPLEMENTED] Matching stacked math in browser questions preview and PDF practice, with original text retained and verified semantic text identity. Vector PDF bars are measured and page-height reserved explicitly.
+- [CI REQUIRED] Test source/parser, A4 and Letter exports, Firefox/Chromium previews, all 468 PDF stress outputs, 36pt margins, visual text collisions and content extraction.
+- [NOT DONE] Physical printer ruler calibration, comprehensive human visual review, 24 SEO intent collisions decisions or public-domain indexing.
