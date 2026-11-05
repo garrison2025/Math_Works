@@ -256,3 +256,8 @@ All 51 live worksheet routes now have a distinct, generator-grounded English int
 ### R36 — keyboard access, reduced motion and print/preview parity
 
 Every page now has a keyboard-visible **Skip to main content** link. The local practice toggle and reset action place keyboard focus on the first available answer field. Chromium QA checks this keyboard route, confirms reduced-motion preferences disable decorative transitions, and intercepts the PDF print action to load and inspect the actual exported A4 answer-key PDF. This is digital browser QA; it cannot certify screen-reader usability, physical printer scaling or classroom acceptance.
+
+
+### R37 — full-catalog page-legibility preflight and review board
+
+A new PyMuPDF CI release gate inspects **every page** of all 468 maximum-count stress PDFs for substantial overlaps among independently drawn text spans, replacement/missing glyphs and blank text pages. It separately builds `qa-artifacts/pdf-stress/visual-review-contact-sheet.pdf`: scalable vector thumbnails of first/last pages for A4 challenge practice/answers and approved steps across all **51 live topics**, with a machine-readable sample index. Five adversarial geometry tests must pass. The board is retained in the private CI PDF-stress artifact, not deployed as crawlable content. This automates a text-collision gate but does **not** certify text-vector collisions, printable diagrams, a real physical printer or a teacher's final visual sign-off. Do not enable indexation on this evidence alone.

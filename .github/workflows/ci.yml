@@ -58,6 +58,10 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_content_audit.py' -v
       - name: Verify extracted content of every stress PDF against exact problem manifest
         run: .venv-pdf-audit/bin/python scripts/check-pdf-content.py qa-artifacts/pdf-stress
+      - name: Reject clipped glyphs and severe overlapping PDF text (adversarial tests)
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_visual_audit.py' -v
+      - name: Check every PDF page for text collisions and generate human review boards
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-visual.py qa-artifacts/pdf-stress
       - name: Test physical-PDF dimension audit against intentionally broken instruments
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF

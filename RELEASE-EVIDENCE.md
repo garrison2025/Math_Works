@@ -311,3 +311,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Visible-on-focus skip link to main content; online practice and clear actions move focus to the first answer input for keyboard usability.
 - [CI REQUIRED] Chromium test checks first Tab focus target, computed reduced-motion duration, and intercepts the print-ready blob to verify that PDF mode='answers', correct generator identity and A4 MediaBox survive the UI action.
 - [NOT VERIFIED] Screen-reader audit, physical 50mm measurement, complete 51-topic human visual proofing and production custom-domain release.
+
+
+### R37: PDF text-collision preflight (CI verification pending)
+
+- [IMPLEMENTED] Detect significant overlapping independent text spans, replacement glyph artifacts and blank pages on all maximum-count exported stress PDFs (51 topics, 102 cases, 468 documents across Letter/A4 and question/answer/approved steps modes).
+- [IMPLEMENTED] Generate a vector contact sheet of first/last A4 challenge pages, covering every topic, and store the exact selected source files/page numbers in `visual-preflight-audit.json` for manual review.
+- [LOCAL PASS] Five PyMuPDF synthetic tests for collisions, legitimate adjacent rows/columns, missing glyphs and blank page behavior; CI must rerun and report the full-catalog outcome.
+- [NOT RUN] Full human inspection of the contact sheet and real 50mm printed ruler. Automated text collision testing is not a complete visual acceptance test.
