@@ -54,6 +54,10 @@ jobs:
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
       - name: Enforce 36-point vector-drawing safe margins on every stress PDF
         run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
+      - name: Reject missing PDF questions answers steps and tampered bytes (adversarial tests)
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_content_audit.py' -v
+      - name: Verify extracted content of every stress PDF against exact problem manifest
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-content.py qa-artifacts/pdf-stress
       - name: Test physical-PDF dimension audit against intentionally broken instruments
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
