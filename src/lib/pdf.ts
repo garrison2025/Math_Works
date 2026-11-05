@@ -10,6 +10,8 @@ export type PdfMode = 'questions'|'answers'|'steps';
 export type Paper = 'Letter'|'A4';
 const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.89]};
 const ink=rgb(.09,.14,.22),sub=rgb(.35,.43,.52),accent=rgb(.105,.39,.65);
+/** Worked solutions are reading material, not compact answer-key metadata. */
+const STEP_FONT_SIZE=10, STEP_LINE_HEIGHT=14, STEP_GAP=3;
 export function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,' divided by ').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/→/g,' -> ').replace(/←/g,' <- ').replace(/↔/g,' <-> ').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
 /** Wrap using font metrics rather than character counts; even a long unspaced
  * token is split before it can reach a page margin. */
@@ -275,9 +277,24 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  if(mode==='steps'&&!hasVerifiedSteps(sheet.topicId))throw new Error('Worked steps are not yet verified for this topic');
  const pdf=await PDFDocument.create();const [pw,ph]=PAGE_SIZE[paper];const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
  const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode==='questions'&&!hasDiagrams;
+ const bottomSafety=margin+18;
  let page:PDFPage;let currentY=0;let pageNum=0;
- function newPage(){page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-48;page.drawText(ascii(topicName).slice(0,74),{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=19;page.drawText(`Math Worksheet Studio | ${mode.toUpperCase()} | ID ${sheet.topicId.slice(0,15)}-${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${sheet.problems.length} questions`,{x:margin,y:currentY,size:8,font,color:sub});currentY-=12;page.drawLine({start:{x:margin,y:currentY},end:{x:pw-margin,y:currentY},color:accent,thickness:1});currentY-=23;page.drawText('Name: ______________________________      Date: _______________',{x:margin,y:currentY,size:9,font,color:ink});currentY-=23;}
+ function newPage(){
+  page=pdf.addPage([pw,ph]);pageNum++;currentY=ph-48;
+  const heading=ascii(topicName).slice(0,74);
+  if(bold.widthOfTextAtSize(heading,15)>bodyW)throw new Error('PDF topic title exceeds the printable content width');
+  page.drawText(heading,{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=20;
+  const summary=`Math Worksheet Studio | ${mode.toUpperCase()} | ${sheet.problems.length} questions | ${paper}`;
+  const identity=`Seed ${sheet.seed} | Generator v${sheet.generatorVersion} | Layout v${sheet.layoutVersion} | Config ${sheet.optionsHash}`;
+  for(const line of [summary,identity]){
+   if(font.widthOfTextAtSize(line,8.5)>bodyW)throw new Error('PDF identity line exceeds the printable content width');
+   page.drawText(line,{x:margin,y:currentY,size:8.5,font,color:sub});currentY-=14;
+  }
+  page.drawLine({start:{x:margin,y:currentY},end:{x:pw-margin,y:currentY},color:accent,thickness:1});currentY-=24;
+  page.drawText('Name: ______________________________      Date: _______________',{x:margin,y:currentY,size:9,font,color:ink});currentY-=25;
+ }
  newPage();
+ const maxProblemHeight=currentY-bottomSafety;
  const colGap=19,colW=twoCols?(bodyW-colGap)/2:bodyW;
  function heightFor(p:Problem){
   const width=twoCols?colW-8:bodyW-10,questions=wrapPdfText(p.payload.question,font,10,width);
@@ -285,13 +302,15 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   if(mode==='questions')return common+(p.diagramSpec?(p.diagramSpec.kind==='protractor'?305:150):0)+18;
   if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
-  const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,9,bodyW-18).length,0);
-  return common+13+answerLines*12+stepLines*11+24;
+  const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,STEP_FONT_SIZE,bodyW-18).length,0);
+  return common+13+answerLines*12+stepLines*STEP_LINE_HEIGHT+p.solutionSteps.length*STEP_GAP+24;
  }
  let rowY=currentY,rowH=0,col=0;
  for(let i=0;i<sheet.problems.length;i++){
-  const p=sheet.problems[i],needed=heightFor(p);if(twoCols&&col===2){currentY=rowY-rowH-8;rowY=currentY;rowH=0;col=0;}
-  if((twoCols?rowY:currentY)-needed<margin+18){newPage();rowY=currentY;rowH=0;col=0;}
+  const p=sheet.problems[i],needed=heightFor(p);
+  if(needed>maxProblemHeight)throw new Error(`Problem ${i+1} cannot fit on a ${paper} page in ${mode} mode`);
+  if(twoCols&&col===2){currentY=rowY-rowH-8;rowY=currentY;rowH=0;col=0;}
+  if((twoCols?rowY:currentY)-needed<bottomSafety){newPage();rowY=currentY;rowH=0;col=0;}
   const xx=margin+(twoCols?col*(colW+colGap):0),yy=twoCols?rowY:currentY;
   let y=yy;page.drawText(`${i+1}.`,{x:xx,y,size:9,font:bold,color:accent});y-=17;
   for(const line of wrapPdfText(p.payload.question,font,10,twoCols?colW-8:bodyW-10)){page.drawText(line,{x:xx,y,size:10,font,color:ink});y-=13;}
@@ -299,11 +318,11 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
    if(p.diagramSpec&&(['numberline','box-practice','function-table'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-'))))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }
-  if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,9,bodyW-18)){page.drawText(line,{x:xx+10,y,size:9,font,color:sub});y-=11;}}}
+  if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,STEP_FONT_SIZE,bodyW-18)){page.drawText(line,{x:xx+10,y,size:STEP_FONT_SIZE,font,color:sub});y-=STEP_LINE_HEIGHT;}y-=STEP_GAP;}}
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;
  }
  const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:19,size:7,font,color:sub});}
- pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed} - generator v${sheet.generatorVersion} - config ${sheet.optionsHash}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
+ pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed} - generator v${sheet.generatorVersion} - config ${sheet.optionsHash} - layout ${sheet.layoutVersion}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
 }
 
 /** One practical, unmarked 180° instrument on a single Letter/A4 PDF page.

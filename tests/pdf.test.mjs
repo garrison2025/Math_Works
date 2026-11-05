@@ -450,3 +450,32 @@ test('R28 billion-digit and four-place decimal rounding PDFs keep paper, seed an
   assert.deepEqual(sheet.answerMap,sheet.problems.map(p=>({id:p.id,answer:p.expectedAnswer})));
  }
 });
+
+// R29: Layout v2 is a PDF-printing revision only; numeric generator v18 and
+// replayed seeds remain unchanged. The PDF must identify both revisions.
+test('R29 layout v2 PDFs identify generator, sheet configuration and print layout',async()=>{
+ const sheet=makeWorksheet('long-division-worksheets',20261105,20,'challenge',
+  {remainder:'yes',divisorDigits:'two',dividendDigits:'four'});
+ assert.equal(sheet.layoutVersion,'2');
+ for(const paper of ['Letter','A4'])for(const mode of ['questions','answers','steps']){
+  const bytes=await createWorksheetPdf(sheet,'Long Division Worksheets',mode,paper);
+  const pdf=await PDFDocument.load(bytes);
+  assert.match(pdf.getTitle()??'',/layout 2/);
+  assert.match(pdf.getTitle()??'',/generator v18/);
+  assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
+  assert.ok(pdf.getPageCount()>=1);
+ }
+});
+
+test('R29 refuses a problem too tall for even a fresh printable page instead of clipping it',async()=>{
+ const sheet=makeWorksheet('two-step-equations-worksheets',20261105,1);
+ sheet.problems[0].payload.question='LONGTOKEN'.repeat(750);
+ for(const paper of ['Letter','A4']){
+  await assert.rejects(()=>createWorksheetPdf(sheet,'Two Step Equations Worksheets','questions',paper),/cannot fit on a .* page/);
+ }
+ const steps=makeWorksheet('long-division-worksheets',20261105,1);
+ steps.problems[0].solutionSteps=['VERY_LONG_EXPLANATION'.repeat(400)];
+ for(const paper of ['Letter','A4']){
+  await assert.rejects(()=>createWorksheetPdf(steps,'Long Division Worksheets','steps',paper),/cannot fit on a .* page/);
+ }
+});

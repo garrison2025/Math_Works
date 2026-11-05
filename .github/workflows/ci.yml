@@ -34,6 +34,16 @@ jobs:
           if-no-files-found: warn
       - name: Generate PDF golden fixtures
         run: npm run qa:pdf-samples
+      - name: Stress test all 51 live worksheet PDFs at maximum count
+        run: npm run qa:pdf-stress
+      - name: Retain exhaustive PDF audit and exact problem/answer manifest
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r29-all-51-topic-pdf-stress
+          path: qa-artifacts/pdf-stress/
+          retention-days: 7
+          if-no-files-found: error
       - name: Render first pages for visual review (when Poppler is available)
         shell: bash
         run: |

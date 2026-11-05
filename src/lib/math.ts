@@ -6,7 +6,7 @@ export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
 export const GENERATOR_VERSION='18' as const;
-export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
+export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'2'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
 const gcdB=(a:bigint,b:bigint):bigint=>b===0n?abs(a):gcdB(b,a%b);
@@ -563,5 +563,5 @@ export function makeWorksheet(topicId:string,seed:number,quantity:number,difficu
   if(!p)throw Error('Not enough unique questions for this configuration; reduce quantity.');
   problems.push({...p,id:`Q${i+1}`});
  }
- return {engineVersion:'1.0.0',generatorVersion:GENERATOR_VERSION,seed,optionsHash:optionsFingerprint(topicId,difficulty,quantity,normalized),topicId,problems,answerMap:problems.map(p=>({id:p.id,answer:p.expectedAnswer})),layoutVersion:'1'};
+ return {engineVersion:'1.0.0',generatorVersion:GENERATOR_VERSION,seed,optionsHash:optionsFingerprint(topicId,difficulty,quantity,normalized),topicId,problems,answerMap:problems.map(p=>({id:p.id,answer:p.expectedAnswer})),layoutVersion:'2'};
 }

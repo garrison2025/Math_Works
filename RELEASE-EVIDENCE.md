@@ -236,3 +236,10 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [LOCAL PASS] 106 math/content/indexation/link tests including 18,000 independent whole-place and 13,500 decimal-place mathematical oracles; TypeScript check and browser-script syntax check passed.
 - [CI REQUIRED] A4/Letter 40-question PDF exports, browser-selected billion/rounding options with downloads, 51-page Astro static build and `noindex,nofollow` audit. Verify before claiming deployment.
 - [NOT VERIFIED] Physical 50 mm protractor print calibration, exhaustive PDF manual review and production-domain release; previews remain `noindex,nofollow`.
+
+### R29: comprehensive print quality gate (CI pending)
+
+- [LOCAL PASS] New PDF layout v2 maintains mathematical generator v18, records PDF layout identity and uses readable 10 pt / 14 pt worked-step text with 3 pt separation. All oversized individual problems are rejected explicitly rather than allowing a printable page to overflow.
+- [LOCAL PASS] `npm run typecheck` and 108 math/route/content tests passed, including all 51 live generators at their maximum supported question count in two difficulty modes. The CI-only stress task will produce paired Letter/A4 practice and answer PDFs for 102 scenarios; reviewed-step PDFs are added only for eligible topics.
+- [IMPLEMENTED; CI REQUIRED] Full-catalog stress task asserts PDF page size, page count, worksheet seed/version/config identifiers, distinct question-answer IDs and output SHA-256, preserving a machine-readable QA manifest. Its actual PDF and browser checks must complete on GitHub Actions before marking them PASS.
+- [NOT VERIFIED] Exhaustive human page-by-page evaluation, classroom/teacher acceptance, physical printer 50 mm protractor calibration, and a custom production domain. Keep pages.dev preview `noindex,nofollow`.
