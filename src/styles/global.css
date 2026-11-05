@@ -54,3 +54,7 @@
 .calibration-card .calibration-result.calibration-warning{background:#fff5e9;border-left-color:#aa6b28}
 @media(max-width:390px){.calibration-fields{grid-template-columns:1fr}}
 @media print{.calibration-card{display:none!important}}
+
+/* R53: classroom-scale long division SVG with 4-5 visible writing rows. */
+.problem svg.long-division-vector{height:auto;max-height:265px}
+@media(max-width:630px){.problem svg.long-division-vector{max-height:235px}}
