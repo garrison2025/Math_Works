@@ -485,9 +485,15 @@ test('R29 refuses a problem too tall for even a fresh printable page instead of 
  for(const paper of ['Letter','A4']){
   await assert.rejects(()=>createWorksheetPdf(sheet,'Addition Worksheets','questions',paper),/cannot fit on a .* page/);
  }
- const steps=makeWorksheet('long-division-worksheets',20261105,1);
- steps.problems[0].solutionSteps=['VERY_LONG_EXPLANATION'.repeat(400)];
+ // Exercise real PDF page-height handling with individually well-formed
+ // step lines. A single 7,000-character step is now (correctly) rejected by
+ // the separate R50 instructional-content gate before pagination runs.
+ // One-step equations have established step eligibility but are outside the
+ // eight full-trace independent reconstructions introduced in R50.
+ const steps=makeWorksheet('one-step-equations-worksheets',20261105,1);
+ steps.problems[0].solutionSteps=Array.from({length:14},(_,i)=>
+  'Step '+(i+1)+': '+('Review the intermediate calculation carefully. '.repeat(28)));
  for(const paper of ['Letter','A4']){
-  await assert.rejects(()=>createWorksheetPdf(steps,'Long Division Worksheets','steps',paper),/cannot fit on a .* page/);
+  await assert.rejects(()=>createWorksheetPdf(steps,'One Step Equations Worksheets','steps',paper),/cannot fit on a .* page/);
  }
 });
