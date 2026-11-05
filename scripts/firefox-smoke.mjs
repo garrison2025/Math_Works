@@ -216,6 +216,15 @@ try{
  assert.ok(geometry.preview<geometry.controls,'Preview must precede settings on mobile');
  await page.screenshot({path:join(out,'firefox-mobile-390.png'),fullPage:true});
  checks.push({name:'390px mobile viewport and visual evidence',status:'pass'});
+ // R45: Firefox must honor the exclusive trapezoid setting in browser output.
+ await open('area-of-trapezoids-worksheets');
+ await page.locator('[data-option="baseRelation"]').selectOption('unequal');
+ const exclusive=await page.locator('.problem .q').allInnerTexts();
+ assert.equal(exclusive.length,8);
+ assert.ok(exclusive.every(q=>{
+  const m=q.match(/bases (\d+), (\d+)/);return m&&m[1]!==m[2];
+ }),'Firefox exclusive trapezoid setting failed');
+ checks.push({name:'R45 Firefox opt-in exclusive trapezoid definition generates unequal bases',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});

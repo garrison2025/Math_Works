@@ -58,7 +58,13 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'adding-unlike-fractions-worksheets':[entry('sumType','Fraction sum','Target sums less than one or at least one.',mixed('proper','improper'))],
  'area-of-triangles-worksheets':[entry('task','Triangle task','Find the area from base and height, or the missing height from area and base.',choice('area','missing-height'))],
  'area-of-parallelograms-worksheets':[entry('task','Parallelogram task','Find the area or find an unknown perpendicular height.',choice('area','missing-height'))],
- 'area-of-trapezoids-worksheets':[entry('task','Trapezoid task','Find the area or find an unknown perpendicular height.',choice('area','missing-height'))],
+ 'area-of-trapezoids-worksheets':[
+  entry('task','Trapezoid task','Find the area or find an unknown perpendicular height.',choice('area','missing-height')),
+  entry('baseRelation','Parallel-base definition','Inclusive allows equal bases (a parallelogram). Choose unequal only when your curriculum excludes equal-base figures from trapezoids.',[
+   {value:'inclusive',label:'Inclusive · equal bases allowed'},
+   {value:'unequal',label:'Unequal parallel bases only'}
+  ])
+ ],
  'area-worksheets':[entry('shape','Area shape','Practice rectangles or squares.',choice('rectangle','square'))],
  'triangle-angle-sum-worksheets':[entry('thirdAngle','Third-angle type','Practice triangles whose missing angle is acute, right or obtuse.',mixed('acute','right','obtuse'))],
  'pythagorean-worksheets':[entry('scale','Triangle sizes','Practice smaller or larger scaled Pythagorean triples.',mixed('small','large')),entry('task','Missing side','Find the hypotenuse, the missing leg, or a mix of both.',choice('hypotenuse','missing-leg','mixed'))],
@@ -95,6 +101,11 @@ export function normalizeTopicOptions(topic:string,options:TopicOptions={}):Topi
 }
 export function optionsFingerprint(topic:string,difficulty:string,quantity:number,options:TopicOptions):string {
  const ordered=normalizeTopicOptions(topic,options);
+ // R45 backwards compatibility: the original v18 trapezoid generator had
+ // only task. Its historical default hash and seed-generated questions must
+ // remain exactly stable when adding an opt-in curriculum selector.
+ if(topic==='area-of-trapezoids-worksheets'&&ordered.baseRelation==='inclusive')
+  delete ordered.baseRelation;
  const value=JSON.stringify([topic,difficulty,quantity,ordered]);
  let hash=0x811c9dc5;
  for(let i=0;i<value.length;i++)hash=Math.imul(hash^value.charCodeAt(i),0x01000193)>>>0;

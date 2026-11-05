@@ -418,7 +418,14 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   if(opts.task==='missing-height')make(`A parallelogram has base ${x} and area ${x*y} square units. Find its perpendicular height.`,y,'Area = base × perpendicular height',`Height = ${x*y} / ${x} = ${y} units`);
   else make(`Find the area of a parallelogram with base ${x} and perpendicular height ${y}.`,x*y,`A = base × height = ${x*y} square units`);
   diagram={kind:'parallelogram',values:opts.task==='missing-height'?[x]:[x,y]};break}
- case 'area-of-trapezoids-worksheets':{const x=a(),y=b(),h=r.int(2,16),area=normal((x+y)*h/2);
+ case 'area-of-trapezoids-worksheets':{
+  const x=a(),rawY=b(),h=r.int(2,16);
+  // Keep the original v18 RNG draw order and default questions intact.
+  // Some curricula define trapezoids exclusively, so an opt-in setting
+  // replaces only an equal second base (without consuming new randomness).
+  const y=opts.baseRelation==='unequal'&&rawY===x
+   ?(rawY<max?rawY+1:rawY-1):rawY;
+  const area=normal((x+y)*h/2);
   if(opts.task==='missing-height')make(`A trapezoid has bases ${x}, ${y} and area ${area} square units. Find its height.`,h,'Area = (a + b) × height / 2',`Height = 2 × ${area} / (${x} + ${y}) = ${h} units`);
   else make(`A trapezoid has bases ${x}, ${y} and height ${h}. Find area.`,area,'A = (a + b) × h / 2',`(${x}+${y})×${h}/2=${area} square units`);
   diagram={kind:'trapezoid',values:opts.task==='missing-height'?[x,y]:[x,y,h]};break}

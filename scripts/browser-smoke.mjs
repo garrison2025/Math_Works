@@ -207,6 +207,32 @@ try {
  assert.match(notationLink,/opt_significantDigits=4/);
  events.push({kind:'interaction',name:'R25 negative scientific exponents, four significant figures, A4 practice PDF and sharing',status:'pass'});
 
+ // R45: the exclusive trapezoid option must affect real browser questions,
+ // survive a share-link round trip, and generate a real downloadable PDF.
+ await page.goto(`${base}/area-of-trapezoids-worksheets/`,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-option="baseRelation"]').inputValue(),'inclusive');
+ assert.equal(await page.locator('section[aria-label="Trapezoid definition choices"]').count(),1);
+ const defaultText=await page.locator('.problem .q').allInnerTexts();
+ await page.locator('[data-option="baseRelation"]').selectOption('unequal');
+ const exclusiveTexts=await page.locator('.problem .q').allInnerTexts();
+ assert.equal(exclusiveTexts.length,8);
+ for(const question of exclusiveTexts){
+  const m=question.match(/bases (\d+), (\d+)/);
+  assert.ok(m,`Unparseable exclusive trapezoid problem: ${question}`);
+  assert.notEqual(m[1],m[2],`Exclusive setting generated equal bases: ${question}`);
+ }
+ await page.locator('[data-action="share"]').click();
+ const exclusiveLink=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.match(exclusiveLink,/opt_baseRelation=unequal/);
+ const exclusiveDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await exclusiveDownload,'R45 unequal trapezoid bases PDF');
+ await page.goto(exclusiveLink,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-option="baseRelation"]').inputValue(),'unequal');
+ assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),exclusiveTexts,
+  'Share-link round trip changed the exclusive trapezoid questions');
+ assert.equal(defaultText.length,8);
+ events.push({kind:'interaction',name:'R45 inclusive/exclusive trapezoid curriculum selector, 8 browser questions, share link, real PDF',status:'pass'});
  // R39: the plain-text question remains readable and display fractions are stacked.
  await page.goto(`${base}/adding-unlike-fractions-worksheets/`,{waitUntil:'networkidle'});
  assert.match(await page.locator('.problem .q').first().innerText(),/\d+\/\d+ \+ \d+\/\d+/);

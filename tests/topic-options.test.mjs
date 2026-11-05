@@ -108,6 +108,8 @@ test('every special choice changes actual problem semantics across many seeds',(
     ?(item.value==='simple'?/^Solve: x \+ y =/.test(p.payload.question):item.value==='general'?/^Solve the system: /.test(p.payload.question):p.payload.question.startsWith('Classify and solve the system: ')&&p.expectedAnswer===(item.value==='parallel'?'no solution':'infinitely many solutions'))
     :slug==='domain-range-worksheets'&&def.key==='relation'
     ?(item.value==='function'?((p.payload.question.match(/\(/g)||[]).length===3):((p.payload.question.match(/\(/g)||[]).length===4))
+    :slug==='area-of-trapezoids-worksheets'&&def.key==='baseRelation'
+    ?(item.value==='inclusive'||p.diagramSpec.values[0]!==p.diagramSpec.values[1])
     :captures[slug](p,item.value);
    assert.ok(fits,`${slug} ${def.key}=${item.value} seed ${seed}: ${p.payload.question}`);
   }

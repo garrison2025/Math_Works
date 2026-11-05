@@ -385,3 +385,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 
 - [ACTUAL R44 PDF RE-RENDER] Caught a PDF-only inversion after the initial commit: diagrams displayed numeric bottom bases physically at the top. Corrected top-down SVG to bottom-up PDF y conversion; this was **not** detected by existing visual text-overlap and drawing margin checks.
 - [INDEPENDENT GATE ADDED] Real-vector audit of all trapezoid question PDFs and source-manifest parallel-base values, including equal-base edge cases, with separate adversarial unit tests. CI verification pending on corrected commit.
+
+
+### R45 — inclusive/exclusive trapezoid definitions (CI pending)
+
+- [USER-VISIBLE OPTION] Trapezoid generator has a default inclusive setting and an opt-in strict unequal parallel-bases setting, with a classroom-definition clarification on its route.
+- [COMPATIBILITY] No generator version change; default questions and old v18 hash preserve their prior output via intentional fingerprint exclusion of the newly-added default selector. Opt-in mode adds an explicit share URL option and distinct hash.
+- [AUTOMATED TEST REQUIRED] At least 1,500 seeds across three difficulty levels, all 40-question print documents in both paper types, exact formula/area & inverse-height answers, browser selector and URL round-trip, Firefox check, previous 468 full-catalog PDF stress & indexation gate.
+- [NOT IMPLIED] The site's drawings are not proof of a jurisdiction-specific curriculum standard. A teacher must choose the matching definition.
