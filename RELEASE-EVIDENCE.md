@@ -430,3 +430,10 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Eight named topics independently reconstruct every intermediate step from the student-facing question: 2-digit column multiplication, 3-digit by 2-digit multiplication, two-step equations, mixed fractions, unlike-fraction addition, fraction multiplication, long division and exact mean absolute deviation.
 - [TEST REQUIRED] Reproduce many seeds and option types; mutation tests preserve correct final answers but deliberately damage the teaching trace, requiring the real worked-steps PDF exporter to reject it. Check A4/Letter and full 468-document regression.
 - [OPEN] The other seven step-enabled topics lack independent *full step-chain* reconstruction; physical printing and teacher review remain release gates.
+
+
+### R51 — 15/15 independent intermediate-step mathematics verification (CI pending)
+
+- [IMPLEMENTED] Seven additional authorized worked-step topics reconstruct the complete arithmetic trace from student-visible problem strings. Existing eight full step-family audits remain, giving an independently verified 15/15 step-PDF scope, alongside the 51/51 final-answer math gate.
+- [TEST REQUIRED] 200 seeds per new option and difficulty, adversarial step-only mutations that leave final answers correct, real A4/Letter teacher steps PDFs, full PDF stress and cross-browser QA.
+- [LIMITATION] Independent agreement with current textual templates is not a substitute for an external educator's review of pedagogy, grade alignment and wording. Printable protractor real-paper measurement remains pending; Cloudflare preview stays noindex/nofollow.

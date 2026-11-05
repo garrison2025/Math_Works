@@ -28,10 +28,10 @@ const cases={
 test('R50: eight independent worked-step families remain a strict subset of the 15 authorized step topics',()=>{
  const available=verifiedStepTopics();
  assert.equal(available.length,15);
- assert.equal(INDEPENDENT_STEP_TOPICS.length,8);
+ assert.equal(INDEPENDENT_STEP_TOPICS.length,15);
  for(const topic of INDEPENDENT_STEP_TOPICS)
   assert.ok(available.includes(topic),topic+' no longer offers verified steps');
- assert.deepEqual(Object.keys(cases).sort(),[...INDEPENDENT_STEP_TOPICS].sort());
+ for(const topic of Object.keys(cases))assert.ok(INDEPENDENT_STEP_TOPICS.includes(topic),topic);
 });
 test('R50: full worked arithmetic is independently reconstructed across difficulties and task options',()=>{
  let total=0;

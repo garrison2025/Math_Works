@@ -494,6 +494,9 @@ test('R29 refuses a problem too tall for even a fresh printable page instead of 
  steps.problems[0].solutionSteps=Array.from({length:14},(_,i)=>
   'Step '+(i+1)+': '+('Review the intermediate calculation carefully. '.repeat(28)));
  for(const paper of ['Letter','A4']){
-  await assert.rejects(()=>createWorksheetPdf(steps,'One Step Equations Worksheets','steps',paper),/cannot fit on a .* page/);
+  // R51 all 15 worked-step families require exact reconstructed mathematics.
+  // This artificial oversized prose is intentionally rejected before rendering;
+  // question-only overflow above still tests the actual PDF page-height limit.
+  await assert.rejects(()=>createWorksheetPdf(steps,'One Step Equations Worksheets','steps',paper),/Worked-step audit:/);
  }
 });

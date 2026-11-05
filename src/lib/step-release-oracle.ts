@@ -14,7 +14,14 @@ export const INDEPENDENT_STEP_TOPICS=Object.freeze([
  'adding-unlike-fractions-worksheets',
  'multiplying-fractions-worksheets',
  'long-division-worksheets',
- 'mean-absolute-deviation-worksheets'
+ 'mean-absolute-deviation-worksheets',
+ 'one-step-equations-worksheets',
+ 'order-of-operations-worksheets',
+ 'equivalent-fractions-worksheets',
+ 'pythagorean-worksheets',
+ 'area-of-triangles-worksheets',
+ 'area-of-parallelograms-worksheets',
+ 'area-of-trapezoids-worksheets'
 ] as const);
 const audited=new Set<string>(INDEPENDENT_STEP_TOPICS);
 
@@ -157,13 +164,183 @@ function expectedSteps(p:Problem):string[]{
    'Sum the absolute deviations and divide by '+n+': '+deviationSum+'/'+(n*n)+' = '+answer+'.'
   ];
  }
+ case 'one-step-equations-worksheets':{
+  const additive=q.match(/^Solve: x ([+−]) (\d+) = (-?\d+)$/);
+  if(additive){
+   const k=BigInt(additive[2])*(additive[1]==='−'?-1n:1n);
+   const rhs=BigInt(additive[3]),x=rhs-k;
+   return [
+    'Subtract '+k+' from both sides',
+    'x = '+x
+   ];
+  }
+  const multiplied=requireMatch(q,/^Solve: (-?\d+)x = (-?\d+)$/);
+  const k=BigInt(multiplied[1]),rhs=BigInt(multiplied[2]);
+  if(!k||rhs%k!==0n)throw Error('Worked-step audit: invalid integer one-step solution');
+  return ['Divide both sides by '+k,'x = '+rhs/k];
+ }
+ case 'order-of-operations-worksheets':{
+  // Evaluate the student-facing expression with explicit precedence rather
+  // than trusting the generator's "value" variable or worked lines.
+  let m=q.match(/^\((\d+) \+ (\d+)\) × (\d+) − (\d+) = ____$/);
+  if(m){
+   const [x,y,f,sub]=m.slice(1).map(BigInt);
+   return [
+    'Parentheses first: '+x+' + '+y+' = '+(x+y)+'.',
+    'Multiply: '+(x+y)+' × '+f+' = '+((x+y)*f)+'.',
+    'Subtract '+sub+'; answer = '+((x+y)*f-sub)+'.'
+   ];
+  }
+  m=q.match(/^(\d+) \+ (\d+) × (\d+) − (\d+) = ____$/);
+  if(m){
+   const [x,y,f,sub]=m.slice(1).map(BigInt);
+   return [
+    'Multiply first: '+y+' × '+f+' = '+(y*f)+'.',
+    'Add: '+x+' + '+(y*f)+' = '+(x+y*f)+'.',
+    'Subtract '+sub+'; answer = '+(x+y*f-sub)+'.'
+   ];
+  }
+  m=q.match(/^\((\d+) \+ (\d+)\) ÷ (\d+) × (\d+) = ____$/);
+  if(m){
+   const [x,y,d,f]=m.slice(1).map(BigInt);
+   if(!d||(x+y)%d!==0n)throw Error('Worked-step audit: non-exact grouped division');
+   const quotient=(x+y)/d;
+   return [
+    'Parentheses: '+x+' + '+y+' = '+(x+y)+'.',
+    'Division before multiplication: '+(x+y)+' ÷ '+d+' = '+quotient+'.',
+    'Multiply: '+quotient+' × '+f+' = '+(quotient*f)+'.'
+   ];
+  }
+  m=q.match(/^(\d+) \+ (\d+) ÷ (\d+) × (\d+) = ____$/);
+  if(m){
+   const [x,y,d,f]=m.slice(1).map(BigInt);
+   if(!d||y%d!==0n)throw Error('Worked-step audit: non-exact division');
+   const quotient=y/d;
+   return [
+    'Divide first: '+y+' ÷ '+d+' = '+quotient+'.',
+    'Multiply next: '+quotient+' × '+f+' = '+(quotient*f)+'.',
+    'Add: '+x+' + '+(quotient*f)+' = '+(x+quotient*f)+'.'
+   ];
+  }
+  m=q.match(/^\((\d+) \+ (\d+)\)² − (\d+) = ____$/);
+  if(m){
+   const [x,y,sub]=m.slice(1).map(BigInt);
+   const squared=(x+y)**2n;
+   return [
+    'Parentheses: '+x+' + '+y+' = '+(x+y)+'.',
+    'Square: '+(x+y)+'² = '+squared+'.',
+    'Subtract: '+squared+' − '+sub+' = '+(squared-sub)+'.'
+   ];
+  }
+  m=q.match(/^(\d+) \+ (\d+)² × (\d+) = ____$/);
+  if(m){
+   const [x,y,f]=m.slice(1).map(BigInt);
+   const power=y*y;
+   return [
+    'Exponent before multiplication: '+y+'² = '+power+'.',
+    'Multiply: '+power+' × '+f+' = '+(power*f)+'.',
+    'Add: '+x+' + '+(power*f)+' = '+(x+power*f)+'.'
+   ];
+  }
+  throw Error('Worked-step audit: unrecognized order-of-operations expression');
+ }
+ case 'equivalent-fractions-worksheets':{
+  const numerator=q.match(/^(\d+)\/(\d+) = ____\/(\d+)$/);
+  if(numerator){
+   const [n,d,newD]=numerator.slice(1).map(BigInt);
+   if(!d||newD%d!==0n||newD<=d)throw Error('Worked-step audit: invalid equivalent denominator');
+   const f=newD/d;
+   return [
+    'Multiply numerator and denominator by '+f,
+    n+' × '+f+' = '+(n*f)
+   ];
+  }
+  const denominator=requireMatch(q,/^(\d+)\/(\d+) = (\d+)\/____$/);
+  const [n,d,newN]=denominator.slice(1).map(BigInt);
+  if(!n||!d||newN%n!==0n||newN<=n)
+   throw Error('Worked-step audit: invalid equivalent numerator');
+  const f=newN/n;
+  return [
+   'Multiply numerator and denominator by '+f,
+   d+' × '+f+' = '+(d*f)
+  ];
+ }
+ case 'pythagorean-worksheets':{
+  const hyp=q.match(/^A right triangle has legs (\d+) and (\d+)\. Find its hypotenuse\.$/);
+  if(hyp){
+   const [x,y]=hyp.slice(1).map(BigInt);
+   const squared=x*x+y*y,c=Math.sqrt(Number(squared));
+   if(!Number.isSafeInteger(c)||c<1)throw Error('Worked-step audit: invalid hypotenuse');
+   return ['a² + b² = c²',
+    x+'² + '+y+'² = '+squared,
+    'c = '+c
+   ];
+  }
+  const missing=requireMatch(q,/^A right triangle has hypotenuse (\d+) and one leg (\d+)\. Find the other leg\.$/);
+  const c=BigInt(missing[1]),known=BigInt(missing[2]),square=c*c-known*known;
+  if(square<=0n)throw Error('Worked-step audit: impossible triangle leg');
+  const other=Math.sqrt(Number(square));
+  if(!Number.isSafeInteger(other)||other<1||BigInt(other)**2n!==square)
+   throw Error('Worked-step audit: nonintegral missing triangle leg');
+  return [
+   'Use a² + b² = c²; rearrange to missing leg² = '+c+'² − '+known+'²',
+   'Missing leg² = '+c*c+' − '+known*known+' = '+square,
+   'Take the positive square root: missing leg = '+other
+  ];
+ }
+ case 'area-of-triangles-worksheets':{
+  const area=q.match(/^Find the area of a triangle with base (\d+) and height (\d+)\.$/);
+  if(area){
+   const x=BigInt(area[1]),h=BigInt(area[2]),twiceArea=x*h;
+   const result=twiceArea%2n===0n?String(twiceArea/2n):String(twiceArea/2n)+'.5';
+   return [
+    'A = ½ × base × height',
+    'A = '+x+' × '+h+' ÷ 2 = '+result+' square units'
+   ];
+  }
+  const inverse=requireMatch(q,/^A triangle has base (\d+) and area (\d+(?:\.5)?) square units\. Find its perpendicular height\.$/);
+  const x=BigInt(inverse[1]),areaText=inverse[2],double=areaText.includes('.5')
+   ?BigInt(areaText.slice(0,-2))*2n+1n:BigInt(areaText)*2n;
+  if(!x||double%x!==0n)throw Error('Worked-step audit: impossible triangle height');
+  const h=double/x;
+  return ['Area = base × height / 2',
+   'Height = 2 × '+areaText+' / '+x+' = '+h+' units'];
+ }
+ case 'area-of-parallelograms-worksheets':{
+  const area=q.match(/^Find the area of a parallelogram with base (\d+) and perpendicular height (\d+)\.$/);
+  if(area){
+   const x=BigInt(area[1]),h=BigInt(area[2]);
+   return ['A = base × height = '+(x*h)+' square units'];
+  }
+  const inverse=requireMatch(q,/^A parallelogram has base (\d+) and area (\d+) square units\. Find its perpendicular height\.$/);
+  const x=BigInt(inverse[1]),total=BigInt(inverse[2]);
+  if(!x||total%x!==0n)throw Error('Worked-step audit: impossible parallelogram height');
+  return ['Area = base × perpendicular height',
+   'Height = '+total+' / '+x+' = '+(total/x)+' units'];
+ }
+ case 'area-of-trapezoids-worksheets':{
+  const area=q.match(/^A trapezoid has bases (\d+), (\d+) and height (\d+)\. Find area\.$/);
+  if(area){
+   const [a,b,h]=area.slice(1).map(BigInt),double=(a+b)*h;
+   const result=double%2n===0n?String(double/2n):String(double/2n)+'.5';
+   return ['A = (a + b) × h / 2',
+    '('+a+'+'+b+')×'+h+'/2='+result+' square units'];
+  }
+  const inverse=requireMatch(q,/^A trapezoid has bases (\d+), (\d+) and area (\d+(?:\.5)?) square units\. Find its height\.$/);
+  const a=BigInt(inverse[1]),b=BigInt(inverse[2]),areaText=inverse[3];
+  const double=areaText.includes('.5')
+   ?BigInt(areaText.slice(0,-2))*2n+1n:BigInt(areaText)*2n;
+  if(!(a+b)||double%(a+b)!==0n)throw Error('Worked-step audit: impossible trapezoid height');
+  return ['Area = (a + b) × height / 2',
+   'Height = 2 × '+areaText+' / ('+a+' + '+b+') = '+(double/(a+b))+' units'];
+ }
  default:throw Error('Worked-step audit: unsupported independent topic '+p.topicId);
  }
 }
 
 /** Called only for an authorized worked-steps PDF, after answer verification.
- * All 15 step-capable topics get structural checks; the eight explicitly listed
- * families receive an independently reconstructed full arithmetic trace.
+ * All 15 step-capable topics now receive independent full-step reconstruction.
+ * Fail closed if a newly enabled step topic has no independent implementation.
  */
 export function assertWorksheetSteps(sheet:Worksheet):void{
  if(!hasVerifiedSteps(sheet.topicId))
@@ -175,7 +352,7 @@ export function assertWorksheetSteps(sheet:Worksheet):void{
     step.length>1600||/[\u0000-\u0008\u000e-\u001f]/.test(step)||
     /\b(?:undefined|NaN|Infinity)\b/.test(step)))
    throw Error('Worked-step audit: missing, invalid or unsafe teaching step '+p.id);
-  if(!audited.has(sheet.topicId))continue;
+  if(!audited.has(sheet.topicId))throw Error('Worked-step audit: unverified step topic '+sheet.topicId);
   const expected=expectedSteps(p);
   if(expected.length!==p.solutionSteps.length)
    throw Error('Worked-step audit: incorrect number of mathematical steps '+p.id);
