@@ -8,6 +8,7 @@ import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {assertWorksheetMath} from './math-release-oracle.ts';
 import {assertWorksheetSteps} from './step-release-oracle.ts';
 import {longDivisionPracticeRows,longDivisionDiagramHeight} from './long-division-layout.ts';
+import {extraWritingRules,type WritingRoom} from './writing-room.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT,POINTS_PER_MM} from './protractor.ts';
 import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
@@ -372,7 +373,8 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  }
  if(d.kind==='dots'){for(let i=0;i<d.values[0];i++)dot(.15+(i%6)*.13,.3+Math.floor(i/6)*.4);}
 }
-export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:PdfMode,paper:Paper):Promise<Uint8Array>{
+export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:PdfMode,paper:Paper,writingRoom:WritingRoom='standard'):Promise<Uint8Array>{
+ if(writingRoom!=='standard'&&writingRoom!=='extra')throw Error('Invalid PDF writing space preference');
  assertWorksheetIntegrity(sheet);
  assertWorksheetMath(sheet);
  if(mode==='steps'&&!hasVerifiedSteps(sheet.topicId))throw new Error('Worked steps are not yet verified for this topic');
@@ -386,7 +388,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   const heading=ascii(topicName).slice(0,74);
   if(bold.widthOfTextAtSize(heading,15)>bodyW)throw new Error('PDF topic title exceeds the printable content width');
   page.drawText(heading,{x:margin,y:currentY,size:15,font:bold,color:ink});currentY-=20;
-  const summary=`Math Worksheet Studio | ${mode.toUpperCase()} | ${sheet.problems.length} questions | ${paper}`;
+  const summary=`Math Worksheet Studio | ${mode.toUpperCase()}${mode==='questions'&&writingRoom==='extra'?' / EXTRA WRITING ROOM':''} | ${sheet.problems.length} questions | ${paper}`;
   const identity=`Seed ${sheet.seed} | Generator v${sheet.generatorVersion} | Layout v${sheet.layoutVersion} | Config ${sheet.optionsHash}`;
   for(const line of [summary,identity]){
    if(font.widthOfTextAtSize(line,8.5)>bodyW)throw new Error('PDF identity line exceeds the printable content width');
@@ -406,7 +408,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
     :p.diagramSpec.kind==='long-division'?longDivisionDiagramHeight(p.diagramSpec.values)+22:150;
    return common+diagramSpace+
     (fractionLayoutFor(sheet.topicId,p.payload.question)?FRACTION_LINE_HEIGHT:0)+
-    worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)*RULE_SPACING+18;
+    (worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom))*RULE_SPACING+18;
   }
   if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
@@ -436,7 +438,8 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   }
   // Writing rules use the same per-problem measured height as pagination,
   // and leave the first line well below the last line of the question.
-  for(let rule=0;rule<worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec);rule++){
+  const lines=worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom);
+  for(let rule=0;rule<lines;rule++){
    const ruleY=y-8-rule*RULE_SPACING;
    page.drawLine({start:{x:xx+8,y:ruleY},end:{x:xx+colW-14,y:ruleY},
     color:paperRule,thickness:.65});
@@ -448,7 +451,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   rowH=Math.max(rowH,needed);if(twoCols)col++;else currentY=yy-needed;
  }
  const pages=pdf.getPages();for(let i=0;i<pages.length;i++){pages[i].drawText(`Sheet ${sheet.seed} | v${sheet.generatorVersion} | Config ${sheet.optionsHash} | ${paper} | Page ${i+1}/${pages.length} | Questions and answers match by sequence.`,{x:margin,y:margin,size:7,font,color:sub});}
- pdf.setTitle(`${topicName} - ${mode} - seed ${sheet.seed} - generator v${sheet.generatorVersion} - config ${sheet.optionsHash} - layout ${sheet.layoutVersion}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
+ pdf.setTitle(`${topicName} - ${mode}${mode==='questions'&&writingRoom==='extra'?' - extra writing room':''} - seed ${sheet.seed} - generator v${sheet.generatorVersion} - config ${sheet.optionsHash} - layout ${sheet.layoutVersion}`);pdf.setCreator('Math Worksheet Studio');return pdf.save();
 }
 
 /** One practical, unmarked 180° instrument on a single Letter/A4 PDF page.
