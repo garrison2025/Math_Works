@@ -3,7 +3,7 @@ import {normalizeTopicOptions,optionsFingerprint,maxQuantityForTopic,type TopicO
 export type Difficulty = 'easy' | 'standard' | 'challenge';
 export type Diagram = {kind: 'triangle'|'right-triangle'|'triangle-angles'|'rectangle'|'parallelogram'|'trapezoid'|'prism'|'coordinate'|'linear-function'|'numberline'|'angle'|'protractor'|'scatter'|'box'|'box-practice'|'line'|'intersecting-lines'|'column-multiplication'|'long-division'|'clock'|'dots'|'function-table'; values: number[]; labels?: string[]};
 export type Problem = {id:string;topicId:string;seed:number;optionsVersion:'1';payload:{question:string};expectedAnswer:string;solutionSteps:string[];diagramSpec?:Diagram;difficultyTags:Difficulty[];gradeTags:string[]};
-export const GENERATOR_VERSION='12' as const;
+export const GENERATOR_VERSION='13' as const;
 export type Worksheet = {engineVersion:'1.0.0';generatorVersion:typeof GENERATOR_VERSION;seed:number;optionsHash:string;topicId:string;problems:Problem[];answerMap:{id:string;answer:string}[];layoutVersion:'1'};
 export type Rational = {n:bigint;d:bigint};
 const abs=(n:bigint)=>n<0n?-n:n;
@@ -120,9 +120,30 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   make(`Find the ${name} digit in 4.${x}`,Math.floor(x/place)%10,'Digits right of decimal: tenths, hundredths, thousandths',`The ${name} digit is ${Math.floor(x/place)%10}`);break}
  case 'percentages-worksheets':{
   const den=r.pick([4,5,8,10,20,25,40,50,100]),num=r.int(1,den-1),percentage=normal(100*num/den);
-  const direction=opts.direction==='mixed'?r.pick(['fraction-to-percent','percent-to-fraction']):opts.direction;
-  if(direction==='fraction-to-percent')make(`Convert ${num}/${den} into a percentage.`,`${percentage}%`,`Divide ${num} by ${den}, then multiply by 100%`,`Answer: ${percentage}%`);
-  else make(`Convert ${percentage}% into a fraction in simplest form.`,frac(num,den),`Divide ${percentage} by 100`, `Simplify to ${frac(num,den)}`);break}
+  const direction=opts.direction==='mixed'?r.pick(['fraction-to-percent','percent-to-fraction','percent-of-number','percent-change']):opts.direction;
+  if(direction==='fraction-to-percent'){
+   make(`Convert ${num}/${den} into a percentage.`,`${percentage}%`,`Divide ${num} by ${den}, then multiply by 100%`,`Answer: ${percentage}%`);
+  }else if(direction==='percent-to-fraction'){
+   make(`Convert ${percentage}% into a fraction in simplest form.`,frac(num,den),`Divide ${percentage} by 100`, `Simplify to ${frac(num,den)}`);
+  }else if(direction==='percent-of-number'){
+   const rate=r.pick(difficulty==='easy'?[10,20,25,30,40,50,60,75,80,90,100]:difficulty==='standard'?[5,10,12,15,20,25,30,40,50,60,75,80,90,125]:[5,8,12,15,20,25,35,40,50,65,75,80,90,125,150]);
+   const amount=r.int(difficulty==='easy'?10:12,difficulty==='challenge'?750: difficulty==='standard'?250:100);
+   // rate and amount are exact integers. The product has at most two decimal
+   // places: never round floating-point intermediates when publishing an answer.
+   const hundredths=amount*rate,units=Math.floor(hundredths/100),subunits=hundredths%100;
+   const result=subunits===0?String(units):`${units}.${String(subunits).padStart(2,'0').replace(/0$/,'')}`;
+   make(`Find ${rate}% of ${amount}.`,result,`${rate}% means ${rate}/100`,`${amount} × ${rate}/100 = ${result}`,`Answer: ${result}`);
+  }else if(direction==='percent-change'){
+   // Starting values are multiples of 20, so each 5%-increment change is
+   // integral and the displayed before/after amounts match the stated rate.
+   const initial=r.int(5,difficulty==='challenge'?100:difficulty==='standard'?50:20)*20;
+   const rate=r.pick([5,10,15,20,25,30,40,50,60,75,80,90]);
+   const increasing=r.int(0,1)===1,delta=initial*rate/100;
+   const final=increasing?initial+delta:initial-delta;
+   const change=increasing?'increase':'decrease';
+   make(`Find the percentage ${change} from ${initial} to ${final}.`,`${rate}%`,`Difference: |${final} − ${initial}| = ${delta}`,`Divide by the original value (${initial}): ${delta}/${initial}`,`Multiply by 100: ${delta}/${initial} × 100 = ${rate}%`);
+  }else throw Error('Unsupported percentage practice type');
+  break}
  case 'scientific-notation-worksheets':{
   const mantissa=r.int(11,99),power=r.int(-4,5),value=mantissa/10*10**power,coef=normal(mantissa/10),standard=normal(value);
   const direction=opts.direction==='mixed'?r.pick(['to-scientific','to-standard']):opts.direction;

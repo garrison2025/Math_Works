@@ -43,7 +43,9 @@ const fixtures=[
  {slug:'mean-median-mode-range-worksheets',quantity:20,options:{statistic:'mean',modePattern:'mixed'}},
  {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'symmetric',size:'5'}},
  {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'6'}},
- {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'8'}}
+ {slug:'mean-absolute-deviation-worksheets',quantity:20,options:{distribution:'skewed',size:'8'}},
+ {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-of-number'}},
+ {slug:'percentages-worksheets',quantity:20,options:{direction:'percent-change'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){

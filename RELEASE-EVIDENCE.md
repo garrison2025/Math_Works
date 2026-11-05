@@ -188,6 +188,13 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [CI REQUIRED] Full PDF smoke, Chrome/Firefox QA, Letter/A4 golden fixtures and Astro/noindex audit.
 - [NOT RUN] Physical printer checks and exhaustive manual inspection of all topic PDF variations.
 
+### R21 statistics mode and exactness
+
+- [IMPLEMENTED, VERIFY IN CI] Unimodal, bimodal and no-mode datasets, varied even/odd sample sizes, exact rational means, and task-specific teaching steps.
+- [LOCAL PASS] Independent mode/mean/median/range oracle stress tests, per-mode share-link reproducibility and question uniqueness.
+- [CI REQUIRED] Updated PDF golden fixtures and Chrome/Firefox mode selections and downloads.
+- [NOT RUN] Full 51-route print inspection and actual-size protractor physical calibration. Noindex stays enabled.
+
 
 ### R22: Exact MAD variance examples and sample size
 
@@ -196,4 +203,8 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [CI REQUIRED] TypeScript, full PDF generation for A4/Letter, static Astro build, Chrome/Firefox controls and PDF downloads, and noindex audit must succeed on the new commit before claiming R22 deployed.
 - [NOT VERIFIED] Exhaustive manual check of all PDF pages, physical 50 mm protractor print calibration and production domain SEO release.
 
-- [R22 FOLLOW-UP] Enabled worked-steps PDF for exact MAD; CI verifies full A4 steps download and Letter/A4 golden examples. Audit allowlist expanded from 13 to 14 independently tested topics.
+### R23: Percentage of an amount and percentage change
+
+- [IMPLEMENTED] Explicit percent-of-number and percent-change selector choices, original-value change denominator, precise hundredths arithmetic, and matching explanatory steps. Generator/share identity v13.
+- [LOCAL TEST REQUIRED] Independent arithmetic oracles, no duplicate 40-question sheets, shared question/answer PDF metadata, browser interaction in Chrome/Firefox. CI outcomes need independent verification before marking release-ready.
+- [NOT VERIFIED] Exhaustive physical print review, 50 mm calibration on real printer, and production-domain indexing.

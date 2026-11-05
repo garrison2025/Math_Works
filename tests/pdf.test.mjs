@@ -90,6 +90,8 @@ test('selected topic choices keep practice and answer PDF metadata aligned',asyn
   ['addition-worksheets',{regrouping:'no'}],
   ['subtraction-worksheets',{borrowing:'yes'}],
   ['percentages-worksheets',{direction:'percent-to-fraction'}],
+  ['percentages-worksheets',{direction:'percent-of-number'}],
+  ['percentages-worksheets',{direction:'percent-change'}],
   ['functions-worksheets',{task:'solve-input'}],
   ['volume-of-rectangular-prisms-worksheets',{task:'missing-height'}],
   ['scientific-notation-worksheets',{direction:'to-standard'}]
@@ -134,7 +136,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v12'),`${topic} missing version-twelve identity`);
+    assert.ok(doc.getTitle()?.includes('v13'),`${topic} missing version-thirteen identity`);
    }
   }
  }
@@ -203,14 +205,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'12');
+  assert.equal(sheet.generatorVersion,'13');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v12'));
+   assert.ok(document.getTitle()?.includes('v13'));
   }
  }
 });
@@ -226,7 +228,7 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v12/);
+   assert.match(parsed.getTitle()??'',/generator v13/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
@@ -246,7 +248,7 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
    assert.ok(pdf.getPageCount()>0);
-   assert.match(pdf.getTitle()??'',/generator v12/);
+   assert.match(pdf.getTitle()??'',/generator v13/);
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
    assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }
@@ -313,7 +315,7 @@ test('R19: missing Pythagorean leg uses the same config identity in A4/Letter pr
    const pdf=await PDFDocument.load(bytes);
    assert.ok(pdf.getPageCount()>=1);
    assert.ok(pdf.getTitle().includes(sheet.optionsHash));
-   assert.match(pdf.getTitle(),/generator v12/);
+   assert.match(pdf.getTitle(),/generator v13/);
    assert.ok(bytes.length>2000);
   }
  }
@@ -327,7 +329,7 @@ test('R20: input/output function tables produce answer-separated vector PDFs in 
    const bytes=await createWorksheetPdf(sheet,'Function Tables Worksheets',mode,paper);
    const doc=await PDFDocument.load(bytes);
    assert.ok(doc.getPageCount()>0);
-   assert.match(doc.getTitle()??'',/generator v12/);
+   assert.match(doc.getTitle()??'',/generator v13/);
    assert.ok(doc.getTitle()?.includes(sheet.optionsHash));
    for(const page of doc.getPages())assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<.02);
   }
@@ -344,7 +346,7 @@ test('R21 varied-mode statistics export paired Letter/A4 PDFs with the same exac
    const [q,a]=await Promise.all([PDFDocument.load(questions),PDFDocument.load(answers)]);
    assert.ok(q.getPageCount()>=1&&a.getPageCount()>=1);
    assert.ok(q.getTitle()?.includes(sheet.optionsHash)&&a.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(q.getTitle()?.includes('v12')&&a.getTitle()?.includes('v12'));
+   assert.ok(q.getTitle()?.includes('v13')&&a.getTitle()?.includes('v13'));
   }
  }
 });

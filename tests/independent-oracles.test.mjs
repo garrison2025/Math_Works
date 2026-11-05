@@ -35,9 +35,15 @@ test('300 independent rational, percentages and notation oracles per route',()=>
  verify('percentages-worksheets',q=>{
   let m=q.match(/^Convert (\d+)\/(\d+) into a percentage/);
   if(m)return `${Number((n(m[1])/n(m[2])*100).toFixed(6))}%`;
-  m=re(q,/^Convert (\d+(?:\.\d+)?)% into a fraction in simplest form/);
-  const digits=m[1].split('.')[1]?.length||0,scale=10**digits;
-  return frac(Math.round(n(m[1])*scale),100*scale);
+  m=q.match(/^Convert (\d+(?:\.\d+)?)% into a fraction in simplest form/);
+  if(m){const digits=m[1].split('.')[1]?.length||0,scale=10**digits;
+   return frac(Math.round(n(m[1])*scale),100*scale);}
+  m=q.match(/^Find (\d+)% of (\d+)\.$/);
+  if(m){const hundredths=n(m[1])*n(m[2]);return String(Number((hundredths/100).toFixed(2)));}
+  m=re(q,/^Find the percentage (increase|decrease) from (\d+) to (\d+)\.$/);
+  const start=n(m[2]),end=n(m[3]);assert.ok(start>0);
+  assert.equal(m[1],end>start?'increase':'decrease');
+  return `${Math.abs(end-start)*100/start}%`;
  });
  verify('scientific-notation-worksheets',q=>{
   let m=q.match(/^Write (\d+(?:\.\d+)?) in scientific notation/);

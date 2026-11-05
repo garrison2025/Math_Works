@@ -8,7 +8,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
-- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 14 reviewed topics), direct printing, Letter/A4 paper.
+- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 13 reviewed topics), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-researched KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts).
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
@@ -167,6 +167,10 @@ On `/scatter-plot-worksheets/`, teachers can choose **Identify the trend** (posi
 
 Function Tables now supports missing outputs, missing inputs, and mixed practice, with first/middle/last blank cell choices. Worksheet diagrams show a real 2 × 4 math table, not inline arrow text. Only the answer key fills the missing input or output; the table is drawn as vectors in both SVG and PDF. New generator version v10 protects reproducible share links; see `tests/r20-function-tables.test.mjs` and the R20 PDF fixtures. Browser and physical-print signoff remain separate from automated testing.
 
+### R21 statistics data-distribution exercises
+
+`Mean Median Mode Range` supports one mode, two modes and no-mode datasets, with 5–9 observations including even-sized samples. Mean uses a reduced exact fraction for nonterminating values. The `modePattern` and `statistic` settings are preserved in v11 share URLs and matched Letter/A4 question/answer PDFs. The 51-route preview still stays noindex until independent production QA gates pass.
+
 
 ### R22: Exact mean absolute deviation worksheets
 
@@ -175,4 +179,6 @@ Function Tables now supports missing outputs, missing inputs, and mixed practice
 - Practice PDFs keep the answer separate. Worked explanatory steps show the exact mean, every deviation and the final simplest fraction. GitHub CI tests both paper sizes and independent 18,000-sample mathematical oracles.
 - Previous generator v11 links are intentionally not guaranteed to recreate v12 exercises. Do not enable preview indexing.
 
-R22 follow-up: MAD is now on the 14-topic verified worked-step PDF allowlist, after independent rational crosschecks.
+### R23 percentage teaching modes
+
+`Percentages Worksheets` now generates four distinct mathematical tasks: fraction to percent, percent to simplest fraction, exact percent of an amount (no premature rounding), and percentage increase/decrease measured against the ORIGINAL value. Each task preserves the same matching answer key and PDF export in Letter/A4; share links are marked generator v13. Preview pages remain noindex until domain and manual release QA.

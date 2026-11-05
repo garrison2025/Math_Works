@@ -11,6 +11,7 @@ export const topicIntro=(slug:string)=>{
   'two-step-equations-worksheets':'Practice solving equations that require undoing two operations. Each sheet includes a matching answer key and worked steps.',
   'one-step-equations-worksheets':'Create addition or multiplication equations with a single unknown and a unique solution.',
   'equivalent-fractions-worksheets':'Find a missing numerator or denominator in equivalent fractions using the same scale factor on top and bottom.',
+  'percentages-worksheets':'Convert percentages and fractions, find an exact percentage of a number, or calculate percentage increase and decrease using the original amount as the base.',
   'adding-unlike-fractions-worksheets':'Build confidence with common denominators, fraction addition and reducing exact answers.',
   'mean-median-mode-range-worksheets':'Calculate mean, median, mode and range from realistic data sets: even or odd sample counts, one mode, two modes or no mode, with exact fractional means.',
   'mean-absolute-deviation-worksheets':'Measure variability from 5, 6 or 8 observations, including balanced and right-skewed samples. Mean and mean absolute deviation are calculated as exact simplified fractions.',
@@ -25,6 +26,7 @@ export const topicIntro=(slug:string)=>{
  return names[slug] || `Create fresh ${titleFor(slug).toLowerCase()} with a reproducible question set, downloadable practice pages and separate answer keys.`;
 };
 export function howTo(slug:string):string[]{
+ if(slug==='percentages-worksheets')return ['To convert a fraction to a percentage, multiply the fraction by 100%. To convert a percentage to a fraction, divide by 100 and reduce.', 'To find a percentage of a number, multiply the amount by the percentage divided by 100. Keep exact decimal places, not a premature rounded approximation.', 'For percentage increase or decrease, divide the change by the ORIGINAL value, then multiply by 100. The final answer is a percentage.'];
  if(slug==='mean-absolute-deviation-worksheets')return ['Add every observation and divide by the sample size to find the exact mean.', 'For each observation subtract the mean and take the absolute value; keep any fractional results exact.', 'Add all the absolute deviations and divide by the total number of observations. Do not round until after checking the exact fraction.'];
  if(slug==='mean-median-mode-range-worksheets')return ['Order the observations from smallest to largest; keep repeated values.', 'For mean, divide the exact sum by the count. For median, average the middle two values when the count is even.', 'For mode, compare frequencies: zero, one or two values can have the highest frequency. For range, subtract minimum from maximum.'];
  if(slug==='function-tables-worksheets')return ['Read the rule f(x) = mx + b and locate the blank cell in the table.', 'For a missing output, substitute x into the rule. For a missing input, set mx + b equal to the visible output and solve for x.', 'Write the result in the empty cell and check with the separate completed answer table.'];
@@ -53,6 +55,7 @@ export function howTo(slug:string):string[]{
 
 /** Contextual reminders: intentionally about the generator's actual task, not generic SEO filler. */
 export function commonMistakes(slug:string):string[]{
+ if(slug==='percentages-worksheets')return ['Dividing by the new value instead of the original value when computing a percentage change.', 'Forgetting the percent-to-decimal division by 100, or rounding before the final result is calculated.'];
  if(slug==='mean-absolute-deviation-worksheets')return ['Dividing the total absolute deviation by the number of distinct values instead of the full sample size.', 'Rounding a fractional mean early, which changes every absolute deviation.'];
  if(slug==='function-tables-worksheets')return ['Treating an output as an input when solving backward.', 'Forgetting to subtract the constant before dividing by the coefficient.'];
  if(slug.includes('systems-equations'))return ['Combining equations with different coefficient scales without multiplying first.', 'Forgetting to check the solution in both original equations.'];

@@ -43,7 +43,7 @@ const captures={
  },
  'place-value-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`the ${v} digit`),
  'decimal-place-value-worksheets':(p,v)=>v==='mixed'||p.payload.question.includes(`the ${v} digit`),
- 'percentages-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('% into a fraction')===(v==='percent-to-fraction')),
+ 'percentages-worksheets':(p,v)=>v==='mixed'||(v==='percent-to-fraction'?p.payload.question.includes('% into a fraction'):v==='fraction-to-percent'?p.payload.question.includes('into a percentage'):v==='percent-of-number'?/^Find \d+% of \d+\.$/.test(p.payload.question):v==='percent-change'?/^Find the percentage (increase|decrease) from \d+ to \d+\.$/.test(p.payload.question):false),
  'scientific-notation-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('in standard form')===(v==='to-standard')),
  'functions-worksheets':(p,v)=>v==='mixed'||(p.payload.question.includes('find x.')===(v==='solve-input')),
  'slope-worksheets':(p,v)=>v==='mixed'||(p.expectedAnswer==='undefined')===(v==='vertical'),

@@ -72,13 +72,37 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v12'));
- assert.ok(answers.getTitle()?.includes('v12'));
+ assert.ok(questions.getTitle()?.includes('v13'));
+ assert.ok(answers.getTitle()?.includes('v13'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=12/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=13/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v12 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v13 clipboard link',status:'pass'});
+
+ // R23: percentage-of-amount and percent-change tasks must be distinct and keep matching PDF identity.
+ await page.goto(`${base}/percentages-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="direction"]').selectOption('percent-of-number');
+ const percentOfQ=await page.locator('.problem .q').first().innerText();
+ assert.match(percentOfQ,/^Find \d+% of \d+\.$/);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ const percentQDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const percentQuestions=await verifyPdf(await percentQDownload,'R23 percent-of-number questions',{paper:'A4'});
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ const percentADownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ const percentAnswers=await verifyPdf(await percentADownload,'R23 percent-of-number answers',{paper:'A4'});
+ assert.ok(percentQuestions.getTitle()?.includes('v13')&&percentAnswers.getTitle()?.includes('v13'));
+ await page.locator('[data-option="direction"]').selectOption('percent-change');
+ assert.match(await page.locator('.problem .q').first().innerText(),/^Find the percentage (increase|decrease) from \d+ to \d+\.$/);
+ await page.locator('[data-mode="questions"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),0);
+ await page.locator('[data-action="share"]').click();
+ const pctLink=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.match(pctLink,/gv=13/);assert.match(pctLink,/opt_direction=percent-change/);
+ events.push({kind:'interaction',name:'R23 percentage of number and percent change options, A4 practice/answer PDFs, versioned share link',status:'pass'});
 
  // R20: a missing INPUT must be blank in practice, but completed in both SVG and PDF answer keys.
  await page.goto(`${base}/function-tables-worksheets/`,{waitUntil:'networkidle'});
@@ -99,7 +123,7 @@ try {
  const tableAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const tableAnswerPdf=await verifyPdf(await tableAnswerDownload,'R20 function-table missing-input answers',{paper:'A4'});
- assert.ok(tableQuestionPdf.getTitle()?.includes('v12')&&tableAnswerPdf.getTitle()?.includes('v12'));
+ assert.ok(tableQuestionPdf.getTitle()?.includes('v13')&&tableAnswerPdf.getTitle()?.includes('v13'));
  events.push({kind:'interaction',name:'R20 inverse function table blank-cell SVG, completed answer SVG and paired PDF',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
@@ -286,7 +310,7 @@ try {
  const madAnswerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const madA=await verifyPdf(await madAnswerDownload,'R22 skewed MAD answers',{paper:'A4'});
- assert.ok(madQ.getTitle()?.includes('v12')&&madA.getTitle()?.includes('v12'));
+ assert.ok(madQ.getTitle()?.includes('v13')&&madA.getTitle()?.includes('v13'));
  assert.ok(await page.locator('[data-action="steps"]').isEnabled(),'Verified MAD steps PDF should be available');
  const madStepsDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="steps"]').click();

@@ -26,7 +26,13 @@ export const topicOptionDefinitions:Readonly<Record<string,readonly TopicOptionD
  'multiplying-fractions-worksheets':[entry('result','Fraction result','Select a proper or improper product.',mixed('proper','improper'))],
  'place-value-worksheets':[entry('place','Place to practice','Choose which digit position to identify.',mixed('ones','tens','hundreds','thousands'))],
  'decimal-place-value-worksheets':[entry('place','Decimal place','Choose tenths, hundredths or thousandths.',mixed('tenths','hundredths','thousandths'))],
- 'percentages-worksheets':[entry('direction','Conversion direction','Convert a fraction to a percent or a percent to a simplest fraction.',mixed('fraction-to-percent','percent-to-fraction'))],
+ 'percentages-worksheets':[entry('direction','Percentage skill','Convert fractions and percentages, find a percent of an amount, or calculate a percentage increase/decrease.',[
+  {value:'mixed',label:'Mixed percentage skills'},
+  {value:'fraction-to-percent',label:'Fraction to percent'},
+  {value:'percent-to-fraction',label:'Percent to fraction'},
+  {value:'percent-of-number',label:'Find percent of a number'},
+  {value:'percent-change',label:'Percentage increase / decrease'}
+ ])],
  'scientific-notation-worksheets':[entry('direction','Conversion direction','Convert numbers to or from scientific notation.',mixed('to-scientific','to-standard'))],
  'functions-worksheets':[entry('task','Function task','Evaluate a function or find its input from the output.',mixed('evaluate','solve-input'))],
  'slope-worksheets':[entry('line','Line orientation','Practice vertical lines with undefined slopes or non-vertical slopes.',mixed('vertical','nonvertical'))],
