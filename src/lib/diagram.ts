@@ -1,6 +1,7 @@
 import {quartiles,type Diagram} from './math.ts';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {functionTableGeometry} from './function-table.ts';
+import {longDivisionPracticeRows} from './long-division-layout.ts';
 import {PROTRACTOR_RADIUS_MM,PROTRACTOR_CALIBRATION_MM} from './protractor.ts';
 const esc=(s:string)=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 /** Vector graphics are generated from the same diagramSpec as the answer object. */
@@ -42,9 +43,9 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
   case 'long-division':{
    if(v.length!==2||!v.every(z=>Number.isSafeInteger(z)&&z>0))throw Error('Invalid division diagram');
    const [dividend,divisor]=v;
-   // Keep the dividend and bracket fixed, but reserve two unobtrusive pencil
-   // guides beneath the dividend for intermediate subtraction steps.
-   parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H344 M151 72V130" fill="none" stroke="#172337" stroke-width="2.8"/><path class="division-work-guides" d="M178 145H344 M178 168H344" fill="none" stroke="#cad9e5" stroke-width="1.1"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="202">remainder: ______</text></g>`;
+   const rows=longDivisionPracticeRows(v);
+   const workLines=Array.from({length:rows},(_,i)=>`M178 ${140+i*20}H360`).join(' ');
+   parts=`<g font-family="ui-monospace, SFMono-Regular, Consolas, monospace" fill="#172337" font-size="32"><text x="133" y="111" text-anchor="end">${divisor}</text><text x="178" y="111">${dividend}</text></g><path d="M151 72H360 M151 72V123" fill="none" stroke="#172337" stroke-width="2.8"/><path class="division-work-guides" d="${workLines}" fill="none" stroke="#cad9e5" stroke-width="1.2"/><g fill="#62738a" font-size="17"><text x="205" y="54">quotient: ______</text><text x="170" y="252">remainder: ______</text></g>`;
    break}
   case 'triangle':parts=poly('120,155 330,155 225,40')+line(225,40,225,155)+text(225,182,`${v[0]} base`)+text(267,108,`${v[1]===undefined?'?':v[1]} height`)+(v.length>=3?text(133,88,`${v[2]} hyp.`):'');break;
   case 'right-triangle':{
@@ -184,5 +185,6 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
   case 'dots':{parts=Array.from({length:v[0]},(_,i)=>`<circle cx="${85+(i%6)*54}" cy="${65+Math.floor(i/6)*64}" r="16" fill="#187b68"/>`).join('');break}
   default:return '';
  }
- return `<svg class="diagram-vector" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Worksheet ${esc(d.kind)} diagram" viewBox="0 0 450 220" width="450" height="220">${parts}</svg>`;
+ const taller=d.kind==='long-division';
+ return `<svg class="diagram-vector${taller?' long-division-vector':''}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Worksheet ${esc(d.kind)} diagram" viewBox="0 0 450 ${taller?270:220}" width="450" height="${taller?270:220}">${parts}</svg>`;
 }
