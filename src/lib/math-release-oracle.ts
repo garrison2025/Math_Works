@@ -543,10 +543,13 @@ function computed(p:Problem):string{
   if(equations.length!==2)throw Error('Math oracle: two equations required');
   const [a,b,rhs]=readEquation(equations[0]),[c,d,rhs2]=readEquation(equations[1]);
   const result=twoEquationResult(a,b,c,d,rhs,rhs2);
-  if(full[1]==='Solve the system:'&&result.includes('solutions'))
-   throw Error('Math oracle: unique system unexpectedly has zero determinant');
-  if(full[1]==='Classify and solve the system:'&&!result.includes('solutions'))
-   throw Error('Math oracle: nonunique system unexpectedly has nonzero determinant');
+  // Classify by the verified coefficient determinant, not English wording.
+  // "no solution" is singular; "infinitely many solutions" is plural.
+  const determinant=a*d-b*c;
+  if(full[1]==='Solve the system:'&&determinant===0n)
+   throw Error('Math oracle: expected a unique system, got zero determinant');
+  if(full[1]==='Classify and solve the system:'&&determinant!==0n)
+   throw Error('Math oracle: expected a parallel or coincident system, got nonzero determinant');
   return result;
  }
  default: throw Error(`Math oracle: unsupported topic ${p.topicId}`);
