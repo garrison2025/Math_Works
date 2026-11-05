@@ -390,6 +390,33 @@ try {
  const r53Doc=await verifyPdf(await r53Event,'R53 long division with five pencil rows');
  assert.ok(r53Doc.getPageCount()>0);
  events.push({kind:'interaction',name:'R53 3/4 digit long division adaptive SVG guide rows and printable PDF',status:'pass'});
+ // R54 opt-in pencil room must not regenerate or change student questions.
+ await page.goto(`${base}/two-step-equations-worksheets/`,{waitUntil:'networkidle'});
+ const r54Questions=await page.locator('.problem .q').allInnerTexts();
+ await page.locator('[data-field="writing-room"]').selectOption('extra');
+ assert.match(await page.locator('[data-summary]').innerText(),/Extra writing room \(PDF only\)/);
+ assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),r54Questions);
+ const r54Event=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const r54Download=await r54Event;
+ assert.match(r54Download.suggestedFilename(),/extra-room\.pdf$/);
+ const r54ExtraPdf=await verifyPdf(r54Download,'R54 extra ruled practice');
+ assert.match(r54ExtraPdf.getTitle()??'',/extra writing room/i);
+ await page.locator('[data-action="share"]').click();
+ const r54Share=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.match(r54Share,/room=extra/);
+ await page.locator('[data-field="writing-room"]').selectOption('standard');
+ assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),r54Questions);
+ const r54StdEvent=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const r54StdDownload=await r54StdEvent;
+ assert.doesNotMatch(r54StdDownload.suggestedFilename(),/extra-room/);
+ const r54StdPdf=await verifyPdf(r54StdDownload,'R54 unchanged default practice');
+ assert.doesNotMatch(r54StdPdf.getTitle()??'',/extra writing room/i);
+ await page.goto(r54Share,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-field="writing-room"]').inputValue(),'extra');
+ assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),r54Questions);
+ events.push({kind:'interaction',name:'R54 extra writing room PDF, share settings and unchanged questions',status:'pass'});
  // R12 browser regression: true interior-angle geometry and masked missing-height PDF.
  await page.goto(`${base}/triangle-angle-sum-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="thirdAngle"]').selectOption('obtuse');
