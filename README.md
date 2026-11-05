@@ -241,3 +241,8 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 ### R33 — print-ready PDF parity and mathematical symbols
 
 PDF export retains native Helvetica-compatible ×, ÷, °, ², ³ and ½ instead of turning multiplication into an ambiguous variable `x` or spelling division out in running prose. Unsupported glyphs retain explicit ASCII fallbacks. The **Open print-ready PDF** action opens the exact same deterministic, paginated, 36pt-margin-audited PDF as the matching worksheet/answer/verified-steps download; it no longer uses a separate unverified HTML print layout. The current Questions/Answers/Steps preview mode and Letter/A4 selection determine which PDF opens. If the browser blocks the tab, the same PDF downloads instead. Use the PDF viewer's Print action with Actual size / 100% for instruments. PDF glyph-level visual QA and physical printer calibration remain required before a public indexable launch.
+
+
+### R34 — exact online arithmetic practice
+
+When all answers are scalar integers, decimals or fractions, **Practice online** enables local answer inputs with checked feedback and a clear-responses control. Equivalent forms (such as `2/4`, `0.5`, `1/2`) are compared using exact BigInt rational arithmetic, not floating-point approximations, external APIs or `eval()`. Uncheckable graphs, diagrams, expressions, percentage formats and decimal-rounding precision exercises remain PDF/answer-key tasks. Scores and responses are not stored or sent to a server, and regenerating a worksheet clears previous responses. PDF/print exports never include practice input fields.

@@ -5,6 +5,7 @@ import {createWorksheetPdf,createBlankProtractorPdf,type PdfMode,type Paper} fro
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
 import {buildWorksheetLink,parseWorksheetLink} from '../lib/worksheet-link';
+import {checkExactNumber,supportsExactNumber} from '../lib/answer-check';
 const esc=(s:string)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function setup(root:HTMLElement){
  const topic=root.dataset.topic||'';
@@ -17,7 +18,16 @@ function setup(root:HTMLElement){
  const summary=root.querySelector<HTMLElement>('[data-summary]')!;
  const sheetCaption=root.querySelector<HTMLElement>('[data-sheet-caption]')!;
  const sheetFooter=root.querySelector<HTMLElement>('[data-sheet-footer]')!;
- let mode:PdfMode='questions';let worksheet:Worksheet|undefined;
+ let mode:PdfMode='questions';let worksheet:Worksheet|undefined;let practiceMode=false;
+ function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));}
+ function updatePracticeUI(){
+  const available=canPractice(),button=root.querySelector<HTMLButtonElement>('[data-action="practice"]')!;
+  if(!available)practiceMode=false;
+  button.hidden=!available;button.setAttribute('aria-pressed',String(practiceMode&&mode==='questions'));
+  const controls=root.querySelector<HTMLElement>('[data-practice-actions]')!;
+  controls.hidden=!(available&&practiceMode&&mode==='questions');
+  if(!controls.hidden)root.querySelector<HTMLElement>('[data-practice-summary]')!.textContent='Enter answers; nothing is saved or sent.';
+ }
  function inform(message:string,isError=false){status.textContent=message;status.classList.toggle('error',isError);}
  function state(){
   const n=Number(seedInput.value),q=Number(quantity.value);
@@ -41,19 +51,55 @@ function setup(root:HTMLElement){
   }
  }
  function render(){if(!worksheet)return;const s=worksheet;const diagram=s.problems.some(p=>!!p.diagramSpec);list.classList.toggle('with-diagrams',diagram);list.innerHTML=s.problems.map((p,i)=>`<div class="problem"><div class="no">${String(i+1).padStart(2,'0')}</div><div class="q">${esc(p.payload.question)}</div>${mode==='questions'&&p.diagramSpec?diagramSVG(p.diagramSpec):''}${mode==='answers'?`<div class="answer-text"><strong>Answer:</strong> ${esc(p.expectedAnswer)}</div>${p.diagramSpec&&(['numberline','box-practice','function-table'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-'))))?diagramSVG(p.diagramSpec,true):''}`:''}${mode==='steps'?`<div class="answer-text"><strong>Answer:</strong> ${esc(p.expectedAnswer)}</div><ol class="steps">${p.solutionSteps.map(line=>`<li>${esc(line)}</li>`).join('')}</ol>`:''}</div>`).join('');
+  if(practiceMode&&mode==='questions'&&canPractice()){
+   const cards=list.querySelectorAll<HTMLElement>('.problem');
+   s.problems.forEach((_,i)=>{
+    const wrap=document.createElement('div');wrap.className='practice-answer';
+    const label=document.createElement('label');label.textContent='Your answer';label.htmlFor=`practice-answer-${i}`;
+    const input=document.createElement('input');input.type='text';input.id=label.htmlFor;input.autocomplete='off';
+    input.inputMode='decimal';input.maxLength=64;input.placeholder='e.g. 3/4';input.dataset.practiceInput=String(i);
+    const feedback=document.createElement('small');feedback.dataset.practiceFeedback=String(i);feedback.setAttribute('role','status');
+    wrap.append(label,input,feedback);cards[i]?.append(wrap);
+   });
+  }
   summary.textContent=`${s.problems.length} questions · ${difficulty.value} · ${paper.value} · Engine v${s.generatorVersion} · Config ${s.optionsHash}`;sheetCaption.textContent=`${mode==='questions'?'Practice worksheet':mode==='answers'?'Answer key':'Worked solutions'} · Sheet ID ${s.seed}`;sheetFooter.textContent=`${mode.toUpperCase()} · Engine v${s.generatorVersion} · Seed ${s.seed} · Config ${s.optionsHash} · ${s.problems.length} questions`;
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
+  updatePracticeUI();
  }
  function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
    worksheet=undefined;setExportReady(false);
    list.classList.remove('with-diagrams');list.innerHTML='<p class="empty">Enter a valid seed and settings to generate a worksheet. Previously shown questions have been cleared.</p>';
    summary.textContent='Worksheet unavailable';sheetCaption.textContent='Check settings before printing';sheetFooter.textContent='No valid worksheet to export';
-   inform(e instanceof Error?e.message:'Could not create worksheet.',true);
+   inform(e instanceof Error?e.message:'Could not create worksheet.',true);updatePracticeUI();
   }}
  function randomSeed(){const a=new Uint32Array(1);crypto.getRandomValues(a);seedInput.value=String(a[0]);rebuild();}
  difficulty.addEventListener('change',rebuild);quantity.addEventListener('change',rebuild);seedInput.addEventListener('change',rebuild);paper.addEventListener('change',render);
  root.querySelectorAll<HTMLSelectElement>('[data-option]').forEach(el=>el.addEventListener('change',rebuild));
  root.querySelector<HTMLButtonElement>('[data-action="regenerate"]')!.addEventListener('click',randomSeed);
+ root.querySelector<HTMLButtonElement>('[data-action="practice"]')!.addEventListener('click',()=>{
+  if(!canPractice())return;
+  practiceMode=!practiceMode;mode='questions';render();
+ });
+ root.querySelector<HTMLButtonElement>('[data-action="check-practice"]')!.addEventListener('click',()=>{
+  if(!worksheet||!practiceMode||mode!=='questions'||!canPractice())return;
+  let attempted=0,correct=0;
+  for(const input of root.querySelectorAll<HTMLInputElement>('[data-practice-input]')){
+   const i=Number(input.dataset.practiceInput),value=input.value.trim();
+   const feedback=root.querySelector<HTMLElement>(`[data-practice-feedback="${i}"]`)!;
+   if(!value){feedback.textContent='Not answered';input.removeAttribute('aria-invalid');continue;}
+   attempted++;
+   const result=checkExactNumber(worksheet.problems[i].expectedAnswer,value);
+   if(result==='correct'){correct++;feedback.textContent='Correct';input.setAttribute('aria-invalid','false');}
+   else if(result==='invalid'){feedback.textContent='Use a number, decimal or fraction (such as 3/4).';input.setAttribute('aria-invalid','true');}
+   else{feedback.textContent='Not quite — try again.';input.setAttribute('aria-invalid','true');}
+  }
+  root.querySelector<HTMLElement>('[data-practice-summary]')!.textContent=`${correct} correct / ${attempted} attempted / ${worksheet.problems.length} total. No answers or scores are sent to a server.`;
+ });
+ root.querySelector<HTMLButtonElement>('[data-action="clear-practice"]')!.addEventListener('click',()=>{
+  for(const input of root.querySelectorAll<HTMLInputElement>('[data-practice-input]')){input.value='';input.removeAttribute('aria-invalid');}
+  for(const feedback of root.querySelectorAll<HTMLElement>('[data-practice-feedback]'))feedback.textContent='';
+  root.querySelector<HTMLElement>('[data-practice-summary]')!.textContent='Responses cleared from this page.';
+ });
  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.mode==='steps'&&!stepsEnabled)return;mode=b.dataset.mode as PdfMode;render();}));
  root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',async()=>{
   if(!worksheet)rebuild();if(!worksheet)return;

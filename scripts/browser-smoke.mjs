@@ -79,6 +79,26 @@ try {
  assert.match(link,/gv=18/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
  events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v18 clipboard link',status:'pass'});
+ // R34: local-only answer checker grades exact scalar numbers and resets on regeneration.
+ await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-action="practice"]').isVisible(),true);
+ await page.locator('[data-mode="answers"]').click();
+ const firstPracticeAnswer=(await page.locator('.problem .answer-text').first().innerText()).replace(/^Answer:\s*/,'').trim();
+ assert.match(firstPracticeAnswer,/^-?\d+(?:\.\d+)?$/);
+ await page.locator('[data-mode="questions"]').click();
+ await page.locator('[data-action="practice"]').click();
+ assert.equal(await page.locator('[data-practice-input]').count(),8);
+ await page.locator('[data-practice-input="0"]').fill(firstPracticeAnswer);
+ await page.locator('[data-practice-input="1"]').fill('99999999999');
+ await page.locator('[data-action="check-practice"]').click();
+ assert.match(await page.locator('[data-practice-summary]').innerText(),/1 correct \/ 2 attempted \/ 8 total/);
+ assert.equal(await page.locator('[data-practice-feedback="0"]').innerText(),'Correct');
+ await page.locator('[data-action="clear-practice"]').click();
+ assert.equal(await page.locator('[data-practice-input="0"]').inputValue(),'');
+ await page.locator('[data-practice-input="0"]').fill('1/2');
+ await page.locator('[data-action="regenerate"]').click();
+ assert.equal(await page.locator('[data-practice-input="0"]').inputValue(),'');
+ events.push({kind:'interaction',name:'R34 exact answer entry, feedback and reset',status:'pass'});
  // R26: four-operation precedence and powers use the same real downloadable PDF.
  await page.goto(`${base}/order-of-operations-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="skill"]').selectOption('powers');

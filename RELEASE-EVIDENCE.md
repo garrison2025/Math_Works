@@ -288,3 +288,12 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Print action now opens the same vector PDF as downloads, selected by current preview mode and Letter/A4 paper, instead of browser HTML print that had an unverified independent page-break implementation. Blocked popups fall back to a PDF download.
 - [CI REQUIRED] Run full typecheck, math/PDF tests, 468 PDF stress outputs, independent content/text/vector/geometry audits, and Chromium/Firefox browser QA on the new commit. Font/glyph visual assessment and real-printer scaling remain separate human gates.
 - [NOT VERIFIED] Physical printed 50mm bar, complete 51-topic manual visual proofing, domain/indexation and user classroom acceptance. Keep pages.dev noindex.
+
+
+### R34 — browser-local exact numeric grading (CI verification required)
+
+- [IMPLEMENTED] Opt-in online answer entry for pure scalar numeric worksheets, with per-question feedback and clear/regenerate behavior.
+- [IMPLEMENTED] Exact BigInt rational checker accepts signed whole numbers, finite decimal strings, grouped digits and slash fractions, and rejects invalid expressions, zero denominators and overlong input.
+- [CI REQUIRED] Unit tests and real Chromium interaction for answer correctness, clearing and regeneration; full Astro/PDF/Firefox gates must pass.
+- [NOT IMPLEMENTED] Algebraic-expression equivalence, graph drawing automatic grading and percentage-format grading. These are deliberately not shown as supported.
+- [NOT VERIFIED] Physical printer and complete human UI/accessibility review. Preview must remain noindex.
