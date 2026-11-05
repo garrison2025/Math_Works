@@ -363,3 +363,12 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Firefox independently checks JS-disabled static math content on 4 category-representative pages at a 390px viewport.
 - [PENDING CI] Full Node, Chromium, Firefox and 468 document PDF audit still required for the final commit.
 - [NOT VERIFIED] Cloudflare deployed network traffic, manual screenshot visual sign-off, physical printer/50mm ruler, custom domain, analytics/ads policy after any future integrations, GSC indexing approvals. Preserve current fail-closed noindex.
+
+
+### R43 — authentic golden-PDF page review and math glyph correction (CI validation pending)
+
+- [MANUAL DIGITAL SAMPLE REVIEW] Downloaded previous R42 `r12-math-worksheet-golden-pdfs` artifact; inspected 50 first-page A4 raster sample images as 5 overview sheets plus representative detailed fraction, triangle-angle and long-division images. This is a reviewer sample, not all 3,764 physical or digital pages and not a teacher sign-off.
+- [REAL DEFECT OBSERVED] Printed triangle angle diagrams used `deg` rather than the proper `°`; printed column multiplication diagrams used `x` rather than `×`. Exact question text and numerical answers were previously correct; the error was visual mathematical typography.
+- [IMPLEMENTED] Correct angle, triangle and intersecting-line diagram labels and three column-multiplication specialist charts with correct Helvetica-encodable glyphs.
+- [CI REQUIRED] Independent extracted-stress-PDF audit fails on old `deg`, lowercase `x` multiplication operator or missing expected math glyph repetitions. Four adversarial tests, math, full PDF semantics, 36pt visual/vector margins and two browsers must all pass.
+- [STILL OPEN] Human teacher review of complete multi-page PDFs and real printer calibration bar measurement within ±1mm, custom-domain release and 24 pair SERP intent manual adjudication.

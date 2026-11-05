@@ -54,6 +54,10 @@ jobs:
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
       - name: Enforce 36-point vector-drawing safe margins on every stress PDF
         run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
+      - name: R43 reject ambiguous PDF math labels (adversarial tests)
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_diagram_glyphs.py' -v
+      - name: R43 check printed degree and multiplication glyphs in every relevant stress PDF
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-diagram-glyphs.py qa-artifacts/pdf-stress
       - name: Reject missing or text-obscured fraction bars (adversarial tests)
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_fractions_audit.py' -v
       - name: Verify every visually typeset fraction has its exact PDF vector bar

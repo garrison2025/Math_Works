@@ -146,7 +146,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   const right=x+w*.72,base=y+h*.64,fontSize=19;
   const rightText=(value:string,offset:number,size=fontSize)=>page.drawText(value,{x:right-font.widthOfTextAtSize(value,size),y:base+offset,size,font,color:ink});
   rightText(String(top),29);rightText(String(bottom),6);
-  page.drawText('x',{x:right-80,y:base+6,size:16,font,color:ink});
+  page.drawText('×',{x:right-80,y:base+6,size:16,font,color:ink});
   page.drawLine({start:{x:right-100,y:base},end:{x:right+10,y:base},color:ink,thickness:1.5});
   page.drawText('ones',{x:x+w*.13,y:base-19,size:8,font,color:sub});
   page.drawLine({start:{x:right-76,y:base-23},end:{x:right+10,y:base-23},color:sub,thickness:.7});
@@ -193,7 +193,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   l(px(a[0]),py(a[1]),px(b[0]),py(b[1]));
   l(px(b[0]),py(b[1]),px(c[0]),py(c[1]));
   l(px(c[0]),py(c[1]),px(a[0]),py(a[1]));
-  for(let i=0;i<3;i++){const [tx,ty]=g.labelPositions[i],value=i===2?'?':`${d.values[i]} deg`;const fontSize=8;page.drawText(value,{x:x+px(tx)*w-font.widthOfTextAtSize(value,fontSize)/2,y:y+py(ty)*h,size:fontSize,font,color:ink});}
+  for(let i=0;i<3;i++){const [tx,ty]=g.labelPositions[i],value=i===2?'?':`${d.values[i]}°`;const fontSize=8;page.drawText(value,{x:x+px(tx)*w-font.widthOfTextAtSize(value,fontSize)/2,y:y+py(ty)*h,size:fontSize,font,color:ink});}
   return;
  }
  if(d.kind==='rectangle'){
@@ -325,7 +325,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
    page.drawLine({start:pt(a),end:pt(b),color,thickness:width});
   draw(g.vertex,g.baseline);draw(g.vertex,g.ray);
   for(let i=1;i<g.arc.length;i++)draw(g.arc[i-1],g.arc[i],rgb(.09,.48,.41),.9);
-  const [lx,ly]=g.label,labelPt=pt([lx,ly]),labelText=`${g.degrees} deg`;
+  const [lx,ly]=g.label,labelPt=pt([lx,ly]),labelText=`${g.degrees}°`;
   page.drawText(labelText,{x:labelPt.x-font.widthOfTextAtSize(labelText,7.5)/2,y:labelPt.y-2,size:7.5,font,color:ink});
   return;
  }
@@ -334,7 +334,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   const draw=([a,b]:[[number,number],[number,number]])=>page.drawLine({start:pt(a),end:pt(b),color:accent,thickness:1.2});
   draw(g.horizontal);draw(g.diagonal);
   for(const arc of [g.givenArc,g.unknownArc])for(let i=1;i<arc.length;i++)draw([arc[i-1],arc[i]]);
-  for(const [value,loc] of [[`${g.givenDegrees} deg`,g.givenLabel],['?',g.unknownLabel]] as [string,[number,number]][]){
+  for(const [value,loc] of [[`${g.givenDegrees}°`,g.givenLabel],['?',g.unknownLabel]] as [string,[number,number]][]){
    const pos=pt(loc),size=8;page.drawText(value,{x:pos.x-font.widthOfTextAtSize(value,size)/2,y:pos.y-3,size,font,color:ink});
   }
   return;
