@@ -12,7 +12,10 @@ const PAGE_SIZE:Record<Paper,[number,number]>={Letter:[612,792],A4:[595.28,841.8
 const ink=rgb(.09,.14,.22),sub=rgb(.35,.43,.52),accent=rgb(.105,.39,.65);
 /** Worked solutions are reading material, not compact answer-key metadata. */
 const STEP_FONT_SIZE=10, STEP_LINE_HEIGHT=14, STEP_GAP=3;
-export function ascii(text:string){return text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,' divided by ').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/²/g,'^2').replace(/³/g,'^3').replace(/°/g,' deg').replace(/½/g,'1/2').replace(/●/g,'*').replace(/→/g,' -> ').replace(/←/g,' <- ').replace(/↔/g,' <-> ').replace(/–|—/g,'-').replace(/[^\x20-\x7e]/g,'');}
+/** Preserve the math glyphs supported by the built-in Helvetica WinAnsi encoding.
+ * Unsupported glyphs still have explicit readable ASCII substitutions: no paid
+ * font download, server, or user-provided document is required. */
+export function ascii(text:string){return text.replace(/−/g,'-').replace(/≤/g,'<=').replace(/≥/g,'>=').replace(/π/g,'pi').replace(/√/g,'sqrt').replace(/●/g,'*').replace(/→/g,' -> ').replace(/←/g,' <- ').replace(/↔/g,' <-> ').replace(/–|—/g,'-').replace(/[^\x20-\x7e×÷°²³½]/g,'');}
 /** Wrap using font metrics rather than character counts; even a long unspaced
  * token is split before it can reach a page margin. */
 export function wrapPdfText(input:string,font:PDFFont,size:number,maxWidth:number):string[]{

@@ -280,3 +280,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Every exported PDF must retain its manifest SHA-256, page count, generator version, layout version, and configuration identity. The audit still requires 51 topics, 102 standard/challenge cases and at least 408 paired A4/Letter documents (468 with the current reviewed-step coverage).
 - [TESTED LOCALLY; CI REQUIRED] Six fault-injection checks cover questions/answers/steps export, broken enumeration, dropped answer, omitted step, and tampered bytes. GitHub CI runs both this unit suite and the full-content check using the pinned PyMuPDF environment; it archives `content-integrity-audit.json` alongside the R29 stress manifest.
 - [NOT VERIFIED] Physical printer scaling, all-pages human visual review, classroom acceptance, and custom-domain rollout. Keep Cloudflare preview `noindex,nofollow`; a PDF text extraction PASS does not establish visual quality.
+
+
+### R33: accurate math glyphs and unified print pathway (CI verification required)
+
+- [IMPLEMENTED] PDF text retains Helvetica WinAnsi multiplication ×, division ÷, degree °, superscript ²/³, and ½ glyphs; unsupported Unicode operators still use documented readable fallbacks. A regression test checks actual bundled PDF font encoding, not only string replacement.
+- [IMPLEMENTED] Print action now opens the same vector PDF as downloads, selected by current preview mode and Letter/A4 paper, instead of browser HTML print that had an unverified independent page-break implementation. Blocked popups fall back to a PDF download.
+- [CI REQUIRED] Run full typecheck, math/PDF tests, 468 PDF stress outputs, independent content/text/vector/geometry audits, and Chromium/Firefox browser QA on the new commit. Font/glyph visual assessment and real-printer scaling remain separate human gates.
+- [NOT VERIFIED] Physical printed 50mm bar, complete 51-topic manual visual proofing, domain/indexation and user classroom acceptance. Keep pages.dev noindex.

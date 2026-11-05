@@ -236,3 +236,8 @@ The protractor's physical dimensions now have a **separate, independent PDF-vect
 This confirms **PDF vector geometry only**. It cannot verify printer fit-to-page settings or that the line measures 50 mm on a specific physical printer. Printing at Actual size (100%) and measuring with a physical ruler remains a mandatory, unperformed human release gate. Keep the preview `noindex,nofollow` until then.
 
 R31 visual spot-check follow-up: 0° and 180° captions were previously on the horizontal baseline. The vector SVG/PDF labels are now shifted above it, and the independent PDF inspector asserts two correctly positioned text boxes on **every instrument page**. Actual physical printer measurement remains NOT RUN.
+
+
+### R33 — print-ready PDF parity and mathematical symbols
+
+PDF export retains native Helvetica-compatible ×, ÷, °, ², ³ and ½ instead of turning multiplication into an ambiguous variable `x` or spelling division out in running prose. Unsupported glyphs retain explicit ASCII fallbacks. The **Open print-ready PDF** action opens the exact same deterministic, paginated, 36pt-margin-audited PDF as the matching worksheet/answer/verified-steps download; it no longer uses a separate unverified HTML print layout. The current Questions/Answers/Steps preview mode and Letter/A4 selection determine which PDF opens. If the browser blocks the tab, the same PDF downloads instead. Use the PDF viewer's Print action with Actual size / 100% for instruments. PDF glyph-level visual QA and physical printer calibration remain required before a public indexable launch.

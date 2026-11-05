@@ -44,9 +44,15 @@ test('multipage output has no zero-page or lost-page failures',async()=>{
  }
 });
 
-test('PDF text transliteration preserves function-table arrows',()=>{
- assert.equal(ascii('1→2; -3 ← 4; 5 × 6'), '1 -> 2; -3  <-  4; 5 x 6');
- assert.equal(ascii('3/4 ÷ 5/6'), '3/4  divided by  5/6', 'Fraction division in ASCII PDF must remain unambiguous');
+test('R33 PDF math operators keep unambiguous printable WinAnsi glyphs',async()=>{
+ assert.equal(ascii('1→2; -3 ← 4; 5 × 6'), '1 -> 2; -3  <-  4; 5 × 6');
+ assert.equal(ascii('3/4 ÷ 5/6'), '3/4 ÷ 5/6');
+ assert.equal(ascii('90°; (3+4)²; 1½'), '90°; (3+4)²; 1½');
+ assert.equal(ascii('x≤3; √9; π'), 'x<=3; sqrt9; pi');
+ const doc=await PDFDocument.create();const helvetica=await doc.embedFont('Helvetica');
+ for(const phrase of ['3 × 4 = 12','9 ÷ 3 = 3','90°','(3+4)²','1½']){
+  assert.doesNotThrow(()=>helvetica.widthOfTextAtSize(phrase,10),phrase+' glyph cannot be encoded in the actual PDF font');
+ }
 });
 test('blank protractor PDF is single page on Letter and A4',async()=>{
  for(const paper of ['Letter','A4']){

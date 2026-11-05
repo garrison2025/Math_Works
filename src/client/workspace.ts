@@ -55,12 +55,30 @@ function setup(root:HTMLElement){
  root.querySelectorAll<HTMLSelectElement>('[data-option]').forEach(el=>el.addEventListener('change',rebuild));
  root.querySelector<HTMLButtonElement>('[data-action="regenerate"]')!.addEventListener('click',randomSeed);
  root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.mode==='steps'&&!stepsEnabled)return;mode=b.dataset.mode as PdfMode;render();}));
- root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',()=>{
-  rebuild();if(!worksheet)return;
-  let pageRule=document.getElementById('worksheet-print-page') as HTMLStyleElement|null;
-  if(!pageRule){pageRule=document.createElement('style');pageRule.id='worksheet-print-page';document.head.append(pageRule);}
-  pageRule.textContent=`@page { size: ${paper.value==='A4'?'A4':'letter'}; margin: 12.7mm; }`;
-  inform('Print dialog opened. Use Actual size / 100% for the protractor.');window.print();
+ root.querySelector<HTMLButtonElement>('[data-action="print"]')!.addEventListener('click',async()=>{
+  if(!worksheet)rebuild();if(!worksheet)return;
+  // Open the tab synchronously with the click so popup blockers do not race
+  // the asynchronous pdf-lib render. Unlike window.print(), this uses the SAME
+  // paginated, margin-audited vector PDF as the downloaded worksheet.
+  const printButton=root.querySelector<HTMLButtonElement>('[data-action="print"]')!;
+  const current=worksheet,currentMode=mode,currentPaper=paper.value as Paper;
+  const tab=window.open('','_blank');
+  if(tab){tab.document.title='Preparing printable worksheet';tab.document.body.textContent='Preparing your printable PDF…';}
+  try{
+   printButton.disabled=true;inform('Preparing print-ready PDF…');
+   const bytes=await createWorksheetPdf(current,titleFor(topic),currentMode,currentPaper);
+   const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+   if(tab&&!tab.closed){tab.location.replace(url);inform('Print-ready PDF opened. In the PDF viewer choose Print, Actual size / 100% (especially for protractors).');}
+   else {
+    // Browser may block new tabs; always preserve access to the exact same PDF.
+    const a=document.createElement('a');a.href=url;
+    a.download=`${topic}-v${current.generatorVersion}-${currentMode}-${current.seed}-${current.optionsHash}-${currentPaper.toLowerCase()}-print.pdf`;
+    document.body.append(a);a.click();a.remove();
+    inform('Your browser blocked the print tab, so the print-ready PDF was downloaded instead.');
+   }
+   setTimeout(()=>URL.revokeObjectURL(url),600000);
+  }catch(e){if(tab&&!tab.closed)tab.close();inform(e instanceof Error?`Print-ready PDF failed: ${e.message}`:'Print-ready PDF failed.',true);}
+  finally{printButton.disabled=false;}
  });
  const protractorButton=root.querySelector<HTMLButtonElement>('[data-action="protractor"]');
  if(topic==='printable-protractor'&&protractorButton){protractorButton.addEventListener('click',async()=>{
