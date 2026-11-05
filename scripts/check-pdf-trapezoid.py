@@ -57,7 +57,7 @@ def run(folder):
         raise AssertionError('Full 468-PDF release scope was reduced')
     cases={(c['topic'],c['difficulty']):c for c in manifest['cases']}
     relevant=[f for f in manifest['files'] if f['topic']==TOPIC]
-    if len(relevant)!=8: # 2 difficulties x 2 papers x practice/answers
+    if len(relevant)!=12: # 2 difficulties x 2 papers x questions/answers/verified steps
         raise AssertionError(f'Unexpected trapezoid corpus: {len(relevant)} PDFs')
     errors=[];drawings=0;documents=0
     for record in relevant:
