@@ -393,3 +393,10 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [COMPATIBILITY] No generator version change; default questions and old v18 hash preserve their prior output via intentional fingerprint exclusion of the newly-added default selector. Opt-in mode adds an explicit share URL option and distinct hash.
 - [AUTOMATED TEST REQUIRED] At least 1,500 seeds across three difficulty levels, all 40-question print documents in both paper types, exact formula/area & inverse-height answers, browser selector and URL round-trip, Firefox check, previous 468 full-catalog PDF stress & indexation gate.
 - [NOT IMPLIED] The site's drawings are not proof of a jurisdiction-specific curriculum standard. A teacher must choose the matching definition.
+
+
+### R46 — fail-closed runtime answer math oracle (CI pending)
+
+- [IMPLEMENTED] Independent `math-release-oracle.ts` parses actual student question text and rederives exact answers on 10 selected mathematically sensitive topics at the PDF export boundary. Guards corrupted but mutually agreeing expectedAnswer and answerMap, missing/incorrect chart parameters, and invalid inequalities.
+- [IMPLEMENTED] Adversarial Node tests generate 30,000+ actual questions, mutate question/diagram/answer data, and verify the actual exporter refuses unsafe PDFs. Full PDF stress, browsers and all static noindex gates remain required before passing.
+- [LIMITATION] Explicit scope is **10/51** topics; 41 others retain pre-existing CI tests but do not yet get independent **runtime** math recomputation. Worked step prose is not independently parsed. Actual printer and teacher sign-off remain open.

@@ -5,6 +5,7 @@ import {functionTableGeometry} from './function-table.ts';
 import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
+import {assertWorksheetMath} from './math-release-oracle.ts';
 import {PROTRACTOR_RADIUS_PT,PROTRACTOR_CALIBRATION_PT} from './protractor.ts';
 import {fractionLayoutFor,type FractionLayout} from './fraction-layout.ts';
 export type PdfMode = 'questions'|'answers'|'steps';
@@ -367,6 +368,7 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
 }
 export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:PdfMode,paper:Paper):Promise<Uint8Array>{
  assertWorksheetIntegrity(sheet);
+ assertWorksheetMath(sheet);
  if(mode==='steps'&&!hasVerifiedSteps(sheet.topicId))throw new Error('Worked steps are not yet verified for this topic');
  const pdf=await PDFDocument.create();const [pw,ph]=PAGE_SIZE[paper];const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
  const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode==='questions'&&!hasDiagrams;
