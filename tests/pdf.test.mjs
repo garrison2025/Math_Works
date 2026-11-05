@@ -37,7 +37,7 @@ test('R18: scatter plotting exports matching questions and plotted-answer PDFs f
    assert.ok(pdf.getPageCount()>=1);
    const [w,h]=sizes[paper];
    for(const page of pdf.getPages()){assert.ok(Math.abs(page.getWidth()-w)<.015);assert.ok(Math.abs(page.getHeight()-h)<.015);}
-   assert.ok(pdf.getTitle()?.includes('generator v8'));
+   assert.ok(pdf.getTitle()?.includes('generator v9'));
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
   }
  }
@@ -148,7 +148,7 @@ test('new R9 configured worksheets generate paired printable PDF documents',asyn
    for(const doc of docs){
     assert.ok(doc.getPageCount()>0,`${topic} ${paper} zero pages`);
     assert.ok(doc.getTitle()?.includes(set.optionsHash),`${topic} missing configuration ID`);
-    assert.ok(doc.getTitle()?.includes('v8'),`${topic} missing version-eight identity`);
+    assert.ok(doc.getTitle()?.includes('v9'),`${topic} missing version-nine identity`);
    }
   }
  }
@@ -217,14 +217,14 @@ test('R13 diagram corrections serialize true intersecting lines, square faces, a
  ];
  for(const [topic,options] of examples){
   const sheet=makeWorksheet(topic,20261104,8,'standard',options);
-  assert.equal(sheet.generatorVersion,'8');
+  assert.equal(sheet.generatorVersion,'9');
   assert.ok(sheet.problems.every(problem=>!!problem.diagramSpec));
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const bytes=await createWorksheetPdf(sheet,topic,mode,paper);
    const document=await PDFDocument.load(bytes);
    assert.ok(document.getPageCount()>=1,`${topic} ${paper} ${mode}`);
    assert.ok(document.getTitle()?.includes(sheet.optionsHash));
-   assert.ok(document.getTitle()?.includes('v8'));
+   assert.ok(document.getTitle()?.includes('v9'));
   }
  }
 });
@@ -240,7 +240,7 @@ test('R14 general systems and non-function domains export consistent A4/Letter q
    const parsed=await PDFDocument.load(raw);
    assert.ok(parsed.getPageCount()>=1,`${topic} ${mode} PDF empty`);
    assert.ok(parsed.getTitle()?.includes(sheet.optionsHash));
-   assert.match(parsed.getTitle()??'',/generator v8/);
+   assert.match(parsed.getTitle()??'',/generator v9/);
    assert.ok(Math.abs(parsed.getPage(0).getWidth()-(paper==='A4'?595.28:612))<.06);
   }
  }
@@ -260,7 +260,7 @@ test('R15 parallel, coincident and function classification worksheets serialize 
   for(const paper of ['Letter','A4'])for(const mode of ['questions','answers']){
    const pdf=await PDFDocument.load(await createWorksheetPdf(sheet,topic,mode,paper));
    assert.ok(pdf.getPageCount()>0);
-   assert.match(pdf.getTitle()??'',/generator v8/);
+   assert.match(pdf.getTitle()??'',/generator v9/);
    assert.ok(pdf.getTitle()?.includes(sheet.optionsHash));
    assert.equal(pdf.getPage(0).getWidth(),sizes[paper][0]);
   }
@@ -294,6 +294,20 @@ test('R17 graph worksheet question and answer PDFs use the same seed and Letter/
     assert.ok(Math.abs(page.getWidth()-sizes[paper][0])<0.015);
     assert.ok(Math.abs(page.getHeight()-sizes[paper][1])<0.015);
    }
+  }
+ }
+});
+
+test('R19: missing Pythagorean leg shares configuration identity in Letter/A4 practice, answers and steps PDFs',async()=>{
+ for(const paper of ['Letter','A4'])for(const task of ['missing-leg','mixed']){
+  const sheet=makeWorksheet('pythagorean-worksheets',20261105,8,'standard',{scale:'large',task});
+  for(const mode of ['questions','answers','steps']){
+   const bytes=await createWorksheetPdf(sheet,'Pythagorean Worksheets',mode,paper);
+   const pdf=await PDFDocument.load(bytes);
+   assert.ok(pdf.getPageCount()>=1);
+   assert.ok(pdf.getTitle().includes(sheet.optionsHash));
+   assert.match(pdf.getTitle(),/generator v9/);
+   assert.ok(bytes.length>2000);
   }
  }
 });

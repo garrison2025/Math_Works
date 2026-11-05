@@ -169,3 +169,8 @@ This file distinguishes implemented code, local checks and outstanding gates. **
 - [CI REQUIRED] Letter/A4 PDF, Chrome, Firefox and static build need GitHub Actions to confirm actual deployment.
 - [NOT RUN] Physical 50 mm protractor calibration or exhaustive manual visual inspection of all PDF pages.
 - [VERSION] Generator v8 changes old generator semantics; version-gated links warn on v7 mismatch.
+
+### R19 - Missing-leg Pythagorean worksheets
+- [IMPLEMENTED; CI REQUIRED] Missing-leg/mixed tasks, answer-masked right-triangle SVG and PDF, answer-key diagrams, teaching guidance, v9 seed identity.
+- [LOCAL PASS] 18,000 independent theorem checks, plus worksheet/link deterministic tests and 75/75 math/page-rule tests.
+- [NOT RUN] Physical 50 mm protractor calibration; exhaustive manual print inspection across all topics.

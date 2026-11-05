@@ -33,7 +33,9 @@ const fixtures=[
  {slug:'lines-rays-segments-worksheets',quantity:8,options:{figure:'mixed'}},
  {slug:'systems-equations-worksheets',quantity:8,options:{method:'parallel',solutions:'mixed'}},
  {slug:'systems-equations-worksheets',quantity:8,options:{method:'coincident',solutions:'mixed'}},
- {slug:'domain-range-worksheets',quantity:8,options:{task:'function-test',relation:'not-function'}}
+ {slug:'domain-range-worksheets',quantity:8,options:{task:'function-test',relation:'not-function'}},
+ {slug:'pythagorean-worksheets',quantity:8,options:{scale:'small',task:'missing-leg'}},
+ {slug:'pythagorean-worksheets',quantity:8,options:{scale:'large',task:'mixed'}}
 ];
 const files=[];
 for(const [index,item] of fixtures.entries()){

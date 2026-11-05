@@ -146,3 +146,8 @@ Triangle interior-angle pictures now use mathematically constructed vertex coord
 ### R18: six-point scatter plots and plotting worksheets
 
 Scatter Plot Worksheets now offers Identify the trend (positive, negative, no clear linear trend) and Plot the data. For plotting, the practice SVG/PDF shows six ordered pairs and a blank 0-7 by 0-10 coordinate grid; the answer sheet uses the same numerical scale to plot each point. Generator v8 replaces v7 because seed-to-question semantics changed. Old share links show the existing incompatibility warning and must not be represented as exact reproductions. Physical protractor calibration and comprehensive manual PDF review remain pending.
+
+### R19: Pythagorean missing-leg practice (2026-11-05)
+- Hypotenuse, missing leg and mixed tasks use scaled Pythagorean triples. Solutions for missing legs subtract the known leg squared from hypotenuse squared.
+- Practice SVG/vector PDF marks the unknown leg '?'; the answer diagram shows the solved value. Generator/share identity is v9.
+- Mathematics, browser interaction and PDF structure are regression-tested. Physical protractor calibration and complete printed-page review are separate release gates.

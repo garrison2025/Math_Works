@@ -44,12 +44,12 @@ test('R14: multi-option worksheets retain reproducible URL, seeds and answer key
   const args={seed:0xdecafbad,quantity:20,difficulty:'challenge',paper:'A4',options:opts};
   const a=makeWorksheet(slug,args.seed,args.quantity,args.difficulty,args.options);
   const url=buildWorksheetLink(`https://math-works.pages.dev/${slug}/`,slug,args);
-  assert.equal(new URL(url).searchParams.get('gv'),'8');
+  assert.equal(new URL(url).searchParams.get('gv'),'9');
   const restored=parseWorksheetLink(url,slug);
   assert.deepEqual(restored,args);
   const b=makeWorksheet(slug,restored.seed,restored.quantity,restored.difficulty,restored.options);
   assert.deepEqual(a.answerMap,b.answerMap);
-  assert.equal(a.generatorVersion,'8');
+  assert.equal(a.generatorVersion,'9');
   assert.equal(a.optionsHash,b.optionsHash);
  }
 });

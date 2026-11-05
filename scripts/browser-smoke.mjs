@@ -72,13 +72,13 @@ try {
  const answerDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="answers"]').click();
  const answers=await verifyPdf(await answerDownload,'two-step answers',{paper:'A4'});
- assert.ok(questions.getTitle()?.includes('v8'));
- assert.ok(answers.getTitle()?.includes('v8'));
+ assert.ok(questions.getTitle()?.includes('v9'));
+ assert.ok(answers.getTitle()?.includes('v9'));
  await page.locator('[data-action="share"]').click();
  const link=await page.evaluate(()=>navigator.clipboard.readText());
- assert.match(link,/gv=8/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
+ assert.match(link,/gv=9/);assert.match(link,/opt_coefficient=negative/);assert.match(link,/paper=A4/);
  await page.screenshot({path:join(out,'two-step-desktop.png'),fullPage:true});
- events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v8 clipboard link',status:'pass'});
+ events.push({kind:'interaction',name:'desktop controls, answer mode, A4 PDF pair, v9 clipboard link',status:'pass'});
 
  // Browser-only regression: the SVG is the ONLY dot count, not a second visual copy.
  await page.goto(`${base}/number-recognition-worksheets/`,{waitUntil:'networkidle'});
@@ -96,6 +96,22 @@ try {
  assert.ok((await page.locator('.diagram-vector').first().innerHTML()).includes('remainder: ______'));
  events.push({kind:'interaction',name:'long division printable answer-blind bracket',status:'pass'});
 
+ // R19: Pythagorean missing-leg question diagrams mask the unknown while answer diagrams reveal it.
+ await page.goto(`${base}/pythagorean-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('missing-leg');
+ const unknown=await page.locator('.problem .q').first().innerText();
+ assert.match(unknown,/Find the other leg/);
+ assert.match(await page.locator('.diagram-vector').first().innerHTML(),/>[?] units<[/]text>/);
+ const r19Questions=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ await verifyPdf(await r19Questions,'R19 missing-leg practice');
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ assert.match(await page.locator('.problem .diagram-vector').first().innerHTML(),/units/);
+ const r19Answers=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="answers"]').click();
+ await verifyPdf(await r19Answers,'R19 missing-leg answer key');
+ events.push({kind:'interaction',name:'R19 missing-leg SVG masking and paired PDF download',status:'pass'});
  await page.goto(`${base}/printable-protractor/`,{waitUntil:'networkidle'});
  const protractorDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="protractor"]').click();

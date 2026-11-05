@@ -61,7 +61,7 @@ const captures={
  'area-of-trapezoids-worksheets':(p,v)=>p.payload.question.includes('Find its height')===(v==='missing-height'),
  'area-worksheets':(p,v)=>p.payload.question.includes('area of a square')===(v==='square'),
  'triangle-angle-sum-worksheets':(p,v)=>v==='mixed'||(()=>{const angle=Number(p.expectedAnswer.replace('°',''));return v==='acute'?angle<90:v==='right'?angle===90:angle>90})(),
- 'pythagorean-worksheets':(p,v)=>v==='mixed'||(()=>{const m=p.payload.question.match(/legs (\d+) and (\d+)/),d=(a,b)=>b?d(b,a%b):a,scale=d(Number(m[1]),Number(m[2]));return v==='small'?scale<=3:scale>=4})(),
+ 'pythagorean-worksheets':(p,v)=>{if(['hypotenuse','missing-leg'].includes(v))return p.payload.question.includes('Find its hypotenuse.')===(v==='hypotenuse');if(v==='mixed')return true;const legs=p.diagramSpec.values,scale=(a,b)=>b?scale(b,a%b):a;const k=scale(legs[0],legs[1]);return v==='small'?k<=3:k>=4;},
  'domain-range-worksheets':(p,v)=>v==='mixed'||(v==='function-test'?p.payload.question.startsWith('Is the relation '):p.payload.question.startsWith(`List the ${v} of`)),
  'angle-worksheets':(p,v)=>v==='mixed'||p.expectedAnswer===v,
  'vertical-angles-worksheets':(p,v)=>p.payload.question.includes('adjacent supplementary')===(v==='adjacent'),

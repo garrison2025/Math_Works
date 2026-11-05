@@ -45,7 +45,7 @@ try{
  const dl=await qa,filepath=join(out,dl.suggestedFilename());
  await dl.saveAs(filepath);const pdf=await PDFDocument.load(readFileSync(filepath));
  assert.ok(pdf.getPageCount()>=1);assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<0.1);
- assert.match(pdf.getTitle()??'',/generator v8/);
+ assert.match(pdf.getTitle()??'',/generator v9/);
  checks.push({name:'general elimination systems and Firefox A4 PDF',status:'pass',pdf:dl.suggestedFilename()});
  await page.locator('[data-option="method"]').selectOption('parallel');
  await page.locator('[data-mode="answers"]').click();
@@ -82,6 +82,14 @@ try{
  await page.locator('[data-mode="answers"]').click();
  assert.equal(await page.locator('.scatter-solution-point').count(),48);
  checks.push({name:'R18 Firefox scatter practice blank, matching plotted answer key',status:'pass'});
+ await page.locator('[data-mode="questions"]').click();
+ await open('pythagorean-worksheets');
+ await page.locator('[data-option="task"]').selectOption('missing-leg');
+ assert.match(await page.locator('.diagram-vector').first().innerHTML(),/>[?] units<[/]text>/);
+ await page.locator('[data-mode="answers"]').click();
+ assert.equal(await page.locator('.problem .answer-text').count(),8);
+ assert.ok((await page.locator('.problem .diagram-vector').first().innerHTML()).includes('units'));
+ checks.push({name:'R19 Firefox Pythagorean missing-leg answer-blind practice and revealed answers',status:'pass'});
  await page.locator('[data-mode="questions"]').click();
  await open('linear-equations-worksheets');
  await page.setViewportSize({width:390,height:844});
