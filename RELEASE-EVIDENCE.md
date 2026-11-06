@@ -472,3 +472,11 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Triangle and parallelogram gain a **Schematic - not to scale** disclaimer consistent with trapezoid. Existing numeric labels and answer keys remain exact; no re-seeding, layout change or indexing change.
 - [CI REQUIRED] PyMuPDF inspections of actual exported geometry PDF vectors, independent marker-size and perpendicularity verification, 51-topic stress audit and cross-browser checks. R44 must continue checking five unchanged base/altitude outline strokes.
 - [OPEN] Classroom teacher validation, real printer scaling and student visual interpretation cannot be established from digital geometry tests alone.
+
+
+### R56 — 3D dimensional-label legibility and missing-height protection (CI pending)
+
+- [IMPLEMENTED] Rectangular-prism L/W/H positions are explicitly named; unknown H remains `?`. Cube has a single side-length label, not three unlabeled equal measures.
+- [IMPLEMENTED] Shared geometry/label semantics for SVG/PDF, screen-reader text and explicit not-to-scale warning.
+- [CI REQUIRED] 6,000 seeded cases, adversarial invalid dimension metadata, eight actual A4/Letter PDF label and glyph-position audits, Chromium/Firefox and entire 468-PDF regression.
+- [OPEN] Physical print legibility, teacher approval, Cloudflare deployment verification and public-domain/indexation launch.

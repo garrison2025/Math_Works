@@ -248,6 +248,13 @@ try{
  assert.ok(Math.abs(r54Pdf.getPage(0).getWidth()-595.28)<.1);
  assert.match(r54Pdf.getTitle()??'',/extra writing room/);
  checks.push({name:'R54 Firefox extra writing room A4 vector PDF and unchanged questions',status:'pass'});
+ // R56 Firefox checks that missing height remains a question mark.
+ await open('volume-of-rectangular-prisms-worksheets');
+ await page.locator('[data-option="task"]').selectOption('missing-height');
+ const r56Svg=page.locator('.problem svg.diagram-vector').first();
+ assert.equal(await r56Svg.locator('.prism-height').innerText(),'Height: ?');
+ assert.match(await r56Svg.getAttribute('aria-label'),/height unknown/);
+ checks.push({name:'R56 Firefox accessible 3D labels preserve the missing-height task',status:'pass'});
  // R52: independent Firefox check that the local-only physical ruler prompt
  // downloads a one-page Letter vector PDF; no measurement is auto-observed.
  await open('addition-worksheets');

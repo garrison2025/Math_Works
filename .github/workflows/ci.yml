@@ -38,6 +38,8 @@ jobs:
         run: npm run qa:pdf-stress
       - name: R54 export paired A4 and Letter writing-room PDF fixtures
         run: npm run qa:writing-room
+      - name: R56 export seeded A4 and Letter volume and surface-area prism PDFs
+        run: npm run qa:prism-dimensions
       - name: Export Letter and A4 blank actual-size protractor PDFs
         run: npm run qa:protractor-instruments
       - name: Export Letter and A4 universal printer calibration PDFs
@@ -72,6 +74,8 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_long_division_guides.py' -v
       - name: R53 check true-PDF guide rows against all 160 printed division questions
         run: .venv-pdf-audit/bin/python scripts/check-pdf-long-division-guides.py qa-artifacts/pdf-stress
+      - name: R56 audit true-PDF prism L/W/H labels, positions and missing heights
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-prism-dimensions.py qa-artifacts/prism-dimensions
       - name: R55 independently audit printed perpendicular-height right-angle squares
         run: .venv-pdf-audit/bin/python scripts/check-pdf-altitude-markers.py qa-artifacts/pdf-stress
       - name: R44 adversarial tests for real PDF trapezoid base ordering
@@ -94,6 +98,14 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
         run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive R56 prism and cube actual PDF label review samples
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r56-prism-dimensions
+          path: qa-artifacts/prism-dimensions/
+          retention-days: 14
+          if-no-files-found: error
       - name: Archive R54 extra writing-room reference PDFs and vector audit
         uses: actions/upload-artifact@v4
         if: always()
