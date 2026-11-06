@@ -788,39 +788,50 @@ try {
  await page.goto(base+'/two-step-equations-worksheets/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-r66-fraction-number-line]').count(),0,
   'R66 fraction-line extension leaked to unrelated equation page');
- // R67 end-to-end decimal division: real browser PDF downloads and integer
- // v18 preview independence across both divisor types and both precisions.
- await page.goto(base+'/division-worksheets/',{waitUntil:'networkidle'});
+ // R67 real browser downloads: isolate each three-PDF batch in a
+ // fresh browser context. Chrome can block excessive rapid automatic
+ // downloads from a single same-origin tab, even after JS a.click succeeds.
+ // A clean context is stronger than relaxing the browser download gate.
+ const divisionPage=await page.goto(base+'/division-worksheets/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-r67-decimal-division]').count(),1);
  assert.equal(await page.locator('[data-r67-decimal-guide]').count(),1);
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
- const originalDivision=await page.locator('.problem .q').first().innerText();
- await page.locator('[data-field="paper"]').selectOption('A4');
+ const integerBaseline=await page.locator('.problem .q').first().innerText();
  for(const divisorType of ['whole','decimal'])for(const precision of ['tenths','hundredths']){
-  await page.locator('[data-decimal-divisor]').selectOption(divisorType);
-  await page.locator('[data-decimal-precision]').selectOption(precision);
-  for(const mode of ['questions','answers','steps']){
-   const event=page.waitForEvent('download',{timeout:12000});
-   await page.locator('[data-action="decimal-division-'+mode+'"]').click();
-   let downloaded;
-   try{downloaded=await event}
-   catch(e){
-    const status=await page.locator('[data-status]').innerText();
-    throw new Error('R67 '+divisorType+' '+precision+' '+mode+' PDF download missing. Browser status: '+status+'; '+String(e));
+  const isolated=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const decimalPage=await isolated.newPage();
+   decimalPage.on('pageerror',error=>pageErrors.push('R67 '+divisorType+' '+precision+': '+error.message));
+   await decimalPage.goto(base+'/division-worksheets/',{waitUntil:'networkidle'});
+   await decimalPage.locator('[data-field="paper"]').selectOption('A4');
+   await decimalPage.locator('[data-decimal-divisor]').selectOption(divisorType);
+   await decimalPage.locator('[data-decimal-precision]').selectOption(precision);
+   const before=await decimalPage.locator('.problem .q').first().innerText();
+   assert.equal(before,integerBaseline);
+   for(const mode of ['questions','answers','steps']){
+    const download=decimalPage.waitForEvent('download',{timeout:18000});
+    await decimalPage.locator('[data-action="decimal-division-'+mode+'"]').click();
+    let got;
+    try{got=await download}
+    catch(e){
+     const state=await decimalPage.locator('[data-status]').innerText();
+     throw new Error('R67 '+divisorType+' '+precision+' '+mode+' download failed; UI status: '+state+'; '+String(e));
+    }
+    const pdf=await verifyPdf(got,'R67 decimal division '+divisorType+' '+precision+' '+mode,{paper:'A4'});
+    assert.match(pdf.getTitle()??'',/R67.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(mode));
+    assert.match(pdf.getSubject()??'',/independent of integer generator v18/);
    }
-   const pdf=await verifyPdf(downloaded,'R67 decimal division '+divisorType+' '+precision+' '+mode,{paper:'A4'});
-   assert.match(pdf.getTitle()??'',/R67.1/);
-   assert.match(pdf.getTitle()??'',new RegExp(mode));
-   assert.match(pdf.getSubject()??'',/independent of integer generator v18/);
-  }
-  assert.equal(await page.locator('.problem .q').first().innerText(),originalDivision);
+   assert.equal(await decimalPage.locator('.problem .q').first().innerText(),before);
+   if(divisorType==='decimal'&&precision==='hundredths')
+    await decimalPage.screenshot({path:join(out,'r67-decimal-division-ui.png'),fullPage:true});
+  }finally{await isolated.close()}
  }
- await page.screenshot({path:join(out,'r67-decimal-division-ui.png'),fullPage:true});
- events.push({kind:'interaction',name:'R67 12 exact decimal-division PDF downloads and immutable v18 integer worksheet',status:'pass'});
+ events.push({kind:'interaction',name:'R67 isolated batches verify 12 decimal division PDF downloads and original v18 integer sheet',status:'pass'});
  await page.goto(base+'/fractions-worksheets/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-r67-decimal-division]').count(),0,
-  'R67 decimal division controls incorrectly rendered on fractions page');
-
+  'R67 decimal division options leaked into unrelated fractions worksheet');
+ 
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
