@@ -28,6 +28,15 @@ jobs:
         run: npm run qa:seo-progress-r75
       - name: R76 exact source-grounded 488 keyword coverage after 5 cylinder skills
         run: npm run qa:seo-progress-r76
+      - name: R78 original 488 keyword audit after 5 prism and pyramid capability fixes
+        run: npm run qa:seo-progress-r78
+      - name: Archive R78 exact 488 keyword coverage and 89 remaining historical flags
+        uses: actions/upload-artifact@v4
+        with:
+          name: r78-488-keyword-true-coverage
+          path: qa-artifacts/r78-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R76 all 488 original keywords and 94 remaining historical issues
         uses: actions/upload-artifact@v4
         with:
@@ -132,6 +141,8 @@ jobs:
         run: npm run qa:r76-cylinder
       - name: R77 export 36 statistical frequency-dot-plot true vector PDFs
         run: npm run qa:r77-statistics
+      - name: R78 export 36 real-scale unfolded prism and pyramid PDF nets
+        run: npm run qa:r78-solids
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -178,6 +189,15 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-r76-cylinder-sectors.py qa-artifacts
       - name: R77 independently inspect statistics dot stacks and recheck legacy box, scatter and counting-dot PDFs
         run: .venv-pdf-audit/bin/python scripts/check-r77-statistical-charts.py qa-artifacts
+      - name: R78 independent PyMuPDF scaled prism, square pyramid and regular tetrahedron net geometry audit
+        run: .venv-pdf-audit/bin/python scripts/check-r78-solid-nets.py qa-artifacts/r78-prism-pyramid-nets
+      - name: Archive R78 36 real proportional solid-net PDFs and independent geometry audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r78-true-prism-pyramid-net-pdfs
+          path: qa-artifacts/r78-prism-pyramid-nets/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R77 all 36 statistical dot PDFs and joint printed-coordinate audit
         uses: actions/upload-artifact@v4
         with:
