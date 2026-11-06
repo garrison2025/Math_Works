@@ -24,7 +24,7 @@ function wrap(s:string,font:PDFFont,size:number,max:number):string[]{
  if(line)out.push(line);
  return out;
 }
-function net(page:PDFPage,p:CylinderProblem,right:number,y:number,font:PDFFont){
+export function drawCylinderNet(page:PDFPage,p:Pick<CylinderProblem,'radius'|'height'|'unit'>,right:number,y:number,font:PDFFont){
  const r=p.radius,h=p.height;
  const s=Math.min(129/(2*Math.PI*r),95/(h+4*r),3);
  const width=2*Math.PI*r*s,top=2*r*s+h*s;
@@ -85,7 +85,7 @@ export async function createCylinderPdf(pack:CylinderPack,mode:CylinderPdfMode,p
      lines.forEach((s,j)=>write(page,s,left+10,base-29-answers.length*12-j*10.5,regular,7.8,muted));
     }
    }
-   net(page,p,right,y,regular);
+   drawCylinderNet(page,p,right,y,regular);
    if(i<2)page.drawLine({start:{x:left,y:y-178},end:{x:right,y:y-178},color:guide,thickness:.4});
   }
   write(page,'R76.1  |  '+mode+'  |  '+paper+'  |  Seed '+pack.seed+
