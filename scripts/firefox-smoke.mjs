@@ -599,6 +599,27 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R79 Firefox six real mixed-volume/mixed-surface Letter PDF student, answer and worked downloads',status:'pass'});
+ // R80 Firefox: actual Letter PDF downloads for real face nets and two joined prisms.
+ await open('surface-area-worksheets');
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ const oldR80=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ for(const kind of ['nets','composite']){
+  assert.equal(await page.locator('[data-r80-'+kind+']').count(),1);
+  await page.locator('[data-r80-'+kind+'-mode]').selectOption('mixed');
+  for(const edition of ['questions','answers','steps']){
+   const pending=page.waitForEvent('download',{timeout:55000});
+   await page.locator('[data-action="r80-'+kind+'-'+edition+'"]').click();
+   const dl=await pending,target=join(out,dl.suggestedFilename());
+   await dl.saveAs(target);
+   const pdf=await PDFDocument.load(readFileSync(target));
+   assert.equal(pdf.getPageCount(),4);
+   assert.equal(pdf.getPage(0).getWidth(),612);
+   assert.match(pdf.getTitle()??'',/R80/);
+  }
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),oldR80);
+ checks.push({name:'R80 Firefox six actual 4-page Letter unfold-net and hidden-contact composite answer-isolated PDFs',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
