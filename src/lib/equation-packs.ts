@@ -63,6 +63,8 @@ export function createEquationPack(topic:EquationTopic,kind:EquationNumberType,
   let item:EquationQuestion|undefined;
   for(let trial=0;trial<700;trial++){
    const x=get(rng,difficulty),b=get(rng,difficulty,true),a=get(rng,difficulty,true);
+   // Every extension item contains a genuinely noninteger decimal/fraction answer.
+   if(x.d===1n)continue;
    const op=topic==='one-step-equations-worksheets'?
     options.operation==='mixed'?rng.pick(['addition','multiplication']):options.operation:'two-step';
    if(op==='multiplication'&&a.n===a.d)continue;
