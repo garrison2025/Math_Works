@@ -15,7 +15,7 @@ PAT=re.compile(r"^(\d+)\. (\d+\.\d{1,2}) ([+-]) (\d+\.\d{1,2})$")
 PAPERS={"a4":(595.28,841.89),"letter":(612.,792.)}
 
 def digits_carry(a:int,b:int,op:str)->bool:
-    carry=0,found=False
+    carry,found=0,False
     while a or b:
         da,db=a%10,b%10
         if op=="+":
@@ -52,7 +52,6 @@ def inspect(folder:Path,case:dict):
     mode=case["mode"];expected_pages=2 if mode=="steps" else 1
     with fitz.open(path) as pdf:
         if len(pdf)!=expected_pages:raise AssertionError(f"{path}: wrong page count {len(pdf)}")
-        lines=[],[]
         texts,monos=[],[]
         all_text=[]
         for page in pdf:
