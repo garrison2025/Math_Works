@@ -1010,6 +1010,43 @@ try {
  }
  events.push({kind:'interaction',name:'R72 four actual A4 fraction strip PDF downloads from blank/labelled charts',status:'pass'});
 
+ // R73 interpret the remainder correctly in actual browser student/teacher PDFs.
+ // One isolated context per story type prevents automated-download throttling.
+ for(const selected of ['mixed','equal-sharing','full-groups','round-up','leftovers']){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R73 '+selected+': '+e.message));
+   await p.goto(base+'/division-worksheets/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r73-division-stories]').count(),1);
+   assert.equal(await p.locator('[data-r73-division-stories-guide]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-division-story-mode]').selectOption(selected);
+   for(const mode of ['questions','answers','steps']){
+    const event=p.waitForEvent('download',{timeout:25000});
+    await p.locator('[data-action="division-story-'+mode+'"]').click();
+    let dl;
+    try{dl=await event}
+    catch(e){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R73 '+selected+'/'+mode+' download error: '+status+'; '+String(e));
+    }
+    const pdf=await verifyPdf(dl,'R73 division word '+selected+' '+mode,{paper:'A4'});
+    assert.match(pdf.getTitle()??'',/R73\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(mode));
+    assert.match(pdf.getSubject()??'',/independent from original v18 division facts/);
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),original);
+   if(selected==='mixed')await p.screenshot({path:join(out,'r73-division-word-problems-ui.png'),fullPage:true});
+  }finally{await ctx.close()}
+ }
+ events.push({kind:'interaction',name:'R73 five division story modes: 15 real student/key/steps PDFs, no v18 mutation',status:'pass'});
+ await page.goto(base+'/fractions-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r73-division-stories]').count(),0,
+  'Division story selectors leaked to the fractions page');
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
