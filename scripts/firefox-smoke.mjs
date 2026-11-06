@@ -554,6 +554,30 @@ try{
  }
  assert.equal(await page.locator('.problem .q').first().innerText(),originalR77);
  checks.push({name:'R77 Firefox three actual Letter statistical dot plot practice/key/steps PDFs, noindex retained',status:'pass'});
+ // R78 real Firefox Letter downloads for both a triangular prism and square pyramid.
+ for(const trial of [
+  {topic:'volume-of-rectangular-prisms-worksheets',skill:'triangular-prism-volume'},
+  {topic:'surface-area-worksheets',skill:'square-pyramid-surface'}
+ ]){
+  await open(trial.topic);
+  assert.equal(await page.locator('[data-r78-solids]').count(),1);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  const original=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  await page.locator('[data-r78-solid-mode]').selectOption(trial.skill);
+  for(const output of ['questions','answers','steps']){
+   const pending=page.waitForEvent('download',{timeout:45000});
+   await page.locator('[data-action="r78-solids-'+output+'"]').click();
+   const dl=await pending,target=join(out,dl.suggestedFilename());
+   await dl.saveAs(target);
+   const file=await PDFDocument.load(readFileSync(target));
+   assert.equal(file.getPageCount(),3);
+   assert.equal(file.getPage(0).getWidth(),612);
+   assert.match(file.getTitle()??'',/R78\.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),original);
+ }
+ checks.push({name:'R78 Firefox six actual right triangular prism/square pyramid Letter PDFs with original generators and noindex preserved',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
