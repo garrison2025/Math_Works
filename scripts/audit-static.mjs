@@ -97,3 +97,64 @@ for(const {parent,child,difference} of SKILL_RELATIONS){
 }
 assert.equal(checkedLinks,48);
 console.log(`R41 STATIC SEO AUDIT PASS: 488 source keywords -> 55 mapped routes (437 live, 51 HOLD), 24 intent relationships, 48 rendered reciprocal links, noindex preserved.`);
+
+/** R62: selected intent must match the original evidence exactly, while
+ * known unsupported searches stay out of visible specialist SEO claims.
+ */
+const targets=JSON.parse(readFileSync(join(root,'src/data/seo-targets.json'),'utf8'));
+const intentReview=JSON.parse(readFileSync(join(root,'src/data/seo-intent-review.json'),'utf8'));
+const rows=csvLines.map(row=>{
+ const [raw,vol,kd,,,source,rawPath]=parseCsvLine(row);
+ return {keyword:raw.slice(1,-1).toLowerCase(),volume:Number(vol),
+  kd:Number(kd),source,path:rawPath.replace(/^`|`$/g,'')};
+});
+const evidenceBySlug=new Map();
+for(const row of rows){
+ const slug=row.path.slice(1,-1);
+ const lookup=evidenceBySlug.get(slug)??new Map();
+ lookup.set(row.keyword,row);evidenceBySlug.set(slug,lookup);
+}
+assert.equal(targets.length,51,'R62 focus must cover all 51 live generators');
+assert.equal(intentReview.schema,'mathworks-seo-intent-review/v1');
+assert.equal(intentReview.status,'INITIAL_PARTIAL_AUDIT');
+assert.equal(intentReview.flagged.length,21,'R62 initial mismatch list changed without review');
+const flagged=new Set();
+for(const issue of intentReview.flagged){
+ assert.ok(issue.slug&&issue.keyword&&issue.reason.length>=25);
+ assert.ok(['unsupported','wrong-page','needs-review'].includes(issue.classification));
+ const key=issue.slug+':'+issue.keyword;
+ assert.ok(!flagged.has(key),'Duplicate flagged query: '+key);flagged.add(key);
+ assert.ok(evidenceBySlug.get(issue.slug)?.has(issue.keyword),
+  'Flagged query not in original source: '+key);
+}
+const selected=new Set();
+let specialists=0,hubs=0;
+for(const target of targets){
+ const route=byRoute.get(target.slug),key=target.slug+':'+target.primary;
+ assert.ok(route&&route.type!=='HOLD','R62 target is not a built generator: '+key);
+ assert.ok(!selected.has(target.slug),'R62 duplicate primary intent: '+key);
+ selected.add(target.slug);
+ const evidence=evidenceBySlug.get(target.slug)?.get(target.primary);
+ assert.ok(evidence,'Primary keyword is not exact source evidence: '+key);
+ assert.equal(target.sourceMonthlyVolume,evidence.volume,'Keyword volume drift: '+key);
+ assert.equal(target.sourceSemrushKD,evidence.kd,'Keyword KD drift: '+key);
+ assert.ok(!flagged.has(key),'Unsupported query promoted as primary: '+key);
+ const html=readFileSync(join(dist,target.slug,'index.html'),'utf8');
+ if(route.type==='CONDITIONAL_TOOL'){
+  specialists++;
+  assert.ok(html.includes('data-seo-focus'),'Missing specialist practice section: '+key);
+  const block=html.split('data-seo-focus')[1]?.split('</section>')[0]??'';
+  const actual=target.primary[0].toUpperCase()+target.primary.slice(1);
+  assert.ok(block.includes(actual),'Specialist SEO heading changed: '+key);
+  assert.ok(block.includes('Separate student questions'),'Print scope absent: '+key);
+  for(const issue of intentReview.flagged.filter(issue=>issue.slug===route.slug))
+   assert.ok(!block.toLowerCase().includes(issue.keyword),
+    'Unsupported query in specialist content: '+issue.keyword);
+ }else{
+  hubs++;
+  assert.ok(html.includes('data-seo-hub'),'Broad hub lacks navigation and scope: '+key);
+  assert.ok(!html.includes('data-seo-focus'),'Broad hub claims specialist scope: '+key);
+ }
+}
+assert.equal(selected.size,51);assert.equal(specialists,43);assert.equal(hubs,8);
+console.log('R62 SEO INTENT AUDIT PASS: 51 original-source primary queries, 43 specialist and 8 hub pages; 21 flagged mismatches are not promoted. Noindex preview maintained.');
