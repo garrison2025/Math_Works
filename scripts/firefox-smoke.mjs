@@ -278,6 +278,25 @@ try{
  await page.locator('[data-action="check-calibration"]').click();
  assert.match(await page.locator('[data-calibration-result]').innerText(),/user-reported screening result/);
  checks.push({name:'R52 Firefox Letter actual-size printer PDF and self-reported ruler checker',status:'pass'});
+ // R64 Firefox: independent chart download buttons and separate complete key.
+ await open('multiplication-tables-worksheets');
+ assert.equal(await page.locator('[data-action="multiplication-grid-blank"]').count(),1);
+ assert.equal(await page.locator('[data-action="multiplication-grid-key"]').count(),1);
+ await page.locator('[data-field="paper"]').selectOption('A4');
+ for(const mode of ['blank','key']){
+  const event=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="multiplication-grid-'+mode+'"]').click();
+  const dl=await event;
+  const target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPageCount(),1);
+  assert.ok(Math.abs(pdf.getPage(0).getWidth()-595.28)<.1);
+  assert.match(pdf.getTitle()??'',mode==='blank'?/Blank Worksheet/:/Answer Key/);
+ }
+ await page.screenshot({path:join(out,'r64-firefox-chart-a4.png'),fullPage:true});
+ checks.push({name:'R64 Firefox blank 1-12 multiplication chart and 144-product answer PDF, A4',status:'pass'});
+
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
