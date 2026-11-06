@@ -2,7 +2,7 @@
 import {PDFDocument, StandardFonts, rgb, type PDFPage, type PDFFont} from 'pdf-lib';
 import {quartiles,type Worksheet, type Problem, type Diagram} from './math.ts';
 import {functionTableGeometry} from './function-table.ts';
-import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
+import {cartesianAxisTicks,graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {hasVerifiedSteps} from './capabilities.ts';
 import {assertWorksheetIntegrity} from './sheet-integrity.ts';
 import {assertWorksheetMath} from './math-release-oracle.ts';
@@ -348,24 +348,26 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
  if(d.kind==='coordinate'||d.kind==='linear-function'){
   const g=graphGeometry(d),mx=(z:number)=>.5+z/g.boundX*.44,my=(z:number)=>.5+z/g.boundY*.42;
   const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
-  const tickX=drawingTask?1:g.boundX<=9?2:g.boundX<=20?5:10;
-  const tickY=drawingTask?1:g.boundY<=9?2:g.boundY<=20?5:10;
+  const marks=cartesianAxisTicks(g,drawingTask);
   const gridColor=rgb(.87,.91,.95);
-  for(let i=-g.boundX;i<=g.boundX;i+=tickX)if(i!==0)
+  for(const i of marks.x)if(i!==0)
    page.drawLine({start:{x:x+mx(i)*w,y:y+.07*h},end:{x:x+mx(i)*w,y:y+.93*h},color:gridColor,thickness:.45});
-  for(let i=-g.boundY;i<=g.boundY;i+=tickY)if(i!==0)
+  for(const i of marks.y)if(i!==0)
    page.drawLine({start:{x:x+.06*w,y:y+my(i)*h},end:{x:x+.94*w,y:y+my(i)*h},color:gridColor,thickness:.45});
   l(.06,.5,.94,.5);l(.5,.07,.5,.93);
   // R37: print x-axis tick labels BELOW the plotting grid, rather than
   // alongside y-axis tick text near the origin (a real collision in 40-Q PDFs).
-  for(let i=-g.boundX;i<=g.boundX;i+=tickX){
+  for(const i of marks.x){
    l(mx(i),.48,mx(i),.52);
    if(i!==0){const s=String(i),size=6;page.drawText(s,{x:x+mx(i)*w-font.widthOfTextAtSize(s,size)/2,y:y+.018*h,size,font,color:sub});}
   }
-  for(let i=-g.boundY;i<=g.boundY;i+=tickY){
+  for(const i of marks.y){
    l(.48,my(i),.52,my(i));
-   if(i!==0&&(!drawingTask||i%2===0)){const s=String(i),size=6;page.drawText(s,{x:x+.45*w-font.widthOfTextAtSize(s,size),y:y+my(i)*h-2,size,font,color:sub});}
+   if(marks.labeledY.includes(i)){const s=String(i),size=6;page.drawText(s,{x:x+.45*w-font.widthOfTextAtSize(s,size),y:y+my(i)*h-2,size,font,color:sub});}
   }
+  // Label the mathematical origin ONCE; both positive and negative scale
+  // marks are multiples of the same step and never shifted off zero.
+  page.drawText('0',{x:x+.5*w+6,y:y+.5*h-12,size:6,font,color:sub});
   if(g.segment&&(!drawingTask||showSolution)){
    const [[x1,y1],[x2,y2]]=g.segment;l(mx(x1),my(y1),mx(x2),my(y2));
    if(drawingTask){const [m,b]=d.values;dot(mx(0),my(b));dot(mx(1),my(m+b));}
