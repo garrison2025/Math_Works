@@ -40,6 +40,26 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <div class="field"><label for="decimal-quotient-precision">Quotient precision</label><select id="decimal-quotient-precision" data-decimal-precision><option value="mixed">Mix tenths and hundredths</option><option value="tenths">Tenths only</option><option value="hundredths">Hundredths only</option></select></div>
 <div class="download-grid"><button type="button" class="btn btn-secondary" data-action="decimal-division-questions">Decimal student PDF</button><button type="button" class="btn" data-action="decimal-division-answers">Decimal answer key PDF</button><button type="button" class="btn" data-action="decimal-division-steps">Decimal worked steps PDF</button></div>
 <p class="hint">Only terminating decimals with an exact noninteger quotient; no rounding, remainders, or repeating decimals. Same seed, difficulty, question count, divisor mode and precision reproduce the same pack. The original worksheet share link does not include these extra settings.</p>
+</div>}{(slug==='addition-worksheets'||slug==='subtraction-worksheets'||slug==='mixed-addition-subtraction-worksheets')&&<div class="calibration-card" data-r68-decimal-add-sub aria-label="Aligned decimal addition and subtraction worksheet practice">
+<strong>Decimal addition and subtraction — column worksheets</strong>
+<p class="hint">Print decimal-point-aligned vertical problems using exact tenths and hundredths, with optional carrying or borrowing practice. The three PDF downloads use identical seed, quantity and settings; the original integer practice and its preview remain unchanged.</p>
+<div class="field"><label for="decimal-add-sub-operation">Decimal operation</label><select id="decimal-add-sub-operation" data-decimal-add-sub-operation>
+<option value="mixed" selected={slug==='mixed-addition-subtraction-worksheets'}>Mixed addition and subtraction</option>
+<option value="addition" selected={slug==='addition-worksheets'}>Addition only</option>
+<option value="subtraction" selected={slug==='subtraction-worksheets'}>Subtraction only</option>
+</select></div>
+<div class="field"><label for="decimal-add-sub-places">Decimal places</label><select id="decimal-add-sub-places" data-decimal-add-sub-places>
+<option value="mixed">Mix tenths and hundredths</option>
+<option value="tenths">Tenths (one decimal place)</option>
+<option value="hundredths">Hundredths (two decimal places)</option>
+</select></div>
+<div class="field"><label for="decimal-add-sub-regrouping">Carrying / borrowing</label><select id="decimal-add-sub-regrouping" data-decimal-add-sub-regrouping>
+<option value="mixed">With and without regrouping</option>
+<option value="yes">Require carrying or borrowing</option>
+<option value="no">No carrying or borrowing</option>
+</select></div>
+<div class="download-grid"><button type="button" class="btn btn-secondary" data-action="decimal-add-sub-questions">Decimal student PDF</button><button type="button" class="btn" data-action="decimal-add-sub-answers">Decimal answer PDF</button><button type="button" class="btn" data-action="decimal-add-sub-steps">Decimal worked steps PDF</button></div>
+<p class="hint">Students receive aligned column arithmetic with blank result lines; teachers receive matching exact keys and inverse-operation checks. Subtraction results are nonnegative. The original Copy reproducible link does not include these extra decimal settings.</p>
 </div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <details class="calibration-card" data-print-calibration>
       <summary>Printer scale check <span class="calibration-mini">Recommended before classroom printing</span></summary>
