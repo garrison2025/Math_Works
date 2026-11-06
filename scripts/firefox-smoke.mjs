@@ -578,6 +578,27 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R78 Firefox six actual right triangular prism/square pyramid Letter PDFs with original generators and noindex preserved',status:'pass'});
+ // R79 actual Firefox downloads of combined prism/cylinder volume AND surface PDFs.
+ for(const topic of ['volume-of-rectangular-prisms-worksheets','surface-area-worksheets']){
+  await open(topic);
+  assert.equal(await page.locator('[data-r79-mixed-solid]').count(),1);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  const original=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  await page.locator('[data-r79-mixed-solid-mode]').selectOption('mixed');
+  for(const output of ['questions','answers','steps']){
+   const pending=page.waitForEvent('download',{timeout:50000});
+   await page.locator('[data-action="r79-mixed-solid-'+output+'"]').click();
+   const dl=await pending,target=join(out,dl.suggestedFilename());
+   await dl.saveAs(target);
+   const pdf=await PDFDocument.load(readFileSync(target));
+   assert.equal(pdf.getPageCount(),3);
+   assert.equal(pdf.getPage(0).getWidth(),612);
+   assert.match(pdf.getTitle()??'',/R79\.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),original);
+ }
+ checks.push({name:'R79 Firefox six real mixed-volume/mixed-surface Letter PDF student, answer and worked downloads',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
