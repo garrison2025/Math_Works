@@ -18,6 +18,15 @@ jobs:
       - run: npm run audit:static
       - name: R62 export complete source-grounded keyword intent and SEO release status
         run: npm run qa:seo-readiness
+      - name: R63 inspect all 488 original keywords against exact 145 source-backed intent flags
+        run: npm run qa:seo-triage
+      - name: Archive R63 SEO triage: all 488 keywords, 145 issues, and route proposals
+        uses: actions/upload-artifact@v4
+        with:
+          name: r63-full-keyword-intent-matrix
+          path: qa-artifacts/r63-seo-intent-triage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R62 488-row SEO keyword intent and launch gate report
         uses: actions/upload-artifact@v4
         with:
