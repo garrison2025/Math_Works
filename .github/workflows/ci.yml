@@ -20,7 +20,7 @@ jobs:
         run: npm run qa:seo-readiness
       - name: R63 inspect all 488 original keywords against exact 145 source-backed intent flags
         run: npm run qa:seo-triage
-      - name: Archive R63 SEO triage: all 488 keywords, 145 issues, and route proposals
+      - name: Archive R63 SEO triage for 488 keywords, 145 issues and route proposals
         uses: actions/upload-artifact@v4
         with:
           name: r63-full-keyword-intent-matrix
