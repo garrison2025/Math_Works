@@ -189,8 +189,8 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    break}
   case 'scatter':{
    const px=(n:number)=>80+(n/7)*315,py=(n:number)=>176-(n/10)*150;
-   for(let i=0;i<=7;i++){parts+=`<line x1="${px(i)}" y1="26" x2="${px(i)}" y2="176" stroke="#e1e8ee" stroke-width="1"/>`+text(px(i),199,String(i));}
-   for(let j=0;j<=10;j+=2){parts+=`<line x1="80" y1="${py(j)}" x2="395" y2="${py(j)}" stroke="#e1e8ee" stroke-width="1"/>`+text(59,py(j)+5,String(j));}
+   for(let i=0;i<=7;i++){parts+=`<line class="scatter-grid-x" data-value="${i}" x1="${px(i)}" y1="26" x2="${px(i)}" y2="176" stroke="#e1e8ee" stroke-width="1"/>`+text(px(i),199,String(i));}
+   for(let j=0;j<=10;j+=2){parts+=`<line class="scatter-grid-y" data-value="${j}" x1="80" y1="${py(j)}" x2="395" y2="${py(j)}" stroke="#e1e8ee" stroke-width="1"/>`+text(59,py(j)+5,String(j));}
    parts+=line(80,176,398,176)+line(80,176,80,23)+text(412,177,'x')+text(82,19,'y');
    if(!d.labels?.includes('plot')||showSolution){
     for(const [u,z] of scatterGeometry(d)){
@@ -202,12 +202,12 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
   case 'box-practice':{
    const axis=boxPracticeAxis(v),toX=(value:number)=>75+300*axis.position(value);
    parts=line(65,112,395,112)+`<path d="M65 112l9 -6v12zM395 112l-9 -6v12z" fill="#1b64a5"/>`;
-   for(const tick of axis.ticks){const x=toX(tick);parts+=line(x,103,x,121)+text(x,146,String(tick));}
+   for(const tick of axis.ticks){const x=toX(tick);parts+=`<line class="box-axis-tick" data-value="${tick}" x1="${x}" y1="103" x2="${x}" y2="121" stroke="#1b64a5" stroke-width="3" stroke-linecap="round"/>`+text(x,146,String(tick));}
    if(showSolution){
     const q=quartiles(v),x1=toX(q.q1),x2=toX(q.q3);
     parts+=line(toX(q.lower),112,toX(q.upper),112)+line(toX(q.lower),94,toX(q.lower),130)+line(toX(q.upper),94,toX(q.upper),130);
     parts+=`<rect class="solution-box" x="${x1}" y="91" width="${Math.max(1,x2-x1)}" height="42" fill="#e9f2f9" stroke="#187b68" stroke-width="3"/>`;
-    parts+=line(toX(q.median),91,toX(q.median),133);
+    parts+=`<line class="box-solution-median" x1="${toX(q.median)}" y1="91" x2="${toX(q.median)}" y2="133" stroke="#1b64a5" stroke-width="3" stroke-linecap="round"/>`;
     for(const outlier of q.outliers)parts+=`<circle class="solution-outlier" cx="${toX(outlier)}" cy="112" r="6" fill="white" stroke="#a44127" stroke-width="3"/>`;
    }
    parts+=text(225,184,showSolution?'Modified box plot (outliers separate)':'Draw the box, median and whiskers after solving');
@@ -218,7 +218,7 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    parts+=line(sx(v[2]),90,sx(v[2]),150)+line(sx(v[0]),95,sx(v[0]),145)+line(sx(v[4]),95,sx(v[4]),145);
    for(const outlier of v.slice(5))parts+=`<circle cx="${sx(outlier)}" cy="120" r="6" fill="white" stroke="#a44127" stroke-width="3"/>`;
    parts+=text(225,185,'Whiskers exclude outliers');break}
-  case 'dots':{parts=Array.from({length:v[0]},(_,i)=>`<circle cx="${85+(i%6)*54}" cy="${65+Math.floor(i/6)*64}" r="16" fill="#187b68"/>`).join('');break}
+  case 'dots':{parts=Array.from({length:v[0]},(_,i)=>`<circle class="counting-dot" cx="${85+(i%6)*54}" cy="${65+Math.floor(i/6)*64}" r="16" fill="#187b68"/>`).join('');break}
   default:return '';
  }
  const taller=d.kind==='long-division';
