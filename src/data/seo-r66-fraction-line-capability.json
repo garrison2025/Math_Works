@@ -1,0 +1,64 @@
+{
+  "schema": "mathworks-r66-fraction-line-capability/v1",
+  "date": "2026-11-06",
+  "sourceData": "Original owner-supplied Semrush keyword-evidence.csv; these are historical figures, not verified current Google US data.",
+  "originalRowsChanged": 0,
+  "originalGeneratorVersion": "18",
+  "extensionVersion": "R66.1",
+  "supportedOn": [
+    "number-line-worksheets",
+    "fractions-worksheets"
+  ],
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "fractions on a number line worksheet",
+      "originalSourceRoute": "fractions-worksheets",
+      "sourceMonthlyVolume": 1300,
+      "sourceKD": 9,
+      "previousR63Flag": "unsupported",
+      "newCapability": "Identify and plot points on exactly partitioned 0–1 and 0–2 fraction number lines with student and separate matching answer PDFs."
+    },
+    {
+      "keyword": "number line fractions worksheet",
+      "originalSourceRoute": "fractions-worksheets",
+      "sourceMonthlyVolume": 590,
+      "sourceKD": 15,
+      "previousR63Flag": "unsupported",
+      "newCapability": "Exact rational number-line diagrams with visible equal tick spacing and seeded student-answer PDFs."
+    },
+    {
+      "keyword": "fraction number lines worksheet",
+      "originalSourceRoute": "fractions-worksheets",
+      "sourceMonthlyVolume": 480,
+      "sourceKD": 11,
+      "previousR63Flag": "unsupported",
+      "newCapability": "Identify or mark proper and improper fractions on printable A4/Letter 0–1 and 0–2 interval diagrams."
+    }
+  ],
+  "sourceReview": [
+    {
+      "url": "https://www.mathworksheets4kids.com/fraction-number-line.php",
+      "finding": "Competitor describes reading fractions, mixed number points, equivalent fraction number lines and operations by jumps. R66 only claims the name-and-plot subskills."
+    },
+    {
+      "url": "https://k5print.com/fraction-number-line/",
+      "finding": "Competitor displays options for plots, labels, number of lines, answer key and paper size. R66 implements identify/plot, line ranges, seeding and answer PDFs, not all competitor modes."
+    },
+    {
+      "url": "https://mathpicnic.com/worksheets/fractions/on-a-number-line/",
+      "finding": "Competitor has printable identify-the-dot sheets and separate answer keys."
+    }
+  ],
+  "routingGovernance": "The original three phrases remain historically flagged in R63 and mapped to fractions-worksheets. R66 is an additive feature capability resolution, not a retroactive rewrite of the original source or automatic move of the canonical URL.",
+  "scopeLimits": [
+    "No signed negative-fraction number lines",
+    "No arithmetic jumps for fraction addition/subtraction",
+    "No formal grade/curriculum certification",
+    "No full external Google US SERP rank audit"
+  ],
+  "liveSerpRankVerified": false,
+  "approvedForIndexation": false,
+  "previewNoindex": true,
+  "physicalPrintMeasured": false,
+  "teacherSignoff": false
+}
