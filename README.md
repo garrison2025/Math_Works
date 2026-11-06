@@ -975,3 +975,74 @@ addition. A purchased custom domain, verified Cloudflare deployed
 commit, real Google US SERP/GSC information, topic-specific
 index-approval and physical printer/teacher acceptance still require
 separate checks.
+
+### R69 — source-backed exact fraction/decimal two-way printable conversion
+
+The original user-provided 488-row keyword source and R63 semantic audit
+identify **four** previously unsupported fraction conversion intents:
+
+| Original owner keyword | Historical monthly Volume | Historical KD |
+| --- | ---: | ---: |
+| fractions to decimals worksheet | 1,300 | 24 |
+| decimal to fraction and fraction to decimal worksheet | 1,300 | 24 |
+| converting from fractions to decimals worksheet | 1,000 | 24 |
+| fractions into decimals worksheet | 720 | 21 |
+
+These numbers were **supplied historical Semrush snapshots**, not
+live 2026-11-06 Google US search/ranking checks. Overlapping queries
+must not be added into a predicted traffic number. Do not rewrite the
+original keyword CSV or historical R63 flags.
+
+R69 adds a genuine separate **R69.1** conversion pack to the existing
+\`/fractions-worksheets/\` page, preserving the v18 original 51-topic
+generator:
+
+- **Fraction → decimal:** reduced (sometimes improper) fractions to
+  exact terminating decimals, without rounding or approximations.
+- **Decimal → fraction in lowest terms:** exact tenths,
+  hundredths or thousandths converted to reduced positive fractions.
+- **Mixed two-way conversion:** alternating both directions and,
+  when selected, all three decimal precisions.
+- The original controls' seed (0–2³²−1), difficulty, question count
+  (1–40), US Letter/A4 paper and extra writing room apply.
+- Three separate PDF downloads: a **student sheet with a real
+  numerator / vector fraction bar / denominator** and blank
+  response line, a matching **answer key** and a **worked steps**
+  PDF including the equivalent denominator and independent check.
+- Decimal arithmetic uses integers in **one-thousandth units**,
+  and all reduced fractions follow the exact greatest-common-
+  divisor. Fractions with repeating decimal expansions and
+  rounded/approximate exercises are excluded.
+- The original v18 fractions arithmetic generator, current
+  preview, standard answer PDF/answer checker and Copy
+  reproducible link stay untouched. The existing share link does
+  **not yet encode** the separate R69 direction/precision selectors.
+
+Tests in \`tests/r69-fraction-decimal-conversion.test.mjs\`
+independently check **7,200 exact conversions** using BigInt
+cross-products, simplified fraction invariants, deterministic
+reproduction, corrupted-answer rejection, **54 A4/Letter PDF modes**,
+and all four original exact-source keyword assertions.
+\`scripts/export-fraction-decimal-r69.mjs\` produces **54 real PDFs**
+with a complete row-level manifest. A separate Python audit
+(\`scripts/check-fraction-decimal-r69.py\`) reads the **actual
+visible PDF text**, recomputes conversions with independent
+\`Decimal\` and \`Fraction\`, verifies true vector fraction bars,
+blank student answer lines, real teacher answers, margin safety
+and printed check steps. Chromium and Firefox test buttons.
+
+Competitor examples at
+\`mathworksheets4kids.com/convert-fractions-decimals.php\`
+show printable separate one-way and mixed conversions; public
+example \`mathworksheets4kids.com/convert/fractions-decimals/fractions-and-decimals-level2-3.pdf\`
+shows real question types. These observations demonstrate task
+semantics, **not** competitor rank, KD freshness or likely revenue.
+
+**Limits and release gates:** no negative input, fraction strips,
+percent conversions, repeating decimals or claimed grade alignment.
+Cloudflare \`math-works.pages.dev\` remains
+\`noindex,nofollow\`. A production domain, physical A4/Letter printer
+check, teacher signoff, current Google US SERP/GSC evidence, verified
+Cloudflare deployment SHA and explicit approved route-index list are
+independent future launch requirements. CI pass alone does not
+authorize indexing or imply organic traffic.
