@@ -1,0 +1,88 @@
+{
+  "schema": "mathworks-r64-observation/v1",
+  "checkedOn": "2026-11-06",
+  "researchScope": "Eight existing owner-selected US-English worksheet topics checked against named public competitor page content. The page observations were obtained via public web search, NOT a location-locked Google US SERP rank export.",
+  "limitations": "Do not infer Google positions, keyword difficulty changes, traffic, rich-result eligibility, or feature popularity from these observations. Competitor descriptions are based on public page text. Do not automatically allowlist any page for indexation.",
+  "observations": [
+    {
+      "slug": "one-step-equations-worksheets",
+      "primary": "one step equations worksheet",
+      "competitorUrl": "https://www.math-aids.com/Algebra/Algebra_1/Equations/One_Step_All.html",
+      "observed": "Competitor customizes one-step equations by integers, decimals and fractions, with an optional answer sheet.",
+      "ourFeature": "Solving one-step integer addition and multiplication equations with positive/negative coefficients and a matching answer PDF.",
+      "gap": "Decimal/fraction equations are not implemented. Avoid implying all-number-types coverage.",
+      "priority": "HIGH",
+      "decision": "KEEP_SCOPED_TOOL"
+    },
+    {
+      "slug": "two-step-equations-worksheets",
+      "primary": "two step equations worksheet",
+      "competitorUrl": "https://www.mathworksheets4kids.com/two-step-equation.php",
+      "observed": "Competitor offers different two-step equation PDFs for integers, decimals, fractions, word problems and equation verification.",
+      "ourFeature": "Integer-coefficient two-step equations with variable coefficient sign choices, matching answer and verified worked steps.",
+      "gap": "Decimals, fractional coefficients and word-story problem variants are missing. State integer scope explicitly.",
+      "priority": "HIGH",
+      "decision": "KEEP_SCOPED_TOOL"
+    },
+    {
+      "slug": "order-of-operations-worksheets",
+      "primary": "order of operations worksheets",
+      "competitorUrl": "https://www.k5learning.com/free-math-worksheets/topics/order-of-operations",
+      "observed": "Competitor has separate difficulty and grade families including parentheses, exponent and nested-parentheses examples.",
+      "ourFeature": "Generated 3-operation-style expressions using a selectable grouping and operation focus, including some exponents.",
+      "gap": "Do not claim a nested-parentheses, grade-certified or curriculum-aligned variant without separate testing.",
+      "priority": "HIGH",
+      "decision": "KEEP_SCOPED_TOOL"
+    },
+    {
+      "slug": "equivalent-fractions-worksheets",
+      "primary": "equivalent fractions worksheet",
+      "competitorUrl": "https://www.k5learning.com/free-math-worksheets/fourth-grade-4/fractions/equivalent-fractions",
+      "observed": "Competitor offers fixed missing-numerator/denominator equivalent-fraction worksheets and separate repeated PDF sets.",
+      "ourFeature": "Matching missing numerator or denominator in proper equivalent fractions with reproducible problem sets and answer keys.",
+      "gap": "No illustrated fractions or grade certification; primary practice intent overlaps existing task, but Google SERP competitiveness is not measured.",
+      "priority": "HIGH",
+      "decision": "KEEP_SCOPED_TOOL"
+    },
+    {
+      "slug": "area-of-triangles-worksheets",
+      "primary": "area of a triangle worksheet",
+      "competitorUrl": "https://www.mathworksheets4kids.com/area-triangles.php",
+      "observed": "Competitor spans integer, decimal, fraction, conversions, many shape variants, and missing-base/height exercises.",
+      "ourFeature": "Base × perpendicular height / 2 and missing-height calculation with simple numeric geometry diagrams and units.",
+      "gap": "Unit conversions, fractional measurement, Heron's formula and equilateral-specialist cases are missing. Avoid claiming broad family coverage.",
+      "priority": "HIGH",
+      "decision": "KEEP_SCOPED_TOOL"
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "primary": "volume of rectangular prism worksheet",
+      "competitorUrl": "https://animalmath.com/printables/volume-of-rectangular-prisms/",
+      "observed": "Competitor worksheet pack includes volume formula, unit cubes, joined composite rectangular prisms, missing edge and story problems.",
+      "ourFeature": "Single rectangular-prism volume or missing height from supplied integer dimensions, with printable diagram and matching answers.",
+      "gap": "Composite rectangular prisms, layered unit-cube counting and word problems are not currently generated.",
+      "priority": "MEDIUM",
+      "decision": "KEEP_SCOPED_TOOL"
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "primary": "multiplication table worksheet",
+      "competitorUrl": "https://www.dadsworksheets.com/worksheets/multiplication-table/multiplication-table-worksheet-1-12.html",
+      "observed": "Competitor makes a 1-12 multiplication table reference with and without answers, as distinct from timed or randomized multiplication drills.",
+      "ourFeature": "Previously only random 1–12 multiplication fact drills; R64 adds a true 13×13 labelled multiplication grid with all 144 blank student body cells and a separately filled answer chart.",
+      "gap": "Static reference chart intent now has an exact matching feature; printed 1–12 matrix still lacks modes for 0–12, arbitrary 100-grid or timed tests.",
+      "priority": "HIGH",
+      "decision": "NEW_CHART_FEATURE_R64"
+    },
+    {
+      "slug": "printable-protractor",
+      "primary": "printable protractor",
+      "competitorUrl": "https://protractorapp.com/printable-protractor/",
+      "observed": "Competitor offers printable 180° and 360° instruments with A4/Letter PDFs and ruler scale checks.",
+      "ourFeature": "Calibrated vector 180° protractor PDF on Letter/A4, precise 72 mm radius with 50 mm ruler reference.",
+      "gap": "360° type and variable diameter are not implemented; physical print accuracy is not measured by CI.",
+      "priority": "MEDIUM",
+      "decision": "KEEP_SCOPED_TOOL"
+    }
+  ]
+}
