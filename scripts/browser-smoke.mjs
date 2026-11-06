@@ -424,9 +424,9 @@ try {
  const r56Prism=page.locator('.problem svg.diagram-vector').first();
  assert.equal(await r56Prism.locator('.prism-length').count(),1);
  assert.equal(await r56Prism.locator('.prism-width').count(),1);
- assert.equal(await r56Prism.locator('.prism-height').innerText(),'Height: ?');
+ assert.equal(await r56Prism.locator('.prism-height').textContent(),'Height: ?');
  assert.match(await r56Prism.getAttribute('aria-label'),/height unknown/);
- assert.match(await r56Prism.locator('.prism-scale-note').innerText(),/not to scale/);
+ assert.match(await r56Prism.locator('.prism-scale-note').textContent(),/not to scale/);
  const r56DownloadEvent=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
  const r56Doc=await verifyPdf(await r56DownloadEvent,'R56 missing-height prism PDF');
@@ -434,7 +434,7 @@ try {
  await page.goto(`${base}/surface-area-worksheets/`,{waitUntil:'networkidle'});
  await page.locator('[data-option="solid"]').selectOption('cube');
  const r56Cube=page.locator('.problem svg.diagram-vector').first();
- assert.match(await r56Cube.locator('.prism-length').innerText(),/^Side: \d+$/);
+ assert.match(await r56Cube.locator('.prism-length').textContent(),/^Side: \d+$/);
  assert.equal(await r56Cube.locator('.prism-width').count(),0);
  assert.equal(await r56Cube.locator('.prism-height').count(),0);
  events.push({kind:'interaction',name:'R56 accessible prism L/W/H vs cube-side labels, masked height and actual PDF',status:'pass'});
