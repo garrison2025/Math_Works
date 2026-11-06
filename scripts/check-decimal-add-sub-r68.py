@@ -81,7 +81,7 @@ def inspect(folder:Path,case:dict):
             if len(b.split(".")[1])!=actual_places or len(q["answer"].split(".")[1])!=actual_places:
                 raise AssertionError(f"{path}: inconsistent number of decimal places")
             scale=10**actual_places
-            units_a=int((x*scale).to_integral_exact()),units_b=int((y*scale).to_integral_exact())
+            units_a,units_b=int((x*scale).to_integral_exact()),int((y*scale).to_integral_exact())
             if digits_carry(units_a,units_b,op)!=q["regrouping"]:
                 raise AssertionError(f"{path}: independent carry/borrow oracle disagrees")
         want_per_question=2 if mode=="questions" else 3
