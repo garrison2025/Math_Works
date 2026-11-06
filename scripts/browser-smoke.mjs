@@ -722,7 +722,7 @@ try {
  }
  const randomDownload=page.waitForEvent('download',{timeout:30000});
  await page.locator('[data-action="worksheet"]').click();
- const randomDoc=await verifyPdf(await randomDownload,'R64 original times-table fact drill');
+ const randomDoc=await verifyPdf(await randomDownload,'R64 original times-table fact drill',{paper:'A4'});
  assert.match(randomDoc.getTitle()??'',/generator v18/);
  await page.screenshot({path:join(out,'r64-multiplication-chart-desktop.png'),fullPage:true});
  events.push({kind:'interaction',name:'R64 four blank/filled chart PDFs plus original seed-preserving worksheet',status:'pass'});
