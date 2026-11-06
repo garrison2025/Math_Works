@@ -1,0 +1,133 @@
+{
+  "schema": "mathworks-seo-intent-review/v1",
+  "status": "INITIAL_PARTIAL_AUDIT",
+  "policy": "Disputed phrases are NOT promoted into visible SEO copy or permission to index; keep original 488-row source untouched.",
+  "flagged": [
+    {
+      "slug": "area-worksheets",
+      "keyword": "area of a circle worksheet",
+      "classification": "unsupported",
+      "reason": "Only rectangles and squares are generated; no circle-area generator"
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "rectangular prism worksheet surface area",
+      "classification": "wrong-page",
+      "reason": "This generator calculates volume; the separate surface-area route covers rectangular-prism faces"
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "surface area worksheets for rectangular prisms",
+      "classification": "wrong-page",
+      "reason": "Move to the real surface-area topic after checking whether its question style matches"
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "surface area of a rectangular prism worksheet",
+      "classification": "wrong-page",
+      "reason": "Surface area is a separate generator, not this volume worksheet"
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of composite figures",
+      "classification": "unsupported",
+      "reason": "Only cubes and rectangular prisms are currently supported"
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of a cylinder worksheet",
+      "classification": "unsupported",
+      "reason": "Cylinder diagrams and formulas are not implemented"
+    },
+    {
+      "slug": "angle-worksheets",
+      "keyword": "ordering triangle sides and angles worksheet",
+      "classification": "unsupported",
+      "reason": "Current angle topic does not compare triangle side and angle order"
+    },
+    {
+      "slug": "inequalities-worksheets",
+      "keyword": "translating sentences into inequalities",
+      "classification": "unsupported",
+      "reason": "The present questions solve symbolic inequalities, not verbal translations"
+    },
+    {
+      "slug": "inequalities-worksheets",
+      "keyword": "compound inequalities worksheet",
+      "classification": "unsupported",
+      "reason": "Compound AND/OR inequality solution sets are not implemented"
+    },
+    {
+      "slug": "domain-range-worksheets",
+      "keyword": "domain and range of a function graph worksheet",
+      "classification": "needs-review",
+      "reason": "Current exercise works with explicit ordered pairs, not arbitrary continuous graphs"
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "reducing fractions worksheet",
+      "classification": "needs-review",
+      "reason": "Mixed four-operation fractions do not provide a dedicated simplify-only mode"
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "two digit multiplication worksheets",
+      "classification": "wrong-page",
+      "reason": "Two-digit column multiplication is covered by a dedicated specialist route"
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "decimal division worksheet",
+      "classification": "unsupported",
+      "reason": "Current division worksheet generates integer division"
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "division word problems",
+      "classification": "unsupported",
+      "reason": "Current division worksheet generates number facts, not story problems"
+    },
+    {
+      "slug": "mixed-addition-subtraction-worksheets",
+      "keyword": "addition and subtraction worksheets for kindergarten",
+      "classification": "needs-review",
+      "reason": "No kindergarten curriculum alignment, age-level review or grade certification"
+    },
+    {
+      "slug": "mixed-addition-subtraction-worksheets",
+      "keyword": "polynomial addition and subtraction worksheet",
+      "classification": "unsupported",
+      "reason": "Current mixed addition/subtraction topic handles numeric arithmetic only"
+    },
+    {
+      "slug": "number-line-worksheets",
+      "keyword": "number line 20 to",
+      "classification": "needs-review",
+      "reason": "A fixed 0–20, 20-to-other-range or number-line template is not currently offered"
+    },
+    {
+      "slug": "lines-rays-segments-worksheets",
+      "keyword": "points lines planes worksheet",
+      "classification": "unsupported",
+      "reason": "Current figure identification is line, ray, or line segment, not plane geometry"
+    },
+    {
+      "slug": "multiplying-fractions-worksheets",
+      "keyword": "multiplying and dividing fractions worksheets",
+      "classification": "wrong-page",
+      "reason": "The specialist multiply-only generator does not teach division; mixed fractions can"
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition of property",
+      "classification": "needs-review",
+      "reason": "Current generator practices arithmetic addition, not properties of operations explicitly"
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fractions 3",
+      "classification": "needs-review",
+      "reason": "Ambiguous query intent; cannot establish supported worksheet intent from these words alone"
+    }
+  ]
+}
