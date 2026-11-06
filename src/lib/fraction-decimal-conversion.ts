@@ -28,7 +28,7 @@ const denominators={
 const maxThousandths={easy:4999,standard:9999,challenge:19999};
 const targetPlaces={tenths:1,hundredths:2,thousandths:3} as const;
 export function decimalFromThousandths(value:number):string{
- if(!Number.isSafeInteger(value)||value<1||value>19999)throw Error('Invalid exact decimal units');
+ if(!Number.isSafeInteger(value)||value<1||value>19999||value%1000===0)throw Error('Invalid noninteger exact decimal units');
  const str=String(value%1000).padStart(3,'0');
  return Math.floor(value/1000)+'.'+str.replace(/0+$/,'');
 }
