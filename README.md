@@ -8,7 +8,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
-- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 13 reviewed topics), direct printing, Letter/A4 paper.
+- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 15 reviewed topics), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-researched KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts).
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
@@ -48,7 +48,7 @@ All preview pages emit `noindex,nofollow`, with no canonical. **Setting a domain
 
 ## Limitations
 
-The 30 topic-specific setting groups are implemented and tested; the remaining routes still prioritize core deterministic examples rather than every advanced control listed in the V2 contract. PDF export and physical printer accuracy are implemented in code but **not yet independently browser-verified**. New `test:pdf` runs structural PDF output checks on GitHub CI; physical print inspection is still required. Default Helvetica export transliterates math symbols to plain ASCII in PDF (the HTML/SVG view retains Unicode), pending a properly licensed and tested embedded-font solution. Do not describe every generator or SEO route as fully accepted until the remaining gold/visual tests run.
+The 30 topic-specific setting groups are implemented and tested; the remaining routes still prioritize core deterministic examples rather than every advanced control listed in the V2 contract. PDF export is browser-tested in Chromium and Firefox and separately vector-audited in CI; **physical print accuracy and teacher sign-off have not been verified**. New `test:pdf` runs structural PDF output checks on GitHub CI; physical print inspection is still required. Default Helvetica export transliterates math symbols to plain ASCII in PDF (the HTML/SVG view retains Unicode), pending a properly licensed and tested embedded-font solution. Do not describe every generator or SEO route as fully accepted until the remaining gold/visual tests run.
 
 ### Question-only diagram safety (2026-11-04 follow-up)
 
@@ -526,3 +526,57 @@ reproduces PDF vectors at 100% scale. Schoolteacher approval, measured
 A4/Letter test prints and Cloudflare deployed commit confirmation are
 separate pending gates. Preview remains \`noindex,nofollow\`, and no
 production domain has been purchased or approved for indexation.
+
+### R62 — source-grounded SEO coverage, honest intent fit and conditional GEO markup
+
+The 488 owner-supplied keyword rows are **research evidence**, not permission to
+claim every query is supported or a promise of search traffic. The entire
+original CSV remains unchanged. The first detailed intent audit identified
+**21 specific potential mismatches**: 10 unsupported capabilities, 5 queries
+better routed to a separate specialist page, and 6 requiring human search
+intent review. Examples include circle area on a rectangle/square area
+generator, cylinder and composite-figure surface area on a cube/prism
+generator, decimal division on an integer-division tool, and polynomial
+addition/subtraction on a numeric arithmetic generator. **This is only an
+initial audit of particular outliers**: the remaining 467 unflagged keywords
+are NOT individually certified for exact search-intent fit.
+
+- \`src/data/seo-targets.json\` selects **exactly one original, source-backed
+  primary keyword for each of the 51 implemented pages** (43 independent
+  specialized tools, eight general hubs). Original monthly volume/KD values
+  remain in the data for source traceability and are **not** represented as
+  current validated Google metrics.
+- \`src/data/seo-intent-review.json\` records the 21 exact source phrases,
+  source route, mismatch classification and evidence-based reason.
+  No issue phrase may be silently promoted to a selected primary keyword.
+- All **43 specialist pages** now have a specific, visible focus section
+  with an exact evidence-backed worksheet title and the generator's **real
+  configuration choices** sourced from \`topicOptionsFor()\`, plus its actual
+  PDF formats and honest step-solution availability. General claims of
+  school-grade certification are intentionally excluded.
+- The **8 broad hubs** explain their actual limited practice scope and link
+  to available specialist generators when an existing reviewed skill
+  relationship exists. They continue to be excluded from public indexation.
+- Approved real-domain specialist routes may later emit truthful
+  \`WebApplication\`, \`LearningResource\` and \`BreadcrumbList\` JSON-LD in
+  one graph. The conditional schema is **never emitted on the unapproved
+  pages.dev preview**, where \`noindex,nofollow\`, no canonical and an
+  empty public sitemap remain the intended configuration. JSON-LD does not
+  guarantee Google rich results or any ranking.
+- \`npm run audit:static\` now validates **51 route-to-primary exact-source
+  matches**, unchanged source volume/KD, the 43 visible specialist focus
+  sections, eight hub scope notes and exclusion of flagged search phrases
+  from the focused page copy. \`tests/r62-seo-intent.test.mjs\` tests source
+  mapping and the fail-closed indexation policy.
+- \`npm run qa:seo-readiness\` generates a downloadable, machine-readable
+  **488-row** source keyword audit with each original query, mapped route,
+  historic source metrics, exact target and explicit review status. CI
+  archives this under \`r62-source-keyword-intent-audit\`.
+
+**Release remains blocked** until a real custom domain is purchased,
+actual Cloudflare production SHA is verified, each tool page is judged
+against its live SERP intent, the eight hubs are separately reviewed, and
+appropriate physical print/teacher QA plus Google Search Console checks
+are done. Do not activate indexation or submit the preview domain. Any
+future reclassification or remapping must preserve the owner's source
+data and report what actually changed.
