@@ -59,7 +59,9 @@ export async function createFractionLinePdf(pack:FractionLinePack,mode:FractionL
    'Dots are at exact rational tick positions; reduce equivalent fractions when useful.',
    margin,height-126,regular,9,muted);
   for(const [offset,q] of pack.questions.slice(start,start+perPage).entries()){
-   const y=height-160-offset*68,qIndex=start+offset+1,axisY=y-25;
+   // Reserve a full 76 pt task row: student/teacher notation must not
+   // collide with the next problem number even on the shorter Letter page.
+   const y=height-147-offset*76,qIndex=start+offset+1,axisY=y-25;
    label(page,qIndex+'. '+q.prompt,margin,y,bold,10,ink);
    page.drawLine({start:{x:plotStart,y:axisY},end:{x:plotEnd,y:axisY},
     thickness:1.05,color:line});
@@ -88,8 +90,6 @@ export async function createFractionLinePdf(pack:FractionLinePack,mode:FractionL
     label(page,'Put one clear dot directly on the correct tick.',plotStart,axisY-35,regular,8,muted);
    }
   }
-  label(page,'Use equally spaced ticks. Count the jumps from 0 to find the numerator.',
-   margin,51,regular,8,muted);
   label(page,'Math Worksheet Studio  |  R66.1  |  Page '+pageIndex+'/'+Math.ceil(pack.quantity/perPage)+
    '  |  '+mode+'  |  '+pack.seed,
    margin,36,regular,7,muted);
