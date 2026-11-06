@@ -1,0 +1,65 @@
+{
+  "schema": "mathworks-r64-resolved-capability/v1",
+  "updatedAt": "2026-11-06",
+  "interpretation": "These original R63 flags remain in historical data but their narrow blank/filled 1–12 reference chart feature is now implemented. This is NOT a claim of US Google SERP acceptance, traffic, or general keyword resolution.",
+  "supportedFeature": "1–12 row/column multiplication chart with 144 empty product boxes and separate 144-product answer key, one vector PDF each on Letter or A4.",
+  "currentPhase": "CODED_REQUIRES_DIGITAL_CI_AND_PHYSICAL_PRINT",
+  "sourcePage": "multiplication-tables-worksheets",
+  "resolvedFromR63": [
+    {
+      "keyword": "printable multiplication tables",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    },
+    {
+      "keyword": "multiplication tables print",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    },
+    {
+      "keyword": "multiplication facts chart printable",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    },
+    {
+      "keyword": "free multiplication times table",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    },
+    {
+      "keyword": "printable times table",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    },
+    {
+      "keyword": "printable multiplication table",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    },
+    {
+      "keyword": "times tables printable",
+      "previousClassification": "needs-review",
+      "newCapabilityState": "EXACT_1_TO_12_GRID_FEATURE_IMPLEMENTED",
+      "liveSERPConfirmed": false,
+      "approvedForIndexing": false
+    }
+  ],
+  "notResolved": [
+    "multiplication table to 100",
+    "times table to 100",
+    "times tables workbook printable",
+    "multiplication by 3 digits worksheets"
+  ]
+}
