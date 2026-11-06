@@ -1,0 +1,47 @@
+{
+  "schema": "mathworks-r79-source-backed-mixed-prism-cylinder-v1",
+  "date": "2026-11-07",
+  "feature": "R79.1 genuinely mixed, one-PDF right rectangular prism/right triangular prism/right circular cylinder volume and closed total-area worksheets, three different true unfolded nets",
+  "actualRoutes": [
+    "volume-of-rectangular-prisms-worksheets",
+    "surface-area-worksheets"
+  ],
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "volume of a prism and cylinder worksheet",
+      "sourceMonthlyVolume": 140,
+      "sourceKD": 2,
+      "actualPage": "volume-of-rectangular-prisms-worksheets",
+      "newCapability": "One contiguous question pack alternating real rectangular prism, right triangular prism and right circular cylinder volume exercises and fully matching teacher key."
+    },
+    {
+      "keyword": "surface area of prisms and cylinders worksheet",
+      "sourceMonthlyVolume": 110,
+      "sourceKD": 11,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "One actual mixed worksheet of closed right rectangular prism, right triangular prism and closed right circular cylinder total surface-area exercises, true nets and matching solved PDFs."
+    }
+  ],
+  "source": "Original owner-supplied 488-row keyword-evidence.csv and R62/R63 unsupported classification; historical Semrush US volume/KD only, not current ranking evidence",
+  "scopeLimits": [
+    "Rectangular prisms, right triangular prisms with Pythagorean-triple right triangle bases and right circular cylinders, all with finite positive dimensions.",
+    "Both volume and closed total surface area include exact pi for cylinders; no arbitrary oblique solids, hollow or open cylinders, cones, spheres or composite solids.",
+    "Each mixed pack cycles all three shapes with any quantity >= 3; a user-selected quantity 1-2 naturally has only that many distinct solids.",
+    "Each printed question has an independently dimension-proportional six-face rectangular-prism net, right triangular-prism net or two-disk cylindrical net.",
+    "Existing 51 original v18 math generators, 55 registered routes, share parameters and 488 original CSV rows are untouched.",
+    "Only the two exact historical unsupported intents above can be marked implemented; broad mixed nets/composite solids remain unverified."
+  ],
+  "excludedHistoricalIntents": [
+    "surface area of nets worksheet pdf",
+    "surface area of composite figures",
+    "surface area of triangular pyramid worksheet"
+  ],
+  "currentRankingsNotVerified": true,
+  "previewNoindex": true,
+  "approvedForIndexing": false,
+  "teacherReviewed": false,
+  "physicalPrintMeasured": false,
+  "cloudflareLiveShaVerified": false,
+  "original488RowsEdited": false,
+  "originalV18GeneratorEdited": false
+}
