@@ -98,7 +98,7 @@ test('R78: 40-question max count and edited geometry/answer/steps fail closed',a
 });
 test('R78: only owner-original exact unsupported keyword issues are counted, not all pyramids or nets',()=>{
  const csv=readFileSync(new URL('../src/data/keyword-evidence.csv',import.meta.url),'utf8').split(/\r?\n/);
- assert.equal(csv.length-2,488);
+ assert.equal(csv.filter(line=>line.startsWith('`')).length,488);
  const old=[...previous.flagged,...r63.issues];
  assert.equal(capability.keywordCapabilityUpdates.length,5);
  for(const item of capability.keywordCapabilityUpdates){
