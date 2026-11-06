@@ -80,7 +80,8 @@ export function createDivisionStoryPack(topic:DivisionStoryPack['topic'],seed:nu
   const kind:DivisionStoryType=mode==='mixed'?choices[(i+shift)%choices.length]:mode;
   let problem:DivisionStoryProblem|undefined;
   for(let trial=0;trial<2000;trial++){
-   const divisor=rng.int(2,9);
+   // Buses and shuttles with only 2 seats are not realistic classroom stories.
+   const divisor=rng.int(kind==='round-up'?5:2,9);
    const quotient=rng.int(difficulty==='easy'?5:difficulty==='standard'?7:13,
     difficulty==='easy'?15:difficulty==='standard'?45:90);
    const remainder=kind==='equal-sharing'?0:rng.int(1,divisor-1);
