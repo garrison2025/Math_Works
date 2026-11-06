@@ -5,6 +5,7 @@ import routesJson from '../../data/routes.json';
 import {titleFor,topicIntro,howTo,category,commonMistakes} from '../../lib/site';
 import {sampleProblem} from '../../lib/math';
 import {relatedSkillTasks} from '../../lib/intent-relations';
+import {correctedTaskLinksFor} from '../../lib/seo-routing-r70';
 import seoTargets from '../../data/seo-targets.json';
 import {topicOptionsFor,maxQuantityForTopic} from '../../lib/topic-options';
 import {hasVerifiedSteps} from '../../lib/capabilities';
@@ -14,6 +15,7 @@ const title=titleFor(route.slug);
 const categories=routesJson.filter(x=>x.type!=='HOLD'&&x.slug!==route.slug&&category(x.slug)===category(route.slug)).slice(0,6);
 const preview=`/images/worksheets/${route.slug}-sample.webp`;
 const relatedSkills=relatedSkillTasks(route.slug);
+const reviewedTaskRoutes=correctedTaskLinksFor(route.slug);
 const fixedSample=sampleProblem(route.slug,20261104);
 const seoTarget=seoTargets.find(entry=>entry.slug===route.slug);
 if(!seoTarget)throw new Error('Missing source-backed SEO intent for '+route.slug);
@@ -94,5 +96,11 @@ const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===ski
 <section class="info-grid" aria-label="Worked example and common mistakes"><div class="panel info-panel"><h2>Worked example</h2><p><strong>Question:</strong> {fixedSample.payload.question}</p><p><strong>Answer:</strong> {fixedSample.expectedAnswer}</p><ol>{fixedSample.solutionSteps.map(s=><li>{s}</li>)}</ol><p>This example is generated from a fixed seed so the explanation and answer refer to the exact same mathematical problem.</p></div><div class="panel info-panel"><h2>Teaching notes</h2><p>The generator offers Easy, Standard and Challenge numerical ranges. These are practice settings, not school curriculum levels or official assessment standards.</p><p>For fractions, compare simplified exact answers; for statistics, use the stated median-of-halves quartile rule; for geometry, keep the dimensions and units consistent.</p><p>Always review the printed answer key before distributing worksheets to a classroom.</p></div></section>
 <section class="info-grid" aria-label="Common mistakes and checking answers"><div class="panel info-panel"><h2>Common mistakes</h2><ul>{commonMistakes(route.slug).map(item=><li>{item}</li>)}</ul></div><div class="panel info-panel"><h2>Check your answers</h2><p>The answer-key PDF is generated from the same exact problem set and seed as the practice sheet. Use it after attempting each question. You can reproduce the sheet later using the same topic, difficulty, question count and seed.</p><p>For printing, select US Letter or A4; for a physical protractor, always use 100% scale and verify the 50 mm line.</p></div></section>
 {relatedSkills.length>0&&<section class="skill-route-section" aria-label="Compare related math worksheet skills"><span class="eyebrow">Choose the right worksheet</span><h2>Compare related practice skills</h2><p>These generators teach different tasks. Choose the exercise that matches the specific skill you need.</p><div class="skill-links">{relatedSkills.map(skill=><a href={`/${skill.slug}/`} class="skill-link"><strong>{titleFor(skill.slug)}</strong><span>{skill.difference}</span></a>)}</div></section>}
+{reviewedTaskRoutes.length>0&&<section class="skill-route-section" data-r70-route-corrections aria-label="Find the matching specialist worksheet">
+<span class="eyebrow">Use the matching math tool</span>
+<h2>More precise worksheets for related skills</h2>
+<p>Some tasks need their own exercise format rather than this broader topic. Open the matching generator below for the right numbers, diagrams or worked method.</p>
+<div class="skill-links">{reviewedTaskRoutes.map(link=><a class="skill-link" href={`/${link.slug}/`}><strong>{titleFor(link.slug)}</strong><span>{link.description}</span></a>)}</div>
+</section>}
 <section class="topic-section"><div class="section-header"><div><span class="eyebrow">Keep practicing</span><h2>Related worksheets</h2></div><a href="/#topics">Browse all topics</a></div><div class="topic-grid">{categories.map(r=><a href={`/${r.slug}/`} class="topic-card"><strong>{titleFor(r.slug)}</strong><small>Fresh printable questions with answers</small><span class="topic-link">Open worksheet →</span></a>)}</div></section>
 </div></Layout>
