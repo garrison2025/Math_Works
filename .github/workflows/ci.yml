@@ -46,6 +46,8 @@ jobs:
         run: npm run qa:stat-chart-pdfs
       - name: R59 export 18 A4/Letter scatter trends, blank grids and solved PDF charts
         run: npm run qa:scatter-chart-pdfs
+      - name: R59 export 24 A4/Letter counting-dot true-vector PDFs for values 1 through 12
+        run: npm run qa:counting-dot-pdfs
       - name: Export Letter and A4 blank actual-size protractor PDFs
         run: npm run qa:protractor-instruments
       - name: Export Letter and A4 universal printer calibration PDFs
@@ -90,6 +92,10 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_scatter_vectors.py' -v
       - name: 'R59 inspect 18 true scatter PDFs: axes, tick numbers, six point positions and answer isolation'
         run: .venv-pdf-audit/bin/python scripts/check-pdf-scatter-vectors.py qa-artifacts/scatter-chart-pdfs
+      - name: R59 adversarial unit tests for PDF counting-dot positions and missing dots
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_counting_dots.py' -v
+      - name: R59 inspect 24 actual counting-dot PDFs and all values from 1 through 12
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-counting-dots.py qa-artifacts/counting-dot-pdfs
       - name: R56 audit true-PDF prism L/W/H labels, positions and missing heights
         run: .venv-pdf-audit/bin/python scripts/check-pdf-prism-dimensions.py qa-artifacts/prism-dimensions
       - name: R55 independently audit printed perpendicular-height right-angle squares
@@ -114,6 +120,14 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
         run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive R59 PDF counting-dot answers and vector audit
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r59-counting-dots-pdf-vectors
+          path: qa-artifacts/counting-dot-pdfs/
+          retention-days: 14
+          if-no-files-found: error
       - name: Archive R59 scatter PDF vector samples and audit report
         uses: actions/upload-artifact@v4
         if: always()
