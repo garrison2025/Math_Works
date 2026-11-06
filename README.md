@@ -1140,3 +1140,91 @@ Human/physical printing signoff is a separate future step.
 without canonical/schema emission. Do not approve the 8 hubs,
 4 HOLD routes or any other URLs for real search indexing before
 the domain and owner-approved SEO release process.
+
+### R73 — exact, interpreted division word problems and 488-keyword current status
+
+The source-preserving R73 improvement targets two **actual owner-supplied**
+historical Semrush phrases, rather than invented topics:
+
+| Owner source keyword | Historic Volume | Historic Semrush KD | Existing route |
+| --- | ---: | ---: | --- |
+| division word problems | 1,300 | 28 | division-worksheets |
+| division word problems for 4th graders | 320 | 17 | division-worksheets |
+
+These values are older source rows, **not** freshly measured US Google
+traffic, SERP positions or KD. Do not add overlapping phrase volumes
+into a traffic forecast.
+
+The existing \`/division-worksheets/\` page now offers a separate
+opt-in **R73.1** contextual division problem panel. The printable
+generator covers **four genuinely different mathematical decisions**:
+
+- **Equal sharing:** divide a total equally into classrooms or clubs;
+  the required quotient is the amount **per group**, no remainder.
+- **Full groups and leftovers:** calculate the number of complete
+  boxes or seed packets **and** report the nonzero remainder.
+- **Round up transport:** if a few students are left over, **one more
+  minibus or shuttle** is needed; the contextual answer is
+  \`floor(total / seats) + 1\`, not merely the quotient.
+- **Leftover only:** for completed cards/cakes, the answer is
+  **just the number of unused materials**.
+
+A \`mixed\` option cycles these four skills; the original seed,
+difficulty, question count (1–40), A4/Letter paper and optional
+extra student writing room govern the authentic PDF packs. Each
+individual question has exact integer quotient and remainder
+checks, explicit story units and a worked explanation of **what
+the remainder means in that context**.
+
+Three separate genuine vector downloads are provided:
+**student problems with blank equation/answer rules**, **teacher
+answer key with units**, and **worked-step PDF** showing
+\`divisor × whole quotient + remainder = total\`.
+The source v18 division-facts generator, live main preview, existing
+answer checker and Copy reproducible link remain unchanged.
+Existing share URLs do **not** record the extra R73 mode selector.
+
+Testing: \`tests/r73-division-word-problems.test.mjs\` independently
+checks 3,000 deterministic problem instances over five modes,
+three difficulties and varied seeds; it rejects tampered stories,
+quotients, remainders, units, answers and worked checks and
+verifies all 30 true A4/Letter PDF combinations.
+\`scripts/export-division-word-problems-r73.mjs\` emits
+30 genuine printable student/answer/steps PDFs with original
+problem manifests. \`scripts/check-division-word-problems-r73.py\`
+then reads **actual PDF text and drawing operators**, recomputes
+whole division using Python's \`divmod\`, validates the story-specific
+answer units, visible calculations, blank student writing lines,
+teacher answer isolation and safe printer margins.
+Chromium and Firefox download actual files from the browser.
+
+**Keyword coverage freshness:** the prior R70 evidence snapshot was
+correct *as of its own scope* but did not reflect added R71/R72/R73
+functional capabilities. \`npm run qa:seo-progress\` now produces a
+new **source-preserving 488-keyword report** covering all completed
+R66–R73 functional changes. Current breakdown, as coded and checked
+against the owner CSV, is: **24** historically unsupported phrases
+with actual new functions, **15** historically misrouted phrases
+mapped to implemented specialists, **4** ambiguous misroutes
+held for independent SERP checks, **43** still unsupported functions,
+**59** requiring additional intent assessment, and **343** not
+individually SERP reviewed. **106 previously flagged issues remain**
+(43 + 59 + 4); neither the 488 historical source rows nor R62/R63
+historical review decisions are overwritten.
+
+Competitor task context from
+\`commoncoresheets.com/interpreting-remainders-in-division-word-problems/556\`
+and
+\`k5learning.com/free-math-worksheets/fourth-grade-4/word-problems/multiplication-division\`
+indicates interpretation of remainders is a real learner need,
+but **does not verify any Google US ranking**.
+R73 supports one-step whole-number division with divisors 2–9,
+not multistep algebra, signed fractions or an official grade
+certificate.
+
+**Launch gates remain unchanged:** \`math-works.pages.dev\` is
+\`noindex,nofollow\`, with no automatic canonical/schema/index
+release. Purchasing a custom domain, real printer and teacher
+acceptance testing, verified Cloudflare deployed commit,
+current independent US SERP/GSC evidence and explicit
+page-by-page index approval remain separate prerequisites.
