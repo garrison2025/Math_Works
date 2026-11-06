@@ -1,5 +1,5 @@
 import {quartiles,type Diagram} from './math.ts';
-import {graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
+import {cartesianAxisTicks,graphGeometry,scatterGeometry,boxPracticeAxis,angleTriangleLayout,intersectingAngleGeometry,angleRayLayout,trapezoidLayout} from './graph.ts';
 import {functionTableGeometry} from './function-table.ts';
 import {longDivisionPracticeRows} from './long-division-layout.ts';
 import {prismDimensions} from './prism-dimensions.ts';
@@ -138,11 +138,20 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
    const g=graphGeometry(d),cx=225,cy=110,bw=172,bh=85;
    const px=(z:number)=>cx+(z/g.boundX)*bw,py=(z:number)=>cy-(z/g.boundY)*bh;
    const drawingTask=d.kind==='linear-function'&&d.labels?.includes('draw');
-   const tickX=drawingTask?1:g.boundX<=9?2:g.boundX<=20?5:10;
-   const tickY=drawingTask?1:g.boundY<=9?2:g.boundY<=20?5:10;
-   for(let x=-g.boundX;x<=g.boundX;x+=tickX){const xx=px(x);parts+=`<line x1="${xx}" y1="25" x2="${xx}" y2="195" stroke="#e1e8ee" stroke-width="1"/>`;if(x!==0)parts+=text(xx,208,String(x));}
-   for(let y=-g.boundY;y<=g.boundY;y+=tickY){const yy=py(y);parts+=`<line x1="53" y1="${yy}" x2="397" y2="${yy}" stroke="#e1e8ee" stroke-width="1"/>`;if(y!==0&&(!drawingTask||y%2===0))parts+=text(43,yy+5,String(y));}
-   parts+=line(53,cy,397,cy)+line(cx,25,cx,195)+text(410,cy-8,'x')+text(cx+12,17,'y');
+   const marks=cartesianAxisTicks(g,drawingTask);
+   for(const x of marks.x){
+    const xx=px(x);
+    parts+=`<line class="cartesian-grid-x" x1="${xx}" y1="25" x2="${xx}" y2="195" stroke="#e1e8ee" stroke-width="1"/>`;
+    if(x!==0)parts+=text(xx,208,String(x));
+   }
+   for(const y of marks.y){
+    const yy=py(y);
+    parts+=`<line class="cartesian-grid-y" x1="53" y1="${yy}" x2="397" y2="${yy}" stroke="#e1e8ee" stroke-width="1"/>`;
+    if(marks.labeledY.includes(y))parts+=text(43,yy+5,String(y));
+   }
+   parts+=line(53,cy,397,cy)+line(cx,25,cx,195)
+    +text(410,cy-8,'x')+text(cx+12,17,'y')
+    +`<text class="cartesian-origin" x="${cx+14}" y="${cy+17}" fill="#3f627f" font-size="13">0</text>`;
    if(g.segment&&(!drawingTask||showSolution)){
     const [[x1,y1],[x2,y2]]=g.segment;
     parts+=`<line ${drawingTask?'class="solution-linear-line" ':''}x1="${px(x1)}" y1="${py(y1)}" x2="${px(x2)}" y2="${py(y2)}" stroke="#187b68" stroke-width="3"/>`;
