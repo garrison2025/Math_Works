@@ -32,6 +32,7 @@ test('R73 exact integer division and real contextual remainder meaning across 30
     assert.match(p.answer,new RegExp('^'+p.quotient+' full '));
     assert.match(p.answer,new RegExp('and '+p.remainder+' '));
    }else if(p.type==='round-up'){
+    assert.ok(p.divisor>=5&&p.divisor<=9,'Minibus/shuttle capacity must remain plausible');
     assert.ok(p.remainder>0);
     assert.match(p.answer,new RegExp('^'+(p.quotient+1)+' '));
    }else if(p.type==='leftovers'){
