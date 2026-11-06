@@ -79,7 +79,7 @@ export async function createDotPlotPdf(pack:DotPlotPack,mode:DotPlotPdfMode,pape
      steps.forEach((line,j)=>write(page,line,left+6,base-22-answers.length*11.8-j*10.5,regular,7.3,muted));
     }
    }
-   plot(page,p,right,rowY,mode!=='questions'||p.kind!=='plot');
+   plot(page,p,right,rowY,regular,mode!=='questions'||p.kind!=='plot');
    if(i<2)page.drawLine({start:{x:left,y:rowY-178},end:{x:right,y:rowY-178},color:grey,thickness:.4});
   }
   write(page,'R77.1  |  '+mode+'  |  '+paper+'  |  Seed '+pack.seed+
