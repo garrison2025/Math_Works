@@ -760,6 +760,34 @@ try {
  await page.goto(base+'/multiplication-tables-worksheets/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-equation-kind]').count(),0,
   'Equation extension controls leaked to unrelated worksheet topic');
+ // R66: browser-test both real fraction number-line routes and both task types.
+ // The opt-in student/answer PDFs must not mutate the baseline v18 preview.
+ for(const topic of ['number-line-worksheets','fractions-worksheets']){
+  await page.goto(base+'/'+topic+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('[data-r66-fraction-number-line]').count(),1);
+  assert.equal(await page.locator('[data-r66-fraction-guide]').count(),1);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  const firstQuestion=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('A4');
+  for(const task of ['identify','plot'])for(const range of ['zero-one','zero-two']){
+   await page.locator('[data-fraction-line-task]').selectOption(task);
+   await page.locator('[data-fraction-line-range]').selectOption(range);
+   for(const mode of ['questions','answers']){
+    const event=page.waitForEvent('download',{timeout:30000});
+    await page.locator('[data-action="fraction-line-'+mode+'"]').click();
+    const doc=await verifyPdf(await event,'R66 fraction line '+topic+' '+task+' '+range+' '+mode,{paper:'A4'});
+    assert.match(doc.getTitle()??'',/R66.1/);
+    assert.match(doc.getTitle()??'',new RegExp(mode));
+   }
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),firstQuestion,
+   'R66 exact fraction-line extension mutated the original worksheet');
+  await page.screenshot({path:join(out,'r66-fraction-line-'+topic+'-desktop.png'),fullPage:true});
+  events.push({kind:'interaction',name:'R66 '+topic+' 8 fraction diagrams PDF pairs, no main-sheet mutation',status:'pass'});
+ }
+ await page.goto(base+'/two-step-equations-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r66-fraction-number-line]').count(),0,
+  'R66 fraction-line extension leaked to unrelated equation page');
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
