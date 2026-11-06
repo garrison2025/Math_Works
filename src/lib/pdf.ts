@@ -40,8 +40,31 @@ const PRACTICE_WORK_LINES:Readonly<Record<string,number>>={
  'scientific-notation-worksheets':1,
  'gcf-worksheets':1
 };
-export function worksheetWorkLines(topic:string,mode:PdfMode,hasDiagram:boolean):number{
- return mode==='questions'&&!hasDiagram?(PRACTICE_WORK_LINES[topic]??0):0;
+/** R61: calculation diagrams require handwriting below the picture, even in
+ * Standard mode. Drawing-only grids and calibrated instruments must stay clear.
+ * This is a print-layout choice, not a math-generator or URL identity change.
+ */
+const GEOMETRY_CALCULATION_LINES:Readonly<Record<string,number>>={
+ 'area-worksheets':1,
+ 'area-of-triangles-worksheets':2,
+ 'area-of-parallelograms-worksheets':2,
+ 'area-of-trapezoids-worksheets':2,
+ 'volume-of-rectangular-prisms-worksheets':2,
+ 'surface-area-worksheets':2,
+ 'pythagorean-worksheets':2,
+ 'triangle-angle-sum-worksheets':1,
+ 'complementary-supplementary-angles-worksheets':1,
+ 'vertical-angles-worksheets':1
+};
+export function worksheetWorkLines(topic:string,mode:PdfMode,hasDiagram:boolean,diagramKind?:string):number{
+ if(mode!=='questions')return 0;
+ if(!hasDiagram)return PRACTICE_WORK_LINES[topic]??0;
+ // Only grant arithmetic workspace to the known problem/diagram pairs.
+ // A future new shape must be reviewed instead of receiving accidental rules.
+ if(!diagramKind||['protractor','long-division','scatter','coordinate',
+   'linear-function','box-practice','dots','function-table',
+   'column-multiplication'].includes(diagramKind))return 0;
+ return GEOMETRY_CALCULATION_LINES[topic]??0;
 }
 const RULE_SPACING=21;
 const paperRule=rgb(.78,.84,.89);
@@ -451,7 +474,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
     :p.diagramSpec.kind==='long-division'?longDivisionDiagramHeight(p.diagramSpec.values)+22:150;
    return common+diagramSpace+
     (fractionLayoutFor(sheet.topicId,p.payload.question)?FRACTION_LINE_HEIGHT:0)+
-    (worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom))*RULE_SPACING+18;
+    (worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec,p.diagramSpec?.kind)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom))*RULE_SPACING+18;
   }
   if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,twoCols?colW-19:bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
@@ -481,7 +504,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
   }
   // Writing rules use the same per-problem measured height as pagination,
   // and leave the first line well below the last line of the question.
-  const lines=worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom);
+  const lines=worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec,p.diagramSpec?.kind)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom);
   for(let rule=0;rule<lines;rule++){
    const ruleY=y-8-rule*RULE_SPACING;
    page.drawLine({start:{x:xx+8,y:ruleY},end:{x:xx+colW-14,y:ruleY},
