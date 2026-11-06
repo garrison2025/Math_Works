@@ -29,7 +29,7 @@ function wrap(s:string,font:PDFFont,size:number,maxWidth:number):string[]{
  if(cur)lines.push(cur);
  return lines;
 }
-function rectangularNet(page:PDFPage,p:MixedSolidProblem,right:number,rowY:number,font:PDFFont){
+export function drawRectangularPrismNet(page:PDFPage,p:Pick<MixedSolidProblem,'l'|'w'|'h'>,right:number,rowY:number,font:PDFFont){
  const {l,w,h}=p;
  const s=Math.min(184/(2*l+2*w),112/(h+2*w),4.2);
  const x0=right-208,y0=rowY-147;
@@ -90,7 +90,7 @@ export async function createMixedSolidPdf(pack:MixedSolidPack,mode:MixedSolidPdf
      steps.forEach((s,k)=>write(page,s,left+8,base-28-12*answers.length-10.5*k,normal,7.5,soft));
     }
    }
-   if(p.kind==='rectangular-prism')rectangularNet(page,p,right,y,normal);
+   if(p.kind==='rectangular-prism')drawRectangularPrismNet(page,p,right,y,normal);
    else if(p.kind==='triangular-prism')drawTriangularPrismNet(page,p,right,y,normal);
    else drawCylinderNet(page,p,right,y,normal);
    if(j<2)page.drawLine({start:{x:left,y:y-180},end:{x:right,y:y-180},
