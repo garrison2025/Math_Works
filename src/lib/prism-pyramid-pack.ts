@@ -105,7 +105,7 @@ export function createSolidPack(topic:SolidPack['topic'],seed:number,quantity:nu
    const [a,b,c]=basic.map(x=>x*factor);
    const length=rng.int(2,difficulty==='easy'?9:difficulty==='standard'?15:24);
    const side=rng.int(kind==='regular-tetrahedron-surface'?3:4,
-    difficulty==='easy'?10:difficulty==='standard'?18:24);
+    difficulty==='easy'?(kind==='regular-tetrahedron-surface'?14:10):difficulty==='standard'?18:24);
    const slant=rng.int(Math.floor(side/2)+1,
     Math.max(Math.floor(side/2)+1,difficulty==='easy'?13:difficulty==='standard'?22:30));
    const p=build('Q'+(i+1),kind,unit,
