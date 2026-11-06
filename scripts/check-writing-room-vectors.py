@@ -13,7 +13,8 @@ import fitz
 TOPICS={
  'addition-worksheets':(0,2,False),
  'two-step-equations-worksheets':(2,2,False),
- 'area-of-triangles-worksheets':(0,1,True),
+ # R61 standard diagram calculations now include two measured pencil rules.
+ 'area-of-triangles-worksheets':(2,1,True),
  'long-division-worksheets':(0,0,True),
  'printable-protractor':(0,0,True)
 }
