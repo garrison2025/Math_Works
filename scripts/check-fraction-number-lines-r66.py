@@ -43,6 +43,24 @@ def inspect_case(folder:Path, case:dict)->dict:
         for word in page.get_text("words"):
             if word[0]<35.4 or word[2]>width-35.4 or word[1]<26 or word[3]>height-27:
                 raise AssertionError(f"{path}: text violates print margins: {word}")
+        # Independent visible-text collision check. The first rendered
+        # R66 preview exposed a helper-line overlap that vector-math tests
+        # could not detect; reject it on all 32 actual PDF pages.
+        rendered_lines=[]
+        for block in page.get_text("dict")["blocks"]:
+            for raw_line in block.get("lines",[]):
+                label="".join(span["text"] for span in raw_line["spans"])
+                rendered_lines.append((label,fitz.Rect(raw_line["bbox"])))
+        for idx in range(1,8):
+            hint_prefix=("Answer "+str(idx)+":" if mode=="answers" else
+                "Fraction:" if task=="identify" else "Put one clear dot")
+            hint=next((r for text,r in rendered_lines if text.startswith(hint_prefix)),None)
+            next_heading=next((r for text,r in rendered_lines
+                if text.startswith(str(idx+1)+". ")),None)
+            if hint is None or next_heading is None:
+                raise AssertionError(f"{path}: missing row text for collision audit {idx}")
+            if hint.y1+2.0>next_heading.y0:
+                raise AssertionError(f"{path}: helper/teacher text overlaps next question {idx}")
         plot_start=76.
         plot_width=width-152.
         segments=[]
