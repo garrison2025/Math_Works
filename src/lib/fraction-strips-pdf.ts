@@ -15,7 +15,8 @@ export async function createFractionStripsPdf(pack:FractionStripsPack,paper:Pape
  const doc=await PDFDocument.create(),[width,height]=sizes[paper];
  const page=doc.addPage([width,height]),regular=await doc.embedFont(StandardFonts.Helvetica),
   bold=await doc.embedFont(StandardFonts.HelveticaBold);
- const left=94,stripWidth=FRACTION_STRIP_PRINT_WIDTH_PT;
+ // Leave enough room for the printed row name, including '12 equal parts'.
+ const left=120,stripWidth=FRACTION_STRIP_PRINT_WIDTH_PT;
  page.drawText('Printable Fraction Strips',{x:42,y:height-58,font:bold,size:18,color:ink});
  page.drawText(pack.mode==='blank'?'BLANK UNIT FRACTION STRIPS | SHADE, CUT OR COMPARE':
   'LABELED UNIT FRACTION STRIPS | TEACHER REFERENCE',
