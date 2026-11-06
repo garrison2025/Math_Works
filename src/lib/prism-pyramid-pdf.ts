@@ -31,7 +31,7 @@ function stroke(page:PDFPage,a:Pt,b:Pt,width=1.05,dim=false){
  page.drawLine({start:a,end:b,thickness:width,color:dim?accent:ink,
   ...(dim?{dashArray:[3,2]}:{})});
 }
-function prismNet(page:PDFPage,p:SolidProblem,right:number,rowY:number,font:PDFFont){
+export function drawTriangularPrismNet(page:PDFPage,p:Pick<SolidProblem,'a'|'b'|'c'|'length'>,right:number,rowY:number,font:PDFFont){
  const {a,b,c,length:L}=p;
  const scale=Math.min(184/(a+b+c),112/(L+2*b),4);
  const x0=right-208,y0=rowY-147;
@@ -140,7 +140,7 @@ export async function createSolidPdf(pack:SolidPack,mode:SolidPdfMode,paper:Pape
       base-28-12*answers.length-10.5*k,font,7.5,soft));
     }
    }
-   if(p.kind.startsWith('triangular-prism'))prismNet(page,p,right,rowY,font);
+   if(p.kind.startsWith('triangular-prism'))drawTriangularPrismNet(page,p,right,rowY,font);
    else if(p.kind==='square-pyramid-surface')squareNet(page,p,right,rowY,font);
    else tetraNet(page,p,right,rowY,font);
    if(j<2)page.drawLine({start:{x:left,y:rowY-181},end:{x:right,y:rowY-181},
