@@ -892,3 +892,86 @@ Do not submit \`math-works.pages.dev\` for indexing.
 Custom HTTPS domain, owner-approved specialized pages, confirmed
 Cloudflare deployed SHA, physical A4/Letter printing, independent
 teacher review, Google US SERP and GSC checks remain launch gates.
+
+### R68 — exact vertical decimal addition and subtraction, source-backed real features
+
+The original user-provided Semrush CSV contains **four actual** historically
+flagged missing-capability phrases, now narrow-matched by real functionality:
+
+| Original keyword | Historic monthly Volume | Historic KD | Supplied route |
+| --- | ---: | ---: | --- |
+| adding subtracting decimals worksheet | 1,600 | 21 | subtraction-worksheets |
+| adding and subtracting decimals worksheets | 1,600 | 28 | subtraction-worksheets |
+| adding and subtracting with decimals worksheet | 720 | 26 | subtraction-worksheets |
+| addition problems with decimals | 720 | 22 | addition-worksheets |
+
+These are **older keyword snapshots, not 2026-11-06 live Google US ranks**.
+Overlapping search volumes cannot be summed into an estimated site
+traffic figure. The historical CSV's **488 rows and original mappings**
+remain unmodified, and the R63 unsupported history is preserved.
+
+The three existing \`/addition-worksheets/\`,
+\`/subtraction-worksheets/\` and
+\`/mixed-addition-subtraction-worksheets/\` pages now include a
+separate **R68.1 vertical decimal-column practice pack**:
+
+- Operation: mixed addition and subtraction, only addition, or only
+  subtraction. The addition page defaults to addition; subtraction
+  and mixed pages default to mixed practice in the extension.
+- Exact tenths, exact hundredths, or both (different precisions
+  between questions). Both operands within one problem always have
+  the same number of printed fractional places, so decimal points
+  visibly align in the vertical equation and teacher answer.
+- Real **carry/borrow** screening: require at least one carry or
+  borrow, forbid all carrying and borrowing, or mix both kinds.
+  Distinct values are generated deterministically with no negative
+  subtraction result. All answers are integer-unit fixed-point
+  arithmetic: no binary floating-point rounding.
+- **Separate** vector PDF download buttons for the student's
+  vertical columns with blank answer areas, teacher solution columns,
+  and a three-step teacher explanation with inverse-operation checks.
+  US Letter and A4, the user's normal difficulty, question count
+  (1–40), 32-bit random seed and extra student writing room apply.
+- The existing whole-number **v18** practice, all original 51
+  worksheet types, answer checker, standard PDF buttons and
+  original share URL format remain untouched. The original
+  Copy reproducible link **does not encode the R68 decimal
+  selectors**; use the same seed and choices to reproduce each
+  extra pack.
+
+Quality evidence:
+\`tests/r68-decimal-add-sub.test.mjs\` uses an independent BigInt
+integer-unit oracle to verify **16,200 generated problems** across
+mixed/+/- operations, decimal places, regrouping modes, difficulty
+settings and diverse seeds; it also checks 54 independent A4/Letter
+PDF combinations, tampering, reproducibility and v18 invariants.
+\`scripts/export-decimal-add-sub-r68.mjs\` exports **36 actual PDFs**
+covering three operation forms, tenths/hundredths, A4/Letter, and
+student/answer/steps modes.
+\`scripts/check-decimal-add-sub-r68.py\` uses Python's independent
+\`Decimal\` to recompute **visible printed equations** and PyMuPDF
+glyph positions to verify the actual decimal-point columns align
+within printer coordinates, that the student file contains only
+blank result lines, and that teacher answers and worked checks
+appear on the matching sheets. CI also runs Chromium and Firefox
+button-initiated downloads and preserves printable PDFs for
+independent human inspection.
+
+**Not implemented/claimed:** negative differences, thousandths,
+money or measurement story problems, uneven precision within a
+single problem, Google classroom integration, digital stylus
+marking or per-student assignment workflows.
+Public competitor references:
+\`commoncoresheets.com/adding-subtraction-decimals-vertical/225/download\`
+and \`mathpicnic.com/worksheets/decimals/adding-and-subtracting/\`
+confirm vertical decimal alignment and separately keyed practice
+as real teacher-facing tasks; no current US Google ranking was
+measured.
+
+**SEO and launch gates:** The Cloudflare \`pages.dev\` preview
+remains \`noindex,nofollow\`. The broad historic subtraction route
+is not automatically approved for search indexing because of this
+addition. A purchased custom domain, verified Cloudflare deployed
+commit, real Google US SERP/GSC information, topic-specific
+index-approval and physical printer/teacher acceptance still require
+separate checks.
