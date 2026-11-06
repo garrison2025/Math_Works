@@ -64,8 +64,6 @@ export function createMultDivisionPack(topic:MultDivisionTopic,seed:number,quant
    const signature=mode==='fact-family'?[Math.min(a,b),Math.max(a,b)].join('x'):
     operator==='model'?a+'x'+b+'-'+areaFactors:
     (index%2===0?'m':'d')+'-'+a+'-'+b;
-   if(seen.has(signature))continue;
-   seen.add(signature);
    const facts=fourFacts(a,b);
    let question:string,answer:string,steps:string[];
    if(operator==='family'){
@@ -94,6 +92,12 @@ export function createMultDivisionPack(topic:MultDivisionTopic,seed:number,quant
     steps=['Find which number multiplied by '+leftDivisor+' gives '+product+'.',
      'Check: '+leftDivisor+' × '+quotient+' = '+product+'.'];
    }
+   // In division mode, swapping a and b may produce the SAME displayed
+   // division sentence despite different internal signatures. Deduplicate
+   // the *actual printable question*, not the hidden factor ordering.
+   const uniqueKey=mode==='fact-family'?signature:question;
+   if(seen.has(uniqueKey))continue;
+   seen.add(uniqueKey);
    q={id:'Q'+(index+1),mode,question,answer,a,b,product,
     operator,facts,steps,area};
    break;
@@ -158,8 +162,7 @@ export function verifyMultDivisionPack(pack:MultDivisionPack):void{
    JSON.stringify(q.area)!==JSON.stringify(area))
    throw Error('Multiplication/division question or worked answer mismatch '+(i+1));
   const signature=pack.mode==='fact-family'?[Math.min(q.a,q.b),Math.max(q.a,q.b)].join('x'):
-   pack.mode==='area-model'?q.a+'x'+q.b+'-'+pack.areaFactors:
-   (i%2===0?'m':'d')+'-'+q.a+'-'+q.b;
+   q.question;
   if(seen.has(signature))throw Error('Duplicate mathematical task '+(i+1));
   seen.add(signature);
  }
