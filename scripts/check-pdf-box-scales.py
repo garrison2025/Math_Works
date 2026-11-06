@@ -59,7 +59,7 @@ def extract_chart(page,raw,mode):
     axis_y=a.y
     marks=sorted((a.x+b.x)/2 for a,b in lines
           if close(a.x,b.x) and close(abs(a.y-b.y),TICK_LENGTH)
-          and close((a.y+b.y)/2,axis_y+(.005*128),.8)
+          and close((a.y+b.y)/2,axis_y-(.005*128),.8)
           and left<=a.x<=right)
     if len(marks)<3 or len(marks)>12:
         raise AssertionError(f'R58 missing/multiplying box ticks: {len(marks)}')
