@@ -419,7 +419,10 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
  if(mode==='steps'&&!hasVerifiedSteps(sheet.topicId))throw new Error('Worked steps are not yet verified for this topic');
  if(mode==='steps')assertWorksheetSteps(sheet);
  const pdf=await PDFDocument.create();const [pw,ph]=PAGE_SIZE[paper];const font=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
- const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode==='questions'&&!hasDiagrams;
+ // R60: compact teacher answer keys as two columns for text-only topics.
+ // Diagrams and worked solutions remain full width, preserving plotted scale
+ // and step-by-step readability; the only change is PDF presentation.
+ const margin=40,bodyW=pw-margin*2,hasDiagrams=sheet.problems.some(p=>!!p.diagramSpec),twoCols=mode!=='steps'&&!hasDiagrams;
  const bottomSafety=margin+18;
  let page:PDFPage;let currentY=0;let pageNum=0;
  function newPage(){
@@ -434,7 +437,8 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
    page.drawText(line,{x:margin,y:currentY,size:8.5,font,color:sub});currentY-=14;
   }
   page.drawLine({start:{x:margin,y:currentY},end:{x:pw-margin,y:currentY},color:accent,thickness:1});currentY-=24;
-  page.drawText('Name: ______________________________      Date: _______________',{x:margin,y:currentY,size:9,font,color:ink});currentY-=25;
+  const byline=mode==='questions'?'Name: ______________________________      Date: _______________':mode==='answers'?'TEACHER ANSWER KEY | Match each number to the student worksheet.':'WORKED SOLUTIONS | Follow the numbered worksheet questions.';
+  page.drawText(byline,{x:margin,y:currentY,size:9,font,color:ink});currentY-=25;
  }
  newPage();
  const maxProblemHeight=currentY-bottomSafety;
@@ -449,7 +453,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
     (fractionLayoutFor(sheet.topicId,p.payload.question)?FRACTION_LINE_HEIGHT:0)+
     (worksheetWorkLines(sheet.topicId,mode,!!p.diagramSpec)+extraWritingRules(sheet.topicId,mode,p.diagramSpec?.kind,writingRoom))*RULE_SPACING+18;
   }
-  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
+  if(mode==='answers')return common+wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,twoCols?colW-19:bodyW-18).length*12+20+(['numberline','box-practice','function-table'].includes(p.diagramSpec?.kind??'')||(p.diagramSpec?.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec?.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec?.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-')))?150:0);
   const answerLines=wrapPdfText(p.expectedAnswer,bold,10,bodyW-18).length;
   const stepLines=p.solutionSteps.reduce((total,step,k)=>total+wrapPdfText(`${k+1}) ${step}`,font,STEP_FONT_SIZE,bodyW-18).length,0);
   return common+13+answerLines*12+stepLines*STEP_LINE_HEIGHT+p.solutionSteps.length*STEP_GAP+24;
@@ -483,7 +487,7 @@ export async function createWorksheetPdf(sheet:Worksheet,topicName:string,mode:P
    page.drawLine({start:{x:xx+8,y:ruleY},end:{x:xx+colW-14,y:ruleY},
     color:paperRule,thickness:.65});
   }
-  if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
+  if(mode==='answers'){for(const line of wrapPdfText(`Answer: ${p.expectedAnswer}`,bold,10,twoCols?colW-19:bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}
    if(p.diagramSpec&&(['numberline','box-practice','function-table'].includes(p.diagramSpec.kind)||(p.diagramSpec.kind==='linear-function'&&p.diagramSpec.labels?.includes('draw'))||(p.diagramSpec.kind==='scatter'&&p.diagramSpec.labels?.includes('plot'))||(p.diagramSpec.kind==='right-triangle'&&p.diagramSpec.labels?.some(s=>s.startsWith('missing-'))))){plotDiagram(page,p.diagramSpec,xx,y-136,Math.min(235,colW-12),128,font,true);y-=150;}
   }
   if(mode==='steps'){page.drawText('Answer:',{x:xx+10,y,size:9,font:bold,color:sub});y-=13;for(const line of wrapPdfText(p.expectedAnswer,bold,10,bodyW-18)){page.drawText(line,{x:xx+10,y,size:10,font:bold,color:ink});y-=12;}for(let k=0;k<p.solutionSteps.length;k++){for(const line of wrapPdfText(`${k+1}) ${p.solutionSteps[k]}`,font,STEP_FONT_SIZE,bodyW-18)){page.drawText(line,{x:xx+10,y,size:STEP_FONT_SIZE,font,color:sub});y-=STEP_LINE_HEIGHT;}y-=STEP_GAP;}}
