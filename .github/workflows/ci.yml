@@ -30,6 +30,15 @@ jobs:
         run: npm run qa:seo-progress-r76
       - name: R78 original 488 keyword audit after 5 prism and pyramid capability fixes
         run: npm run qa:seo-progress-r78
+      - name: R79 audit exact original 488 keywords after true combined prism and cylinder sheets
+        run: npm run qa:seo-progress-r79
+      - name: Archive R79 owner keywords and 87 remaining historical issues
+        uses: actions/upload-artifact@v4
+        with:
+          name: r79-488-keyword-true-coverage
+          path: qa-artifacts/r79-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R78 exact 488 keyword coverage and 89 remaining historical flags
         uses: actions/upload-artifact@v4
         with:
@@ -143,6 +152,8 @@ jobs:
         run: npm run qa:r77-statistics
       - name: R78 export 36 real-scale unfolded prism and pyramid PDF nets
         run: npm run qa:r78-solids
+      - name: R79 export 48 actual mixed-prism-cylinder volume and total surface PDF samples
+        run: npm run qa:r79-mixed
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -191,6 +202,15 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-r77-statistical-charts.py qa-artifacts
       - name: R78 independent PyMuPDF scaled prism, square pyramid and regular tetrahedron net geometry audit
         run: .venv-pdf-audit/bin/python scripts/check-r78-solid-nets.py qa-artifacts/r78-prism-pyramid-nets
+      - name: R79 independently audit three different real mixed PDF nets and exact combined teacher keys
+        run: .venv-pdf-audit/bin/python scripts/check-r79-mixed-solids.py qa-artifacts/r79-mixed-prisms-cylinders
+      - name: Archive R79 48 combined solid PDF worksheets and independent true-vector math audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r79-48-mixed-solid-vector-pdfs
+          path: qa-artifacts/r79-mixed-prisms-cylinders/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R78 36 real proportional solid-net PDFs and independent geometry audit
         uses: actions/upload-artifact@v4
         with:
