@@ -104,9 +104,14 @@ def extract_chart(page,raw,mode):
         for drawing in page.get_drawings():
             if not close(drawing.get('width',0),1.7,.08) or not color_is(drawing.get('color'),BLUE):
                 continue
-            for item in drawing['items']:
-                if item[0]=='re':
-                    boxes.append(fitz.Rect(item[1]))
+            # pdf-lib emits drawRectangle as four straight PDF line strokes;
+            # PyMuPDF reports the bounding rect on the enclosing drawing,
+            # rather than one PDF 're' item. Require all four box edges.
+            edges=[item for item in drawing['items'] if item[0]=='l']
+            if len(edges)==4:
+                box=fitz.Rect(drawing['rect'])
+                if box.width>0 and box.height>0:
+                    boxes.append(box)
         if len(boxes)!=1:
             raise AssertionError(f'R58 expected a single printed solution box, found {len(boxes)}')
         if not close(boxes[0].x0,project(q1),1.5) or not close(boxes[0].x1,project(q3),1.5):
@@ -141,6 +146,8 @@ def run(directory):
     records=manifest['documents']
     if len(records)!=16 or manifest['schema']!='mathworks-r58-box-scale/v1':
         raise AssertionError('R58 requires all 16 seeded sample PDFs')
+    if sum(not entry['answer'].endswith('outliers=none') for entry in records)!=8:
+        raise AssertionError('R58 must include 8 PDFs with genuine mathematical outliers')
     total_ticks=0
     for record in records:
         with fitz.open(directory/record['file']) as pdf:
