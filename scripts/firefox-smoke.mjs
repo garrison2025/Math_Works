@@ -448,6 +448,26 @@ try{
  assert.equal(await page.locator('.problem .q').first().innerText(),untouched);
  checks.push({name:'R72 Firefox real fraction strip blank and labelled Letter chart exports',status:'pass'});
 
+ // R73 Firefox verifies printable word problems with contextual round-up.
+ await open('division-worksheets');
+ assert.equal(await page.locator('[data-r73-division-stories]').count(),1);
+ assert.equal(await page.locator('[data-r73-division-stories-guide]').count(),1);
+ const oldDivision=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ await page.locator('[data-division-story-mode]').selectOption('round-up');
+ for(const mode of ['questions','answers','steps']){
+  const event=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="division-story-'+mode+'"]').click();
+  const dl=await event,target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPageCount(),2);
+  assert.equal(pdf.getPage(0).getWidth(),612);
+  assert.match(pdf.getTitle()??'',/R73\.1/);
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),oldDivision);
+ checks.push({name:'R73 Firefox real-context round-up division word problem triplet on Letter',status:'pass'});
+
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
