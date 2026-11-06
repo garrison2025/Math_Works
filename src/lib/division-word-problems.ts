@@ -81,7 +81,7 @@ export function createDivisionStoryPack(topic:DivisionStoryPack['topic'],seed:nu
   let problem:DivisionStoryProblem|undefined;
   for(let trial=0;trial<2000;trial++){
    const divisor=rng.int(2,9);
-   const quotient=rng.int(difficulty==='easy'?3:difficulty==='standard'?7:13,
+   const quotient=rng.int(difficulty==='easy'?5:difficulty==='standard'?7:13,
     difficulty==='easy'?15:difficulty==='standard'?45:90);
    const remainder=kind==='equal-sharing'?0:rng.int(1,divisor-1);
    const dividend=quotient*divisor+remainder;
