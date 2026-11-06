@@ -920,6 +920,63 @@ try {
  assert.equal(await page.locator('[data-r69-conversion]').count(),0,
   'Fraction decimal conversion panel leaked to unrelated addition topic');
 
+ // R70 real rendered route corrections: links must lead to implemented
+ // specialist generators rather than historically misclassified hubs.
+ for(const pair of [
+  ['volume-of-rectangular-prisms-worksheets','surface-area-worksheets'],
+  ['two-digit-multiplication-worksheets','two-digit-by-one-digit-multiplication-worksheets'],
+  ['functions-worksheets','domain-range-worksheets'],
+  ['multiplying-fractions-worksheets','fractions-worksheets']
+ ]){
+  await page.goto(base+'/'+pair[0]+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  assert.equal(await page.locator('[data-r70-route-corrections]').count(),1);
+  assert.ok(await page.locator('[data-r70-route-corrections] a[href="/'+pair[1]+'/"]').count());
+ }
+ // R71 each mode downloads three ACTUAL PDF files through isolated
+ // Playwright contexts to avoid Chrome's multi-download suppression.
+ for(const input of [
+  {topic:'multiplication-worksheets',mode:'mixed-facts',factors:'mixed',paper:'A4'},
+  {topic:'multiplication-worksheets',mode:'fact-family',factors:'mixed',paper:'Letter'},
+  {topic:'multiplication-worksheets',mode:'area-model',factors:'two-by-two',paper:'A4'},
+  {topic:'division-worksheets',mode:'fact-family',factors:'mixed',paper:'Letter'}
+ ]){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',err=>pageErrors.push('R71 '+input.mode+' '+err.message));
+   await p.goto(base+'/'+input.topic+'/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r71-multdiv-pack]').count(),1);
+   assert.equal(await p.locator('[data-r71-multdiv-guide]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption(input.paper);
+   await p.locator('[data-multdiv-mode]').selectOption(input.mode);
+   if(input.topic==='multiplication-worksheets')
+    await p.locator('[data-multdiv-factors]').selectOption(input.factors);
+   for(const mode of ['questions','answers','steps']){
+    const event=p.waitForEvent('download',{timeout:25000});
+    await p.locator('[data-action="multdiv-'+mode+'"]').click();
+    let download;
+    try{download=await event}
+    catch(err){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R71 '+input.mode+'/'+mode+' failed: '+status+'; '+String(err));
+    }
+    const document=await verifyPdf(download,'R71 '+input.mode+' '+mode,{paper:input.paper});
+    assert.match(document.getTitle()??'',/R71\.1/);
+    assert.match(document.getTitle()??'',new RegExp(mode));
+    assert.match(document.getSubject()??'',/independent of original integer generator v18/);
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),original);
+   if(input.mode==='area-model')
+    await p.screenshot({path:join(out,'r71-area-model-multiplication-preview.png'),fullPage:true});
+  }finally{await ctx.close();}
+ }
+ await page.goto(base+'/one-step-equations-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r71-multdiv-pack]').count(),0,'R71 mode leaked to unrelated topic');
+ events.push({kind:'interaction',name:'R70 4 exact corrected source links; R71 12 actual PDF downloads from 3 modes and 2 pages',status:'pass'});
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
