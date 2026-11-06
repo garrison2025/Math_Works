@@ -1,0 +1,103 @@
+{
+  "schema": "mathworks-r71-mult-div-capability/v1",
+  "date": "2026-11-06",
+  "meaning": "Eight exact owner-provided historical SEO phrases now have a real opt-in math exercise type. This is a functional match, not a fresh Google US SERP/ranking study.",
+  "sourceModified": false,
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "multiplication and division worksheets",
+      "sourceMonthlyVolume": 1900,
+      "sourceKD": 24,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "mixed-facts",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "math worksheets multiplication and division",
+      "sourceMonthlyVolume": 1000,
+      "sourceKD": 19,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "mixed-facts",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "multiplication division worksheets",
+      "sourceMonthlyVolume": 1000,
+      "sourceKD": 17,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "mixed-facts",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "multiplication and division worksheet",
+      "sourceMonthlyVolume": 720,
+      "sourceKD": 12,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "mixed-facts",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "multiplication and division fact families",
+      "sourceMonthlyVolume": 720,
+      "sourceKD": 15,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "fact-family",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "fact families multiplication and division",
+      "sourceMonthlyVolume": 590,
+      "sourceKD": 18,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "fact-family",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "division and multiplication worksheets",
+      "sourceMonthlyVolume": 720,
+      "sourceKD": 25,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "mixed-facts",
+      "actualPage": "multiplication-worksheets"
+    },
+    {
+      "keyword": "area model multiplication worksheets",
+      "sourceMonthlyVolume": 1000,
+      "sourceKD": 15,
+      "ownerOriginalRoute": "multiplication-worksheets",
+      "priorFlag": "unsupported",
+      "newCapability": "area-model",
+      "actualPage": "multiplication-worksheets"
+    }
+  ],
+  "implementedOn": [
+    "multiplication-worksheets",
+    "division-worksheets"
+  ],
+  "actualImplementedModes": [
+    "mixed-facts",
+    "fact-family",
+    "area-model"
+  ],
+  "unsupported": [
+    "Multiplication dot arrays (distinct from area model)",
+    "story problems",
+    "lattice multiplication",
+    "fraction division word problems",
+    "full grade-specific curricula"
+  ],
+  "originalGeneratorVersion": "18",
+  "originalShareLinksUnchanged": true,
+  "previewNoindex": true,
+  "indexApproved": false,
+  "rankVerified": false,
+  "physicalPrintVerified": false,
+  "teacherSignoff": false
+}
