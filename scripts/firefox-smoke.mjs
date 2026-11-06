@@ -389,6 +389,26 @@ try{
  }
  checks.push({name:'R68 Firefox exact decimal column addition and subtraction printable PDF triplets',status:'pass'});
 
+ // R69 Firefox browser actual conversion PDF downloads on Letter.
+ await open('fractions-worksheets');
+ assert.equal(await page.locator('[data-r69-conversion]').count(),1);
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ const oldFractions=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ await page.locator('[data-conversion-direction]').selectOption('mixed');
+ await page.locator('[data-conversion-precision]').selectOption('thousandths');
+ for(const mode of ['questions','answers','steps']){
+  const download=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="conversion-'+mode+'"]').click();
+  const got=await download,target=join(out,got.suggestedFilename());
+  await got.saveAs(target);
+  const doc=await PDFDocument.load(readFileSync(target));
+  assert.equal(doc.getPage(0).getWidth(),612);
+  assert.match(doc.getTitle()??'',/R69\.1/);
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),oldFractions);
+ checks.push({name:'R69 Firefox exact fraction/decimal mixed thousandths student/teacher/worked Letter PDFs',status:'pass'});
+
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
