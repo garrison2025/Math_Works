@@ -429,6 +429,25 @@ try{
  assert.equal(await page.locator('.problem .q').first().innerText(),originalMultiply);
  checks.push({name:'R71 Firefox true area-model vector PDFs student, answers and worked steps',status:'pass'});
 
+ // R72 Firefox independent labelled/blank fraction strip Letter print QA.
+ await open('fractions-worksheets');
+ assert.equal(await page.locator('[data-r72-fraction-strips]').count(),1);
+ const untouched=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ await page.locator('[data-fraction-strip-set]').selectOption('basic');
+ for(const mode of ['blank','labeled']){
+  const event=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="fraction-strip-'+mode+'"]').click();
+  const dl=await event,filepath=join(out,dl.suggestedFilename());
+  await dl.saveAs(filepath);
+  const doc=await PDFDocument.load(readFileSync(filepath));
+  assert.equal(doc.getPageCount(),1);
+  assert.equal(doc.getPage(0).getWidth(),612);
+  assert.match(doc.getTitle()??'',/R72\.1/);
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),untouched);
+ checks.push({name:'R72 Firefox real fraction strip blank and labelled Letter chart exports',status:'pass'});
+
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
