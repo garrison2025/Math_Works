@@ -24,6 +24,15 @@ jobs:
         run: npm run qa:seo-progress
       - name: R74 export current 488 keyword coverage with verified inequality and circle area work
         run: npm run qa:seo-progress-r74
+      - name: R75 export exact 488 keyword coverage after triangle theorem and real L-shaped area
+        run: npm run qa:seo-progress-r75
+      - name: Archive R75 source-grounded 488 keyword coverage and 99 unresolved historical flags
+        uses: actions/upload-artifact@v4
+        with:
+          name: r75-488-keyword-true-coverage
+          path: qa-artifacts/r75-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R74 current evidence-grounded keyword coverage
         uses: actions/upload-artifact@v4
         with:
@@ -108,6 +117,8 @@ jobs:
         run: npm run qa:division-stories
       - name: R74 export 66 true A4/Letter inequality and circle sector practice PDFs
         run: npm run qa:r74-math
+      - name: R75 export 42 real true-vector triangle inequality and composite L area PDFs
+        run: npm run qa:r75-geometry
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -148,6 +159,15 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-division-word-problems-r73.py qa-artifacts/r73-division-word-problems
       - name: R74 independently recheck all 66 real PDFs for exact math, answer isolation and safe margins
         run: .venv-pdf-audit/bin/python scripts/check-r74-math.py qa-artifacts/r74-inequality-circle
+      - name: R75 independently remeasure 42 PDF geometry vectors and recompute polygon area
+        run: .venv-pdf-audit/bin/python scripts/check-r75-geometry.py qa-artifacts/r75-triangle-composite
+      - name: Archive R75 42 original triangle and composite area PDF artifacts with independent stroke audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r75-triangle-composite-vector-pdfs
+          path: qa-artifacts/r75-triangle-composite/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R74 mathematically audited inequality/circle/sector student and teacher PDFs
         uses: actions/upload-artifact@v4
         with:
