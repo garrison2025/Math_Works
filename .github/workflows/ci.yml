@@ -77,6 +77,8 @@ jobs:
         run: npm run qa:counting-dot-pdfs
       - name: R60 export 38 A4/Letter teacher-key and student 40-question PDF fixtures
         run: npm run qa:teacher-keys
+      - name: R66 export 32 physical A4/Letter fraction number-line student and teacher PDFs
+        run: npm run qa:fraction-line-pdfs
       - name: R65 export 24 exact fraction and decimal one-step and two-step PDF packs
         run: npm run qa:equation-packs
       - name: R64 export four separate Letter and A4 blank and filled multiplication charts
@@ -101,6 +103,15 @@ jobs:
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: R66 independently check fraction tick spacing, plotted dots and student answer isolation
+        run: .venv-pdf-audit/bin/python scripts/check-fraction-number-lines-r66.py qa-artifacts/r66-fraction-number-lines
+      - name: Archive R66 real fraction number-line PDFs and independent vector geometry audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r66-fraction-number-line-vector-pdfs
+          path: qa-artifacts/r66-fraction-number-lines/
+          retention-days: 21
+          if-no-files-found: error
       - name: R65 independently verify real student question PDFs and math-checked answer keys
         run: .venv-pdf-audit/bin/python scripts/check-equation-packs-r65.py qa-artifacts/r65-equation-packs
       - name: Archive R65 24 original equation practice answer and worked solution PDFs
