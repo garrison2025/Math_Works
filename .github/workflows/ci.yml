@@ -26,6 +26,15 @@ jobs:
         run: npm run qa:seo-progress-r74
       - name: R75 export exact 488 keyword coverage after triangle theorem and real L-shaped area
         run: npm run qa:seo-progress-r75
+      - name: R76 exact source-grounded 488 keyword coverage after 5 cylinder skills
+        run: npm run qa:seo-progress-r76
+      - name: Archive R76 all 488 original keywords and 94 remaining historical issues
+        uses: actions/upload-artifact@v4
+        with:
+          name: r76-488-keyword-true-coverage
+          path: qa-artifacts/r76-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R75 source-grounded 488 keyword coverage and 99 unresolved historical flags
         uses: actions/upload-artifact@v4
         with:
@@ -119,6 +128,8 @@ jobs:
         run: npm run qa:r74-math
       - name: R75 export 42 real true-vector triangle inequality and composite L area PDFs
         run: npm run qa:r75-geometry
+      - name: R76 export 30 exact cylinder net student, key and solution PDFs
+        run: npm run qa:r76-cylinder
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -161,6 +172,15 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-r74-math.py qa-artifacts/r74-inequality-circle
       - name: R75 independently remeasure 42 PDF geometry vectors and recompute polygon area
         run: .venv-pdf-audit/bin/python scripts/check-r75-geometry.py qa-artifacts/r75-triangle-composite
+      - name: R76 audit net circumference to height ratios, two real circular disks and all R74 sector angles
+        run: .venv-pdf-audit/bin/python scripts/check-r76-cylinder-sectors.py qa-artifacts
+      - name: Archive R76 verified 30 PDF cylinder nets and real stroke audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r76-cylinder-true-vector-pdfs
+          path: qa-artifacts/r76-cylinder-net/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R75 42 original triangle and composite area PDF artifacts with independent stroke audit
         uses: actions/upload-artifact@v4
         with:
