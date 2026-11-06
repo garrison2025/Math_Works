@@ -1,0 +1,32 @@
+{
+  "schema": "mathworks-r65-equation-capability/v1",
+  "changeType": "ADDITIVE_OFFLINE_WORKSHEET_FEATURE",
+  "historicResearch": "R64 public competitor page observations showed support for decimal/fraction equation variants at multiple competitors. This does not independently verify present Google US ranks or updated KD.",
+  "originalKeywordsUpdated": 0,
+  "originalRoutesUpdated": 0,
+  "originalGeneratorVersion": "18",
+  "extensionVersion": "R65.1",
+  "pageEvidence": [
+    {
+      "slug": "one-step-equations-worksheets",
+      "primary": "one step equations worksheet",
+      "sourceMonthlyVolume": 2900,
+      "sourceKD": 6,
+      "feature": "Opt-in exact decimal and reduced fraction additive or multiplicative one-step packs; student/answer/steps PDF; seeded, 4–40 tasks, A4/Letter",
+      "remaining": "No word-problem pack; original v18 generator remains integer-only; additional pack mode is not encoded in original share link."
+    },
+    {
+      "slug": "two-step-equations-worksheets",
+      "primary": "two step equations worksheet",
+      "sourceMonthlyVolume": 4400,
+      "sourceKD": 10,
+      "feature": "Opt-in exact decimal and reduced fraction ax + b = c packs, positive/negative coefficient selector, student/answer/steps PDF, seeded 4–40 tasks, A4/Letter",
+      "remaining": "No story or fraction word problems, no school-grade certification; original v18 generator remains integer-only; additional pack mode is not encoded in original share link."
+    }
+  ],
+  "currentSerpEvidence": "NOT RANK-VERIFIED; historic Semrush keyword snapshots and R64 manually observed competitor features only",
+  "publicIndexApproved": false,
+  "previewNoindex": true,
+  "physicalPrintConfirmed": false,
+  "regression": "No changes to original 51 mathematical generators, generator version 18, existing worksheet options, or original share links."
+}
