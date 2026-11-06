@@ -31,7 +31,7 @@ test('R74 2400 deterministic inequalities: true bounds, correct words, closed/op
     if(x.context===0){assert.equal(x.answer,`x + ${k} ≤ ${v+k}`);assert.equal(x.graph.kind,'left');assert.equal(x.graph.closedLeft,true);}
     if(x.context===1){assert.equal(x.answer,`x - ${k} ≥ ${v-k}`);assert.equal(x.graph.kind,'right');assert.equal(x.graph.closedRight,true);}
     if(x.context===2){assert.equal(x.answer,`${k}x < ${v*k}`);assert.equal(x.graph.kind,'left');assert.equal(x.graph.closedLeft,false);}
-    if(x.context===3){assert.equal(v%k,0);assert.equal(x.answer,`x / ${k} > ${v/k}`);assert.equal(x.graph.kind,'right');assert.equal(x.graph.closedRight,false);}
+    if(x.context===3){assert.ok(v%k===0);assert.equal(x.answer,`x / ${k} > ${v/k}`);assert.equal(x.graph.kind,'right');assert.equal(x.graph.closedRight,false);}
    }else{
     assert.ok(x.lower<x.upper);
     if(x.kind==='and'){
