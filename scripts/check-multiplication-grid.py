@@ -42,11 +42,24 @@ def check_pdf(path: Path, paper: str, mode: str) -> dict:
         raise AssertionError(f"{path}: 13x13 chart violates paper safe margins")
     rectangles=[]
     for draw in page.get_drawings():
-        for item in draw.get("items",[]):
-            if item[0]=="re":
-                box=item[1]
-                if abs(box.width-cell)<.2 and abs(box.height-cell)<.2:
-                    rectangles.append(box)
+        # pdf-lib paints rectangles as four stroked straight PDF segments.
+        # PyMuPDF exposes these paths as four "l" items, not one "re".
+        edges=draw.get("items", [])
+        box=draw.get("rect")
+        if not box or abs(box.width-cell)>.2 or abs(box.height-cell)>.2:
+            continue
+        horizontal=vertical=0
+        for edge in edges:
+            if edge[0]!="l":
+                continue
+            p,q=edge[1],edge[2]
+            if abs(p.y-q.y)<.12 and abs(abs(p.x-q.x)-cell)<.12:
+                horizontal+=1
+            elif abs(p.x-q.x)<.12 and abs(abs(p.y-q.y)-cell)<.12:
+                vertical+=1
+        if horizontal!=2 or vertical!=2 or len(edges)!=4:
+            raise AssertionError(f"{path}: grid square is missing vector edges: {box}")
+        rectangles.append(box)
     if len(rectangles)!=169:
         raise AssertionError(f"{path}: expected 169 actual grid rectangle vectors, got {len(rectangles)}")
     positions=set()
