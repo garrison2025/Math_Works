@@ -30,6 +30,8 @@ import {createCylinderPack,type CylinderMode} from '../lib/cylinder-pack';
 import {createCylinderPdf} from '../lib/cylinder-pdf';
 import {createDotPlotPack,type DotPlotMode} from '../lib/statistical-dot-plot';
 import {createDotPlotPdf} from '../lib/statistical-dot-plot-pdf';
+import {createSolidPack,type SolidNetMode} from '../lib/prism-pyramid-pack';
+import {createSolidPdf} from '../lib/prism-pyramid-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -586,6 +588,30 @@ function setup(root:HTMLElement){
      inform('R77 statistical dot plot '+task+' '+output+' PDF downloaded. Original statistics and share URL unchanged.');
     }catch(e){inform(e instanceof Error?'Frequency dot plot PDF failed: '+e.message:'Frequency dot plot PDF failed.',true);}
     finally{b.disabled=false;}
+   });
+  }
+ }
+ // R78 a true prism/pyramid net PDF skill without modifying original v18 generators.
+ if(topic==='surface-area-worksheets'||topic==='volume-of-rectangular-prisms-worksheets'){
+  const modeField=root.querySelector<HTMLSelectElement>('[data-r78-solid-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="r78-solids-'+output+'"]');
+   if(!button||!modeField)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const s=state(),mode=modeField.value as SolidNetMode;
+     inform('Checking prism and pyramid net measurements for '+output+'...');
+     const pack=createSolidPack(topic,s.n,s.q,s.difficulty,mode);
+     const data=await createSolidPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const href=URL.createObjectURL(new Blob([new Uint8Array(data)],{type:'application/pdf'}));
+     const link=document.createElement('a');link.href=href;
+     link.download='true-solid-net-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r78.pdf';
+     document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(href),60000);
+     inform('R78 exact '+mode+' '+output+' PDF downloaded. Original v18 worksheet and share URL unchanged.');
+    }catch(error){
+     inform(error instanceof Error?'Prism/pyramid PDF failed: '+error.message:'Prism/pyramid PDF failed.',true);
+    }finally{button.disabled=false;}
    });
   }
  }
