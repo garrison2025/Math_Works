@@ -75,7 +75,7 @@ def inspect(folder:Path, fixture:dict):
                 raise AssertionError(f"{source}: printed answer fails multiplication crosscheck")
             # Distinct actual arithmetic scaling, no floating approximation.
             shift=row["scaleFactor"]
-            if Fraction(row["scaledDividend"],row["scaledDivisor"])!=quotient:
+            if Fraction(int(row["scaledDividend"]),int(row["scaledDivisor"]))!=quotient:
                 raise AssertionError(f"{source}: incorrect decimal-shift division {index}")
         if mode=="questions":
             if answer_lines or step_checks or "Answer: " in "\n".join(x[0] for x in all_lines):
