@@ -142,7 +142,7 @@ export async function createR74PracticePdf(pack:Pack,mode:R74PdfMode,paper:Paper
   }
   drawText(page,'R74.1  |  '+mode+'  |  '+paper+'  |  Seed '+pack.seed+
    '  |  Page '+pageNo+'/'+total+'  |  Print Actual size (100%)',
-   left,35,regular,7.3,muted);
+   left,42,regular,7.3,muted);
  }
  pdf.setCreator('Math Worksheet Studio');
  pdf.setTitle(heading+' - '+mode+' - '+pack.mode+' - seed '+pack.seed+' - '+paper+' - R74.1');
