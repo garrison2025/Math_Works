@@ -32,6 +32,15 @@ jobs:
         run: npm run qa:seo-progress-r78
       - name: R79 audit exact original 488 keywords after true combined prism and cylinder sheets
         run: npm run qa:seo-progress-r79
+      - name: R80 original 488-keyword audit after true net-area and joined composite 3D worksheets
+        run: npm run qa:seo-progress-r80
+      - name: Archive R80 488 original keyword statuses and 85 remaining historical flagged issues
+        uses: actions/upload-artifact@v4
+        with:
+          name: r80-488-keyword-true-coverage
+          path: qa-artifacts/r80-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R79 owner keywords and 87 remaining historical issues
         uses: actions/upload-artifact@v4
         with:
@@ -154,6 +163,8 @@ jobs:
         run: npm run qa:r78-solids
       - name: R79 export 48 actual mixed-prism-cylinder volume and total surface PDF samples
         run: npm run qa:r79-mixed
+      - name: R80 generate 54 true 2-D net and two-block composite L-prism surface area PDF samples
+        run: npm run qa:r80-nets
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -204,6 +215,15 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-r78-solid-nets.py qa-artifacts/r78-prism-pyramid-nets
       - name: R79 independently audit three different real mixed PDF nets and exact combined teacher keys
         run: .venv-pdf-audit/bin/python scripts/check-r79-mixed-solids.py qa-artifacts/r79-mixed-prisms-cylinders
+      - name: R80 independent actual vector-face net and L-shaped composite 3D hidden-contact geometry audit
+        run: .venv-pdf-audit/bin/python scripts/check-r80-real-nets.py qa-artifacts/r80-true-net-composite-area
+      - name: Archive R80 54 actual unfold-net PDFs and independent print geometry inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: r80-true-net-composite-vector-pdfs
+          path: qa-artifacts/r80-true-net-composite-area/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R79 48 combined solid PDF worksheets and independent true-vector math audit
         uses: actions/upload-artifact@v4
         with:

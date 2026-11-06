@@ -273,7 +273,43 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r79-mixed-solid-steps">Mixed worked steps PDF</button>
 </div>
 <p class="hint">With mixed mode and at least 3 questions, all three types appear. Closed surface area includes all faces and both cylinder bases; volume uses cubic units. The original v18 generator, standalone geometry extensions and shared worksheet URLs remain intact. Print at 100% scale.</p>
-</div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
+</div>}{slug==='surface-area-worksheets'&&<>
+<div class="calibration-card" data-r80-nets aria-label="Calculate actual total surface area directly from unfolded net vectors">
+<strong>Surface area from actual solid nets — six shape modes</strong>
+<p class="hint">The problem shows a dimension-proportional unfolded net. Add all real faces to find total surface area: a six-face rectangular prism, a right-triangular prism, a closed cylinder, a right square pyramid or a REGULAR tetrahedron. The mixed worksheet interleaves all five types. The regular-tetrahedron formula does not apply to arbitrary triangular pyramids.</p>
+<div class="field"><label for="r80-net-mode">Unfolded solid type</label>
+<select id="r80-net-mode" data-r80-nets-mode>
+<option value="mixed">Mix all five nets</option>
+<option value="rectangular-prism">Six-face rectangular prism net</option>
+<option value="triangular-prism">Two triangles and three rectangles</option>
+<option value="cylinder">Two disks plus cylindrical rectangle</option>
+<option value="square-pyramid">Square plus four triangle faces</option>
+<option value="regular-tetrahedron">Four equilateral triangle faces</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="r80-nets-questions">Net-area student PDF</button>
+<button type="button" class="btn" data-action="r80-nets-answers">Net-area teacher key PDF</button>
+<button type="button" class="btn" data-action="r80-nets-steps">Net-area worked steps PDF</button>
+</div>
+<p class="hint">Choose at least five questions to include every net shape in mixed mode. Figures preserve proportional lengths; printing at 100% is recommended. The original R76–R79 exercises remain separately available.</p>
+</div>
+<div class="calibration-card" data-r80-composite aria-label="Compute total exposed area of two joined rectangular solids from a real eight-face net">
+<strong>Composite solids — true L-shaped joined-prism nets</strong>
+<p class="hint">Build a genuine 3D L-shaped solid by joining two rectangular prisms along a shared horizontal face. The unfolded net has two congruent L-shaped ends and six rectangular side faces. Compute the exposed area only: <strong>SA(bottom) + SA(top) − 2 × shared joint</strong>. The internal joined faces are not exposed.</p>
+<div class="field"><label for="r80-composite-mode">Composite shape orientation</label>
+<select id="r80-composite-mode" data-r80-composite-mode>
+<option value="mixed">Mix left-step and right-step L solids</option>
+<option value="left-step">Upper block on left</option>
+<option value="right-step">Upper block on right</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="r80-composite-questions">Composite student PDF</button>
+<button type="button" class="btn" data-action="r80-composite-answers">Composite teacher key PDF</button>
+<button type="button" class="btn" data-action="r80-composite-steps">Composite worked steps PDF</button>
+</div>
+<p class="hint">Only two-block orthogonal solids with full-depth contacts are supported. This module does not claim to solve arbitrary touching shapes, oblique joints or curved composite surfaces. All student and teacher pages use the same original dimensions.</p>
+</div>
+</>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <details class="calibration-card" data-print-calibration>
       <summary>Printer scale check <span class="calibration-mini">Recommended before classroom printing</span></summary>
       <p>Download a one-page calibration PDF using the paper size selected above. Print at <strong>Actual size / 100%</strong> with Fit/Shrink disabled. Use a physical ruler to measure both 100 mm reference bars.</p>
