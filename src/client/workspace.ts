@@ -8,6 +8,8 @@ import {createEquationPack,type EquationTopic,type EquationNumberType} from '../
 import {createEquationPackPdf,type EquationPdfMode} from '../lib/equation-pack-pdf';
 import {createFractionLinePack,type FractionLineTask,type FractionLineRange} from '../lib/fraction-number-lines';
 import {createFractionLinePdf} from '../lib/fraction-number-line-pdf';
+import {createDecimalDivisionPack,type DecimalDivisionDivisor,type DecimalDivisionPrecision} from '../lib/decimal-division';
+import {createDecimalDivisionPdf} from '../lib/decimal-division-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -245,6 +247,35 @@ function setup(root:HTMLElement){
     }catch(e){
      inform(e instanceof Error?'Fraction line PDF failed: '+e.message:'Fraction line PDF failed.',true);
     }finally{button.disabled=false;}
+   });
+  }
+ }
+ // R67 decimal division is an explicit opt-in extension to integer facts.
+ // Do not change generator v18, current preview, its answer map or share URL.
+ if(topic==='division-worksheets'){
+  const divisorSelect=root.querySelector<HTMLSelectElement>('[data-decimal-divisor]');
+  const precisionSelect=root.querySelector<HTMLSelectElement>('[data-decimal-precision]');
+  for(const mode of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="decimal-division-'+mode+'"]');
+   if(!button||!divisorSelect||!precisionSelect)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const params=state(),divisorMode=divisorSelect.value as DecimalDivisionDivisor;
+     const precisionMode=precisionSelect.value as DecimalDivisionPrecision;
+     inform('Preparing exact decimal division '+mode+' PDF...');
+     const pack=createDecimalDivisionPack('division-worksheets',params.n,params.q,params.difficulty,divisorMode,precisionMode);
+     const bytes=await createDecimalDivisionPdf(pack,mode,paper.value as Paper,
+      writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const link=document.createElement('a');link.href=url;
+     link.download='decimal-division-'+mode+'-'+divisorMode+'-'+precisionMode+
+      '-seed'+params.n+'-'+params.difficulty+'-'+params.q+'-'+paper.value.toLowerCase()+'-r67.pdf';
+     document.body.append(link);link.click();link.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Exact decimal division '+mode+' PDF downloaded. Repeat the seed and selectors to reproduce; the original integer division worksheet is unchanged.');
+    }catch(e){inform(e instanceof Error?'Decimal division PDF failed: '+e.message:'Decimal division PDF failed.',true);}
+    finally{button.disabled=false;}
    });
   }
  }
