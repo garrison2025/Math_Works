@@ -108,15 +108,17 @@ export async function createEquationPackPdf(pack:EquationPack,mode:EquationPdfMo
   const stepLines=mode!=='steps'?[]:item.steps.flatMap((step,j)=>
    wrap((j+1)+') '+step,normal,9,width-2*margin-18));
   const lines=mode==='questions'?(writingRoom==='extra'?3:2):0;
-  const needed=18+qlines.length*15+answerLines.length*14+stepLines.length*13+lines*22+17;
+  // Match the real pen-line spacing exactly; avoid a one-question orphan page.
+  const needed=mode==='questions'?qlines.length*15+lines*20+20:
+   qlines.length*15+answerLines.length*14+stepLines.length*13+27;
   if(y-needed<bottom)makePage();
   for(const line of qlines){page.drawText(line,{x:margin,y,size:10.5,font:normal,color:black});y-=15}
   if(mode==='questions'){
    for(let k=0;k<lines;k++){
-    page.drawLine({start:{x:margin+16,y:y-17-k*22},end:{x:width-margin-8,y:y-17-k*22},
+    page.drawLine({start:{x:margin+16,y:y-15-k*20},end:{x:width-margin-8,y:y-15-k*20},
      color:rule,thickness:.7});
    }
-   y-=lines*22+18;
+   y-=lines*20+12;
   }else{
    for(const line of answerLines){
     page.drawText(line,{x:margin+14,y,size:10,font:bold,color:blue});y-=14;
