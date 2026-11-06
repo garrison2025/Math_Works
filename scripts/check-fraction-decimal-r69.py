@@ -30,7 +30,7 @@ def audit(folder:Path,case:dict)->dict:
     filename=folder/case["filename"]
     if not filename.exists():raise AssertionError("Missing original R69 PDF "+str(filename))
     with fitz.open(filename) as pdf:
-        mode=case["mode"],paper=case["paper"].lower()
+        mode,paper=case["mode"],case["paper"].lower()
         expected_pages=2 if mode=="steps" else 1
         if len(pdf)!=expected_pages:raise AssertionError(str(filename)+": wrong PDF pages")
         width,height=PAPERS[paper]
