@@ -86,6 +86,8 @@ jobs:
         run: npm run qa:counting-dot-pdfs
       - name: R60 export 38 A4/Letter teacher-key and student 40-question PDF fixtures
         run: npm run qa:teacher-keys
+      - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
+        run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
         run: npm run qa:multdiv-r71
       - name: R69 export 54 real A4/Letter printable exact fraction-decimal conversion PDFs
@@ -120,6 +122,15 @@ jobs:
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: R72 independently inspect all fraction strip PDF vector partitions and teacher labels
+        run: .venv-pdf-audit/bin/python scripts/check-fraction-strips-r72.py qa-artifacts/r72-fraction-strips
+      - name: Archive R72 blank coloring strips, labelled teacher charts and true vector geometry report
+        uses: actions/upload-artifact@v4
+        with:
+          name: r72-real-fraction-strips-pdfs
+          path: qa-artifacts/r72-fraction-strips/
+          retention-days: 21
+          if-no-files-found: error
       - name: R71 independently check printed partial-product rectangles and inverse fact-family math
         run: .venv-pdf-audit/bin/python scripts/check-multiplication-division-r71.py qa-artifacts/r71-multiplication-division
       - name: Archive R71 real mixed, fact-family and area-model printable PDFs and math geometry audit
