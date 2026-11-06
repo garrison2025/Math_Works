@@ -12,7 +12,30 @@ from pathlib import Path
 import fitz
 
 PREFIXES=('Length: ','Width: ','Height: ','Side: ')
-X0={'Length: ':129.3,'Side: ':129.3,'Width: ':223.3,'Height: ':43.525}
+X0={'Length: ':129.3,'Side: ':129.3,'Width: ':256.2,'Height: ':43.525}
+
+def touches_printed_blue_outline(page,box):
+    """Check text against actual blue line/rectangle operators in the same PDF page."""
+    for drawing in page.get_drawings():
+        color=drawing.get('color')
+        if not color or len(color)<3:
+            continue
+        if not (abs(color[0]-.105)<.04 and abs(color[1]-.39)<.04 and abs(color[2]-.65)<.04):
+            continue
+        for item in drawing['items']:
+            if item[0]=='l':
+                a,b=item[1:3]
+                vector_box=fitz.Rect(min(a.x,b.x),min(a.y,b.y),
+                    max(a.x,b.x),max(a.y,b.y))
+            elif item[0]=='re':
+                # A filled rectangle is bounded by a path but can still
+                # visually obscure text placed across a face edge.
+                vector_box=fitz.Rect(item[1])
+            else:
+                continue
+            if (vector_box+(-1,-1,1,1)).intersects(box):
+                return True
+    return False
 
 def observed_labels(doc):
     spans=[]
@@ -31,6 +54,8 @@ def observed_labels(doc):
                     if (rect.x0<36 or rect.x1>page.rect.width-36
                           or rect.y0<36 or rect.y1>page.rect.height-36):
                         raise AssertionError(f'{text!r} exceeds safe page text area: {rect}')
+                    if touches_printed_blue_outline(page,rect):
+                        raise AssertionError(f'{text!r} overlaps actual printed prism edge')
                     spans.append((page.number,text,rect))
     # No two semantic label rectangles may collide in the physical PDF.
     for i,(page_no,text,a) in enumerate(spans):

@@ -112,7 +112,7 @@ export function diagramSVG(d?:Diagram,showSolution=false):string{
     `<rect x="145" y="59" width="115" height="115" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M145 59L190 24H305V139L260 174M260 59L305 24" fill="none" stroke="#1b64a5" stroke-width="3"/>`:
     `<rect x="145" y="76" width="155" height="88" fill="#e9f2f9" stroke="#1b64a5" stroke-width="3"/><path d="M145 76L189 41H344V129L300 164M300 76L344 41" fill="none" stroke="#1b64a5" stroke-width="3"/>`)
     +caption('length',cube?203:223,cube?196:192,dim.lengthLabel);
-   if(dim.widthLabel)parts+=caption('width',382,153,dim.widthLabel);
+   if(dim.widthLabel)parts+=caption('width',401,153,dim.widthLabel);
    if(dim.heightLabel)parts+=caption('height',82,128,dim.heightLabel);
    parts+=`<text class="prism-scale-note" x="225" y="217" fill="#62738a" font-size="12" text-anchor="middle">Schematic - not to scale</text>`;
    break;

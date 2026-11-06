@@ -281,7 +281,8 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   const named=(value:string,xf:number,yf:number,size=7.4)=>
    page.drawText(value,{x:x+xf*w,y:y+yf*h,size,font,color:ink});
   named(dim.lengthLabel,.38,.055,8);
-  if(dim.widthLabel)named(dim.widthLabel,.78,.23);
+  // Put Width to the RIGHT of the receding face, never on its slanted edge.
+  if(dim.widthLabel)named(dim.widthLabel,.92,.43);
   if(dim.heightLabel)named(dim.heightLabel,.015,.46);
   const warning='Schematic - not to scale',size=6.5;
   page.drawText(warning,{x:x+w-font.widthOfTextAtSize(warning,size)-2,
