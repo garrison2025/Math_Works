@@ -28,6 +28,8 @@ import {createCompositePack,type CompositeMode} from '../lib/composite-area-pack
 import {createR75GeometryPdf} from '../lib/r75-geometry-pdf';
 import {createCylinderPack,type CylinderMode} from '../lib/cylinder-pack';
 import {createCylinderPdf} from '../lib/cylinder-pdf';
+import {createDotPlotPack,type DotPlotMode} from '../lib/statistical-dot-plot';
+import {createDotPlotPdf} from '../lib/statistical-dot-plot-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -561,6 +563,29 @@ function setup(root:HTMLElement){
      inform('R76 cylinder '+mode+' '+output+' PDF ready with exact pi and proportional net.');
     }catch(e){inform(e instanceof Error?'Cylinder PDF failed: '+e.message:'Cylinder PDF failed.',true);}
     finally{button.disabled=false;}
+   });
+  }
+ }
+ // R77 genuine statistical frequency dot plots, separately from number-recognition dots.
+ if(topic==='mean-median-mode-range-worksheets'){
+  const selected=root.querySelector<HTMLSelectElement>('[data-r77-dotplot-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const b=root.querySelector<HTMLButtonElement>('[data-action="r77-dotplot-'+output+'"]');
+   if(!b||!selected)continue;
+   b.addEventListener('click',async()=>{
+    b.disabled=true;
+    try{
+     const s=state(),task=selected.value as DotPlotMode;
+     inform('Verifying exact observed frequencies and preparing '+output+' dot plot PDF...');
+     const pack=createDotPlotPack('mean-median-mode-range-worksheets',s.n,s.q,s.difficulty,task);
+     const bytes=await createDotPlotPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='statistical-dot-plots-'+task+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r77.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R77 statistical dot plot '+task+' '+output+' PDF downloaded. Original statistics and share URL unchanged.');
+    }catch(e){inform(e instanceof Error?'Frequency dot plot PDF failed: '+e.message:'Frequency dot plot PDF failed.',true);}
+    finally{b.disabled=false;}
    });
   }
  }
