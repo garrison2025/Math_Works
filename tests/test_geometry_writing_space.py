@@ -24,7 +24,7 @@ class GeometryPencilVectors(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError,'not 21pt'):
             p.check_grouping([(1,100)],[290,319],2)
         with self.assertRaisesRegex(AssertionError,'overlaps next question'):
-            p.check_grouping([(1,100),(2,315)],[290],1)
+            p.check_grouping([(1,100),(2,315)],[302,500],1)
     def test_unattached_rule_rejected(self):
         with self.assertRaisesRegex(AssertionError,'above its question'):
             p.check_grouping([(1,100)],[90],1)
