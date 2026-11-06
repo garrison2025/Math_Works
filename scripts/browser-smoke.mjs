@@ -977,6 +977,39 @@ try {
  assert.equal(await page.locator('[data-r71-multdiv-pack]').count(),0,'R71 mode leaked to unrelated topic');
  events.push({kind:'interaction',name:'R70 4 exact corrected source links; R71 12 actual PDF downloads from 3 modes and 2 pages',status:'pass'});
 
+ // R72 actual printable fraction strip chart downloads and immutable v18
+ // fraction arithmetic, in isolated Chromium contexts.
+ for(const set of ['basic','extended']){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R72 fraction strip '+set+': '+e.message));
+   await p.goto(base+'/fractions-worksheets/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r72-fraction-strips]').count(),1);
+   assert.equal(await p.locator('[data-r72-fraction-strips-guide]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-fraction-strip-set]').selectOption(set);
+   for(const mode of ['blank','labeled']){
+    const event=p.waitForEvent('download',{timeout:22000});
+    await p.locator('[data-action="fraction-strip-'+mode+'"]').click();
+    let dl;
+    try{dl=await event}
+    catch(e){const status=await p.locator('[data-status]').innerText();
+     throw new Error('R72 '+set+' '+mode+' browser download missing: '+status+'; '+String(e));}
+    const doc=await verifyPdf(dl,'R72 fraction strips '+set+' '+mode,{paper:'A4'});
+    assert.equal(doc.getPageCount(),1);
+    assert.match(doc.getTitle()??'',/R72\.1/);
+    assert.match(doc.getTitle()??'',new RegExp(mode));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),original);
+   if(set==='extended')
+    await p.screenshot({path:join(out,'r72-blank-fraction-strips-controls.png'),fullPage:true});
+  }finally{await ctx.close()}
+ }
+ events.push({kind:'interaction',name:'R72 four actual A4 fraction strip PDF downloads from blank/labelled charts',status:'pass'});
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
