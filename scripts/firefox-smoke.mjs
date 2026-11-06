@@ -468,6 +468,30 @@ try{
  assert.equal(await page.locator('.problem .q').first().innerText(),oldDivision);
  checks.push({name:'R73 Firefox real-context round-up division word problem triplet on Letter',status:'pass'});
 
+ // R74 Firefox independent browser download and pre-launch noindex checks.
+ for(const t of [
+  {slug:'inequalities-worksheets',kind:'inequality',skill:'or'},
+  {slug:'area-worksheets',kind:'circle',skill:'sector'}
+ ]){
+  await open(t.slug);
+  assert.equal(await page.locator('[data-r74-'+(t.kind==='inequality'?'inequalities':'circle-area')+']').count(),1);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  const original=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  await page.locator('[data-r74-'+t.kind+'-mode]').selectOption(t.skill);
+  for(const mode of ['questions','answers','steps']){
+   const pending=page.waitForEvent('download',{timeout:45000});
+   await page.locator('[data-action="r74-'+t.kind+'-'+mode+'"]').click();
+   const dl=await pending,target=join(out,dl.suggestedFilename());
+   await dl.saveAs(target);
+   const pdf=await PDFDocument.load(readFileSync(target));
+   assert.equal(pdf.getPageCount(),2);
+   assert.equal(pdf.getPage(0).getWidth(),612);
+   assert.match(pdf.getTitle()??'',/R74\.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),original);
+ }
+ checks.push({name:'R74 Firefox OR-set and circular-sector true PDF triplets (Letter) with noindex',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
