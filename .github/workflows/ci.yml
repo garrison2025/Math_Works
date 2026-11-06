@@ -16,6 +16,15 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: R62 export complete source-grounded keyword intent and SEO release status
+        run: npm run qa:seo-readiness
+      - name: Archive R62 488-row SEO keyword intent and launch gate report
+        uses: actions/upload-artifact@v4
+        with:
+          name: r62-source-keyword-intent-audit
+          path: qa-artifacts/r62-seo-readiness/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive built pages for offline browser QA
         uses: actions/upload-artifact@v4
         with:
