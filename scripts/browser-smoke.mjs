@@ -1148,6 +1148,36 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R76 nine actual A4 cylinder net student, key, steps downloads with original prism worksheets untouched',status:'pass'});
+ // R77 real statistical frequency dot plot browser downloads (not counting pictures).
+ for(const skill of ['plot','frequency','mode','median','range']){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:850}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R77 statistical '+skill+': '+e.message));
+   await p.goto(base+'/mean-median-mode-range-worksheets/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r77-frequency-dotplot]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const initial=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r77-dotplot-mode]').selectOption(skill);
+   for(const output of ['questions','answers','steps']){
+    const awaiting=p.waitForEvent('download',{timeout:45000});
+    await p.locator('[data-action="r77-dotplot-'+output+'"]').click();
+    let dl;try{dl=await awaiting}catch(e){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R77 '+skill+'/'+output+' '+status+'; '+String(e));
+    }
+    const pdf=await verifyPdf(dl,'R77 '+skill+' '+output,{paper:'A4'});
+    assert.equal(pdf.getPageCount(),3);
+    assert.match(pdf.getTitle()??'',/R77\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(output));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),initial);
+   if(skill==='plot')
+    await p.screenshot({path:join(out,'r77-real-statistical-dotplot-panel.png'),fullPage:true});
+  }finally{await ctx.close();}
+ }
+ events.push({kind:'interaction',name:'R77 15 actual statistical frequency dot plot A4 downloads, original statistics unaffected',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
