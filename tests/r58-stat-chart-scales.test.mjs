@@ -49,7 +49,7 @@ test('R58 scatter graph: 3 trends x 2 tasks x 3 difficulties, 2700 independent a
   });
   if(task==='plot'){
    assert.equal(extract(blank,/class="scatter-solution-point" cx="([^"]+)" cy="([^"]+)"/g).length,0);
-   assert.deepEqual([...p.expectedAnswer.matchAll(/\\((\\d+), (\\d+)\\)/g)].map(m=>[+m[1],+m[2]]),pairs);
+   assert.deepEqual([...p.expectedAnswer.matchAll(/\((\d+), (\d+)\)/g)].map(m=>[+m[1],+m[2]]),pairs);
   }else{
    assert.equal(extract(blank,/class="scatter-data-point" cx="([^"]+)" cy="([^"]+)"/g).length,6);
    const cov=pairs.reduce((sum,[x,y])=>sum+(x-3.5)*(y-pairs.reduce((acc,[,v])=>acc+v,0)/6),0);
