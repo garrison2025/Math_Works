@@ -1214,6 +1214,37 @@ try {
   }finally{await ctx.close()}
  }
  events.push({kind:'interaction',name:'R78 12 genuine A4 PDF prism/pyramid net downloads with v18 worksheets preserved',status:'pass'});
+ // R79 actual mixed one-PDF downloads on both original geometry routes.
+ for(const topic of ['volume-of-rectangular-prisms-worksheets','surface-area-worksheets']){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:850}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',error=>pageErrors.push('R79 '+topic+': '+error.message));
+   await p.goto(base+'/'+topic+'/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r79-mixed-solid]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r79-mixed-solid-mode]').selectOption('mixed');
+   for(const output of ['questions','answers','steps']){
+    const pending=p.waitForEvent('download',{timeout:50000});
+    await p.locator('[data-action="r79-mixed-solid-'+output+'"]').click();
+    let download;
+    try{download=await pending}catch(error){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R79 '+topic+'/'+output+' '+status+' '+String(error));
+    }
+    const pdf=await verifyPdf(download,'R79 '+topic+' '+output,{paper:'A4'});
+    assert.equal(pdf.getPageCount(),3);
+    assert.match(pdf.getTitle()??'',/R79\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(output));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),original);
+   if(topic==='surface-area-worksheets')
+    await p.screenshot({path:join(out,'r79-real-mixed-solid-workbook.png'),fullPage:true});
+  }finally{await ctx.close()}
+ }
+ events.push({kind:'interaction',name:'R79 6 true mixed prism/cylinder A4 student, key, steps downloads and v18 unaffected',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
