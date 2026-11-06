@@ -297,6 +297,28 @@ try{
  await page.screenshot({path:join(out,'r64-firefox-chart-a4.png'),fullPage:true});
  checks.push({name:'R64 Firefox blank 1-12 multiplication chart and 144-product answer PDF, A4',status:'pass'});
 
+ // R65 Firefox: both opt-in fraction and decimal equation pack routes
+ // deliver the same exact PDF structure without changing the integer tool.
+ for(const topic of ['one-step-equations-worksheets','two-step-equations-worksheets']){
+  await open(topic);
+  assert.equal(await page.locator('[data-r65-equation-pack]').count(),1);
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  const original=await page.locator('.problem .q').first().innerText();
+  const kind=topic.startsWith('one')?'fraction':'decimal';
+  await page.locator('[data-equation-kind]').selectOption(kind);
+  for(const mode of ['questions','answers']){
+   const event=page.waitForEvent('download',{timeout:45000});
+   await page.locator('[data-action="equation-pack-'+mode+'"]').click();
+   const dl=await event,filename=join(out,dl.suggestedFilename());
+   await dl.saveAs(filename);
+   const doc=await PDFDocument.load(readFileSync(filename));
+   assert.ok(doc.getPageCount()>=1);
+   assert.ok(Math.abs(doc.getPage(0).getWidth()-612)<.1);
+   assert.match(doc.getTitle()??'',/R65.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),original);
+ }
+ checks.push({name:'R65 Firefox one-step fraction and two-step decimal student/answer Letter PDFs',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
