@@ -1,0 +1,28 @@
+{
+  "schema": "mathworks-r72-fraction-strips-capability/v1",
+  "date": "2026-11-06",
+  "feature": "One-page true vector fraction strips charts with identical physical whole widths and exactly n equal partitions per row. Student blank coloring strips and teacher label strips on A4/Letter.",
+  "supportedRoute": "fractions-worksheets",
+  "sourceData": "User's original 488-row Semrush CSV, not live Google US SERP or refreshed Volume/KD.",
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "fraction strips printable",
+      "ownerOriginalRoute": "fractions-worksheets",
+      "sourceMonthlyVolume": 1000,
+      "sourceKD": 22,
+      "newCapability": "Real 1/n fraction strips in the same exact whole width, six or nine denominators, blank or labelled printable PDFs."
+    }
+  ],
+  "exclusions": [
+    "Generic 'fraction pictures' remains unsupported: this is strip-specific rather than all visual fraction diagrams",
+    "fraction number line and strip are separate representations",
+    "No negative fraction models",
+    "No physical measurement claim or teacher certification"
+  ],
+  "originalSourceModified": false,
+  "v18GeneratorChanged": false,
+  "previewNoindex": true,
+  "indexApproved": false,
+  "realPrinterConfirmed": false,
+  "liveSERPRankVerified": false
+}
