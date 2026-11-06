@@ -50,7 +50,7 @@ test('R73 every context has a semantically different answer for same quotient an
  const packs=modes.slice(1).map(mode=>createDivisionStoryPack('division-worksheets',20261106,8,'standard',mode));
  for(const p of packs.flatMap(x=>x.problems))
   assert.ok(p.question.includes(String(p.dividend))&&p.question.includes(String(p.divisor)));
- assert.ok(packs.every(p=>p.problems.every(q=>q.answer.includes(q.type==='round-up'?'mini':q.type==='leftovers'?'left over':q.type==='full-groups'?'left over':'per '))));
+ assert.ok(packs.every(p=>p.problems.every(q=>q.type==='round-up'?(q.answer.endsWith(' minibuses')||q.answer.endsWith(' shuttles')):q.answer.includes(q.type==='leftovers'?'left over':q.type==='full-groups'?'left over':'per '))));
 });
 test('R73 30 actual Letter/A4 real PDF student, answer and worked step combinations',async()=>{
  let count=0;
