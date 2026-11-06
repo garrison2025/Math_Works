@@ -84,7 +84,7 @@ test('R77 preserves original 51 routes, v18 statistics, noindex and 488 historic
  assert.equal(before.generatorVersion,'18');
  const csv=readFileSync(new URL('../src/data/keyword-evidence.csv',import.meta.url),'utf8');
  assert.equal(csv.trimEnd().split('\n').length-1,488);
- assert.equal(routes.length,51);
+ assert.equal(routes.length,55,'The 51 v18 generator topics coexist with 55 registered page routes');
  assert.deepEqual(releasePaths({site:'https://math-works.pages.dev',enabled:'true',
   routes:routes.map(r=>r.slug).join(','),branch:'main'},routes),[]);
 });
