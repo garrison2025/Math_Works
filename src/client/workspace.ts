@@ -12,6 +12,8 @@ import {createDecimalDivisionPack,type DecimalDivisionDivisor,type DecimalDivisi
 import {createDecimalDivisionPdf} from '../lib/decimal-division-pdf';
 import {createDecimalAddSubPack,type DecimalAddSubOperation,type DecimalAddSubPrecision,type DecimalAddSubRegrouping,type DecimalAddSubTopic} from '../lib/decimal-add-sub';
 import {createDecimalAddSubPdf} from '../lib/decimal-add-sub-pdf';
+import {createFractionDecimalPack,type ConversionDirection,type ConversionPrecision} from '../lib/fraction-decimal-conversion';
+import {createFractionDecimalPdf} from '../lib/fraction-decimal-conversion-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -310,6 +312,39 @@ function setup(root:HTMLElement){
      inform('R68 decimal '+output+' PDF downloaded. Same seed and selectors reproduce the same sheet; original integer practice unchanged.');
     }catch(e){
      inform(e instanceof Error?'R68 decimal PDF failed: '+e.message:'R68 decimal PDF failed.',true);
+    }finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R69 opt-in conversion PDF packs. Original v18 fraction arithmetic and
+ // its Copy reproducible link remain completely unchanged.
+ if(topic==='fractions-worksheets'){
+  const directionInput=root.querySelector<HTMLSelectElement>('[data-conversion-direction]');
+  const precisionInput=root.querySelector<HTMLSelectElement>('[data-conversion-precision]');
+  for(const mode of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="conversion-'+mode+'"]');
+   if(!button||!directionInput||!precisionInput)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const params=state(),direction=directionInput.value as ConversionDirection;
+     const precision=precisionInput.value as ConversionPrecision;
+     inform('Verifying exact fraction/decimal '+mode+' PDF ...');
+     const pack=createFractionDecimalPack('fractions-worksheets',params.n,params.q,
+      params.difficulty,direction,precision);
+     const bytes=await createFractionDecimalPdf(pack,mode,paper.value as Paper,
+      writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const download=document.createElement('a');
+     download.href=url;download.download='fraction-decimal-conversion-'+mode+'-'+direction+
+      '-'+precision+'-seed'+params.n+'-'+params.difficulty+'-'+params.q+
+      '-'+paper.value.toLowerCase()+'-r69.pdf';
+     document.body.append(download);download.click();download.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Exact conversion '+mode+' PDF downloaded. Keep the seed, topic, direction and precision to reproduce the set.');
+    }catch(e){
+     inform(e instanceof Error?'Conversion PDF failed: '+e.message:'Conversion PDF failed.',true);
     }finally{button.disabled=false;}
    });
   }
