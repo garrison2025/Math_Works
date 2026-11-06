@@ -1,0 +1,204 @@
+{
+  "schema": "mathworks-r70-route-corrections/v1",
+  "version": "2026-11-06",
+  "reviewLevel": "IMPLEMENTATION-MATCHED ROUTING; NOT CURRENT GOOGLE US SERP VERIFIED",
+  "sourcePolicy": "Never overwrite original keyword-evidence.csv, R62 or R63 flags. Corrections are a layer applied by audited reporting and relevant internal navigational links.",
+  "rows": [
+    {
+      "keyword": "rectangular prism worksheet surface area",
+      "sourceRoute": "volume-of-rectangular-prisms-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "surface-area-worksheets",
+      "requiredOptions": {
+        "solid": "rectangular-prism"
+      },
+      "reason": "Surface area specialist explicitly calculates 2(lw+lh+wh)",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "surface area worksheets for rectangular prisms",
+      "sourceRoute": "volume-of-rectangular-prisms-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "surface-area-worksheets",
+      "requiredOptions": {
+        "solid": "rectangular-prism"
+      },
+      "reason": "Rectangular prism surface area specialist",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "surface area of a rectangular prism worksheet",
+      "sourceRoute": "volume-of-rectangular-prisms-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "surface-area-worksheets",
+      "requiredOptions": {
+        "solid": "rectangular-prism"
+      },
+      "reason": "Area of prism faces belongs on surface area specialist",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "two digit multiplication worksheets",
+      "sourceRoute": "multiplication-worksheets",
+      "status": "needs-serp",
+      "effectiveRoute": null,
+      "requiredOptions": {},
+      "reason": "Broad term may imply 2×1 or 2×2; verify actual SERP before deciding canonical",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "multiplying and dividing fractions worksheets",
+      "sourceRoute": "multiplying-fractions-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "fractions-worksheets",
+      "requiredOptions": {
+        "operation": "mixed"
+      },
+      "reason": "Mixed fraction multiply/divide is available on existing fractions arithmetic hub",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "multiplication worksheets 2 digit by 1",
+      "sourceRoute": "two-digit-multiplication-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "two-digit-by-one-digit-multiplication-worksheets",
+      "requiredOptions": {
+        "regrouping": "mixed"
+      },
+      "reason": "Exactly 2 digits by 1 digit, not 2 × 2; specialist supports that factor size",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "multiplication worksheets 3 digits by 2 digits",
+      "sourceRoute": "two-digit-multiplication-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "three-digit-by-two-digit-multiplication-worksheets",
+      "requiredOptions": {},
+      "reason": "Exactly 3-digit × 2-digit partial products",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "surface area of rectangular prism worksheet",
+      "sourceRoute": "volume-of-rectangular-prisms-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "surface-area-worksheets",
+      "requiredOptions": {
+        "solid": "rectangular-prism"
+      },
+      "reason": "Rectangular prism surface area, not volume",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "surface area of rectangular prism worksheet with answers",
+      "sourceRoute": "volume-of-rectangular-prisms-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "surface-area-worksheets",
+      "requiredOptions": {
+        "solid": "rectangular-prism"
+      },
+      "reason": "Rectangular-prism surface area with matching teacher key",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "surface area of a rectangular prism worksheet answers",
+      "sourceRoute": "volume-of-rectangular-prisms-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "surface-area-worksheets",
+      "requiredOptions": {
+        "solid": "rectangular-prism"
+      },
+      "reason": "Correct solid surface-area answer route",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "multiplication by 3 digits worksheets",
+      "sourceRoute": "multiplication-tables-worksheets",
+      "status": "needs-serp",
+      "effectiveRoute": null,
+      "requiredOptions": {},
+      "reason": "By 3 digits may mean a three-digit multiplier, but available 3×2 topic only uses a two-digit multiplier; needs real SERP inspection",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "multiplication worksheet two digit",
+      "sourceRoute": "multiplication-worksheets",
+      "status": "needs-serp",
+      "effectiveRoute": null,
+      "requiredOptions": {},
+      "reason": "Broad two-digit phrase could mean 2×1 or 2×2; cannot pick one specialist without SERP context",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "2 digit multiplication worksheet",
+      "sourceRoute": "multiplication-worksheets",
+      "status": "needs-serp",
+      "effectiveRoute": null,
+      "requiredOptions": {},
+      "reason": "Two-digit phrasing could request 2×1 or 2×2; defer until intent is verified",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "3 and 2 digit multiplication worksheets",
+      "sourceRoute": "multiplication-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "three-digit-by-two-digit-multiplication-worksheets",
+      "requiredOptions": {},
+      "reason": "Exact 3-digit by 2-digit multiplication, not 2×2",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "2 digit and 3 digit multiplication worksheets",
+      "sourceRoute": "multiplication-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "three-digit-by-two-digit-multiplication-worksheets",
+      "requiredOptions": {},
+      "reason": "Exact 3×2 specialist covers reversed commutative factors",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "fraction times fraction worksheet",
+      "sourceRoute": "fractions-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "multiplying-fractions-worksheets",
+      "requiredOptions": {
+        "result": "mixed"
+      },
+      "reason": "Fraction multiplication-only specialist",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "3 digit by 1 digit division",
+      "sourceRoute": "division-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "long-division-worksheets",
+      "requiredOptions": {
+        "dividendDigits": "three",
+        "divisorDigits": "one"
+      },
+      "reason": "Set dividend to three digits and divisor to one digit",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "function not a function worksheet",
+      "sourceRoute": "functions-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "domain-range-worksheets",
+      "requiredOptions": {
+        "task": "function-test"
+      },
+      "reason": "Select function-test and mix function/non-function relation types",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    },
+    {
+      "keyword": "identifying a function worksheet",
+      "sourceRoute": "functions-worksheets",
+      "status": "corrected",
+      "effectiveRoute": "domain-range-worksheets",
+      "requiredOptions": {
+        "task": "function-test"
+      },
+      "reason": "Function-test selector, not general function evaluation",
+      "source": "R62/R63 manual intent review; original CSV remains untouched"
+    }
+  ]
+}
