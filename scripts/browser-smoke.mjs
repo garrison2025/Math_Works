@@ -800,9 +800,15 @@ try {
   await page.locator('[data-decimal-divisor]').selectOption(divisorType);
   await page.locator('[data-decimal-precision]').selectOption(precision);
   for(const mode of ['questions','answers','steps']){
-   const event=page.waitForEvent('download',{timeout:30000});
+   const event=page.waitForEvent('download',{timeout:12000});
    await page.locator('[data-action="decimal-division-'+mode+'"]').click();
-   const pdf=await verifyPdf(await event,'R67 decimal division '+divisorType+' '+precision+' '+mode,{paper:'A4'});
+   let downloaded;
+   try{downloaded=await event}
+   catch(e){
+    const status=await page.locator('[data-status]').innerText();
+    throw new Error('R67 '+divisorType+' '+precision+' '+mode+' PDF download missing. Browser status: '+status+'; '+String(e));
+   }
+   const pdf=await verifyPdf(downloaded,'R67 decimal division '+divisorType+' '+precision+' '+mode,{paper:'A4'});
    assert.match(pdf.getTitle()??'',/R67.1/);
    assert.match(pdf.getTitle()??'',new RegExp(mode));
    assert.match(pdf.getSubject()??'',/independent of integer generator v18/);
