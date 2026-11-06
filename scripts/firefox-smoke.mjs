@@ -319,6 +319,29 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R65 Firefox one-step fraction and two-step decimal student/answer Letter PDFs',status:'pass'});
+ // R66: Firefox verifies one actual A4/Letter fraction plot and one
+ // identify-the-dot export on both integrated pages.
+ for(const topic of ['number-line-worksheets','fractions-worksheets']){
+  await open(topic);
+  assert.equal(await page.locator('[data-r66-fraction-number-line]').count(),1);
+  const baseline=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  await page.locator('[data-fraction-line-task]').selectOption(topic==='fractions-worksheets'?'identify':'plot');
+  await page.locator('[data-fraction-line-range]').selectOption('zero-two');
+  for(const mode of ['questions','answers']){
+   const event=page.waitForEvent('download',{timeout:45000});
+   await page.locator('[data-action="fraction-line-'+mode+'"]').click();
+   const download=await event;
+   const filename=join(out,download.suggestedFilename());
+   await download.saveAs(filename);
+   const pdf=await PDFDocument.load(readFileSync(filename));
+   assert.equal(pdf.getPageCount(),1);
+   assert.ok(Math.abs(pdf.getPage(0).getWidth()-612)<.1);
+   assert.match(pdf.getTitle()??'',/R66.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),baseline);
+ }
+ checks.push({name:'R66 Firefox true fraction identify and plot number-line PDF pairs',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
