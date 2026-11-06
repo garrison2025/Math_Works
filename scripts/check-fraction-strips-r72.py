@@ -21,11 +21,12 @@ def inspect(folder:Path,case:dict):
             raise AssertionError(f'{file}: paper MediaBox wrong')
         bounds=[]
         for drawing in page.get_drawings():
-            for item in drawing['items']:
-                if item[0]!='re':continue
-                rect=fitz.Rect(item[1])
-                if abs(rect.height-32)<.2 and 30<rect.width<425:
-                    bounds.append(rect)
+            # Border rectangles from pdf-lib can be encoded as
+            # a closed sequence of vector lines, not necessarily 're'.
+            # Its real PyMuPDF path bounds remain exact regardless.
+            rect=drawing.get('rect')
+            if rect and abs(rect.height-32)<.5 and 30<rect.width<425:
+                bounds.append(fitz.Rect(rect))
         expected=sum(case['denominators'])
         if len(bounds)!=expected:
             raise AssertionError(f'{file}: {len(bounds)} actual cell rectangles, expected {expected}')
