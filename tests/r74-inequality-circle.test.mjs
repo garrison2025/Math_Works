@@ -14,7 +14,7 @@ import {releasePaths} from '../src/lib/indexation.ts';
 const modes=['mixed','translate','and','or'];
 const circleModes=['mixed','radius','diameter','semicircle','quarter-circle','sector','missing-radius'];
 const gcd=(a,b)=>b?gcd(b,a%b):Math.abs(a);
-test('R74 3000 deterministic inequalities: true bounds, correct words, closed/open endpoints and set operation',()=>{
+test('R74 2400 deterministic inequalities: true bounds, correct words, closed/open endpoints and set operation',()=>{
  let checked=0;
  for(const mode of modes)for(const difficulty of ['easy','standard','challenge'])
  for(const seed of [0,1,17,20261106,4294967295]){
