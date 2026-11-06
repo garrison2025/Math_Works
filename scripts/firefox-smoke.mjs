@@ -492,6 +492,30 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R74 Firefox OR-set and circular-sector true PDF triplets (Letter) with noindex',status:'pass'});
+ // R75 Firefox independently verifies real true-geometry PDF downloads.
+ for(const trial of [
+  {topic:'inequalities-worksheets',kind:'triangle',skill:'integer-count'},
+  {topic:'area-worksheets',kind:'composite',skill:'split'}
+ ]){
+  await open(trial.topic);
+  assert.equal(await page.locator('[data-r75-'+trial.kind+']').count(),1);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  const untouched=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  await page.locator('[data-r75-'+trial.kind+'-mode]').selectOption(trial.skill);
+  for(const output of ['questions','answers','steps']){
+   const pending=page.waitForEvent('download',{timeout:45000});
+   await page.locator('[data-action="r75-'+trial.kind+'-'+output+'"]').click();
+   const dl=await pending,target=join(out,dl.suggestedFilename());
+   await dl.saveAs(target);
+   const pdf=await PDFDocument.load(readFileSync(target));
+   assert.equal(pdf.getPageCount(),3);
+   assert.equal(pdf.getPage(0).getWidth(),612);
+   assert.match(pdf.getTitle()??'',/R75\.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),untouched);
+ }
+ checks.push({name:'R75 Firefox 6 real Letter triangle/L-area student/key/steps PDFs; preview noindex',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
