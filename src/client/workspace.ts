@@ -34,6 +34,8 @@ import {createSolidPack,type SolidNetMode} from '../lib/prism-pyramid-pack';
 import {createSolidPdf} from '../lib/prism-pyramid-pdf';
 import {createMixedSolidPack,type MixedSolidMode} from '../lib/mixed-prism-cylinder-pack';
 import {createMixedSolidPdf} from '../lib/mixed-prism-cylinder-pdf';
+import {createR80Pack,type R80Mode,type R80Skill} from '../lib/r80-area-nets-pack';
+import {createR80Pdf} from '../lib/r80-area-nets-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -639,6 +641,33 @@ function setup(root:HTMLElement){
      inform(error instanceof Error?'R79 mixed PDF failed: '+error.message:'R79 mixed PDF failed.',true);
     }finally{button.disabled=false;}
    });
+  }
+ }
+ // R80 two honest surface-area skills: unfolded nets and joined L solids.
+ if(topic==='surface-area-worksheets'){
+  for(const skill of ['nets','composite'] as const){
+   const modeField=root.querySelector<HTMLSelectElement>('[data-r80-'+skill+'-mode]');
+   for(const output of ['questions','answers','steps'] as const){
+    const button=root.querySelector<HTMLButtonElement>('[data-action="r80-'+skill+'-'+output+'"]');
+    if(!button||!modeField)continue;
+    button.addEventListener('click',async()=>{
+     button.disabled=true;
+     try{
+      const s=state(),mode=modeField.value as R80Mode;
+      inform('Verifying exact '+skill+' face dimensions and printing '+output+' PDF...');
+      const pack=createR80Pack(s.n,s.q,s.difficulty,skill as R80Skill,mode);
+      const bytes=await createR80Pdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+      const href=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+      const link=document.createElement('a');link.href=href;
+      link.download='surface-area-'+skill+'-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r80.pdf';
+      document.body.append(link);link.click();link.remove();
+      setTimeout(()=>URL.revokeObjectURL(href),60000);
+      inform('R80 '+skill+' '+output+' PDF downloaded; the original worksheet and share link are unchanged.');
+     }catch(error){
+      inform(error instanceof Error?'R80 surface area PDF failed: '+error.message:'R80 surface area PDF failed.',true);
+     }finally{button.disabled=false;}
+    });
+   }
   }
  }
  for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper,writingRoom.value as WritingRoom);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}${m==='questions'&&writingRoom.value==='extra'?'-extra-room':''}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded${m==='questions'&&writingRoom.value==='extra'?' with extra pencil lines':''} · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
