@@ -28,7 +28,19 @@ export const SKILL_RELATIONS:readonly SkillRelation[]=[
  {parent:'coordinate-plane-worksheets',child:'scatter-plot-worksheets',difference:'Locating ordered pairs vs analyzing six-point patterns and correlation'},
  {parent:'inequalities-worksheets',child:'one-step-equations-worksheets',difference:'Inequality signs and solution sets vs solving a single-value equation'}
 ];
+/** R63: additional deliberately contrasted generators where source keywords
+ * were wrongly mapped, or nearby user tasks need a different real tool.
+ * These do NOT extend the 24 owner-V2 relations or grant indexation.
+ */
+export const SEO_INTENT_CONTRASTS:readonly SkillRelation[]=[
+ {parent:'volume-of-rectangular-prisms-worksheets',child:'surface-area-worksheets',difference:'Volume counts cubic units inside a rectangular prism; surface area totals its exterior square-unit faces'},
+ {parent:'two-digit-multiplication-worksheets',child:'two-digit-by-one-digit-multiplication-worksheets',difference:'Two-digit by two-digit column multiplication vs multiplying a two-digit factor by one digit'},
+ {parent:'functions-worksheets',child:'domain-range-worksheets',difference:'Substitute into a function rule vs list domain and range or identify when a relation is a function'},
+ {parent:'slope-worksheets',child:'linear-equations-worksheets',difference:'Compute slope from two ordered pairs vs plot a linear equation on a coordinate plane'},
+ {parent:'area-worksheets',child:'surface-area-worksheets',difference:'Flat rectangle/square area vs three-dimensional cube or rectangular-prism exterior area'},
+ {parent:'angle-worksheets',child:'printable-protractor',difference:'Identify acute/right/obtuse angles vs print and physically calibrate a 180-degree measuring protractor'}
+];
 export function relatedSkillTasks(slug:string){
- return SKILL_RELATIONS.filter(r=>r.parent===slug||r.child===slug)
+ return [...SKILL_RELATIONS,...SEO_INTENT_CONTRASTS].filter(r=>r.parent===slug||r.child===slug)
   .map(r=>({slug:r.parent===slug?r.child:r.parent,difference:r.difference}));
 }
