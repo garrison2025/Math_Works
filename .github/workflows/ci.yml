@@ -20,6 +20,15 @@ jobs:
         run: npm run qa:seo-readiness
       - name: R63 inspect all 488 original keywords against exact 145 source-backed intent flags
         run: npm run qa:seo-triage
+      - name: R70 export corrected 488-keyword routing and 117 remaining intent flags
+        run: npm run qa:seo-remap
+      - name: Archive R70 reviewed keyword mapping (15 corrected, four ambiguous, original 488 unchanged)
+        uses: actions/upload-artifact@v4
+        with:
+          name: r70-488-keyword-corrected-routing
+          path: qa-artifacts/r70-corrected-keyword-routing/
+          retention-days: 30
+          if-no-files-found: error
       - name: R64 export eight named public competitor page observations and 1-12 chart capability status
         run: npm run qa:serp-r64
       - name: Archive R64 public competitor comparisons with honest SERP limits
