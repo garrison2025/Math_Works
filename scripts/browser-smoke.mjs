@@ -1047,6 +1047,40 @@ try {
  assert.equal(await page.locator('[data-r73-division-stories]').count(),0,
   'Division story selectors leaked to the fractions page');
 
+ // R74 actual Chromium downloads: translation, compound AND/OR, circular sectors and inverse radius.
+ for(const trial of [
+  {topic:'inequalities-worksheets',kind:'inequality',mode:'translate'},
+  {topic:'inequalities-worksheets',kind:'inequality',mode:'and'},
+  {topic:'inequalities-worksheets',kind:'inequality',mode:'or'},
+  {topic:'area-worksheets',kind:'circle',mode:'sector'},
+  {topic:'area-worksheets',kind:'circle',mode:'missing-radius'}
+ ]){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R74 '+trial.mode+': '+e.message));
+   await p.goto(base+'/'+trial.topic+'/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r74-'+(trial.kind==='inequality'?'inequalities':'circle-area')+']').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const old=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r74-'+trial.kind+'-mode]').selectOption(trial.mode);
+   for(const output of ['questions','answers','steps']){
+    const pending=p.waitForEvent('download',{timeout:35000});
+    await p.locator('[data-action="r74-'+trial.kind+'-'+output+'"]').click();
+    let dl;
+    try{dl=await pending}catch(e){const status=await p.locator('[data-status]').innerText();
+     throw new Error('R74 '+trial.mode+'/'+output+' download missing: '+status+'; '+String(e));}
+    const doc=await verifyPdf(dl,'R74 '+trial.mode+' '+output,{paper:'A4'});
+    assert.match(doc.getTitle()??'',/R74\.1/);
+    assert.match(doc.getTitle()??'',new RegExp(output));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),old);
+   if(trial.mode==='sector'||trial.mode==='and')
+    await p.screenshot({path:join(out,'r74-'+trial.mode+'-controls.png'),fullPage:true});
+  }finally{await ctx.close()}
+ }
+ events.push({kind:'interaction',name:'R74 15 actual Chromium inequality and circle PDF downloads, v18 preserved',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
