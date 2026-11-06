@@ -3,7 +3,7 @@
 import {readFileSync,statSync,existsSync} from 'node:fs';
 import {join} from 'node:path';
 import assert from 'node:assert/strict';
-import {SKILL_RELATIONS} from '../src/lib/intent-relations.ts';
+import {SKILL_RELATIONS,SEO_INTENT_CONTRASTS} from '../src/lib/intent-relations.ts';
 
 const root = new URL('../',import.meta.url).pathname;
 const routes = JSON.parse(readFileSync(join(root,'src/data/routes.json'),'utf8'));
@@ -158,3 +158,49 @@ for(const target of targets){
 }
 assert.equal(selected.size,51);assert.equal(specialists,43);assert.equal(hubs,8);
 console.log('R62 SEO INTENT AUDIT PASS: 51 original-source primary queries, 43 specialist and 8 hub pages; 21 flagged mismatches are not promoted. Noindex preview maintained.');
+
+
+/** R63 source and rendered-site cross-check. 124 new exact-phrase flags are
+ * additive to R62's 21; neither unflagged keywords nor other hub pages
+ * gain any silent indexation approval.
+ */
+const secondTriage=JSON.parse(readFileSync(join(root,'src/data/seo-intent-r63.json'),'utf8'));
+assert.equal(secondTriage.schema,'mathworks-r63-intent-triage/v1');
+assert.equal(secondTriage.issues.length,124);
+const allIssues=[...intentReview.flagged,...secondTriage.issues];
+const allKeys=new Set();
+const issueStats={unsupported:0,'wrong-page':0,'needs-review':0};
+for(const issue of allIssues){
+ const key=issue.slug+':'+issue.keyword;
+ assert.ok(!allKeys.has(key),'R63 duplicate flagged search phrase: '+key);
+ allKeys.add(key);
+ assert.ok(evidenceBySlug.get(issue.slug)?.has(issue.keyword),'Flagged phrase absent from original CSV: '+key);
+ assert.ok(Object.hasOwn(issueStats,issue.classification));
+ issueStats[issue.classification]++;
+ if(issue.suggestedRoute){
+  assert.ok(byRoute.has(issue.suggestedRoute),'R63 recommendation points to a nonexistent route');
+  assert.notEqual(byRoute.get(issue.suggestedRoute).type,'HOLD','R63 recommended an unbuilt destination');
+ }
+ const primary=targets.find(t=>t.slug===issue.slug);
+ assert.notEqual(primary?.primary,issue.keyword,'R63 flagged incompatible query as SEO primary: '+key);
+ const route=byRoute.get(issue.slug);
+ if(route.type==='CONDITIONAL_TOOL'){
+  const html=readFileSync(join(dist,issue.slug,'index.html'),'utf8');
+  const block=html.split('data-seo-focus')[1]?.split('</section>')[0]??'';
+  assert.ok(!block.toLowerCase().includes(issue.keyword.toLowerCase()),
+   'R63 unsupported/misrouted term leaked into specialist SEO copy: '+key);
+ }
+}
+assert.equal(allKeys.size,145);
+assert.deepEqual(issueStats,{unsupported:67,'wrong-page':19,'needs-review':59});
+assert.equal(488-allKeys.size,343,'R63 unflagged does not mean verified; source inventory changed');
+assert.equal(SEO_INTENT_CONTRASTS.length,6);
+for(const {parent,child} of SEO_INTENT_CONTRASTS){
+ for(const [from,to] of [[parent,child],[child,parent]]){
+  const html=readFileSync(join(dist,from,'index.html'),'utf8');
+  const fragment=html.split('class="skill-route-section"')[1]?.split('</section>')[0];
+  assert.ok(fragment?.includes('href="/'+to+'/"'),
+   'R63 missing reciprocal live alternative for '+from+' -> '+to);
+ }
+}
+console.log('R63 STATIC SEO PASS: 145 exact flagged phrases; 67 unsupported, 19 misrouted and 59 SERP-review terms. All six new task comparisons render bidirectionally, and 51 primary SEO sections remain source-backed. No index release.');
