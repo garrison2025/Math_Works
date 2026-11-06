@@ -1178,6 +1178,42 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R77 15 actual statistical frequency dot plot A4 downloads, original statistics unaffected',status:'pass'});
+ // R78 actual proportional solid-net student, key and worked PDFs on both existing routes.
+ for(const trial of [
+  {topic:'volume-of-rectangular-prisms-worksheets',skill:'triangular-prism-volume'},
+  {topic:'surface-area-worksheets',skill:'triangular-prism-surface'},
+  {topic:'surface-area-worksheets',skill:'square-pyramid-surface'},
+  {topic:'surface-area-worksheets',skill:'regular-tetrahedron-surface'}
+ ]){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:850}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',error=>pageErrors.push('R78 '+trial.skill+': '+error.message));
+   await p.goto(base+'/'+trial.topic+'/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r78-solids]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r78-solid-mode]').selectOption(trial.skill);
+   for(const output of ['questions','answers','steps']){
+    const pending=p.waitForEvent('download',{timeout:40000});
+    await p.locator('[data-action="r78-solids-'+output+'"]').click();
+    let dl;
+    try{dl=await pending}catch(error){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R78 '+trial.skill+' '+output+' download: '+status+' / '+String(error));
+    }
+    const pdf=await verifyPdf(dl,'R78 '+trial.skill+' '+output,{paper:'A4'});
+    assert.equal(pdf.getPageCount(),3);
+    assert.match(pdf.getTitle()??'',/R78\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(output));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),original);
+   if(trial.skill==='square-pyramid-surface')
+    await p.screenshot({path:join(out,'r78-pyramid-net-controls.png'),fullPage:true});
+  }finally{await ctx.close()}
+ }
+ events.push({kind:'interaction',name:'R78 12 genuine A4 PDF prism/pyramid net downloads with v18 worksheets preserved',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
