@@ -87,6 +87,8 @@ def inspect(folder:Path):
             if mode=="steps":
                 if sum(bool(re.match(r"^3\) Check:\s+",line)) for line in lines)!=case["quantity"]:
                     raise AssertionError(str(file)+": missing printed worked check lines")
+                if case["topic"]=="two-step-equations-worksheets" and "×" not in text:
+                    raise AssertionError(str(file)+": printed steps lost their true multiplication symbol")
             elif "Check:" in text:
                 raise AssertionError(str(file)+": answer key leaked worked solutions")
         report.append({"name":case["name"],"mode":mode,"pages":doc.page_count,
