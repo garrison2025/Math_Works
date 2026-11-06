@@ -6,6 +6,11 @@ import {createFractionLinePack,fractionLinePosition,FRACTION_LINE_DENOMINATORS}
 import {createFractionLinePdf,verifyFractionLinePack}
  from '../src/lib/fraction-number-line-pdf.ts';
 import {makeWorksheet} from '../src/lib/math.ts';
+import {readFileSync} from 'node:fs';
+import {releasePaths} from '../src/lib/indexation.ts';
+import routes from '../src/data/routes.json' with {type:'json'};
+import r63 from '../src/data/seo-intent-r63.json' with {type:'json'};
+import coverage from '../src/data/seo-r66-fraction-line-capability.json' with {type:'json'};
 
 const topics=['number-line-worksheets','fractions-worksheets'];
 const tasks=['identify','plot'];
@@ -95,4 +100,25 @@ test('R66 reject tampering, wrong metadata, wrong answer and invalid paper/modes
  const v=structuredClone(pack);
  v.questions[1].answer=v.questions[0].answer;
  assert.throws(()=>verifyFractionLinePack(v));
+});
+
+test('R66 exactly three originally sourced fraction number-line keywords have real new functionality without index approval',()=>{
+ assert.equal(coverage.schema,'mathworks-r66-fraction-line-capability/v1');
+ assert.equal(coverage.keywordCapabilityUpdates.length,3);
+ const original=readFileSync(new URL('../src/data/keyword-evidence.csv',import.meta.url),'utf8');
+ const tick=String.fromCharCode(96),seen=new Set();
+ for(const entry of coverage.keywordCapabilityUpdates){
+  assert.ok(!seen.has(entry.keyword));seen.add(entry.keyword);
+  assert.equal(entry.originalSourceRoute,'fractions-worksheets');
+  const row=original.split(/\r?\n/).find(line=>line.startsWith(tick+entry.keyword+tick+','));
+  assert.ok(row,'Invented keyword not in source '+entry.keyword);
+  const fields=row.split(',');
+  assert.equal(Number(fields[1]),entry.sourceMonthlyVolume);
+  assert.equal(Number(fields[2]),entry.sourceKD);
+  assert.ok(r63.issues.some(x=>x.keyword===entry.keyword&&x.slug==='fractions-worksheets'&&x.classification==='unsupported'));
+ }
+ assert.equal(coverage.approvedForIndexation,false);
+ assert.equal(coverage.liveSerpRankVerified,false);
+ const allowlist=routes.map(x=>x.slug).join(',');
+ assert.deepEqual(releasePaths({site:'https://math-works.pages.dev',enabled:'true',routes:allowlist,branch:'main'},routes),[]);
 });
