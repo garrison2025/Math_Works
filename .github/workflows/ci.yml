@@ -88,7 +88,7 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-pdf-box-scales.py qa-artifacts/stat-chart-pdfs
       - name: R59 adversarial PDF scatter coordinate and answer oracle tests
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_scatter_vectors.py' -v
-      - name: R59 inspect 18 true scatter PDFs: axes, tick numbers, six point positions and answer isolation
+      - name: 'R59 inspect 18 true scatter PDFs: axes, tick numbers, six point positions and answer isolation'
         run: .venv-pdf-audit/bin/python scripts/check-pdf-scatter-vectors.py qa-artifacts/scatter-chart-pdfs
       - name: R56 audit true-PDF prism L/W/H labels, positions and missing heights
         run: .venv-pdf-audit/bin/python scripts/check-pdf-prism-dimensions.py qa-artifacts/prism-dimensions
