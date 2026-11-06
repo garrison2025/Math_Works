@@ -632,3 +632,64 @@ GSC traffic, teacher review, physical-size print measurement or verified
 Cloudflare production SHA. Until a purchased domain and explicit owner
 indexation decision, the preview remains \`noindex,nofollow\`, without
 production canonical/schema publication.
+
+### R64 — real public competitor page checks and a genuine multiplication table PDF
+
+The first eight highest-value **existing source-backed** math topics
+were compared against named external competitor pages on **2026-11-06**,
+recorded in \`src/data/serp-observations-r64.json\`. These are
+**observed competitor landing-page contents**, not a Google US
+location-locked ranking export, current Semrush KD or GSC traffic
+report. Source URLs and explicit functional gaps are preserved, and
+\`npm run qa:serp-r64\` exports their exact comparisons in CI. Do NOT
+write misleading competitive rankings or say that all 43 specialist
+topics have completed Google SERP validation: only **eight public
+competitor pages** were reviewed this iteration.
+
+A clear gap surfaced on the existing
+\`/multiplication-tables-worksheets/\` page: a “multiplication table
+worksheet” can mean a **blank 1–12 grid** rather than a shuffled
+times-tables fact-drill worksheet. The previous engine produced only
+fact questions, while several public competitors offered full
+1–12 reference/blank tables. R64 therefore adds a **separate vector
+PDF feature**, with two topic-specific buttons:
+
+- **Blank multiplication table (A4 / Letter):** a single real
+  13×13 grid (top/left 1–12 headers plus one × corner) with all
+  **144 product cells completely empty** for student handwriting.
+- **Completed answer reference (A4 / Letter):** the corresponding
+  12×12 grid containing **all 144 independently correct products**.
+  This chart is not a separate random seed-based 8-question worksheet.
+- The original 51 math generators, their deterministic seed, options,
+  question-answer correspondence and generator version **v18** remain
+  unchanged. Other topics do not gain the new chart controls.
+
+The printable grids are created locally in the browser by
+\`src/lib/multiplication-grid.ts\` using pdf-lib rectangles and
+text. The topic page distinguishes blank charts from the normal
+randomized fact-drill export, includes direct use instructions, and
+does not claim an unsupported 0–12 chart, timed test or 1–100 matrix.
+
+\`tests/r64-multiplication-grid.test.mjs\` checks all 144 arithmetic
+cells against a separate simple multiplication oracle and loads all
+A4/Letter PDF variants. The R64 independent \`PyMuPDF\` auditor checks
+the **actual PDF output**: 169 vector squares in each of four PDFs,
+144 blank student cells per paper (288 total), and 144 correctly
+positioned printed product answers per paper (288 total). Chrome
+checks all four downloads and the unchanged random fact-drill
+export; Firefox checks the A4 blank and complete answer downloads.
+CI retains all four print-ready PDFs, a content report, and
+two independently generated page screenshots where available.
+
+Seven previously flagged R63 “printable times-table chart” source
+keywords now have a **narrowly implemented feature**, tracked by the
+additive overlay \`src/data/seo-r64-resolutions.json\`. Historic
+R63 classification data is unchanged; **feature implemented does
+not mean Google US SERP verified, approved for indexing or ranked**.
+The other 488 keyword source rows and 55 topic contracts remain
+unaltered, and \`noindex,nofollow\` stays active on pages.dev.
+
+**Pending:** physical Letter/A4 printer and teacher review; exact
+Cloudflare deployment SHA; independently verified real Google US
+SERP intent/ranks across all 43 specialized routes; custom domain;
+GSC indexing/ranking tests. No broad SEO release is authorized.
