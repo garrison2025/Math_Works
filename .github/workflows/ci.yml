@@ -130,6 +130,8 @@ jobs:
         run: npm run qa:r75-geometry
       - name: R76 export 30 exact cylinder net student, key and solution PDFs
         run: npm run qa:r76-cylinder
+      - name: R77 export 36 statistical frequency-dot-plot true vector PDFs
+        run: npm run qa:r77-statistics
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -174,6 +176,15 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-r75-geometry.py qa-artifacts/r75-triangle-composite
       - name: R76 audit net circumference to height ratios, two real circular disks and all R74 sector angles
         run: .venv-pdf-audit/bin/python scripts/check-r76-cylinder-sectors.py qa-artifacts
+      - name: R77 independently inspect statistics dot stacks and recheck legacy box, scatter and counting-dot PDFs
+        run: .venv-pdf-audit/bin/python scripts/check-r77-statistical-charts.py qa-artifacts
+      - name: Archive R77 all 36 statistical dot PDFs and joint printed-coordinate audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r77-statistical-dotplot-pdfs-and-chart-audit
+          path: qa-artifacts/r77-statistical-dot-plots/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R76 verified 30 PDF cylinder nets and real stroke audit
         uses: actions/upload-artifact@v4
         with:

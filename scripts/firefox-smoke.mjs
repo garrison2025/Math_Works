@@ -535,6 +535,25 @@ try{
  }
  assert.equal(await page.locator('.problem .q').first().innerText(),originalCylinder);
  checks.push({name:'R76 Firefox exact 3 combined cylinder Letter PDF student, teacher and worked downloads',status:'pass'});
+ // R77 Firefox true statistical dot plot workbook triplet in Letter format.
+ await open('mean-median-mode-range-worksheets');
+ assert.equal(await page.locator('[data-r77-frequency-dotplot]').count(),1);
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ const originalR77=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ await page.locator('[data-r77-dotplot-mode]').selectOption('plot');
+ for(const output of ['questions','answers','steps']){
+  const awaiting=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="r77-dotplot-'+output+'"]').click();
+  const dl=await awaiting,target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPageCount(),3);
+  assert.equal(pdf.getPage(0).getWidth(),612);
+  assert.match(pdf.getTitle()??'',/R77\.1/);
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),originalR77);
+ checks.push({name:'R77 Firefox three actual Letter statistical dot plot practice/key/steps PDFs, noindex retained',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
