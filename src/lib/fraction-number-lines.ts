@@ -34,29 +34,28 @@ export function createFractionLinePack(topic:FractionLinePack['topic'],seed:numb
  if(!['easy','standard','challenge'].includes(difficulty))throw Error('Invalid fraction-line difficulty');
  if(task!=='identify'&&task!=='plot')throw Error('Invalid fraction-line task');
  if(range!=='zero-one'&&range!=='zero-two')throw Error('Invalid fraction-line range');
- const max=range==='zero-one'?1:2,rng=new Rng(seed),seen=new Set<string>();
- const available=difficulty==='easy'?[2,3,4,5,6]:
-  difficulty==='standard'?[2,3,4,5,6,8]:
-  [...FRACTION_LINE_DENOMINATORS];
- const possible=available.reduce((sum,d)=>sum+(max===1?d-1:2*d-2),0);
- if(quantity>possible)throw Error('Select at most '+possible+' distinct fraction number-line questions for these settings');
+ const max=range==='zero-one'?1:2,rng=new Rng(seed);
+ // Build the complete exact domain once, shuffle with the deterministic RNG
+ // and prefer smaller denominators for Easy/Standard. High question counts
+ // still work because remaining denominator families fill the rest.
+ const candidates:{denominator:number;numerator:number;order:number}[]=[];
+ for(const denominator of FRACTION_LINE_DENOMINATORS){
+  for(let numerator=1;numerator<max*denominator;numerator++){
+   if(max===2&&numerator===denominator)continue;
+   candidates.push({denominator,numerator,order:rng.next()});
+  }
+ }
+ const priority=(denominator:number)=>difficulty==='easy'?(denominator<=6?0:1):
+  difficulty==='standard'?(denominator<=8?0:1):0;
+ candidates.sort((x,y)=>priority(x.denominator)-priority(y.denominator)||x.order-y.order);
+ if(quantity>candidates.length)throw Error('Not enough distinct fraction-line questions');
  const questions:FractionLineQuestion[]=[];
  for(let i=0;i<quantity;i++){
-  let item:FractionLineQuestion|undefined;
-  for(let trial=0;trial<800;trial++){
-   const denominator=rng.pick(available),numerator=rng.int(1,max*denominator-1);
-   if(max===2&&numerator===denominator)continue;
-   const signature=numerator+'/'+denominator;
-   if(seen.has(signature))continue;
-   seen.add(signature);
-   const answer=signature,reducedAnswer=asText(rational(BigInt(numerator),BigInt(denominator)));
-   item={id:'Q'+(i+1),denominator,numerator,max,task,
-    prompt:task==='identify'?'Write the fraction marked by the dot.':'Plot '+answer+' on the number line.',
-    answer,reducedAnswer};
-   break;
-  }
-  if(!item)throw Error('Could not create distinct fraction number-line problems');
-  questions.push(item);
+  const {denominator,numerator}=candidates[i],answer=numerator+'/'+denominator;
+  const reducedAnswer=asText(rational(BigInt(numerator),BigInt(denominator)));
+  questions.push({id:'Q'+(i+1),denominator,numerator,max,task,
+   prompt:task==='identify'?'Write the fraction marked by the dot.':'Plot '+answer+' on the number line.',
+   answer,reducedAnswer});
  }
  return {topic,version:FRACTION_LINE_VERSION,seed,quantity,difficulty,task,range,questions};
 }
