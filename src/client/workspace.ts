@@ -6,6 +6,8 @@ import {checkPrintScale} from '../lib/print-calibration';
 import {createMultiplicationGridPdf,type MultiplicationGridMode} from '../lib/multiplication-grid';
 import {createEquationPack,type EquationTopic,type EquationNumberType} from '../lib/equation-packs';
 import {createEquationPackPdf,type EquationPdfMode} from '../lib/equation-pack-pdf';
+import {createFractionLinePack,type FractionLineTask,type FractionLineRange} from '../lib/fraction-number-lines';
+import {createFractionLinePdf} from '../lib/fraction-number-line-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -214,6 +216,34 @@ function setup(root:HTMLElement){
      inform('Exact '+kind+' '+downloadMode+' equation pack downloaded. Same seed, number type, difficulty, question count and equation form reproduce the same pack. Original v18 worksheet unchanged.');
     }catch(e){
      inform(e instanceof Error?'Equation pack failed: '+e.message:'Equation pack failed.',true);
+    }finally{button.disabled=false;}
+   });
+  }
+ }
+ // R66 exact fraction number-line pack is opt-in and independent of v18.
+ // The same seed, question count, difficulty and separate selectors reproduce it.
+ if(topic==='number-line-worksheets'||topic==='fractions-worksheets'){
+  const taskInput=root.querySelector<HTMLSelectElement>('[data-fraction-line-task]');
+  const rangeInput=root.querySelector<HTMLSelectElement>('[data-fraction-line-range]');
+  for(const mode of ['questions','answers'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="fraction-line-'+mode+'"]');
+   if(!button||!taskInput||!rangeInput)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const settings=state(),task=taskInput.value as FractionLineTask;
+     const range=rangeInput.value as FractionLineRange;
+     inform('Preparing vector fraction number-line '+mode+'...');
+     const pack=createFractionLinePack(topic,settings.n,settings.q,settings.difficulty,task,range);
+     const bytes=await createFractionLinePdf(pack,mode,paper.value as Paper);
+     const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'}),url=URL.createObjectURL(blob);
+     const a=document.createElement('a');a.href=url;
+     a.download='fraction-number-line-'+topic+'-'+task+'-'+range+'-'+mode+'-seed'+settings.n+
+      '-'+settings.difficulty+'-'+settings.q+'-'+paper.value.toLowerCase()+'-r66.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Fraction number-line '+mode+' downloaded. No changes to your original integer/fraction worksheet.');
+    }catch(e){
+     inform(e instanceof Error?'Fraction line PDF failed: '+e.message:'Fraction line PDF failed.',true);
     }finally{button.disabled=false;}
    });
   }
