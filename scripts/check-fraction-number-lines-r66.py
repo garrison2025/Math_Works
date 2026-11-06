@@ -56,7 +56,7 @@ def inspect_case(folder:Path, case:dict)->dict:
                  and drawing.get("fill") is not None):
                 dots.append(((bounds.x0+bounds.x1)/2,(bounds.y0+bounds.y1)/2))
         for i,q in enumerate(case["questions"]):
-            y=185.+i*68.
+            y=172.+i*76.
             max_value=1 if case["range"]=="zero-one" else 2
             d=q["denominator"]
             if q["numerator"]<=0 or q["numerator"]>=d*max_value:
