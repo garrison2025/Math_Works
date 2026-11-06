@@ -825,3 +825,70 @@ R66 adds actual **opt-in vector PDF generation** to the existing
 owner-provided custom domain, verified deployment SHA, selective
 live SERP review, real Google Search Console evidence and
 physical A4/Letter printer/teacher acceptance tests are completed.
+
+### R67 — exact decimal division practice and PDF proof, not misleading keyword stuffing
+
+R62/R63 exact source keyword audits documented **two original** search
+queries that could not honestly be served by the previous integer
+division-facts generator:
+
+| Original supplied keyword | Historic reported monthly volume | Historic Semrush KD |
+| --- | ---: | ---: |
+| decimal division worksheet | 1,300 | 21 |
+| decimal division worksheets | 720 | 20 |
+
+These figures remain the owner's old source CSV values. They have not
+been refreshed or confirmed using current US Google ranking data; the
+query volumes overlap and must **not** be added into a site traffic forecast.
+
+R67 ships a **real, opt-in** \`R67.1\` decimal-division worksheet pack
+within the current \`/division-worksheets/\` page. It can print:
+
+- **Whole-number divisors**, genuinely fractional **decimal divisors**,
+  or a mixed set. Students work with exact **noninteger** quotients in
+  tenths, hundredths, or a selected mixture.
+- The existing visible seed (0–2^32−1), difficulty, number of problems
+  (1–40), US Letter/A4 format, and optional extra student writing
+  room. The same settings + new divisor/precision selectors reproduce
+  the exact same pack.
+- Three **separate vector PDFs**: student practice with pencil guide
+  lines and no printed answers; an individually matching answer key;
+  and a worked solution PDF showing equivalent division after
+  multiplying both terms by a power of ten and the explicit original
+  multiplication check.
+- No rounding, repeated decimals or remainder questions. Decimal
+  arithmetic and printing use exact rational BigInt values rather
+  than JavaScript floating-point approximations.
+
+The \`R67.1\` extension does **not** alter the existing \`v18\`
+integer division facts, any of the 51 original generators, or their
+shared-link format. The existing Copy reproducible link applies
+to the original integer worksheet; it does not serialize the
+new decimal division selectors. A specialist long-division algorithm
+layout is **not** being claimed for this new decimal pack.
+
+Quality gates: \`tests/r67-decimal-division.test.mjs\` subjects
+**5,400** different arithmetic questions to independent exact
+cross-product checks over seed/difficulty/divisor/precision
+combinations, plus seeded determinism, corrupt-answer detection,
+and A4/Letter PDF modes. \`scripts/export-decimal-division-r67.mjs\`
+outputs **24 real print PDFs** with the matching original question
+manifest. A separate Python \`fractions.Fraction\` audit
+(\`scripts/check-decimal-division-r67.py\`) parses visible questions,
+recomputes printed quotients, verifies teacher answers, worked
+equations, student writing lines and safe printable margins.
+Chromium/Firefox independently click the browser download buttons.
+
+The original \`src/data/keyword-evidence.csv\` and R62/R63
+historical flags are unchanged; the additive
+\`src/data/seo-r67-decimal-division-capability.json\` states only
+that a **narrow real capability** now exists. The broad
+\`division-worksheets\` hub is still **not on the approved indexable
+route whitelist**. Functional implementation is not an approved
+new SEO landing page, live Google SERP win, GSC traffic, or
+physical printer/teacher sign-off.
+
+Do not submit \`math-works.pages.dev\` for indexing.
+Custom HTTPS domain, owner-approved specialized pages, confirmed
+Cloudflare deployed SHA, physical A4/Letter printing, independent
+teacher review, Google US SERP and GSC checks remain launch gates.
