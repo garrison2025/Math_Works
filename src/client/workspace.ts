@@ -4,6 +4,8 @@ import {titleFor} from '../lib/site';
 import {createWorksheetPdf,createBlankProtractorPdf,createPrinterCalibrationPdf,type PdfMode,type Paper} from '../lib/pdf';
 import {checkPrintScale} from '../lib/print-calibration';
 import {createMultiplicationGridPdf,type MultiplicationGridMode} from '../lib/multiplication-grid';
+import {createEquationPack,type EquationTopic,type EquationNumberType} from '../lib/equation-packs';
+import {createEquationPackPdf,type EquationPdfMode} from '../lib/equation-pack-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -185,6 +187,36 @@ function setup(root:HTMLElement){
     inform(e instanceof Error?'Chart PDF failed: '+e.message:'Chart PDF failed.',true);
    }finally{button.disabled=false;}
   });
+ }
+
+ // R65 opt-in exact algebra extension. The original v18 integer worksheet
+ // and share URL are left untouched: selected pack kind is an explicit
+ // separate download configuration, never quietly mixed into live preview.
+ if(topic==='one-step-equations-worksheets'||topic==='two-step-equations-worksheets'){
+  const kindInput=root.querySelector<HTMLSelectElement>('[data-equation-kind]');
+  for(const downloadMode of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="equation-pack-'+downloadMode+'"]');
+   if(!button||!kindInput)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const parameters=state();
+     const kind=kindInput.value as EquationNumberType;
+     inform('Verifying and preparing '+kind+' equation '+downloadMode+' PDF...');
+     const pack=createEquationPack(topic as EquationTopic,kind,parameters.n,parameters.q,parameters.difficulty,parameters.options);
+     const bytes=await createEquationPackPdf(pack,downloadMode as EquationPdfMode,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const filename=topic+'-'+kind+'-'+downloadMode+'-seed'+parameters.n+'-'+parameters.difficulty+
+      '-'+parameters.q+'-'+Object.values(parameters.options).join('-')+'-'+paper.value.toLowerCase()+'-r65.pdf';
+     const a=document.createElement('a');a.href=url;a.download=filename;
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Exact '+kind+' '+downloadMode+' equation pack downloaded. Same seed, number type, difficulty, question count and equation form reproduce the same pack. Original v18 worksheet unchanged.');
+    }catch(e){
+     inform(e instanceof Error?'Equation pack failed: '+e.message:'Equation pack failed.',true);
+    }finally{button.disabled=false;}
+   });
+  }
  }
  for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper,writingRoom.value as WritingRoom);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}${m==='questions'&&writingRoom.value==='extra'?'-extra-room':''}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded${m==='questions'&&writingRoom.value==='extra'?' with extra pencil lines':''} · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
  root.querySelector<HTMLButtonElement>('[data-action="share"]')?.addEventListener('click',async()=>{
