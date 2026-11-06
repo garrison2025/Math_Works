@@ -751,3 +751,77 @@ pages.dev preview stays \`noindex,nofollow\`. A custom domain,
 owner page-by-page index authorization, confirmed deployed SHA,
 real teacher/physical printer QA and independently verifiable
 Google US SERP/GSC observations are separate launch conditions.
+
+### R66 — source-backed fraction number lines, real vectors and separate student/answer PDFs
+
+The R63 exact-intent audit identified three **actual owner-provided
+keywords** incorrectly tied to the arithmetic-only fractions generator:
+
+| Supplied keyword | Old supplied monthly volume | Old supplied Semrush KD |
+| --- | ---: | ---: |
+| fractions on a number line worksheet | 1,300 | 9 |
+| number line fractions worksheet | 590 | 15 |
+| fraction number lines worksheet | 480 | 11 |
+
+These values are historical **source snapshots**, not a fresh 2026-11-06
+Google US ranking check. They are **not additive traffic estimates**.
+Independent public competitor-page inspection at
+\`mathworksheets4kids.com/fraction-number-line.php\`,
+\`k5print.com/fraction-number-line/\` and
+\`mathpicnic.com/worksheets/fractions/on-a-number-line/\`
+corroborated two concrete teacher tasks: **identify the fraction at a
+marked dot** and **plot a provided fraction on an equally divided
+number line**. Competitors also offer features R66 does not copy,
+including fraction addition hops, mixed-number story problems and
+equivalent-fraction chart families. Their existence is not evidence
+of current Google ranks or our likely traffic.
+
+R66 adds actual **opt-in vector PDF generation** to the existing
+\`/number-line-worksheets/\` and \`/fractions-worksheets/\` pages:
+
+- Two separate tasks: **Name the point** with one preprinted correct
+  dot, or **Plot the fraction** where students receive only the
+  correctly partitioned blank number line.
+- Two explicit ranges: **0–1** with proper fractions, or **0–2**
+  including improper fractions. Denominators: 2,3,4,5,6,8,10,12.
+  Each unit is divided exactly, with distinct visible whole-number
+  ticks; reducible values show the original fraction and its
+  simplified equivalent in the teacher key.
+- Reuses the visible 32-bit seed, difficulty, question count
+  (1–40 in the extension), and Letter/A4 paper setting.
+  Larger worksheets continue to use larger denominators once
+  easy sets are exhausted. Eight questions fit a single page;
+  forty questions paginate to five.
+- **Student and answer PDFs are separate**, and a plot-task student
+  sheet has no target dot. The accompanying teacher sheet provides
+  the exact target dot and fraction label. No answers are leaked
+  into student identification exercises.
+- Completely additive **R66.1** capability: the stable original
+  v18 integer number-line and fractions arithmetic questions,
+  topic option values, existing old share URLs and 51 generator
+  regression contracts are unchanged. The original Copy link
+  does not currently encode the extension task/range selectors.
+- \`tests/r66-fraction-number-lines.test.mjs\` checks exact
+  rational tick positions, adversarial field corruption, 40
+  distinct problems per configuration, seed determinism, old
+  v18 compatibility, and all 32 test PDF structures.
+  \`scripts/export-fraction-number-lines-r66.mjs\` exports
+  **32 real A4/Letter question/answer PDFs**, with an exact
+  question and fraction manifest. The independent
+  \`scripts/check-fraction-number-lines-r66.py\` uses PyMuPDF
+  to check true vector axis lines, each division tick, the
+  numerically correct printed dot center and correct separation
+  of student/teacher answers. Chromium downloads 16 combinations,
+  Firefox exercises both subject pages.
+- \`src/data/seo-r66-fraction-line-capability.json\` overlays
+  the three historical R63 "unsupported" entries with the
+  narrow, **actually implemented** feature. The original 488
+  keyword rows and R63 historical issue records remain intact.
+  Function implementation is **not** live SERP validation or an
+  indexing decision.
+
+**Launch gates unchanged:** \`math-works.pages.dev\` remains
+\`noindex,nofollow\`; no production canonical/index release until
+owner-provided custom domain, verified deployment SHA, selective
+live SERP review, real Google Search Console evidence and
+physical A4/Letter printer/teacher acceptance tests are completed.
