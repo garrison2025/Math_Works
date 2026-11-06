@@ -3,6 +3,7 @@ import {diagramSVG} from '../lib/diagram';
 import {titleFor} from '../lib/site';
 import {createWorksheetPdf,createBlankProtractorPdf,createPrinterCalibrationPdf,type PdfMode,type Paper} from '../lib/pdf';
 import {checkPrintScale} from '../lib/print-calibration';
+import {createMultiplicationGridPdf,type MultiplicationGridMode} from '../lib/multiplication-grid';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -163,6 +164,28 @@ function setup(root:HTMLElement){
    inform('Blank protractor downloaded. Print at Actual size (100%) and measure the 50 mm line.');
   }catch(e){inform(e instanceof Error?`Protractor PDF failed: ${e.message}`:'Protractor PDF failed.',true)}finally{protractorButton.disabled=false;}
  });}
+
+ // R64 separate printable 12x12 grid: no seed, no generated problem set,
+ // no teacher answer-leak on the blank chart.
+ if(topic==='multiplication-tables-worksheets')for(const mode of ['blank','key'] as const){
+  const button=root.querySelector<HTMLButtonElement>('[data-action="multiplication-grid-'+mode+'"]');
+  if(!button)continue;
+  button.addEventListener('click',async()=>{
+   button.disabled=true;
+   try{
+    inform(mode==='blank'?'Preparing a blank 1-12 chart...':'Preparing the complete 1-12 chart key...');
+    const bytes=await createMultiplicationGridPdf(paper.value as Paper,mode as MultiplicationGridMode);
+    const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+    const a=document.createElement('a');
+    a.href=url;a.download='multiplication-table-1-12-'+mode+'-'+paper.value.toLowerCase()+'.pdf';
+    document.body.append(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    inform('Downloaded '+(mode==='blank'?'blank 1-12 multiplication chart':'1-12 multiplication answer chart')+'. It is independent of your randomized practice worksheet.');
+   }catch(e){
+    inform(e instanceof Error?'Chart PDF failed: '+e.message:'Chart PDF failed.',true);
+   }finally{button.disabled=false;}
+  });
+ }
  for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper,writingRoom.value as WritingRoom);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}${m==='questions'&&writingRoom.value==='extra'?'-extra-room':''}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded${m==='questions'&&writingRoom.value==='extra'?' with extra pencil lines':''} · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
  root.querySelector<HTMLButtonElement>('[data-action="share"]')?.addEventListener('click',async()=>{
   if(!worksheet)rebuild();if(!worksheet)return;
