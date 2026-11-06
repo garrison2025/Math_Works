@@ -80,6 +80,24 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="conversion-steps">Conversion worked steps PDF</button>
 </div>
 <p class="hint">Fractions may be greater than one. All decimal results are exact, never rounded. Reuse the seed, question count, difficulty, conversion direction and decimal places to recreate the same pack. The original Copy reproducible link does not encode these additional settings.</p>
+</div>}{(slug==='multiplication-worksheets'||slug==='division-worksheets')&&<div class="calibration-card" data-r71-multdiv-pack aria-label="Multiplication division fact-family and area-model printable practice">
+<strong>Multiplication &amp; division skill packs</strong>
+<p class="hint">Build a separate PDF with real mixed multiply/divide problems or all four related fact-family equations. Multiplication also supports a split rectangular area model with partial-product boxes. Your original v18 worksheet and its share link stay unchanged.</p>
+<div class="field"><label for={`multdiv-mode-${slug}`}>Practice mode</label><select id={`multdiv-mode-${slug}`} data-multdiv-mode>
+<option value="mixed-facts">Mixed multiplication and division facts</option>
+<option value="fact-family">Four linked multiplication/division fact-family equations</option>
+{slug==='multiplication-worksheets'&&<option value="area-model">Partitioned area model multiplication</option>}
+</select></div>
+{slug==='multiplication-worksheets'&&<div class="field"><label for="multdiv-factor-size">Area-model factor sizes</label><select id="multdiv-factor-size" data-multdiv-factors>
+<option value="mixed">Mix 2-digit × 1-digit and 2-digit × 2-digit</option>
+<option value="two-by-one">2-digit × 1-digit only</option>
+<option value="two-by-two">2-digit × 2-digit only</option>
+</select></div>}
+<div class="download-grid">
+<button class="btn btn-secondary" type="button" data-action="multdiv-questions">Extra student PDF</button>
+<button class="btn" type="button" data-action="multdiv-answers">Extra answer key PDF</button>
+<button class="btn" type="button" data-action="multdiv-steps">Extra worked steps PDF</button></div>
+<p class="hint">Use the same seed, difficulty, number of problems, practice mode and paper size to reproduce identical student and teacher PDFs. In the area-model student file, partial-product cells are intentionally blank; the teacher PDF contains exact values.</p>
 </div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <details class="calibration-card" data-print-calibration>
       <summary>Printer scale check <span class="calibration-mini">Recommended before classroom printing</span></summary>
