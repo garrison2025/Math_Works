@@ -20,6 +20,15 @@ jobs:
         run: npm run qa:seo-readiness
       - name: R63 inspect all 488 original keywords against exact 145 source-backed intent flags
         run: npm run qa:seo-triage
+      - name: R64 export eight named public competitor page observations and 1-12 chart capability status
+        run: npm run qa:serp-r64
+      - name: Archive R64 public competitor comparisons with honest SERP limits
+        uses: actions/upload-artifact@v4
+        with:
+          name: r64-competitor-page-evidence
+          path: qa-artifacts/r64-live-competitor-readiness/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R63 SEO triage for 488 keywords, 145 issues and route proposals
         uses: actions/upload-artifact@v4
         with:
@@ -68,6 +77,8 @@ jobs:
         run: npm run qa:counting-dot-pdfs
       - name: R60 export 38 A4/Letter teacher-key and student 40-question PDF fixtures
         run: npm run qa:teacher-keys
+      - name: R64 export four separate Letter and A4 blank and filled multiplication charts
+        run: npm run qa:multiplication-grid
       - name: R61 export 90 geometry practice, extra-room and teacher-control A4/Letter PDFs
         run: npm run qa:geometry-writing-room
       - name: Export Letter and A4 blank actual-size protractor PDFs
@@ -88,6 +99,15 @@ jobs:
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: R64 independently check 676 real PDF table squares and 288 teacher products
+        run: .venv-pdf-audit/bin/python scripts/check-multiplication-grid.py qa-artifacts/r64-multiplication-grid
+      - name: Archive R64 exact 1-12 multiplication chart PDFs and independent math geometry audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r64-real-printed-multiplication-charts
+          path: qa-artifacts/r64-multiplication-grid/
+          retention-days: 21
+          if-no-files-found: error
       - name: Enforce 36-point vector-drawing safe margins on every stress PDF
         run: .venv-pdf-audit/bin/python scripts/check-pdf-vector-margins.py qa-artifacts/pdf-stress
       - name: R54 verify student pencil rules from actual PDF drawing operators
