@@ -414,3 +414,39 @@ Cloudflare's deployment commit must also be confirmed from Pages itself;
 a GitHub Actions PASS does not prove that the same commit was deployed.
 Until a real domain and explicit launch decision, `math-works.pages.dev`
 remains `noindex,nofollow` (no formal-indexation or GSC claims).
+
+### R59 — independently audited scatter and count-the-dots PDF vector geometry
+
+The R58 SVG/box-scale checks are extended to the **actual downloaded PDFs**
+of two existing worksheet generators; neither the 51 live SEO routes nor
+generator v18, answer keys, or layout version v2 changes.
+
+**Scatter:** 18 real A4/Letter PDFs cover all three correlations
+(positive/negative/none), identifying a plotted trend, plotting six
+coordinates on a blank student grid, and the separately completed answer
+plot. A PyMuPDF auditor recovers the axes, 8 x tick positions and 6 y tick
+positions from the actual vector drawing operators and verifies all 14
+numeric glyphs against the tick locations. Six point positions are checked
+against the independent source coordinate pairs, while the plot-mode student
+PDF must contain **zero** leaked answer circles. An independent covariance
+calculation checks trend answers. Adversarial tests must reject shifted
+ticks, missing/extra circles, wrong coordinate answers and a leaked solution.
+
+**Number-recognition counting dots:** 24 A4/Letter question PDFs exercise
+every integer answer from 1 to 12, sourced using the **real full worksheet
+seed path** rather than the internal per-problem RNG seed. The auditor
+counts genuine separate circular PDF paths and verifies their alignment,
+row and column spacing and print-safe margins against the integer answer.
+Adversarial cases reject missing, duplicate, misplaced and clipped dots.
+Counting objects is distinct from a statistical frequency Dot Plot and
+**does not** claim that a new statistical Dot Plot generator or new SEO
+landing page has been implemented. The original V2 site plan does not
+include a validated standalone dot-plot keyword/route.
+
+CI runs the two PDF fixture exporters and both independent PyMuPDF checks;
+reports and reproducible PDFs are archived as `r59-scatter-pdf-vectors` and
+`r59-counting-dots-pdf-vectors`. Automated results verify digital PDF
+geometry only: teacher sign-off, physical prints at 100%, and the actual
+Cloudflare Pages deployment SHA require **separate** evidence. The public
+preview remains `noindex,nofollow`; a real production domain is not yet
+purchased or approved for indexation.
