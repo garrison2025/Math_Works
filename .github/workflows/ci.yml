@@ -42,6 +42,8 @@ jobs:
         run: npm run qa:prism-dimensions
       - name: R57 export A4 and Letter origin-anchored Cartesian PDF diagrams
         run: npm run qa:cartesian-ticks
+      - name: R58 export 16 A4/Letter student and answer box-scale PDFs
+        run: npm run qa:stat-chart-pdfs
       - name: Export Letter and A4 blank actual-size protractor PDFs
         run: npm run qa:protractor-instruments
       - name: Export Letter and A4 universal printer calibration PDFs
@@ -80,6 +82,8 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_pdf_cartesian_ticks.py' -v
       - name: R57 independently audit actual PDF Cartesian axis origins and tick positions
         run: .venv-pdf-audit/bin/python scripts/check-pdf-cartesian-ticks.py qa-artifacts/cartesian-ticks
+      - name: R58 independently audit true-PDF box tick labels, quartiles and outliers
+        run: .venv-pdf-audit/bin/python scripts/check-pdf-box-scales.py qa-artifacts/stat-chart-pdfs
       - name: R56 audit true-PDF prism L/W/H labels, positions and missing heights
         run: .venv-pdf-audit/bin/python scripts/check-pdf-prism-dimensions.py qa-artifacts/prism-dimensions
       - name: R55 independently audit printed perpendicular-height right-angle squares
@@ -104,6 +108,14 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
         run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive R58 statistical box scale PDF evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r58-printed-box-scales
+          path: qa-artifacts/stat-chart-pdfs/
+          retention-days: 14
+          if-no-files-found: error
       - name: Archive R57 Cartesian zero-centered A4/Letter sample PDFs
         uses: actions/upload-artifact@v4
         if: always()
