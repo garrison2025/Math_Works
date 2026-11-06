@@ -83,11 +83,14 @@ def check(case:dict,folder:Path)->dict:
             all_vectors=[]
             for page in doc:
                 for path_object in page.get_drawings():
-                    for item in path_object.get('items',[]):
-                        if item[0]=='re':
-                            rect=fitz.Rect(item[1])
-                            if abs(rect.width-186)<.6 and abs(rect.height-54)<.6:
-                                all_vectors.append((page.number,rect))
+                    # pdf-lib may emit the rectangle as four connected
+                    # vector lines rather than a single PDF 're' opcode.
+                    # PyMuPDF exposes its actual path bounding rectangle
+                    # in either representation; require the true physical
+                    # 186 x 54 pt stroke extent, not a guessed screenshot.
+                    rect=path_object.get('rect')
+                    if rect and abs(rect.width-186)<.8 and abs(rect.height-54)<.8:
+                        all_vectors.append((page.number,fitz.Rect(rect)))
             if len(all_vectors)!=8:
                 raise AssertionError(f'{path}: expected 8 actual rectangle vector diagrams, saw {len(all_vectors)}')
             # PDF grid rows appear in order of top-to-bottom:
