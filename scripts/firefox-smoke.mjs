@@ -248,6 +248,12 @@ try{
  assert.ok(Math.abs(r54Pdf.getPage(0).getWidth()-595.28)<.1);
  assert.match(r54Pdf.getTitle()??'',/extra writing room/);
  checks.push({name:'R54 Firefox extra writing room A4 vector PDF and unchanged questions',status:'pass'});
+ // R57 Firefox Cartesian graphs include one explicitly marked origin.
+ await open('coordinate-plane-worksheets');
+ const r57Figure=page.locator('.problem svg.diagram-vector').first();
+ assert.equal(await r57Figure.locator('.cartesian-origin').textContent(),'0');
+ assert.ok((await r57Figure.locator('.cartesian-grid-x').count())%2===1);
+ checks.push({name:'R57 Firefox Cartesian origin tick zero and centered scale',status:'pass'});
  // R56 Firefox checks that missing height remains a question mark.
  await open('volume-of-rectangular-prisms-worksheets');
  await page.locator('[data-option="task"]').selectOption('missing-height');

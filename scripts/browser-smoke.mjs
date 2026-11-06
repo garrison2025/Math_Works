@@ -417,6 +417,25 @@ try {
  assert.equal(await page.locator('[data-field="writing-room"]').inputValue(),'extra');
  assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),r54Questions);
  events.push({kind:'interaction',name:'R54 extra writing room PDF, share settings and unchanged questions',status:'pass'});
+ // R57 Cartesian ticks must be symmetrical around the one labeled origin.
+ await page.goto(`${base}/coordinate-plane-worksheets/`,{waitUntil:'networkidle'});
+ const r57Chart=page.locator('.problem svg.diagram-vector').first();
+ assert.equal(await r57Chart.locator('.cartesian-origin').textContent(),'0');
+ const r57Grid=await r57Chart.locator('.cartesian-grid-x').evaluateAll(nodes=>nodes.map(node=>Number(node.getAttribute('x1'))));
+ assert.ok(r57Grid.length>=5&&r57Grid.length%2===1);
+ for(let k=0;k<r57Grid.length;k++)assert.ok(Math.abs(r57Grid[k]+r57Grid.at(-1-k)-450)<.0001);
+ assert.equal(r57Grid.filter(x=>Math.abs(x-225)<.0001).length,1);
+ const r57CoordsBefore=await page.locator('.problem .q').allInnerTexts();
+ const r57Download=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const r57Printed=await verifyPdf(await r57Download,'R57 centered-coordinate grid PDF');
+ assert.ok(r57Printed.getPageCount()>0);
+ assert.deepEqual(await page.locator('.problem .q').allInnerTexts(),r57CoordsBefore);
+ await page.goto(`${base}/linear-equations-worksheets/`,{waitUntil:'networkidle'});
+ await page.locator('[data-option="task"]').selectOption('graph');
+ assert.equal(await page.locator('.problem svg .cartesian-origin').first().textContent(),'0');
+ assert.equal(await page.locator('.problem svg .solution-linear-line').count(),0);
+ events.push({kind:'interaction',name:'R57 centered coordinate axes with zero mark and unchanged solution-free graphing PDFs',status:'pass'});
  // R56: new labeled 3D edges must preserve the unknown height in preview
  // and in the browser-generated question PDF.
  await page.goto(`${base}/volume-of-rectangular-prisms-worksheets/`,{waitUntil:'networkidle'});

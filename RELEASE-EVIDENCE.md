@@ -480,3 +480,10 @@ R31 visual spot-check follow-up: 0° and 180° captions were previously on the h
 - [IMPLEMENTED] Shared geometry/label semantics for SVG/PDF, screen-reader text and explicit not-to-scale warning.
 - [CI REQUIRED] 6,000 seeded cases, adversarial invalid dimension metadata, eight actual A4/Letter PDF label and glyph-position audits, Chromium/Firefox and entire 468-PDF regression.
 - [OPEN] Physical print legibility, teacher approval, Cloudflare deployment verification and public-domain/indexation launch.
+
+
+### R57 — zero-centered Cartesian scale and PDF-axis vector audit (CI pending)
+
+- [IMPLEMENTED] All coordinate, slope and linear-function diagrams use one symmetrical 0-anchored tick series. X and Y axes explicitly identify the origin once. Pre-existing generated questions, answers, seed and sharing remain unchanged.
+- [TEST REQUIRED] 9,600 seeded grid examples, A4/Letter actual PDF axis/tick inspection of 64 graphs, adversarial off-origin/unequal-spacing checks, browser regression and complete 51-topic PDF preflight.
+- [NOT RUN] Real classroom use, teachers' visual legibility evaluation, actual physical printing and final domain launch remain open.
