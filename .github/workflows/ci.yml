@@ -77,6 +77,8 @@ jobs:
         run: npm run qa:counting-dot-pdfs
       - name: R60 export 38 A4/Letter teacher-key and student 40-question PDF fixtures
         run: npm run qa:teacher-keys
+      - name: R65 export 24 exact fraction and decimal one-step and two-step PDF packs
+        run: npm run qa:equation-packs
       - name: R64 export four separate Letter and A4 blank and filled multiplication charts
         run: npm run qa:multiplication-grid
       - name: R61 export 90 geometry practice, extra-room and teacher-control A4/Letter PDFs
@@ -99,6 +101,15 @@ jobs:
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: R65 independently verify real student question PDFs and math-checked answer keys
+        run: .venv-pdf-audit/bin/python scripts/check-equation-packs-r65.py qa-artifacts/r65-equation-packs
+      - name: Archive R65 24 original equation practice answer and worked solution PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: r65-exact-equation-practice-pdfs
+          path: qa-artifacts/r65-equation-packs/
+          retention-days: 21
+          if-no-files-found: error
       - name: R64 independently check 676 real PDF table squares and 288 teacher products
         run: .venv-pdf-audit/bin/python scripts/check-multiplication-grid.py qa-artifacts/r64-multiplication-grid
       - name: Archive R64 exact 1-12 multiplication chart PDFs and independent math geometry audit
