@@ -832,6 +832,51 @@ try {
  assert.equal(await page.locator('[data-r67-decimal-division]').count(),0,
   'R67 decimal division options leaked into unrelated fractions worksheet');
  
+ // R68 authentic column-add/sub PDF download flows in isolated
+ // Chromium contexts (avoid Chrome's same-tab automatic multiple-download cap).
+ for(const scenario of [
+  {topic:'addition-worksheets',operation:'addition',precision:'tenths',regrouping:'no',paper:'A4'},
+  {topic:'subtraction-worksheets',operation:'mixed',precision:'hundredths',regrouping:'yes',paper:'Letter'},
+  {topic:'mixed-addition-subtraction-worksheets',operation:'mixed',precision:'hundredths',regrouping:'mixed',paper:'A4'}
+ ]){
+  const isolated=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const decimalPage=await isolated.newPage();
+   decimalPage.on('pageerror',e=>pageErrors.push('R68 '+scenario.topic+': '+e.message));
+   await decimalPage.goto(base+'/'+scenario.topic+'/',{waitUntil:'networkidle'});
+   assert.equal(await decimalPage.locator('[data-r68-decimal-add-sub]').count(),1);
+   assert.equal(await decimalPage.locator('[data-r68-decimal-guide]').count(),1);
+   assert.equal(await decimalPage.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await decimalPage.locator('.problem .q').first().innerText();
+   await decimalPage.locator('[data-field="paper"]').selectOption(scenario.paper);
+   await decimalPage.locator('[data-decimal-add-sub-operation]').selectOption(scenario.operation);
+   await decimalPage.locator('[data-decimal-add-sub-places]').selectOption(scenario.precision);
+   await decimalPage.locator('[data-decimal-add-sub-regrouping]').selectOption(scenario.regrouping);
+   for(const mode of ['questions','answers','steps']){
+    const event=decimalPage.waitForEvent('download',{timeout:20000});
+    await decimalPage.locator('[data-action="decimal-add-sub-'+mode+'"]').click();
+    let downloaded;
+    try{downloaded=await event}
+    catch(e){
+     const status=await decimalPage.locator('[data-status]').innerText();
+     throw new Error('R68 '+scenario.topic+' '+mode+' download failure: '+status+' / '+String(e));
+    }
+    const pdf=await verifyPdf(downloaded,'R68 '+scenario.topic+' '+mode,{paper:scenario.paper});
+    assert.match(pdf.getTitle()??'',/R68\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(mode));
+    assert.match(pdf.getSubject()??'',/separate from v18 integer generators/);
+   }
+   assert.equal(await decimalPage.locator('.problem .q').first().innerText(),original,
+    'R68 decimal pack changed the main integer worksheet');
+   if(scenario.topic==='subtraction-worksheets')
+    await decimalPage.screenshot({path:join(out,'r68-column-decimal-subtraction-ui.png'),fullPage:true});
+  }finally{await isolated.close()}
+ }
+ events.push({kind:'interaction',name:'R68 three decimal column routes and nine actual browser PDF downloads',status:'pass'});
+ await page.goto(base+'/division-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r68-decimal-add-sub]').count(),0,
+  'R68 add/sub controls leaked to unrelated decimal division page');
+ 
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
