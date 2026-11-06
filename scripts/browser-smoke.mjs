@@ -703,6 +703,32 @@ try {
   staticChecks.push(route.slug);
  }
  await noJs.close();
+ // R64: verify the live SSG buttons download four true printable 1-12
+ // chart PDFs without mutating the original randomized fact-drill engine.
+ await page.goto(base+'/multiplication-tables-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r64-chart-guide]').count(),1);
+ assert.equal(await page.locator('[data-action="multiplication-grid-blank"]').count(),1);
+ assert.equal(await page.locator('[data-action="multiplication-grid-key"]').count(),1);
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ for(const paper of ['Letter','A4']){
+  await page.locator('[data-field="paper"]').selectOption(paper);
+  for(const mode of ['blank','key']){
+   const event=page.waitForEvent('download',{timeout:30000});
+   await page.locator('[data-action="multiplication-grid-'+mode+'"]').click();
+   const doc=await verifyPdf(await event,'R64 multiplication chart '+paper+' '+mode,{paper});
+   assert.match(doc.getTitle()??'',/Multiplication Table 1-12/);
+   assert.match(doc.getTitle()??'',mode==='blank'?/Blank Worksheet/:/Answer Key/);
+  }
+ }
+ const randomDownload=page.waitForEvent('download',{timeout:30000});
+ await page.locator('[data-action="worksheet"]').click();
+ const randomDoc=await verifyPdf(await randomDownload,'R64 original times-table fact drill');
+ assert.match(randomDoc.getTitle()??'',/generator v18/);
+ await page.screenshot({path:join(out,'r64-multiplication-chart-desktop.png'),fullPage:true});
+ events.push({kind:'interaction',name:'R64 four blank/filled chart PDFs plus original seed-preserving worksheet',status:'pass'});
+ await page.goto(base+'/one-step-equations-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-action^="multiplication-grid-"]').count(),0,'Chart controls leaked to unrelated topics');
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
