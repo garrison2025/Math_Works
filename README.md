@@ -450,3 +450,36 @@ geometry only: teacher sign-off, physical prints at 100%, and the actual
 Cloudflare Pages deployment SHA require **separate** evidence. The public
 preview remains `noindex,nofollow`; a real production domain is not yet
 purchased or approved for indexation.
+
+### R60 — shorter print-ready teacher answer keys, with full-width diagrams preserved
+
+For non-diagram exercises only, the **answers** PDF now uses the same
+measured two-column print framework as the student questions. Answer text
+is wrapped to each actual column's font-measured width, and row heights
+are recalculated before deciding where page breaks fall. The printed
+page header identifies the teacher answer key; worked **steps** and
+every diagram topic remain full-width. Numbering, generated arithmetic,
+deterministic seeds, answer mappings, link fingerprints and the engine's
+generator v18 / layout v2 identity do **not** change.
+
+Teacher print checks include eight 40-question text-only topics on
+Letter and A4, their matching practice sheets, and three full-width
+diagram control topics. The R59 retained 40-question stress PDFs used
+**5 Letter and 4 A4 pages** for each of the eight teacher answer topics.
+R60's Node tests reject any compact answer key that still needs more
+than four pages, or expands unexpectedly relative to student sheets.
+A separate PyMuPDF auditor examines **38 actual exported PDFs**,
+including each question-number location, every answer marker, column
+gutter margins, full-width chart preservation, empty/orphan pages,
+paper MediaBoxes and question sequence. CI retains these as the
+\`r60-teacher-key-print-layout\` artifact with a machine-readable report.
+The all-51-topic maximum-count PDF content, collision, glyph, vector and
+print-margin audits also remain mandatory; a dense teacher key is not
+accepted if it drops content or creates visual overlaps.
+
+Scope: **digital vector-PDF and browser QA**, not a schoolteacher's
+formal visual approval. Physical scale, printer margins, contrast,
+handwriting comfort and duplex classroom printing still require actual
+paper and a human. The Cloudflare preview remains \`noindex,nofollow\`
+with no purchased production domain, and the deployed Cloudflare commit
+SHA must be verified separately from GitHub CI.
