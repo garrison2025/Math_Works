@@ -44,9 +44,9 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <strong>Decimal addition and subtraction — column worksheets</strong>
 <p class="hint">Print decimal-point-aligned vertical problems using exact tenths and hundredths, with optional carrying or borrowing practice. The three PDF downloads use identical seed, quantity and settings; the original integer practice and its preview remain unchanged.</p>
 <div class="field"><label for="decimal-add-sub-operation">Decimal operation</label><select id="decimal-add-sub-operation" data-decimal-add-sub-operation>
-<option value="mixed" selected={slug==='mixed-addition-subtraction-worksheets'}>Mixed addition and subtraction</option>
+<option value="mixed" selected={slug!=='addition-worksheets'}>Mixed addition and subtraction</option>
 <option value="addition" selected={slug==='addition-worksheets'}>Addition only</option>
-<option value="subtraction" selected={slug==='subtraction-worksheets'}>Subtraction only</option>
+<option value="subtraction">Subtraction only</option>
 </select></div>
 <div class="field"><label for="decimal-add-sub-places">Decimal places</label><select id="decimal-add-sub-places" data-decimal-add-sub-places>
 <option value="mixed">Mix tenths and hundredths</option>
