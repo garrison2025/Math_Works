@@ -1,0 +1,47 @@
+{
+  "schema": "mathworks-r75-triangle-composite-capability/v1",
+  "date": "2026-11-06",
+  "feature": "R75.1 exact real triangle side feasibility/strict third-side intervals and integer counts, plus true L polygon compound area computed by two independent methods",
+  "actualRoutes": [
+    "inequalities-worksheets",
+    "area-worksheets"
+  ],
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "triangle inequality theorem worksheet",
+      "sourceMonthlyVolume": 390,
+      "sourceKD": 3,
+      "actualPage": "inequalities-worksheets",
+      "newCapability": "Print exact nondegenerate triangle feasibility, open third-side bounds and integer-length counts with dimension-proportional line segments."
+    },
+    {
+      "keyword": "composite figures area worksheet pdf",
+      "sourceMonthlyVolume": 170,
+      "sourceKD": 5,
+      "actualPage": "area-worksheets",
+      "newCapability": "Print genuine L-shaped rectilinear composite area figures using outer-minus-cutout and split-and-add layouts."
+    }
+  ],
+  "relatedOwnerKeywordNotCertified": [
+    {
+      "keyword": "area composite figures",
+      "originalRoute": "geometry-general-worksheets",
+      "reason": "Previously not one of 145 individually flagged gaps. Similar phrase may require its own SERP and route review; not counted as fixed."
+    }
+  ],
+  "source": "User-provided historical 488 keyword-evidence.csv and precisely recorded R63 unsupported items. Old Volume/KD, not refreshed 2026 US Google data.",
+  "scopeLimits": [
+    "Triangle task uses nondegenerate positive integer triangle side lengths; no triangle side-angle ordering or triangle-inequality proof certification.",
+    "L shapes only: axis-aligned outer rectangles minus one upper-right rectangle, not circles, triangles, shaded composite polygons or 3D surface area.",
+    "Existing v18 worksheet, URL share identity, original 488 data, and 51 route definitions remain untouched.",
+    "Opt-in R75 selectors reproduce PDFs with seed, paper, quantity, difficulty, mode; original share URL does not encode them."
+  ],
+  "sourceKeywordCSVModified": false,
+  "original51V18GeneratorsModified": false,
+  "currentUsGoogleSerpVerified": false,
+  "indexApproved": false,
+  "previewNoindex": true,
+  "cloudflareDeploymentShaVerified": false,
+  "physicalPrintTestConfirmed": false,
+  "teacherReviewConfirmed": false
+}
