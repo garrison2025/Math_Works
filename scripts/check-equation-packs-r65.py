@@ -11,7 +11,7 @@ import sys
 import fitz
 
 NUMBER = r"-?\d+(?:\.\d{1,4}|/\d+)?"
-EXPR = re.compile(r"^Solve: ("+NUMBER+r"?x)(?: ([+-]) ("+NUMBER+r"))? = ("+NUMBER+r")$")
+EXPR = re.compile(r"^Solve: ((?:"+NUMBER+r")?x)(?: ([+-]) ("+NUMBER+r"))? = ("+NUMBER+r")$")
 QUESTION = re.compile(r"^\d+\. Solve: (.+)$")
 ANSWER = re.compile(r"^Answer: x = ("+NUMBER+r")$")
 SIZES = {"letter": (612.0,792.0),"a4":(595.28,841.89)}
