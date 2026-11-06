@@ -409,6 +409,26 @@ try{
  assert.equal(await page.locator('.problem .q').first().innerText(),oldFractions);
  checks.push({name:'R69 Firefox exact fraction/decimal mixed thousandths student/teacher/worked Letter PDFs',status:'pass'});
 
+ // R71 Firefox independent multi-mode download on US Letter.
+ await open('multiplication-worksheets');
+ assert.equal(await page.locator('[data-r71-multdiv-pack]').count(),1);
+ assert.equal(await page.locator('[data-r71-multdiv-guide]').count(),1);
+ const originalMultiply=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ await page.locator('[data-multdiv-mode]').selectOption('area-model');
+ await page.locator('[data-multdiv-factors]').selectOption('two-by-one');
+ for(const mode of ['questions','answers','steps']){
+  const event=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="multdiv-'+mode+'"]').click();
+  const got=await event,target=join(out,got.suggestedFilename());
+  await got.saveAs(target);
+  const doc=await PDFDocument.load(readFileSync(target));
+  assert.ok(Math.abs(doc.getPage(0).getWidth()-612)<.1);
+  assert.match(doc.getTitle()??'',/R71\.1/);
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),originalMultiply);
+ checks.push({name:'R71 Firefox true area-model vector PDFs student, answers and worked steps',status:'pass'});
+
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
