@@ -28,7 +28,7 @@ export const topicIntro=(slug:string)=>{
   'multiplication-worksheets':'Generate general multiplication practice from varied factors and difficulty settings. For strictly two-digit or three-digit vertical methods, use the linked specialist worksheets.',
   'addition-worksheets':'Build addition worksheets with multi-digit numbers and selected regrouping practice. Create reproducible sets, practice sheets and separate answer keys.',
   'subtraction-worksheets':'Generate multi-digit subtraction questions with selectable borrowing practice. Use the separate answer key to verify digit alignment and differences.',
-  'division-worksheets':'Build division fact worksheets using whole-number dividend and divisor relationships. Download practice and answer PDFs, or use the specialist long-division generator for written algorithms.',
+  'division-worksheets':'Build whole-number division facts and print separate decimal division practice. Choose whole or decimal divisors, tenths or hundredths quotients, and matching exact-answer and worked-step PDFs. For longer integer algorithms use the dedicated long-division generator.',
   'surface-area-worksheets':'Practice finding the surface area of supported cubes and rectangular prisms. Work with visible dimensions and square units rather than confusing surface area with volume.',
   'functions-worksheets':'Evaluate functions from given inputs or work backward from an output to find its input. Practice exact linear-rule arithmetic with matching solutions.',
   'multiplying-fractions-worksheets':'Multiply numerators and denominators and reduce the exact result to simplest form. Print fraction multiplication exercises and separate matching answers.',
