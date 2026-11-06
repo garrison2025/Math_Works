@@ -55,7 +55,7 @@ export function drawTriangularPrismNet(page:PDFPage,p:Pick<SolidProblem,'a'|'b'|
  write(page,'L='+L,right-203,rowY-165,font,7.1,soft);
  write(page,'Two bases + 3 rectangles',right-202,rowY-178,font,6.6,soft);
 }
-function squareNet(page:PDFPage,p:SolidProblem,right:number,rowY:number,font:PDFFont){
+export function drawSquarePyramidNet(page:PDFPage,p:Pick<SolidProblem,'side'|'slant'>,right:number,rowY:number,font:PDFFont){
  const {side:s,slant:l}=p;
  const scale=Math.min(172/(s+2*l),111/(s+2*l),5);
  const x0=right-206,y0=rowY-147;
@@ -82,7 +82,7 @@ function squareNet(page:PDFPage,p:SolidProblem,right:number,rowY:number,font:PDF
  write(page,'l='+l,xB+3,yB+(l*scale)/2,font,7.2,soft);
  write(page,'1 square + 4 triangles',right-201,rowY-177,font,6.7,soft);
 }
-function tetraNet(page:PDFPage,p:SolidProblem,right:number,rowY:number,font:PDFFont){
+export function drawTetrahedronNet(page:PDFPage,p:Pick<SolidProblem,'side'>,right:number,rowY:number,font:PDFFont){
  const side=p.side,h=side*Math.sqrt(3)/2;
  const scale=Math.min(172/(2*side),111/(2*h),5);
  const x0=right-204,y0=rowY-149;
@@ -141,8 +141,8 @@ export async function createSolidPdf(pack:SolidPack,mode:SolidPdfMode,paper:Pape
     }
    }
    if(p.kind.startsWith('triangular-prism'))drawTriangularPrismNet(page,p,right,rowY,font);
-   else if(p.kind==='square-pyramid-surface')squareNet(page,p,right,rowY,font);
-   else tetraNet(page,p,right,rowY,font);
+   else if(p.kind==='square-pyramid-surface')drawSquarePyramidNet(page,p,right,rowY,font);
+   else drawTetrahedronNet(page,p,right,rowY,font);
    if(j<2)page.drawLine({start:{x:left,y:rowY-181},end:{x:right,y:rowY-181},
     color:guide,thickness:.35});
   }
