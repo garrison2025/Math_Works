@@ -32,6 +32,8 @@ import {createDotPlotPack,type DotPlotMode} from '../lib/statistical-dot-plot';
 import {createDotPlotPdf} from '../lib/statistical-dot-plot-pdf';
 import {createSolidPack,type SolidNetMode} from '../lib/prism-pyramid-pack';
 import {createSolidPdf} from '../lib/prism-pyramid-pdf';
+import {createMixedSolidPack,type MixedSolidMode} from '../lib/mixed-prism-cylinder-pack';
+import {createMixedSolidPdf} from '../lib/mixed-prism-cylinder-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -611,6 +613,30 @@ function setup(root:HTMLElement){
      inform('R78 exact '+mode+' '+output+' PDF downloaded. Original v18 worksheet and share URL unchanged.');
     }catch(error){
      inform(error instanceof Error?'Prism/pyramid PDF failed: '+error.message:'Prism/pyramid PDF failed.',true);
+    }finally{button.disabled=false;}
+   });
+  }
+ }
+ // R79: one genuinely mixed prism/cylinder worksheet, no PDF stitching.
+ if(topic==='volume-of-rectangular-prisms-worksheets'||topic==='surface-area-worksheets'){
+  const selected=root.querySelector<HTMLSelectElement>('[data-r79-mixed-solid-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="r79-mixed-solid-'+output+'"]');
+   if(!button||!selected)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const now=state(),mode=selected.value as MixedSolidMode;
+     inform('Checking prism/cylinder mixed geometry before '+output+' PDF...');
+     const pack=createMixedSolidPack(topic,now.n,now.q,now.difficulty,mode);
+     const bytes=await createMixedSolidPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='mixed-prisms-cylinders-'+pack.task+'-'+mode+'-'+output+'-seed'+now.n+'-'+now.difficulty+'-'+now.q+'-'+paper.value.toLowerCase()+'-r79.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R79 mixed '+pack.task+' '+mode+' '+output+' PDF ready; original topic generator is unchanged.');
+    }catch(error){
+     inform(error instanceof Error?'R79 mixed PDF failed: '+error.message:'R79 mixed PDF failed.',true);
     }finally{button.disabled=false;}
    });
   }
