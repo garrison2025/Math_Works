@@ -5,6 +5,9 @@ import routesJson from '../../data/routes.json';
 import {titleFor,topicIntro,howTo,category,commonMistakes} from '../../lib/site';
 import {sampleProblem} from '../../lib/math';
 import {relatedSkillTasks} from '../../lib/intent-relations';
+import seoTargets from '../../data/seo-targets.json';
+import {topicOptionsFor,maxQuantityForTopic} from '../../lib/topic-options';
+import {hasVerifiedSteps} from '../../lib/capabilities';
 export function getStaticPaths(){return routesJson.filter(x=>x.type!=='HOLD').map(r=>({params:{slug:r.slug},props:{route:r}}));}
 const {route}=Astro.props;
 const title=titleFor(route.slug);
@@ -12,9 +15,39 @@ const categories=routesJson.filter(x=>x.type!=='HOLD'&&x.slug!==route.slug&&cate
 const preview=`/images/worksheets/${route.slug}-sample.webp`;
 const relatedSkills=relatedSkillTasks(route.slug);
 const fixedSample=sampleProblem(route.slug,20261104);
+const seoTarget=seoTargets.find(entry=>entry.slug===route.slug);
+if(!seoTarget)throw new Error('Missing source-backed SEO intent for '+route.slug);
+const specialized=route.type==='CONDITIONAL_TOOL';
+const focusHeading=seoTarget.primary[0].toUpperCase()+seoTarget.primary.slice(1);
+const topicsWithOptions=topicOptionsFor(route.slug).map(def=>({
+ label:def.label,
+ choices:def.choices.slice(0,6).map(choice=>choice.label).join(', '),
+ remainder:Math.max(0,def.choices.length-6)
+}));
+const defaultMax=maxQuantityForTopic(route.slug,{},'standard');
+const stepPdf=hasVerifiedSteps(route.slug);
+const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===skill.slug)?.type==='CONDITIONAL_TOOL');
+
 ---
 <Layout title={`${title} – Free Printable PDF & Answer Key | Math Worksheet Studio`} description={topicIntro(route.slug)} canonicalPath={`/${route.slug}/`}>
 <div class="container"><section class="hero hero-compact"><div class="crumb"><a href="/">All math worksheets</a> / {category(route.slug)}</div><span class="eyebrow">Make it · Print it · Practice it</span><h1>{title}</h1><p>{topicIntro(route.slug)}</p></section><Workspace slug={route.slug}/>
+{specialized?<section class="panel info-panel" data-seo-focus aria-label="Worksheet content and customization">
+<span class="eyebrow">Exact practice scope</span>
+<h2>{focusHeading}: printable practice options</h2>
+<p>Create a fresh practice sheet for this specific math skill using the generator above. These are <strong>automatically generated questions</strong>, not scans of a fixed worksheet or promises of alignment to a particular school grade.</p>
+<h3>What is included?</h3>
+<ul>
+<li>Easy, Standard or Challenge number ranges and up to {defaultMax} questions in Standard mode (some topic settings have lower limits).</li>
+{topicsWithOptions.map(option=><li><strong>{option.label}:</strong> {option.choices}{option.remainder>0? ` and ${option.remainder} more choices`:''}.</li>)}
+<li>Separate student questions and matching teacher answer keys on A4 or US Letter, both reproducible with the same seed.</li>
+<li>{stepPdf?'Step-by-step solutions are also available for this verified topic.':'A step-by-step PDF is not offered for this topic; use the separate answer key.'}</li>
+</ul>
+</section>:<section class="panel info-panel" data-seo-hub aria-label="Broad practice collection and specialist navigation">
+<span class="eyebrow">Choose the right skill</span>
+<h2>{title}: general practice and focused alternatives</h2>
+<p>This collection offers its supported question types, but does not automatically cover every related math skill or grade-level search. If you need a specific task, use a dedicated practice generator instead.</p>
+{hubSpecialists.length>0&&<ul>{hubSpecialists.map(skill=><li><a href={`/${skill.slug}/`}>{titleFor(skill.slug)}</a> — {skill.difference}</li>)}</ul>}
+</section>}
 <section class="info-grid"><div class="panel info-panel"><h2>How to use this worksheet</h2><ol>{howTo(route.slug).map(item=><li>{item}</li>)}</ol><p>Refresh the seed to generate another distinct set. For review, download the separate answer PDF instead of printing answers over the questions. Worked steps are available only on step-verified topics.</p></div><div class="panel info-panel"><h2>Example printable practice</h2><p>A fixed-seed preview created from the same deterministic generator used above.</p><img class="sample-img" src={preview} width="1000" height="560" alt={`${title} printable practice sample with real generated question`}/></div></section>
 {route.slug==='area-of-trapezoids-worksheets'&&<section class="panel info-panel" aria-label="Trapezoid definition choices"><h2>Which trapezoid definition does your classroom use?</h2><p>Some curricula define a trapezoid as a quadrilateral with <strong>at least one pair of parallel sides</strong>, allowing equal parallel bases. Others require <strong>exactly one pair</strong> of parallel sides; in those curricula, a figure with equal bases is not treated as a trapezoid.</p><p>In <strong>Customize worksheet → Parallel-base definition</strong>, select “Unequal parallel bases only” if your class excludes these figures. The default inclusive option preserves earlier reproducible worksheet seeds. All drawings are schematic, not to scale.</p></section>}
 <section class="info-grid" aria-label="Worked example and common mistakes"><div class="panel info-panel"><h2>Worked example</h2><p><strong>Question:</strong> {fixedSample.payload.question}</p><p><strong>Answer:</strong> {fixedSample.expectedAnswer}</p><ol>{fixedSample.solutionSteps.map(s=><li>{s}</li>)}</ol><p>This example is generated from a fixed seed so the explanation and answer refer to the exact same mathematical problem.</p></div><div class="panel info-panel"><h2>Teaching notes</h2><p>The generator offers Easy, Standard and Challenge numerical ranges. These are practice settings, not school curriculum levels or official assessment standards.</p><p>For fractions, compare simplified exact answers; for statistics, use the stated median-of-halves quartile rule; for geometry, keep the dimensions and units consistent.</p><p>Always review the printed answer key before distributing worksheets to a classroom.</p></div></section>
