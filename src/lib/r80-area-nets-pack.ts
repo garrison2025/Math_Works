@@ -136,7 +136,7 @@ export function createR80Pack(seed:number,quantity:number,difficulty:Difficulty=
    const [a,b,c]=rng.pick(triples);
    const length=rng.int(2,max);
    const radius=rng.int(2,Math.min(max,24)),height=rng.int(2,Math.min(28,max+3));
-   const side=rng.int(3,Math.max(15,max)),slant=rng.int(Math.floor(side/2)+1,Math.max(Math.floor(side/2)+1,Math.min(30,max+7)));
+   const side=rng.int(kind==='square-pyramid'?4:3,Math.max(15,max)),slant=rng.int(Math.floor(side/2)+1,Math.max(Math.floor(side/2)+1,Math.min(30,max+7)));
    const baseLength=rng.int(8,Math.max(12,max));
    const stepLength=rng.int(2,baseLength-2);
    const depth=rng.int(2,Math.min(15,max));
