@@ -67,7 +67,8 @@ export function createEquationPack(topic:EquationTopic,kind:EquationNumberType,
    if(x.d===1n)continue;
    const op=topic==='one-step-equations-worksheets'?
     options.operation==='mixed'?rng.pick(['addition','multiplication']):options.operation:'two-step';
-   if(op==='multiplication'&&a.n===a.d)continue;
+   // A coefficient of +1 or -1 collapses a supposed two-operation equation.
+   if(op!=='addition'&&(a.n===a.d||a.n===-a.d))continue;
    let coef=a;
    if(op==='two-step'&&options.coefficient!=='mixed'){
     if(options.coefficient==='positive'&&negative(coef))coef=neg(coef);
