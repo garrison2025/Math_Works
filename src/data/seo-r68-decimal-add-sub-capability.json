@@ -1,0 +1,66 @@
+{
+  "schema": "mathworks-r68-decimal-add-sub-capability/v1",
+  "date": "2026-11-06",
+  "feature": "Opt-in R68.1 exact decimal addition/subtraction column worksheets with fixed one/two-place decimal columns, mixed/addition/subtraction operations, real carrying/borrowing controls and matching student/answer/steps PDF on A4/Letter",
+  "sourceData": "Owner-provided original historic Semrush keyword-evidence.csv. Figures are not refreshed, verified current US Google ranks, impressions or current monthly search volumes.",
+  "originalKeywordRowsChanged": 0,
+  "originalV18GeneratorChanged": false,
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "adding subtracting decimals worksheet",
+      "originalRoute": "subtraction-worksheets",
+      "sourceVolume": 1600,
+      "sourceKD": 21,
+      "newCapability": "Real exact tenths and hundredths mixed arithmetic in aligned printable column worksheets with optional carrying/borrowing."
+    },
+    {
+      "keyword": "adding and subtracting decimals worksheets",
+      "originalRoute": "subtraction-worksheets",
+      "sourceVolume": 1600,
+      "sourceKD": 28,
+      "newCapability": "Seeded mixed/add-only/sub-only decimal worksheets and matching answers."
+    },
+    {
+      "keyword": "adding and subtracting with decimals worksheet",
+      "originalRoute": "subtraction-worksheets",
+      "sourceVolume": 720,
+      "sourceKD": 26,
+      "newCapability": "Actual printed decimal-point aligned vertical arithmetic with selectable regrouping."
+    },
+    {
+      "keyword": "addition problems with decimals",
+      "originalRoute": "addition-worksheets",
+      "sourceVolume": 720,
+      "sourceKD": 22,
+      "newCapability": "Exact decimal addition practice with tenths/hundredths and optional carrying."
+    }
+  ],
+  "supportedRoutes": [
+    "addition-worksheets",
+    "subtraction-worksheets",
+    "mixed-addition-subtraction-worksheets"
+  ],
+  "assessedAgainst": [
+    {
+      "url": "https://www.commoncoresheets.com/adding-subtraction-decimals-vertical/225/download",
+      "finding": "Vertical addition/subtraction worksheet uses actual decimal column practice and regrouping."
+    },
+    {
+      "url": "https://mathpicnic.com/worksheets/decimals/adding-and-subtracting/",
+      "finding": "Teacher/student decimal practice with tenths and hundredths and matching separate answer keys; preserving aligned decimal points is essential."
+    }
+  ],
+  "limits": [
+    "No negative subtraction differences",
+    "No thousandths",
+    "No money word problems or currency formatting",
+    "No mixed precision within one individual problem; each selected question aligns both operands to the same 1 or 2 places",
+    "Extra column extension selectors are NOT encoded in original share URLs",
+    "Not a separate index-approved specialized landing page"
+  ],
+  "indexApproved": false,
+  "liveGoogleUsSerpVerified": false,
+  "physicalPrintReviewed": false,
+  "cloudflareDeploymentShaVerified": false,
+  "preserveHistoricalAudit": "R63 unsupported records are historical and not deleted. Feature implementation does not imply Google SERP agreement. Original 488 rows are untouched."
+}
