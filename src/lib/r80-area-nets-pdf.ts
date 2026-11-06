@@ -80,9 +80,9 @@ export async function createR80Pdf(pack:R80Pack,mode:R80PdfMode,paper:Paper,
  if(!['standard','extra'].includes(writingRoom))throw Error('Invalid R80 writing room');
  const [w,h]=sizes[paper],pdf=await PDFDocument.create();
  const regular=await pdf.embedFont(StandardFonts.Helvetica),bold=await pdf.embedFont(StandardFonts.HelveticaBold);
- const left=42,right=w-42,textWidth=right-left-218,pages=Math.ceil(pack.quantity/3);
- for(let offset=0;offset<pack.quantity;offset+=3){
-  const page=pdf.addPage([w,h]),index=1+offset/3;
+ const left=42,right=w-42,textWidth=right-left-218,perPage=2,pages=Math.ceil(pack.quantity/perPage);
+ for(let offset=0;offset<pack.quantity;offset+=perPage){
+  const page=pdf.addPage([w,h]),index=1+offset/perPage;
   write(page,pack.skill==='nets'?'Find Surface Area from Real Nets':'Composite L-Shaped Solid Surface Area',
    left,h-57,bold,pack.skill==='nets'?15.5:15);
   write(page,(mode==='questions'?'STUDENT QUESTIONS':mode==='answers'?'MATCHING ANSWER KEY':'WORKED SOLUTIONS')+
@@ -92,8 +92,8 @@ export async function createR80Pdf(pack:R80Pack,mode:R80PdfMode,paper:Paper,
   write(page,mode==='questions'?'Name: __________________________    Date: ______________':
    'True proportional net faces with matching original-seed teacher answers.',
    left,h-125,regular,8.0,soft);
-  for(const [i,p] of pack.problems.slice(offset,offset+3).entries()){
-   const rowY=h-168-i*185;
+  for(const [i,p] of pack.problems.slice(offset,offset+perPage).entries()){
+   const rowY=h-174-i*260;
    const question=wrap((offset+i+1)+'. '+p.question,bold,8.4,textWidth);
    if(question.length>7)throw Error('R80 question overflows print row '+p.id);
    question.forEach((line,j)=>write(page,line,left,rowY-11.6*j,bold,8.4));
@@ -116,8 +116,8 @@ export async function createR80Pdf(pack:R80Pack,mode:R80PdfMode,paper:Paper,
     }
    }
    drawNet(page,p,right,rowY,regular);
-   if(i<2)page.drawLine({start:{x:left,y:rowY-180},
-    end:{x:right,y:rowY-180},thickness:.36,color:rules});
+   if(i<perPage-1)page.drawLine({start:{x:left,y:rowY-247},
+    end:{x:right,y:rowY-247},thickness:.36,color:rules});
   }
   write(page,'R80.1  |  '+mode+'  |  '+paper+'  |  Seed '+pack.seed+
    '  |  Page '+index+'/'+pages+'  |  Print at 100% Actual Size',left,42,regular,7,soft);
