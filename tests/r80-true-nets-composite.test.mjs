@@ -70,7 +70,7 @@ test('R80 54 original A4/Letter actual net and joined-composite PDFs',async()=>{
  for(const edition of ['questions','answers','steps']){
   const p=createR80Pack(20261107,8,'standard',skill,mode);
   const file=await PDFDocument.load(await createR80Pdf(p,edition,paper,'extra'));
-  assert.equal(file.getPageCount(),3);
+  assert.equal(file.getPageCount(),4);
   assert.equal(Math.round(file.getPage(0).getWidth()),paper==='A4'?595:612);
   assert.equal(Math.round(file.getPage(0).getHeight()),paper==='A4'?842:792);
   assert.match(file.getTitle()??'',/R80/);
@@ -83,7 +83,7 @@ test('R80 reject forged original geometry, teacher answers, page modes and edite
  for(const [skill,mode] of [['nets','mixed'],['composite','mixed']]){
   const p=createR80Pack(20261107,40,'challenge',skill,mode);
   const pdf=await PDFDocument.load(await createR80Pdf(p,'steps','Letter'));
-  assert.equal(pdf.getPageCount(),14);
+  assert.equal(pdf.getPageCount(),20);
   for(const key of ['answer','question','steps','l','baseLength','stepLength','orientation']){
    const edited=structuredClone(p);
    if(key==='answer'||key==='question')edited.problems[0][key]='invalid';
