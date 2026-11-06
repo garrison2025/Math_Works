@@ -22,7 +22,8 @@
     "qa:writing-room": "node --experimental-strip-types scripts/export-writing-room.mjs",
     "qa:prism-dimensions": "node --experimental-strip-types scripts/export-prism-dimensions.mjs",
     "qa:cartesian-ticks": "node --experimental-strip-types scripts/export-cartesian-ticks.mjs",
-    "qa:stat-chart-pdfs": "node --experimental-strip-types scripts/export-stat-chart-pdfs.mjs"
+    "qa:stat-chart-pdfs": "node --experimental-strip-types scripts/export-stat-chart-pdfs.mjs",
+    "qa:scatter-chart-pdfs": "node --experimental-strip-types scripts/export-scatter-chart-pdfs.mjs"
   },
   "dependencies": {
     "astro": "^5.15.3",
