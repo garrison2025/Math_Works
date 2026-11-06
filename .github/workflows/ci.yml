@@ -50,6 +50,8 @@ jobs:
         run: npm run qa:counting-dot-pdfs
       - name: R60 export 38 A4/Letter teacher-key and student 40-question PDF fixtures
         run: npm run qa:teacher-keys
+      - name: R61 export 90 geometry practice, extra-room and teacher-control A4/Letter PDFs
+        run: npm run qa:geometry-writing-room
       - name: Export Letter and A4 blank actual-size protractor PDFs
         run: npm run qa:protractor-instruments
       - name: Export Letter and A4 universal printer calibration PDFs
@@ -100,6 +102,10 @@ jobs:
         run: .venv-pdf-audit/bin/python scripts/check-pdf-counting-dots.py qa-artifacts/counting-dot-pdfs
       - name: R60 independently inspect 38 teacher and student PDFs for layout gutters and exact answer counts
         run: .venv-pdf-audit/bin/python scripts/check-teacher-key-pdfs.py qa-artifacts/r60-teacher-key
+      - name: R61 adversarial tests reject missing, overlapping and misplaced geometry pencil lines
+        run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_geometry_writing_space.py' -v
+      - name: R61 check true PDF geometry pencil vectors below every drawing and absent from teacher keys
+        run: .venv-pdf-audit/bin/python scripts/check-geometry-writing-space.py qa-artifacts/r61-geometry-writing-space
       - name: R56 audit true-PDF prism L/W/H labels, positions and missing heights
         run: .venv-pdf-audit/bin/python scripts/check-pdf-prism-dimensions.py qa-artifacts/prism-dimensions
       - name: R55 independently audit printed perpendicular-height right-angle squares
@@ -124,6 +130,14 @@ jobs:
         run: .venv-pdf-audit/bin/python -m unittest discover -s tests -p 'test_protractor_geometry_audit.py' -v
       - name: Verify actual 50 mm ruler and 72 mm radius in every exported protractor PDF
         run: .venv-pdf-audit/bin/python scripts/check-protractor-geometry.py qa-artifacts/pdf-stress qa-artifacts/protractor-instruments
+      - name: Archive R61 geometry computation and writing room PDF evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r61-geometry-writing-pdfs
+          path: qa-artifacts/r61-geometry-writing-space/
+          retention-days: 14
+          if-no-files-found: error
       - name: Archive R60 40-question teacher keys and independent vector report
         uses: actions/upload-artifact@v4
         if: always()
