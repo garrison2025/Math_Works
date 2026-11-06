@@ -89,6 +89,14 @@ test('R65 24 PDF combinations keep A4/Letter practice answers and worked steps i
   }
  }
 });
+test('R65 default 8-question practice fits on exactly one A4 or Letter page without a dangling question',async()=>{
+ for(const topic of topics)for(const kind of kinds)for(const paper of ['Letter','A4']){
+  const options=topic.startsWith('one')?{operation:'mixed'}:{coefficient:'mixed'};
+  const pack=createEquationPack(topic,kind,20261106,8,'standard',options);
+  const doc=await PDFDocument.load(await createEquationPackPdf(pack,'questions',paper));
+  assert.equal(doc.getPageCount(),1,topic+' '+kind+' '+paper+' should not produce an orphan question page');
+ }
+});
 test('R65 print layout handles 40 questions and optional extra writing room',async()=>{
  for(const topic of topics)for(const kind of kinds){
   const pack=createEquationPack(topic,kind,929,40);
