@@ -74,8 +74,8 @@ export function createDivisionStoryPack(topic:DivisionStoryPack['topic'],seed:nu
  if(!Number.isInteger(quantity)||quantity<1||quantity>40)throw Error('Select 1–40 division word problems');
  if(!['easy','standard','challenge'].includes(difficulty))throw Error('Invalid story difficulty');
  if(!['mixed',...choices].includes(mode))throw Error('Invalid story mode');
- const rng=new Rng(seed),used=new Set<string>(),problems:DivisionStoryProblem[];
- const shift=rng.int(0,3);problems=[];
+ const rng=new Rng(seed),used=new Set<string>();
+ const shift=rng.int(0,3),problems:DivisionStoryProblem[]=[];
  for(let i=0;i<quantity;i++){
   const kind:DivisionStoryType=mode==='mixed'?choices[(i+shift)%choices.length]:mode;
   let problem:DivisionStoryProblem|undefined;
