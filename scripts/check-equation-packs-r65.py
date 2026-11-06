@@ -85,7 +85,7 @@ def inspect(folder:Path):
                 if actual!=Fraction(pair["answer"][4:]):
                     raise AssertionError(str(file)+": wrong printed answer at "+str(n+1))
             if mode=="steps":
-                if sum(line.startswith("Check:") for line in lines)!=case["quantity"]:
+                if sum(bool(re.match(r"^3\) Check:\s+",line)) for line in lines)!=case["quantity"]:
                     raise AssertionError(str(file)+": missing printed worked check lines")
             elif "Check:" in text:
                 raise AssertionError(str(file)+": answer key leaked worked solutions")
