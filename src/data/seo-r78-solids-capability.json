@@ -1,0 +1,70 @@
+{
+  "schema": "mathworks-r78-exact-solid-nets-and-keyword-capabilities/v1",
+  "date": "2026-11-06",
+  "feature": "R78.1 exact right triangular prism volume and closed surface area, right square pyramid surface area, and regular tetrahedron surface area with true unfolded 2D vector nets",
+  "actualRoutes": [
+    "volume-of-rectangular-prisms-worksheets",
+    "surface-area-worksheets"
+  ],
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "volume of triangular prism worksheet",
+      "sourceMonthlyVolume": 260,
+      "sourceKD": 14,
+      "actualPage": "volume-of-rectangular-prisms-worksheets",
+      "newCapability": "Right triangular prism volume with a Pythagorean right-triangle base and exact 3D prism-length geometry."
+    },
+    {
+      "keyword": "surface area of a triangular prism worksheet",
+      "sourceMonthlyVolume": 260,
+      "sourceKD": 13,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Two real right-triangle bases plus three scaled side rectangles; exact full closed surface formula."
+    },
+    {
+      "keyword": "surface area of pyramids worksheet",
+      "sourceMonthlyVolume": 260,
+      "sourceKD": 5,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Explicit separate right square pyramid and regular triangular pyramid surface-area modes, true 2D nets and worked keys. This does not cover all pyramid shapes."
+    },
+    {
+      "keyword": "surface area square pyramid worksheet",
+      "sourceMonthlyVolume": 210,
+      "sourceKD": 5,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Correct square-base area and four triangular faces using the FACE slant height, with scale-true unfolded net."
+    },
+    {
+      "keyword": "square pyramid surface area worksheet",
+      "sourceMonthlyVolume": 140,
+      "sourceKD": 5,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "True unfolded four-sided right square pyramid net with exact base and slant-height formula."
+    }
+  ],
+  "source": "Owner-supplied historical 488 keyword-evidence.csv, exact original R62/R63 unsupported flags. Old Vol and KD, not current Google ranking or present-day Semrush.",
+  "featureScope": {
+    "rightTriangularPrism": "Right prisms with RIGHT-triangle bases using exact Pythagorean triple dimensions. No oblique prisms.",
+    "squarePyramid": "RIGHT square pyramids whose four isosceles faces share the named FACE slant height; not the perpendicular vertical pyramid height.",
+    "triangularPyramid": "Only regular tetrahedra with four equal equilateral faces and exact square-root-of-three surface area; no arbitrary triangular pyramids.",
+    "net": "Real unfolded connected closed triangular prism, square pyramid and regular tetrahedron face geometry, with one proportional scale per actual net."
+  },
+  "notCreditedHistoricalKeywords": [
+    "surface area of triangular pyramid worksheet",
+    "volume of a prism and cylinder worksheet",
+    "surface area of prisms and cylinders worksheet",
+    "surface area of nets worksheet pdf",
+    "surface area of composite figures",
+    "volume of triangular pyramid worksheet"
+  ],
+  "notCreditedReason": "Specific capabilities above do not yet cover arbitrary triangular pyramids, mixed prism-cylinder worksheet packs, every net type, arbitrary composite solids, or triangular pyramid volume. Similar phrases alone are not evidence of implementation.",
+  "original488RowsEdited": false,
+  "originalV18GeneratorsEdited": false,
+  "allHistoricalFlagsCertified": false,
+  "previewNoindex": true,
+  "approvedForIndexing": false,
+  "cloudflareLiveShaVerified": false,
+  "teacherReviewed": false,
+  "physicalPrinterCalibrationVerified": false
+}
