@@ -18,6 +18,28 @@ export function angleRayLayout(d:Diagram):AngleRayLayout {
 
 
 export type GraphGeometry = {boundX:number;boundY:number;points:XY[];segment?:[XY,XY];kind:'coordinate'|'linear-function'};
+
+/** R57 zero-anchored, mirror-symmetric Cartesian tick marks, shared by SVG
+ * and PDF. A mathematical origin is always a real scale mark, even when
+ * the visible plot bound isn't divisible by the chosen tick interval.
+ */
+export function cartesianAxisTicks(
+ g:GraphGeometry,
+ drawingTask=false
+):{stepX:number;stepY:number;x:number[];y:number[];labeledY:number[]}{
+ if(!Number.isSafeInteger(g.boundX)||!Number.isSafeInteger(g.boundY)
+    ||g.boundX<1||g.boundY<1)
+  throw Error('Cartesian graph requires positive integer axis bounds');
+ const stepX=drawingTask?1:g.boundX<=9?2:g.boundX<=20?5:10;
+ const stepY=drawingTask?1:g.boundY<=9?2:g.boundY<=20?5:10;
+ const marks=(bound:number,step:number)=>{
+  const max=Math.floor(bound/step);
+  return Array.from({length:max*2+1},(_,i)=>(i-max)*step);
+ };
+ const x=marks(g.boundX,stepX),y=marks(g.boundY,stepY);
+ return {stepX,stepY,x,y,labeledY:y.filter(v=>v!==0&&(!drawingTask||v%2===0))};
+}
+
 export function graphGeometry(d:Diagram):GraphGeometry {
  if(d.kind!=='coordinate'&&d.kind!=='linear-function')throw Error('Not a Cartesian graph');
  if(!d.values.every(Number.isFinite))throw Error('Non-finite graph point');
