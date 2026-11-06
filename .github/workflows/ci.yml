@@ -20,6 +20,15 @@ jobs:
         run: npm run qa:seo-readiness
       - name: R63 inspect all 488 original keywords against exact 145 source-backed intent flags
         run: npm run qa:seo-triage
+      - name: R73 export actual 488-keyword coverage after all R66-R73 features
+        run: npm run qa:seo-progress
+      - name: Archive R73 source-grounded 488-keyword current coverage and unresolved intents
+        uses: actions/upload-artifact@v4
+        with:
+          name: r73-488-keyword-true-coverage
+          path: qa-artifacts/r73-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: R70 export corrected 488-keyword routing and 117 remaining intent flags
         run: npm run qa:seo-remap
       - name: Archive R70 reviewed keyword mapping (15 corrected, four ambiguous, original 488 unchanged)
