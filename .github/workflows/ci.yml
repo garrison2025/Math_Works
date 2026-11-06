@@ -22,6 +22,15 @@ jobs:
         run: npm run qa:seo-triage
       - name: R73 export actual 488-keyword coverage after all R66-R73 features
         run: npm run qa:seo-progress
+      - name: R74 export current 488 keyword coverage with verified inequality and circle area work
+        run: npm run qa:seo-progress-r74
+      - name: Archive R74 current evidence-grounded keyword coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: r74-488-keyword-true-coverage
+          path: qa-artifacts/r74-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R73 source-grounded 488-keyword current coverage and unresolved intents
         uses: actions/upload-artifact@v4
         with:
@@ -97,6 +106,8 @@ jobs:
         run: npm run qa:teacher-keys
       - name: R73 export 30 true division story student, teacher and worked-step PDFs
         run: npm run qa:division-stories
+      - name: R74 export 66 true A4/Letter inequality and circle sector practice PDFs
+        run: npm run qa:r74-math
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -135,6 +146,15 @@ jobs:
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
       - name: R73 independently read all printed word problems, interpreted remainders and answers
         run: .venv-pdf-audit/bin/python scripts/check-division-word-problems-r73.py qa-artifacts/r73-division-word-problems
+      - name: R74 independently recheck all 66 real PDFs for exact math, answer isolation and safe margins
+        run: .venv-pdf-audit/bin/python scripts/check-r74-math.py qa-artifacts/r74-inequality-circle
+      - name: Archive R74 mathematically audited inequality/circle/sector student and teacher PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: r74-inequality-circle-area-pdfs
+          path: qa-artifacts/r74-inequality-circle/
+          retention-days: 21
+          if-no-files-found: error
       - name: Archive R73 word problems and independent contextual remainder audit
         uses: actions/upload-artifact@v4
         with:
