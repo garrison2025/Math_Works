@@ -58,29 +58,38 @@ function drawGraph(page:PDFPage,g:InequalityGraph,left:number,right:number,y:num
  if(g.kind==='left'){stroke(left+7,at(g.upper));dot(g.upper,g.closedLeft);}
  if(g.kind==='right'){stroke(at(g.lower),right-7);dot(g.lower,g.closedRight);}
 }
+/** R76 geometry fix: draw the *actual* sector outline, not a full
+ * circle with merely two radius lines. Full circles alone use an ellipse.
+ * Outer arc is approximated with <= 5 degree chord segments; the two radial
+ * boundary segments have precisely the specified interior angle.
+ */
 function drawCircleDiagram(page:PDFPage,p:CircleAreaProblem,x:number,y:number,font:PDFFont){
  const radius=31,angle=p.kind==='semicircle'?180:p.kind==='quarter-circle'?90:p.kind==='sector'?p.degrees:360;
- page.drawCircle({x,y,size:radius,color:rgb(1,1,1),borderColor:ink,borderWidth:1.1});
- const line=(t:number)=>{
-  const a=t*Math.PI/180;
-  page.drawLine({start:{x,y},end:{x:x+radius*Math.cos(a),y:y+radius*Math.sin(a)},
-   thickness:1.2,color:ink});
+ const circle=angle===360;
+ const point=(degrees:number,distance=radius)=>{
+  const a=degrees*Math.PI/180;
+  return {x:x+distance*Math.cos(a),y:y+distance*Math.sin(a)};
  };
- if(p.kind==='diameter'){
-  page.drawLine({start:{x:x-radius,y},end:{x:x+radius,y},thickness:1,color:ink});
- }else if(p.kind!=='missing-radius'){
-  line(0);
-  if(angle!==360)line(angle);
- }
- if(angle!==360){
-  // Angles are represented with actual trigonometric vector segments, not a
-  // decorative wedge; this works for 30, 45, 60, 72, 90, 120, 135, 150, 180.
-  const arc=radius*.48,steps=Math.ceil(angle/8);
-  for(let i=0;i<steps;i++){
-   const a=angle*i/steps*Math.PI/180,b=angle*(i+1)/steps*Math.PI/180;
-   page.drawLine({start:{x:x+arc*Math.cos(a),y:y+arc*Math.sin(a)},
-    end:{x:x+arc*Math.cos(b),y:y+arc*Math.sin(b)},color:blue,thickness:1});
-  }
+ if(circle){
+  page.drawCircle({x,y,size:radius,color:rgb(1,1,1),borderColor:ink,borderWidth:1.1});
+  if(p.kind==='diameter')
+   page.drawLine({start:point(180),end:point(0),thickness:1,color:ink});
+  else if(p.kind==='radius')
+   page.drawLine({start:{x,y},end:point(0),thickness:1.2,color:ink});
+  // In an inverse-radius question the radius is not printed on the circle,
+  // because its numerical value is the answer being sought.
+ }else{
+  // The set boundary of a theta-sector is radius, true central arc, radius.
+  page.drawLine({start:{x,y},end:point(0),thickness:1.2,color:ink});
+  const count=Math.ceil(angle/5);
+  for(let i=0;i<count;i++)
+   page.drawLine({start:point(angle*i/count),end:point(angle*(i+1)/count),
+    thickness:1.1,color:ink});
+  page.drawLine({start:point(angle),end:{x,y},thickness:1.2,color:ink});
+  const small=radius*.44,countSmall=Math.ceil(angle/8);
+  for(let i=0;i<countSmall;i++)
+   page.drawLine({start:point(angle*i/countSmall,small),
+    end:point(angle*(i+1)/countSmall,small),color:blue,thickness:.9});
   drawText(page,angle+' deg',x-radius+1,y-radius-12,font,7.3,muted);
  }
  drawText(page,p.kind==='diameter'?'d='+p.radius*2:p.kind==='missing-radius'?'r=?':'r='+p.radius,
