@@ -39,7 +39,8 @@
     "qa:seo-remap": "node --experimental-strip-types scripts/export-seo-routing-r70.mjs",
     "qa:multdiv-r71": "node --experimental-strip-types scripts/export-multiplication-division-r71.mjs",
     "qa:fraction-strips-r72": "node --experimental-strip-types scripts/export-fraction-strips-r72.mjs",
-    "qa:division-stories": "node --experimental-strip-types scripts/export-division-word-problems-r73.mjs"
+    "qa:division-stories": "node --experimental-strip-types scripts/export-division-word-problems-r73.mjs",
+    "qa:seo-progress": "node --experimental-strip-types scripts/export-seo-progress-r73.mjs"
   },
   "dependencies": {
     "astro": "^5.15.3",
