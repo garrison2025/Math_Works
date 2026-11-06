@@ -14,6 +14,8 @@ import {createDecimalAddSubPack,type DecimalAddSubOperation,type DecimalAddSubPr
 import {createDecimalAddSubPdf} from '../lib/decimal-add-sub-pdf';
 import {createFractionDecimalPack,type ConversionDirection,type ConversionPrecision} from '../lib/fraction-decimal-conversion';
 import {createFractionDecimalPdf} from '../lib/fraction-decimal-conversion-pdf';
+import {createMultDivisionPack,type MultDivisionMode,type AreaFactors,type MultDivisionTopic} from '../lib/multiplication-division-practice';
+import {createMultDivisionPdf} from '../lib/multiplication-division-practice-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -345,6 +347,37 @@ function setup(root:HTMLElement){
      inform('Exact conversion '+mode+' PDF downloaded. Keep the seed, topic, direction and precision to reproduce the set.');
     }catch(e){
      inform(e instanceof Error?'Conversion PDF failed: '+e.message:'Conversion PDF failed.',true);
+    }finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R71 actual fact families, mixed multiplication/division and partitioned
+ // area-model PDFs, separately configured to preserve v18 share identity.
+ if(topic==='multiplication-worksheets'||topic==='division-worksheets'){
+  const modeSelect=root.querySelector<HTMLSelectElement>('[data-multdiv-mode]');
+  const factorsSelect=root.querySelector<HTMLSelectElement>('[data-multdiv-factors]');
+  for(const mode of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="multdiv-'+mode+'"]');
+   if(!button||!modeSelect)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const params=state(),practice=modeSelect.value as MultDivisionMode;
+     const factors=(factorsSelect?.value||'mixed') as AreaFactors;
+     inform('Verifying and preparing '+practice+' '+mode+' PDF...');
+     const pack=createMultDivisionPack(topic as MultDivisionTopic,params.n,params.q,
+      params.difficulty,practice,factors);
+     const bytes=await createMultDivisionPdf(pack,mode,paper.value as Paper);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const download=document.createElement('a');download.href=url;
+     download.download='math-multiply-divide-'+practice+'-'+factors+'-'+mode+
+      '-seed'+params.n+'-'+params.difficulty+'-'+params.q+'-'+paper.value.toLowerCase()+'-r71.pdf';
+     document.body.append(download);download.click();download.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform(practice+' '+mode+' PDF downloaded. Use the same seed and options to recreate teacher/student sheets. Original v18 worksheet unchanged.');
+    }catch(e){
+     inform(e instanceof Error?'Multiplication/division PDF failed: '+e.message:'Multiplication/division PDF failed.',true);
     }finally{button.disabled=false;}
    });
   }
