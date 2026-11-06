@@ -1,0 +1,69 @@
+{
+  "schema": "mathworks-r69-fraction-decimal-conversion-capability/v1",
+  "date": "2026-11-06",
+  "source": "Original owner-provided keyword-evidence.csv Semrush snapshots, NOT independently updated live US Google rankings/volume/KD.",
+  "feature": "R69.1 exact fraction->terminating decimal, exact decimal->simplified rational fraction, and alternating mixed printable student/answer/steps packs with true fraction bar PDF diagrams.",
+  "supportedRoutes": [
+    "fractions-worksheets"
+  ],
+  "v18Changed": false,
+  "originalKeywordRowsChanged": 0,
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "converting from fractions to decimals worksheet",
+      "sourceVolume": 1000,
+      "sourceKD": 24,
+      "originalRoute": "fractions-worksheets",
+      "priorR63": "unsupported",
+      "newScope": "Exact reduced fractions converted to terminating tenths, hundredths and thousandths."
+    },
+    {
+      "keyword": "fractions to decimals worksheet",
+      "sourceVolume": 1300,
+      "sourceKD": 24,
+      "originalRoute": "fractions-worksheets",
+      "priorR63": "unsupported",
+      "newScope": "True fraction-to-decimal vector practice with distinct student and answer PDFs."
+    },
+    {
+      "keyword": "fractions into decimals worksheet",
+      "sourceVolume": 720,
+      "sourceKD": 21,
+      "originalRoute": "fractions-worksheets",
+      "priorR63": "unsupported",
+      "newScope": "Fractions shown as true printable numerator/bar/denominator with exact decimal results."
+    },
+    {
+      "keyword": "decimal to fraction and fraction to decimal worksheet",
+      "sourceVolume": 1300,
+      "sourceKD": 24,
+      "originalRoute": "fractions-worksheets",
+      "priorR63": "unsupported",
+      "newScope": "Alternating exact two-way fraction-to-decimal and decimal-to-simplified-fraction exercises."
+    }
+  ],
+  "publicCompetitorObservations": [
+    {
+      "url": "https://www.mathworksheets4kids.com/convert-fractions-decimals.php",
+      "supports": "Separate fraction-to-decimal, decimal-to-fraction and mixed printable formats; level-based decimal-place conversion."
+    },
+    {
+      "url": "https://www.mathworksheets4kids.com/convert/fractions-decimals/fractions-and-decimals-level2-3.pdf",
+      "supports": "Real mixed source PDF displays fraction->decimal and decimal->fraction exercises."
+    }
+  ],
+  "scopeLimits": [
+    "Only terminating exact decimals of 1 to 3 fractional places; no rounded/repeating decimals",
+    "No fraction decimal percentage tri-conversion",
+    "No negative values",
+    "No pictorial fraction strips or area models",
+    "Fractions can be improper; no school-grade certification",
+    "Original v18 Copy reproducible link does not encode the opt-in conversion selectors"
+  ],
+  "currentGoogleUsSerpVerified": false,
+  "indexApproved": false,
+  "customDomainPurchased": false,
+  "physicalPrinterConfirmed": false,
+  "teacherSignedOff": false,
+  "cloudflareReleaseSHAConfirmed": false
+}
