@@ -52,7 +52,7 @@ export const topicIntro=(slug:string)=>{
   'mean-absolute-deviation-worksheets':'Measure variability from 5, 6 or 8 observations, including balanced and right-skewed samples. Mean and mean absolute deviation are calculated as exact simplified fractions.',
   'box-plots-worksheets':'Calculate quartiles and outliers or construct a modified box plot from data, with a separate completed answer diagram.',
   'printable-protractor':'Print a precise 180° protractor and use the included 50 mm calibration bar to verify physical scale.',
-  'multiplication-tables-worksheets':'Generate new times-table facts for independent practice and quick classroom warmups.',
+  'multiplication-tables-worksheets':'Create fresh multiplication facts for tables 1–12, then print a separate blank 12-by-12 multiplication grid and its complete answer chart on A4 or Letter paper. No account required.',
   'long-division-worksheets':'Practice long division with one- or two-digit divisors and three- or four-digit dividends. Choose exact quotients or remainders, with matching worked steps and printable brackets.',
   'systems-equations-worksheets':'Solve two-variable linear systems by elimination, and classify parallel or coincident equations with no solution or infinitely many solutions.',
   'domain-range-worksheets':'Find the domain and range of relations, and decide whether repeated inputs with different outputs mean a relation is not a function.',
