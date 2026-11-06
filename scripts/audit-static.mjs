@@ -33,6 +33,14 @@ assert.ok(existsSync(notFoundFile),'Missing custom 404.html: Cloudflare would ot
 const notFound=readFileSync(notFoundFile,'utf8');
 assert.match(notFound,/<h1[^>]*>This worksheet page isn.t available\.<\/h1>/i);
 assert.match(notFound,/name="robots"\s+content="noindex,nofollow"/i);
+// When CI/Cloudflare supplies a commit SHA, embed it so deployed HTML is traceable.
+const buildSha=process.env.CF_PAGES_COMMIT_SHA||process.env.GITHUB_SHA||'';
+if(/^[a-f0-9]{40}$/i.test(buildSha)){
+ const home=readFileSync(join(dist,'index.html'),'utf8');
+ assert.ok(home.includes('name="math-works-build-sha"'), 'Build revision not visible in HTML');
+ assert.ok(home.includes(`content="${buildSha.toLowerCase()}"`), 'Build revision does not match CI/deploy environment');
+}
+
 assert.doesNotMatch(notFound,/<link\s+rel="canonical"/i);
 assert.doesNotMatch(notFound,/data-workspace|class="problems-grid"/i);
 for(const route of routes){
