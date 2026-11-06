@@ -1,0 +1,62 @@
+{
+  "schema": "mathworks-r74-inequality-circle-area-capability/v1",
+  "date": "2026-11-06",
+  "feature": "R74.1 original reproducible opt-in PDFs for English-to-inequality translation, AND/OR compound inequality endpoint graphs, and exact circle / general minor sector areas",
+  "actualRoutes": [
+    "inequalities-worksheets",
+    "area-worksheets"
+  ],
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "translating sentences into inequalities",
+      "sourceMonthlyVolume": 1300,
+      "sourceKD": 22,
+      "actualPage": "inequalities-worksheets",
+      "newCapability": "Everyday phrase-to-algebra translation with less/greater, at most/least, exact solution endpoints."
+    },
+    {
+      "keyword": "compound inequalities worksheet",
+      "sourceMonthlyVolume": 880,
+      "sourceKD": 8,
+      "actualPage": "inequalities-worksheets",
+      "newCapability": "True AND interval intersection and OR separated rays, open/closed endpoints with printable teacher diagrams."
+    },
+    {
+      "keyword": "compound inequality worksheets",
+      "sourceMonthlyVolume": 390,
+      "sourceKD": 9,
+      "actualPage": "inequalities-worksheets",
+      "newCapability": "Separate reproducible AND, OR and mixed compound inequality PDF packs."
+    },
+    {
+      "keyword": "area of a circle worksheet",
+      "sourceMonthlyVolume": 720,
+      "sourceKD": 16,
+      "actualPage": "area-worksheets",
+      "newCapability": "Circle area using radius, diameter, semicircle, quarter circle and exact π coefficient, inverse radius exercises."
+    },
+    {
+      "keyword": "area of a sector of a circle worksheet",
+      "sourceMonthlyVolume": 210,
+      "sourceKD": 14,
+      "actualPage": "area-worksheets",
+      "newCapability": "Sector central-angle fractions of full-circle area, including nonquarter angles and exact reduced rational multiples of π."
+    }
+  ],
+  "source": "Existing owner-provided 488 keyword evidence snapshot and R62/R63 unsupported intent flags; no newly invented Semrush metrics.",
+  "scopeLimits": [
+    "Only affine English sentences and bounded AND/OR variable sets, not systems of inequalities or triangle inequality theorem.",
+    "Circle practice targets circle/sector area, not circumference, arc length, shaded composites or three-dimensional spheres.",
+    "Exact symbolic π coefficient, no unsupported numeric pi approximation.",
+    "The opt-in R74 selection is not embedded in original v18 share links; reproduce using same selector, seed and settings.",
+    "No current Google SERP, GSC, teacher or physical print certification is implied."
+  ],
+  "sourceKeywordCSVModified": false,
+  "original51V18GeneratorsModified": false,
+  "currentUsGoogleSerpVerified": false,
+  "indexApproved": false,
+  "previewNoindex": true,
+  "cloudflareDeploymentShaVerified": false,
+  "physicalPrintTestConfirmed": false,
+  "teacherReviewConfirmed": false
+}

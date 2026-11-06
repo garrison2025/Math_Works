@@ -20,6 +20,9 @@ import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
 import {createDivisionStoryPdf} from '../lib/division-word-problems-pdf';
+import {createInequalityPracticePack,type InequalityPracticeMode} from '../lib/inequality-practice';
+import {createCircleAreaPack,type CircleAreaMode} from '../lib/circle-area-practice';
+import {createR74PracticePdf} from '../lib/r74-practice-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -437,6 +440,52 @@ function setup(root:HTMLElement){
      inform('Contextual division '+type+' PDF downloaded. Original division facts are unchanged.');
     }catch(e){inform(e instanceof Error?'Division word problems PDF failed: '+e.message:'Division word problems PDF failed.',true);}
     finally{button.disabled=false;}
+   });
+  }
+ }
+ // R74 opt-in inequality translation / compound AND-OR practice.
+ if(topic==='inequalities-worksheets'){
+  const select=root.querySelector<HTMLSelectElement>('[data-r74-inequality-mode]');
+  for(const mode of ['questions','answers','steps'] as const){
+   const b=root.querySelector<HTMLButtonElement>('[data-action="r74-inequality-'+mode+'"]');
+   if(!b||!select)continue;
+   b.addEventListener('click',async()=>{
+    b.disabled=true;
+    try{
+     const s=state(),skill=select.value as InequalityPracticeMode;
+     inform('Verifying compound inequality answers and preparing '+mode+' PDF...');
+     const pack=createInequalityPracticePack('inequalities-worksheets',s.n,s.q,s.difficulty,skill);
+     const pdf=await createR74PracticePdf(pack,mode,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(pdf)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='inequalities-'+skill+'-'+mode+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r74.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R74 '+skill+' '+mode+' PDF downloaded. Original v18 practice is unchanged.');
+    }catch(e){inform(e instanceof Error?'Inequality extension PDF failed: '+e.message:'Inequality extension PDF failed.',true);}
+    finally{b.disabled=false;}
+   });
+  }
+ }
+ // R74 opt-in full-circle, semicircle, quarter-circle and minor sector area.
+ if(topic==='area-worksheets'){
+  const select=root.querySelector<HTMLSelectElement>('[data-r74-circle-mode]');
+  for(const mode of ['questions','answers','steps'] as const){
+   const b=root.querySelector<HTMLButtonElement>('[data-action="r74-circle-'+mode+'"]');
+   if(!b||!select)continue;
+   b.addEventListener('click',async()=>{
+    b.disabled=true;
+    try{
+     const s=state(),skill=select.value as CircleAreaMode;
+     inform('Verifying reduced exact pi coefficients and preparing '+mode+' PDF...');
+     const pack=createCircleAreaPack('area-worksheets',s.n,s.q,s.difficulty,skill);
+     const pdf=await createR74PracticePdf(pack,mode,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(pdf)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='circle-area-'+skill+'-'+mode+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r74.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R74 '+skill+' '+mode+' PDF downloaded. Original rectangle/square practice is unchanged.');
+    }catch(e){inform(e instanceof Error?'Circle extension PDF failed: '+e.message:'Circle extension PDF failed.',true);}
+    finally{b.disabled=false;}
    });
   }
  }
