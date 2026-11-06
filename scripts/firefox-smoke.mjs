@@ -363,6 +363,32 @@ try{
  }
  assert.equal(await page.locator('.problem .q').first().innerText(),integerOriginal);
  checks.push({name:'R67 Firefox decimal divisor and hundredths student/answer/steps PDFs on Letter',status:'pass'});
+ // R68 independent Firefox test: authentic one-place addition and
+ // two-place subtraction PDF triplets with unchanged original integer preview.
+ for(const scenario of [
+  {topic:'addition-worksheets',operation:'addition',precision:'tenths',regrouping:'no'},
+  {topic:'subtraction-worksheets',operation:'subtraction',precision:'hundredths',regrouping:'yes'}
+ ]){
+  await open(scenario.topic);
+  assert.equal(await page.locator('[data-r68-decimal-add-sub]').count(),1);
+  const original=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-field="paper"]').selectOption('Letter');
+  await page.locator('[data-decimal-add-sub-operation]').selectOption(scenario.operation);
+  await page.locator('[data-decimal-add-sub-places]').selectOption(scenario.precision);
+  await page.locator('[data-decimal-add-sub-regrouping]').selectOption(scenario.regrouping);
+  for(const mode of ['questions','answers','steps']){
+   const event=page.waitForEvent('download',{timeout:45000});
+   await page.locator('[data-action="decimal-add-sub-'+mode+'"]').click();
+   const download=await event,target=join(out,download.suggestedFilename());
+   await download.saveAs(target);
+   const doc=await PDFDocument.load(readFileSync(target));
+   assert.equal(doc.getPage(0).getWidth(),612);
+   assert.match(doc.getTitle()??'',/R68\.1/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),original);
+ }
+ checks.push({name:'R68 Firefox exact decimal column addition and subtraction printable PDF triplets',status:'pass'});
+
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
