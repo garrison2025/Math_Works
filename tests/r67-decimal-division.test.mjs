@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {PDFDocument} from 'pdf-lib';
+import {readFileSync} from 'node:fs';
+import {releasePaths} from '../src/lib/indexation.ts';
+import routes from '../src/data/routes.json' with {type:'json'};
+import r62 from '../src/data/seo-intent-review.json' with {type:'json'};
+import r63 from '../src/data/seo-intent-r63.json' with {type:'json'};
+import capability from '../src/data/seo-r67-decimal-division-capability.json' with {type:'json'};
 import {makeWorksheet} from '../src/lib/math.ts';
 import {createDecimalDivisionPack,verifyDecimalDivisionPack,parseExactDecimal,
  decimalTextExact} from '../src/lib/decimal-division.ts';
@@ -119,4 +125,27 @@ test('R67 original integer division facts and all deterministic v18 contracts ar
  createDecimalDivisionPack('division-worksheets',20261106,40,'challenge','decimal','tenths');
  assert.deepEqual(makeWorksheet('division-worksheets',20261106,8,'standard',{divisor:'mixed'}),before);
  assert.equal(before.generatorVersion,'18');
+});
+
+test('R67 source provenance covers exactly two original decimal division queries without silently indexing the broad division hub',()=>{
+ assert.equal(capability.schema,'mathworks-r67-decimal-division-capability/v1');
+ assert.equal(capability.originalKeywordIntentGaps.length,2);
+ assert.equal(capability.originalKeywordRowsChanged,0);
+ const original=readFileSync(new URL('../src/data/keyword-evidence.csv',import.meta.url),'utf8');
+ const rows=original.trimEnd().split(/\r?\n/),flagged=[...r62.flagged,...r63.issues];
+ const backtick=String.fromCharCode(96),seen=new Set();
+ for(const term of capability.originalKeywordIntentGaps){
+  assert.ok(!seen.has(term.keyword));seen.add(term.keyword);
+  const source=rows.find(row=>row.startsWith(backtick+term.keyword+backtick+','));
+  assert.ok(source,'Source keyword invented: '+term.keyword);
+  const parts=source.split(',');
+  assert.equal(Number(parts[1]),term.historicVolume);
+  assert.equal(Number(parts[2]),term.historicKD);
+  assert.ok(source.endsWith(backtick+'/division-worksheets/'+backtick));
+  assert.ok(flagged.some(row=>row.keyword===term.keyword&&row.slug==='division-worksheets'&&row.classification==='unsupported'));
+ }
+ const allRoutes=routes.map(x=>x.slug).join(',');
+ assert.deepEqual(releasePaths({site:'https://math-works.pages.dev',enabled:'true',routes:allRoutes,branch:'main'},routes),[]);
+ const owned=releasePaths({site:'https://some-future-owned-domain.example.net',enabled:'true',routes:allRoutes,branch:'main'},routes);
+ assert.ok(!owned.includes('/division-worksheets/'),'General hub is not approved for indexing merely because decimal division was added');
 });
