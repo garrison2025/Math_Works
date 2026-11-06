@@ -1245,6 +1245,34 @@ try {
   }finally{await ctx.close()}
  }
  events.push({kind:'interaction',name:'R79 6 true mixed prism/cylinder A4 student, key, steps downloads and v18 unaffected',status:'pass'});
+ // R80 actual student, teacher and worked downloads for BOTH real surface net modules.
+ for(const kind of ['nets','composite']){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:850}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R80 '+kind+': '+e.message));
+   await p.goto(base+'/surface-area-worksheets/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r80-'+kind+']').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const old=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r80-'+kind+'-mode]').selectOption('mixed');
+   for(const edition of ['questions','answers','steps']){
+    const pending=p.waitForEvent('download',{timeout:50000});
+    await p.locator('[data-action="r80-'+kind+'-'+edition+'"]').click();
+    let dl;try{dl=await pending}catch(error){
+     throw new Error('R80 '+kind+' '+edition+': '+await p.locator('[data-status]').innerText()+'; '+String(error));
+    }
+    const pdf=await verifyPdf(dl,'R80 '+kind+' '+edition,{paper:'A4'});
+    assert.equal(pdf.getPageCount(),4);
+    assert.match(pdf.getTitle()??'',/R80/);
+    assert.match(pdf.getTitle()??'',new RegExp(edition));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),old);
+   if(kind==='composite')await p.screenshot({path:join(out,'r80-real-composite-net-download-panel.png'),fullPage:true});
+  }finally{await ctx.close();}
+ }
+ events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
