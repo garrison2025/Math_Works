@@ -1,0 +1,39 @@
+{
+  "schema": "mathworks-r80-actual-face-net-composite/v1",
+  "asOf": "2026-11-07",
+  "feature": "Real student questions that require finding surface area from mathematically unfolded five solid nets, and genuine two-block L-shaped composite-prism total exposed surface area with internal contacts removed.",
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "surface area of nets worksheet pdf",
+      "sourceMonthlyVolume": 110,
+      "sourceKD": 3,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Students calculate total surface area of five true unfolded net types (rectangular prism, right triangular prism, closed cylinder, right square pyramid, regular tetrahedron) with independent numerical teacher keys. True face dimensions are represented by proportionally drawn vectors."
+    },
+    {
+      "keyword": "surface area of composite figures",
+      "sourceMonthlyVolume": 390,
+      "sourceKD": 9,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Actual composite 3D task: two orthogonally joined rectangular prisms with shared fully covered rectangular joint, and connected eight-face L-prism net. Exposed area subtracts both concealed contact faces. Coverage is limited to this composite family."
+    }
+  ],
+  "source": "Owner supplied original 488 keyword evidence and historical R62/R63 unsupported flags. Search volumes and KD are historical snapshots, not refreshed current search measurements.",
+  "featureScope": {
+    "unfolded": "True proportional nets for five defined 3D shape families; paper-size safe student, teacher, and worked-step versions; the question explicitly asks for face-area sum from the net.",
+    "composite": "Only two full-depth right rectangular prisms forming a stepped L cross-section. Uses two true L-shaped end faces and six connected lateral rectangular faces. Left- and right-oriented top block positions.",
+    "exactUnits": "Square units everywhere, exact pi on cylinder and exact sqrt(3) on regular tetrahedron. Distinguishes square pyramid face slant height from vertical altitude.",
+    "notSupported": "No arbitrary compound geometry, holes, spherical or conical joints, oblique compound solids, polygonal curved faces or non-regular tetrahedra."
+  },
+  "unverifiedIntentCoverage": [
+    "Other composite constructions beyond 2 joined full-depth right rectangular prisms.",
+    "Unfolded arbitrary nets other than the five enumerated supported shape families."
+  ],
+  "approvedForIndexing": false,
+  "previewRobots": "noindex,nofollow",
+  "originalOwner488RowsEdited": false,
+  "originalGeneratorV18Edited": false,
+  "teacherManualReview": "NOT RUN",
+  "physicalPrintScale": "NOT VERIFIED",
+  "cloudflareDeployedSHA": "NOT VERIFIED"
+}
