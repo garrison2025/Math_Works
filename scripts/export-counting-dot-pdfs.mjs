@@ -4,14 +4,14 @@
  */
 import {mkdir,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {makeWorksheet,sampleProblem} from '../src/lib/math.ts';
+import {makeWorksheet} from '../src/lib/math.ts';
 import {createWorksheetPdf} from '../src/lib/pdf.ts';
 
 const output='qa-artifacts/counting-dot-pdfs';
 await mkdir(output,{recursive:true});
 const chosen=new Map();
 for(let seed=1;seed<=2000&&chosen.size<12;seed++){
- const p=sampleProblem('number-recognition-worksheets',seed,'standard',{task:'count-dots'});
+ const p=makeWorksheet('number-recognition-worksheets',seed,1,'standard',{task:'count-dots'}).problems[0];
  if(p.diagramSpec.kind!=='dots')throw Error('count-dots lacks diagram');
  const count=Number(p.expectedAnswer);
  if(count>=1&&count<=12&&!chosen.has(count))chosen.set(count,seed);
