@@ -29,7 +29,10 @@ test('R12 missing heights remain masked in geometric diagrams',()=>{
  for(const topic of ['area-of-triangles-worksheets','area-of-parallelograms-worksheets','area-of-trapezoids-worksheets','volume-of-rectangular-prisms-worksheets']){
   const p=sampleProblem(topic,82,'standard',{task:'missing-height'});
   const svg=diagramSVG(p.diagramSpec);
-  assert.match(svg,/>\?(?: height)?<\/text>/);
+  if(topic==='volume-of-rectangular-prisms-worksheets'){
+   assert.match(svg,/class="prism-dimension prism-height"[^>]*>Height: \?<\/text>/);
+   assert.ok(!svg.includes('>Height: '+p.expectedAnswer+'</text>'));
+  }else assert.match(svg,/>\?(?: height)?<\/text>/);
   assert.equal(p.diagramSpec.values.length,topic==='area-of-trapezoids-worksheets'||topic==='volume-of-rectangular-prisms-worksheets'?2:1);
  }
 });

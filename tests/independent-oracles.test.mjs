@@ -127,7 +127,9 @@ test('question-only diagrams do not reveal the unknown answer',()=>{
   const v=sampleProblem('volume-of-rectangular-prisms-worksheets',seed);
   if(v.payload.question.includes('Find its height')){
    assert.equal(v.diagramSpec.values.length,2);
-   assert.ok(diagramSVG(v.diagramSpec).includes('>?<'),`missing height leaked: ${seed}`);
+   const prism=diagramSVG(v.diagramSpec);
+   assert.match(prism,/class="prism-dimension prism-height"[^>]*>Height: \?<\/text>/,`missing height shown or leaked: ${seed}`);
+   assert.ok(!prism.includes('>Height: '+v.expectedAnswer+'</text>'),`height answer leaked: ${seed}`);
   }
   const g=sampleProblem('linear-equations-worksheets',seed);
   assert.equal(graphGeometry(g.diagramSpec).points.length,0);
