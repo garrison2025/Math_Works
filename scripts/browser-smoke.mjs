@@ -1081,6 +1081,43 @@ try {
   }finally{await ctx.close()}
  }
  events.push({kind:'interaction',name:'R74 15 actual Chromium inequality and circle PDF downloads, v18 preserved',status:'pass'});
+ // R75 actual independent triangle/compound geometry controls and student/teacher downloads.
+ for(const trial of [
+  {topic:'inequalities-worksheets',kind:'triangle',skill:'possible'},
+  {topic:'inequalities-worksheets',kind:'triangle',skill:'missing-side'},
+  {topic:'inequalities-worksheets',kind:'triangle',skill:'integer-count'},
+  {topic:'area-worksheets',kind:'composite',skill:'subtract'},
+  {topic:'area-worksheets',kind:'composite',skill:'split'}
+ ]){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R75 '+trial.skill+': '+e.message));
+   await p.goto(base+'/'+trial.topic+'/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r75-'+trial.kind+']').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const initial=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r75-'+trial.kind+'-mode]').selectOption(trial.skill);
+   for(const output of ['questions','answers','steps']){
+    const awaiting=p.waitForEvent('download',{timeout:35000});
+    await p.locator('[data-action="r75-'+trial.kind+'-'+output+'"]').click();
+    let dl;
+    try{dl=await awaiting}catch(e){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R75 '+trial.skill+'/'+output+' download missing: '+status+'; '+String(e));
+    }
+    const doc=await verifyPdf(dl,'R75 '+trial.skill+' '+output,{paper:'A4'});
+    assert.match(doc.getTitle()??'',/R75\.1/);
+    assert.match(doc.getTitle()??'',new RegExp(output));
+    assert.equal(doc.getPageCount(),3);
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),initial);
+   if(trial.skill==='possible'||trial.skill==='subtract')
+    await p.screenshot({path:join(out,'r75-'+trial.skill+'-controls.png'),fullPage:true});
+  }finally{await ctx.close()}
+ }
+ events.push({kind:'interaction',name:'R75 15 actual A4 triangle theorem and L-area student/key/step downloads; v18 unchanged',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
