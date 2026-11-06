@@ -23,6 +23,9 @@ import {createDivisionStoryPdf} from '../lib/division-word-problems-pdf';
 import {createInequalityPracticePack,type InequalityPracticeMode} from '../lib/inequality-practice';
 import {createCircleAreaPack,type CircleAreaMode} from '../lib/circle-area-practice';
 import {createR74PracticePdf} from '../lib/r74-practice-pdf';
+import {createTrianglePack,type TriangleMode} from '../lib/triangle-inequality-pack';
+import {createCompositePack,type CompositeMode} from '../lib/composite-area-pack';
+import {createR75GeometryPdf} from '../lib/r75-geometry-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -485,6 +488,52 @@ function setup(root:HTMLElement){
      document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
      inform('R74 '+skill+' '+mode+' PDF downloaded. Original rectangle/square practice is unchanged.');
     }catch(e){inform(e instanceof Error?'Circle extension PDF failed: '+e.message:'Circle extension PDF failed.',true);}
+    finally{b.disabled=false;}
+   });
+  }
+ }
+ // R75 strict triangle geometry side feasibility and exact integer range/count.
+ if(topic==='inequalities-worksheets'){
+  const selected=root.querySelector<HTMLSelectElement>('[data-r75-triangle-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const b=root.querySelector<HTMLButtonElement>('[data-action="r75-triangle-'+output+'"]');
+   if(!b||!selected)continue;
+   b.addEventListener('click',async()=>{
+    b.disabled=true;
+    try{
+     const s=state(),mode=selected.value as TriangleMode;
+     inform('Verifying triangle side inequalities and preparing '+output+' PDF...');
+     const pack=createTrianglePack('inequalities-worksheets',s.n,s.q,s.difficulty,mode);
+     const bytes=await createR75GeometryPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='triangle-inequality-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r75.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R75 triangle '+mode+' '+output+' PDF downloaded. Original v18 worksheet and share link unchanged.');
+    }catch(e){inform(e instanceof Error?'Triangle theorem PDF failed: '+e.message:'Triangle theorem PDF failed.',true);}
+    finally{b.disabled=false;}
+   });
+  }
+ }
+ // R75 a genuine L polygon and two mathematically equivalent decomposition methods.
+ if(topic==='area-worksheets'){
+  const selected=root.querySelector<HTMLSelectElement>('[data-r75-composite-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const b=root.querySelector<HTMLButtonElement>('[data-action="r75-composite-'+output+'"]');
+   if(!b||!selected)continue;
+   b.addEventListener('click',async()=>{
+    b.disabled=true;
+    try{
+     const s=state(),mode=selected.value as CompositeMode;
+     inform('Verifying L-shaped dimensions and preparing '+output+' PDF...');
+     const pack=createCompositePack('area-worksheets',s.n,s.q,s.difficulty,mode);
+     const bytes=await createR75GeometryPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='composite-L-area-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r75.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R75 composite '+mode+' '+output+' PDF downloaded with matching L geometry and teacher keys.');
+    }catch(e){inform(e instanceof Error?'Composite area PDF failed: '+e.message:'Composite area PDF failed.',true);}
     finally{b.disabled=false;}
    });
   }
