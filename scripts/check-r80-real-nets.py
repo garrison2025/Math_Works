@@ -164,8 +164,8 @@ for rec in docs:
     x0,y0,x1,y1=span['bbox']
     assert 35<=x0 and x1<=w-35,(rec['file'],'text x margin',span['text'],x0,x1)
     assert 35<=y0 and y1<=h-35,(rec['file'],'text y margin',span['text'],y0,y1)
-    # Row break is 13 pt wide: teacher text/labels must not intrude.
-    assert not (421<=y0<=432 and x0< w-35),(rec['file'],'row collision',span['text'],y0)
+    # The row divider is an actual stroke at y=421 PDF top coordinates.\n    # Check bounding-box INTERSECTION, not a wide band that includes\n    # correctly positioned second-row text starting about y=425.
+    assert not (y0<=421.18 and y1>=420.82 and x0<w-35),(rec['file'],'text intersects actual row divider',span['text'],y0,y1)
    lines,ellipses=segments(page)
    for i,q in enumerate(rec['problems'][pi*2:pi*2+2]):
     row=h-174-i*260
