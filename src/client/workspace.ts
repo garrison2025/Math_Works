@@ -18,6 +18,8 @@ import {createMultDivisionPack,type MultDivisionMode,type AreaFactors,type MultD
 import {createMultDivisionPdf} from '../lib/multiplication-division-practice-pdf';
 import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
+import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
+import {createDivisionStoryPdf} from '../lib/division-word-problems-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -406,6 +408,34 @@ function setup(root:HTMLElement){
      setTimeout(()=>URL.revokeObjectURL(url),60000);
      inform('Printable '+mode+' fraction strips PDF downloaded. This is a fixed reference chart: worksheet seed and number of questions do not affect it.');
     }catch(e){inform(e instanceof Error?'Fraction strips PDF failed: '+e.message:'Fraction strips PDF failed.',true);}
+    finally{button.disabled=false;}
+   });
+  }
+ }
+ // R73: contextual division word problem sheets; preserve all original v18
+ // division-fact generator answers, problem preview and share-link identity.
+ if(topic==='division-worksheets'){
+  const storyMode=root.querySelector<HTMLSelectElement>('[data-division-story-mode]');
+  for(const type of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="division-story-'+type+'"]');
+   if(!button||!storyMode)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const stateNow=state(),mode=storyMode.value as DivisionStoryMode;
+     inform('Preparing exact division story '+type+' PDF...');
+     const pack=createDivisionStoryPack('division-worksheets',stateNow.n,
+      stateNow.q,stateNow.difficulty,mode);
+     const pdf=await createDivisionStoryPdf(pack,type,paper.value as Paper,
+      writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(pdf)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='division-word-problems-'+mode+'-'+type+'-seed'+stateNow.n+
+      '-'+stateNow.difficulty+'-'+stateNow.q+'-'+paper.value.toLowerCase()+'-r73.pdf';
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Contextual division '+type+' PDF downloaded. Original division facts are unchanged.');
+    }catch(e){inform(e instanceof Error?'Division word problems PDF failed: '+e.message:'Division word problems PDF failed.',true);}
     finally{button.disabled=false;}
    });
   }
