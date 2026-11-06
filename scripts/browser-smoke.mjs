@@ -877,6 +877,49 @@ try {
  assert.equal(await page.locator('[data-r68-decimal-add-sub]').count(),0,
   'R68 add/sub controls leaked to unrelated decimal division page');
  
+ // R69 fraction ↔ decimal conversion: actual browser-initiated PDFs from
+ // each conversion direction and precision; isolate automatic download batches.
+ for(const example of [
+  {direction:'fraction-to-decimal',precision:'tenths',paper:'A4'},
+  {direction:'decimal-to-fraction',precision:'thousandths',paper:'Letter'},
+  {direction:'mixed',precision:'mixed',paper:'A4'}
+ ]){
+  const isolated=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const p=await isolated.newPage();
+   p.on('pageerror',e=>pageErrors.push('R69 conversion '+example.direction+': '+e.message));
+   await p.goto(base+'/fractions-worksheets/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r69-conversion]').count(),1);
+   assert.equal(await p.locator('[data-r69-conversion-guide]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const integerOriginal=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption(example.paper);
+   await p.locator('[data-conversion-direction]').selectOption(example.direction);
+   await p.locator('[data-conversion-precision]').selectOption(example.precision);
+   for(const mode of ['questions','answers','steps']){
+    const download=p.waitForEvent('download',{timeout:20000});
+    await p.locator('[data-action="conversion-'+mode+'"]').click();
+    let dl;
+    try{dl=await download}
+    catch(e){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R69 '+example.direction+' '+example.precision+' '+mode+' export failed: '+status+'; '+String(e));
+    }
+    const pdf=await verifyPdf(dl,'R69 fraction decimal '+example.direction+' '+mode,{paper:example.paper});
+    assert.match(pdf.getTitle()??'',/R69\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(mode));
+    assert.match(pdf.getSubject()??'',/separate from v18 worksheet generators/);
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),integerOriginal);
+   if(example.direction==='mixed')
+    await p.screenshot({path:join(out,'r69-fraction-decimal-mixed-ui.png'),fullPage:true});
+  }finally{await isolated.close()}
+ }
+ events.push({kind:'interaction',name:'R69 exact fraction decimal downloads across three browser modes preserving v18',status:'pass'});
+ await page.goto(base+'/addition-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r69-conversion]').count(),0,
+  'Fraction decimal conversion panel leaked to unrelated addition topic');
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
