@@ -1046,3 +1046,97 @@ check, teacher signoff, current Google US SERP/GSC evidence, verified
 Cloudflare deployment SHA and explicit approved route-index list are
 independent future launch requirements. CI pass alone does not
 authorize indexing or imply organic traffic.
+
+### R70–R72 — correct semantic keyword routing and ship real math visuals
+
+After R69, 51 generators and the 488 **unchanged** owner-supplied
+Semrush rows had 145 historical semantic-intent flags. R70 reviews
+the **19 wrong-page** records individually. A separate correction
+overlay in \`src/data/seo-routing-r70.json\` safely points **15**
+to genuine implemented specialist routes. **Four** ambiguous
+two- or three-digit multiplication searches are deliberately held
+for actual Google US SERP inspection, rather than advertising a
+2×2 or 3×2 algorithm for a query that may mean something else.
+
+The original CSV, source candidate route column, R62/R63 triage
+history and KD/Volume values are **not overwritten**.
+\`src/lib/seo-routing-r70.ts\` and \`src/pages/[slug]/index.astro\`
+add contextual **links to working specialist tools** from formerly
+misrouted parent pages. Their existence does not authorize public
+indexation, assert ranking position or imply that Google redirects
+can be configured on the owner-less preview.
+
+\`npm run qa:seo-remap\` exports the **488 original terms** with
+source and reviewed-effective routes, dispositions, 19 review
+records, unresolved issue queue and clear launch gates. In the R72
+state, **15** source-to-specialist corrections and **22** new
+capability resolutions from R66–R72 leave **108 historically flagged
+issues**: 45 still unsupported, 59 awaiting semantic/SERP review
+and 4 ambiguous misroutes. The other 343 terms have not
+individually passed live US SERP inspection; no claims of fully
+verified 488-term SEO readiness are made.
+
+#### R71 — actual multiplication/division facts, inverse families and area models
+
+An **opt-in R71.1 pack** on both
+\`/multiplication-worksheets/\` and \`/division-worksheets/\`
+prints one of three distinct math tasks:
+
+- **Mixed multiplication and division:** alternate exact products
+  and quotients with no remainders. Deduplicate by the actual
+  **visible problem**, not hidden factor ordering, to prevent
+  repeated questions in 40-question batches.
+- **Fact families:** give two distinct factors and their product.
+  Students complete four genuinely linked multiplication/division
+  equations. The teacher key prints all four identities.
+- **Area-model multiplication** (multiplication page only):
+  choose 2-digit × 1-digit, 2-digit × 2-digit or mixed problems.
+  A true rectangle is partitioned into tens and units across
+  both dimensions; student partial-product cells are blank, and
+  teacher cells plus worked solutions use exact integer partial
+  products. Diagrams are expressly *schematic / not to scale*.
+
+All three modes download genuine A4/Letter **student, answer and
+worked-step vector PDFs**, using visible seed, difficulty and 1–40
+question settings. Original generator v18, existing share links and
+standard PDF buttons are unchanged. The old Copy link does **not**
+encode these independent R71 selections.
+
+\`tests/r71-multiplication-division-practice.test.mjs\` checks
+thousands of seeded problems, independent products, division and
+every cell's area arithmetic. \`scripts/export-multiplication-division-r71.mjs\`
+provides 30 actual PDFs with original rows. The Python/PyMuPDF
+oracle \`scripts/check-multiplication-division-r71.py\` compares
+visible math and vector rectangle geometry with each problem and
+rejects student answer leakage. Chromium/Firefox click PDF buttons.
+
+Exactly **eight** former unsupported source phrases now match the
+implemented narrower tasks; see
+\`src/data/seo-r71-mult-div-capability.json\`. “Multiplication
+arrays” (dot grid), story problems, and lattice multiplication
+**remain unimplemented** and are not SEO claims.
+
+#### R72 — genuine equal-whole printable fraction strips
+
+The \`/fractions-worksheets/\` page adds two more **real PDF**
+buttons: a blank, colorable fraction strip chart and a
+unit-fraction labelled teacher chart. Every bar is **420 PDF
+points wide**, with equal 1/n cell sizes. Choose basic rows
+1, 2, 3, 4, 6, 8 or extended rows that also include 5, 10, 12.
+US Letter and A4 are single-page, printer-friendly vector
+charts. Since this is a **fixed reference chart**, the original
+random seed and question quantity do *not* affect it.
+
+The source-backed \`fraction strips printable\` query (historically
+1,000 monthly searches, KD 22) now has an actual matching diagram;
+other generic “fraction pictures” queries **do not** automatically
+count as resolved. \`tests/r72-fraction-strips.test.mjs\` checks
+partition math, answer isolation, all 8 paper/mode variants and
+tampering. \`scripts/check-fraction-strips-r72.py\` measures real
+PDF vector paths and exact printed fractions independently.
+Human/physical printing signoff is a separate future step.
+
+**Indexation:** all preview routes remain \`noindex,nofollow\`
+without canonical/schema emission. Do not approve the 8 hubs,
+4 HOLD routes or any other URLs for real search indexing before
+the domain and owner-approved SEO release process.
