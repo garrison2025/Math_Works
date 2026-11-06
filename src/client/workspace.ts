@@ -16,6 +16,8 @@ import {createFractionDecimalPack,type ConversionDirection,type ConversionPrecis
 import {createFractionDecimalPdf} from '../lib/fraction-decimal-conversion-pdf';
 import {createMultDivisionPack,type MultDivisionMode,type AreaFactors,type MultDivisionTopic} from '../lib/multiplication-division-practice';
 import {createMultDivisionPdf} from '../lib/multiplication-division-practice-pdf';
+import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
+import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -379,6 +381,32 @@ function setup(root:HTMLElement){
     }catch(e){
      inform(e instanceof Error?'Multiplication/division PDF failed: '+e.message:'Multiplication/division PDF failed.',true);
     }finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R72 genuine one-page vector fraction strips: fixed chart, not seeded
+ // exercises. Paper type and denominator-set choice control PDF identity.
+ if(topic==='fractions-worksheets'){
+  const setInput=root.querySelector<HTMLSelectElement>('[data-fraction-strip-set]');
+  for(const mode of ['blank','labeled'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="fraction-strip-'+mode+'"]');
+   if(!setInput||!button)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const denominatorSet=setInput.value as FractionStripSet;
+     inform('Preparing exact unit-fraction '+mode+' strip PDF ...');
+     const pack=makeFractionStrips(denominatorSet,mode);
+     const bytes=await createFractionStripsPdf(pack,paper.value as Paper);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const download=document.createElement('a');download.href=url;
+     download.download='fraction-strips-'+denominatorSet+'-'+mode+'-'+paper.value.toLowerCase()+'-r72.pdf';
+     document.body.append(download);download.click();download.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Printable '+mode+' fraction strips PDF downloaded. This is a fixed reference chart: worksheet seed and number of questions do not affect it.');
+    }catch(e){inform(e instanceof Error?'Fraction strips PDF failed: '+e.message:'Fraction strips PDF failed.',true);}
+    finally{button.disabled=false;}
    });
   }
  }
