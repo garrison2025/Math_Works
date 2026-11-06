@@ -1256,6 +1256,7 @@ try {
    assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
    const old=await p.locator('.problem .q').first().innerText();
    await p.locator('[data-field="paper"]').selectOption('A4');
+   assert.equal(await p.locator('[data-r80-'+kind+'-mode]').count(),1,'R80 skill selector must exist');
    await p.locator('[data-r80-'+kind+'-mode]').selectOption('mixed');
    for(const edition of ['questions','answers','steps']){
     const pending=p.waitForEvent('download',{timeout:50000});
