@@ -729,6 +729,37 @@ try {
  await page.goto(base+'/one-step-equations-worksheets/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-action^="multiplication-grid-"]').count(),0,'Chart controls leaked to unrelated topics');
 
+ // R65 browser evidence: opt-in decimal/fraction equation packs use the
+ // EXACT current seed/options, without changing the v18 integer preview.
+ for(const topic of ['one-step-equations-worksheets','two-step-equations-worksheets']){
+  await page.goto(base+'/'+topic+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('[data-r65-equation-pack]').count(),1);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  await page.locator('[data-field="paper"]').selectOption('A4');
+  const oldQuestion=await page.locator('.problem .q').first().innerText();
+  if(topic.startsWith('one'))await page.locator('[data-option="operation"]').selectOption('multiplication');
+  else await page.locator('[data-option="coefficient"]').selectOption('negative');
+  const integerPreview=await page.locator('.problem .q').first().innerText();
+  assert.ok(integerPreview.length>5);
+  for(const kind of ['decimal','fraction']){
+   await page.locator('[data-equation-kind]').selectOption(kind);
+   for(const mode of ['questions','answers','steps']){
+    const event=page.waitForEvent('download',{timeout:30000});
+    await page.locator('[data-action="equation-pack-'+mode+'"]').click();
+    const result=await verifyPdf(await event,'R65 '+topic+' '+kind+' '+mode,{paper:'A4'});
+    assert.match(result.getTitle()??'',/R65.1/);
+    assert.match(result.getTitle()??'',new RegExp(kind==='decimal'?'Decimal':'Fraction'));
+    assert.match(result.getSubject()??'',/separate from the original integer generator v18/);
+   }
+   assert.equal(await page.locator('.problem .q').first().innerText(),integerPreview,
+    'Separate equation extension altered the original integer worksheet');
+  }
+  assert.notEqual(oldQuestion.length,0);
+  events.push({kind:'interaction',name:'R65 '+topic+' both exact decimal/fraction PDF triplets, A4 and untouched v18',status:'pass'});
+ }
+ await page.goto(base+'/multiplication-tables-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-equation-kind]').count(),0,
+  'Equation extension controls leaked to unrelated worksheet topic');
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
