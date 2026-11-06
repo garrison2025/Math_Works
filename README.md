@@ -580,3 +580,55 @@ appropriate physical print/teacher QA plus Google Search Console checks
 are done. Do not activate indexation or submit the preview domain. Any
 future reclassification or remapping must preserve the owner's source
 data and report what actually changed.
+
+### R63 — expanded source-keyword search-intent audit and actual tool-choice pathways
+
+This revision continues the R62 source-vs-implemented-feature review; it
+does not invent keyword data or fabricate search performance. The original
+\`src/data/keyword-evidence.csv\` with all 488 original phrases and
+historical Semrush fields is unchanged.
+
+The new \`src/data/seo-intent-r63.json\` records **124 further exact-phrase**
+triage issues after checking the real \`math.ts\` generator behavior. Together
+with the initial 21 R62 flags, **145 original keyword mappings** have
+specific reasons requiring action: **67 unsupported by current features,
+19 pointing at an incorrect tool, 59 requiring search-intent/feature
+review**. The other **343** are not thereby individually Google-SERP
+verified, and none gains automatic index approval. The flags carry their
+original source keyword and route rather than mutating the input table.
+“Wrong page” is a proposal to review the real alternative generator
+rather than an automatic redirect or canonical change.
+
+Concrete distinctions include decimal vs integer division, static
+multiplication charts vs generated fact drills, composite/circle/cylinder
+shape requests vs the supported flat area/cube/rectangular-prism models,
+mixed-number multipliers vs current fraction×fraction generators,
+word-problem multiplication vs numeric-only drills, and function graphing
+vs linear-rule evaluation. These are practical capability differences,
+not just arbitrary SEO keyword clustering.
+
+Six additional **bidirectional internal task comparisons** now help users
+choose an actually supported generator: prism volume vs surface area,
+two-digit-by-two-digit vs two-digit-by-one-digit multiplication,
+function evaluation vs domain/range and relation classification,
+slope calculation vs plotting linear equations, 2D area vs 3D exterior
+area, and angle classification vs physical protractor printing. The
+existing 24 approved V2 intent relations remain intact; they are not
+silently overwritten or counted as new traffic targets.
+
+\`npm run qa:seo-triage\` exports a full **488-row** review report, a
+**145-row** issue file, a **19-row** wrong-page recommendation file and a
+55-route priority matrix. Every issue has an exact-match source assertion,
+a classification/reason, and whether a real specialist page exists.
+\`npm run audit:static\` blocks on mispromoted unsupported phrases and
+missing reciprocal internal links. The R63 JS tests cover issue
+uniqueness, 51 primary focus terms, actual math topic contrasts, and
+noindex release safety. CI archives the report under
+\`r63-full-keyword-intent-matrix\` on each run.
+
+**The formal launch gate is not lifted:** every real Google SERP still
+requires external verification; there is no independently audited new
+GSC traffic, teacher review, physical-size print measurement or verified
+Cloudflare production SHA. Until a purchased domain and explicit owner
+indexation decision, the preview remains \`noindex,nofollow\`, without
+production canonical/schema publication.
