@@ -1,0 +1,43 @@
+{
+  "schema": "mathworks-r67-decimal-division-capability/v1",
+  "date": "2026-11-06",
+  "feature": "R67.1 opt-in, exact seeded decimal-quotient division practice with selectable whole or decimal divisor, tenths/hundredths precision and three printable PDF types (student, answer, worked steps)",
+  "sourceData": "Original owner-provided Semrush keyword-evidence.csv. Values are historical snapshots, NOT newly measured US Google ranking or current search metrics.",
+  "route": "division-worksheets",
+  "seoRouteStatus": "Built CONDITIONAL_HUB, NOT approved for indexing",
+  "originalKeywordRowsChanged": 0,
+  "originalV18GeneratorChanged": false,
+  "originalKeywordIntentGaps": [
+    {
+      "keyword": "decimal division worksheet",
+      "historicVolume": 1300,
+      "historicKD": 21,
+      "originalFlag": "unsupported",
+      "newNarrowCapability": "exact noninteger terminating decimal quotient division worksheets, with both whole and decimal divisors"
+    },
+    {
+      "keyword": "decimal division worksheets",
+      "historicVolume": 720,
+      "historicKD": 20,
+      "originalFlag": "unsupported",
+      "newNarrowCapability": "fresh decimal division problem sets and exact separate answer and worked solutions PDFs"
+    }
+  ],
+  "exclusions": [
+    "repeating decimals",
+    "rounded quotients",
+    "remainder division",
+    "word problems",
+    "general long-division algorithm layout",
+    "grade-specific curriculum certification"
+  ],
+  "releaseGate": {
+    "customDomain": false,
+    "indexApproved": false,
+    "currentGscTrafficVerified": false,
+    "currentGoogleUsSerpVerified": false,
+    "physicalPrinterSignoff": false,
+    "cloudflareCommitMatchVerified": false
+  },
+  "policy": "Keep historic keyword flags, route mapping, and original 488 source records unchanged. New feature does not automatically approve hub indexing or imply a standalone new keyword page."
+}
