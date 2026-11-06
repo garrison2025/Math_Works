@@ -98,6 +98,18 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button class="btn" type="button" data-action="multdiv-answers">Extra answer key PDF</button>
 <button class="btn" type="button" data-action="multdiv-steps">Extra worked steps PDF</button></div>
 <p class="hint">Use the same seed, difficulty, number of problems, practice mode and paper size to reproduce identical student and teacher PDFs. In the area-model student file, partial-product cells are intentionally blank; the teacher PDF contains exact values.</p>
+</div>}{slug==='fractions-worksheets'&&<div class="calibration-card" data-r72-fraction-strips aria-label="Print blank and labelled equal-width unit fraction strips">
+<strong>Printable fraction strips — equal whole, exact parts</strong>
+<p class="hint">Print real vector fraction strips that use the same 420 pt whole for every row, divided equally into halves, thirds, quarters and more. Choose blank strips for shading and cutting, or labelled teacher strips for reference.</p>
+<div class="field"><label for="fraction-strip-set">Fraction strip denominators</label><select id="fraction-strip-set" data-fraction-strip-set>
+<option value="extended">Extended: 1, 2, 3, 4, 5, 6, 8, 10 and 12</option>
+<option value="basic">Basic: 1, 2, 3, 4, 6 and 8</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="fraction-strip-blank">Blank coloring strips PDF</button>
+<button type="button" class="btn" data-action="fraction-strip-labeled">Labelled teacher strips PDF</button>
+</div>
+<p class="hint">Use the paper size above. This is a fixed printable chart rather than a randomized question set; changing the worksheet seed or question count does not change the strips. Print at Actual size (100%) for consistent physical lengths.</p>
 </div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <details class="calibration-card" data-print-calibration>
       <summary>Printer scale check <span class="calibration-mini">Recommended before classroom printing</span></summary>
