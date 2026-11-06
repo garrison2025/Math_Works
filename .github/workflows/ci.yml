@@ -86,6 +86,8 @@ jobs:
         run: npm run qa:counting-dot-pdfs
       - name: R60 export 38 A4/Letter teacher-key and student 40-question PDF fixtures
         run: npm run qa:teacher-keys
+      - name: R73 export 30 true division story student, teacher and worked-step PDFs
+        run: npm run qa:division-stories
       - name: R72 export 8 true printable A4/Letter equal-width fraction strip charts
         run: npm run qa:fraction-strips-r72
       - name: R71 export 30 true area-model, fact-family and mixed facts A4/Letter PDFs
@@ -122,6 +124,15 @@ jobs:
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: R73 independently read all printed word problems, interpreted remainders and answers
+        run: .venv-pdf-audit/bin/python scripts/check-division-word-problems-r73.py qa-artifacts/r73-division-word-problems
+      - name: Archive R73 word problems and independent contextual remainder audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r73-division-word-problem-pdfs
+          path: qa-artifacts/r73-division-word-problems/
+          retention-days: 21
+          if-no-files-found: error
       - name: R72 independently inspect all fraction strip PDF vector partitions and teacher labels
         run: .venv-pdf-audit/bin/python scripts/check-fraction-strips-r72.py qa-artifacts/r72-fraction-strips
       - name: Archive R72 blank coloring strips, labelled teacher charts and true vector geometry report
