@@ -294,7 +294,8 @@ function plotDiagram(page:PDFPage,d:Diagram,x:number,y:number,w:number,h:number,
   l(.07,.48,.94,.48);
   for(const tick of axis.ticks){const px=toX(tick);l(px,.40,px,.57);
    const label=String(tick),fontSize=8;
-   page.drawText(label,{x:x+px*w-font.widthOfTextAtSize(label,fontSize)/2,y:y+.64*h,size:fontSize,font,color:ink});
+   // Keep numeric tick captions below the baseline, away from the box's .32-.64h band.
+    page.drawText(label,{x:x+px*w-font.widthOfTextAtSize(label,fontSize)/2,y:y+.235*h,size:fontSize,font,color:ink});
   }
   if(showSolution){
    const q=quartiles(d.values),start=toX(q.q1),end=toX(q.q3);
