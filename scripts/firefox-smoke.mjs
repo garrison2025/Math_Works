@@ -516,6 +516,25 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),untouched);
  }
  checks.push({name:'R75 Firefox 6 real Letter triangle/L-area student/key/steps PDFs; preview noindex',status:'pass'});
+ // R76 actual Firefox Letter PDFs for combined closed cylinder area/volume.
+ await open('surface-area-worksheets');
+ assert.equal(await page.locator('[data-r76-cylinder]').count(),1);
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ const originalCylinder=await page.locator('.problem .q').first().innerText();
+ await page.locator('[data-field="paper"]').selectOption('Letter');
+ await page.locator('[data-r76-cylinder-mode]').selectOption('surface-and-volume');
+ for(const output of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-action="r76-cylinder-'+output+'"]').click();
+  const dl=await pending,target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPageCount(),3);
+  assert.equal(pdf.getPage(0).getWidth(),612);
+  assert.match(pdf.getTitle()??'',/R76\.1/);
+ }
+ assert.equal(await page.locator('.problem .q').first().innerText(),originalCylinder);
+ checks.push({name:'R76 Firefox exact 3 combined cylinder Letter PDF student, teacher and worked downloads',status:'pass'});
  // R42: independently verify the JS-disabled SSR fallback on four different
  // mathematics categories in Firefox, not only in Chromium.
  const fallback=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
