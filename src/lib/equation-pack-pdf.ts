@@ -63,7 +63,9 @@ export function verifyEquationPack(pack:EquationPack):void{
  }
 }
 function wrap(text:string,font:PDFFont,fontSize:number,width:number):string[]{
- const safe=text.replace(/−/g,'-').replace(/×/g,'x').replace(/÷/g,'/').replace(/[^\x20-\x7E]/g,'');
+ // WinAnsi Helvetica supports true multiplication/division symbols. Never
+ // substitute a plain x for multiplication inside worked algebra.
+ const safe=text.replace(/−/g,'-').replace(/[^\x20-\x7E×÷]/g,'');
  const parts=safe.split(/\s+/).filter(Boolean),lines:string[]=[];
  let current='';
  for(const part of parts){
