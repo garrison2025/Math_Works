@@ -693,3 +693,61 @@ unaltered, and \`noindex,nofollow\` stays active on pages.dev.
 Cloudflare deployment SHA; independently verified real Google US
 SERP intent/ranks across all 43 specialized routes; custom domain;
 GSC indexing/ranking tests. No broad SEO release is authorized.
+
+### R65 — optional exact decimal and fraction equations without changing 51 original generators
+
+R64 public competitor comparisons identified a legitimate problem type gap:
+the existing one- and two-step equation tools generated **integer**
+examples, while comparable sites offered decimal and fraction exercises.
+Both existing equation pages now have a **separate, opt-in** panel to
+print decimal or fraction equation practice. This is implemented math,
+not extra SEO-only text.
+
+- **One-step:** equation forms **x + b = c** (including negative b,
+  displayed as subtraction) and **ax = c**, both with exact decimal
+  or reduced rational values and a noninteger solution.
+- **Two-step:** **ax + b = c** with a nonzero signed coefficient;
+  the page's positive/negative coefficient selector affects the
+  extension as well as the original generator.
+- **Configuration:** uses the visible 32-bit seed, difficulty, 4–40
+  questions, equation-form selector, A4/Letter paper and the extra
+  writing-room setting. For identical extra packs, reproduce the
+  same seed, number type, difficulty, question count and options.
+- **Exports:** three real vector PDFs for each extra pack: student
+  questions with handwriting rules (no answer leak), a matching
+  answer key, and worked algebra/check steps. All questions and
+  answers use exact BigInt rational arithmetic, not rounded
+  JavaScript floating-point values.
+- **Identity safety:** this is a separate **R65.1** extension,
+  not a change to the original seeded **generator v18** math,
+  question signatures, 51 other generators or their old shared
+  URLs. The original Copy reproducible link applies to the original
+  integer worksheet only; it does not include the separate
+  extension number-type selector. Do not claim otherwise.
+- **Validation:** \`tests/r65-equation-packs.test.mjs\` runs
+  independent rational arithmetic oracles over multiple seeds,
+  number types, problem forms and paper sizes, and rejects altered
+  answers at the PDF boundary.
+  \`scripts/export-equation-packs-r65.mjs\` writes **24 actual PDFs**:
+  2 topics × 2 number types × A4/Letter × 3 output modes,
+  accompanied by a full question manifest.
+  \`scripts/check-equation-packs-r65.py\` uses an independent Python
+  \`fractions.Fraction\` solver to re-solve all printed PDF questions
+  and compare the printed answers, verify student answer isolation,
+  pencil rules, printed step-check lines, and safe page dimensions.
+  Chromium and Firefox also click the actual download controls.
+- **SEO honesty:** the original source evidence includes
+  \`one step equations worksheet\` (reported 2,900 monthly
+  queries, KD 6) and \`two step equations worksheet\` (4,400,
+  KD 10), but these are **older supplied Semrush snapshots**,
+  not verified current Google US Volume/KD/rank or real GSC
+  traffic. The additive page capability status is in
+  \`src/data/seo-r65-equation-capability.json\`.
+  The extension does **not** provide word problems, new grades,
+  general inequalities or curriculum alignment.
+
+This iteration does not authorize publication: the Cloudflare
+pages.dev preview stays \`noindex,nofollow\`. A custom domain,
+owner page-by-page index authorization, confirmed deployed SHA,
+real teacher/physical printer QA and independently verifiable
+Google US SERP/GSC observations are separate launch conditions.
