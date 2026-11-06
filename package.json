@@ -26,7 +26,8 @@
     "qa:scatter-chart-pdfs": "node --experimental-strip-types scripts/export-scatter-chart-pdfs.mjs",
     "qa:counting-dot-pdfs": "node --experimental-strip-types scripts/export-counting-dot-pdfs.mjs",
     "qa:teacher-keys": "node --experimental-strip-types scripts/export-teacher-key-pdfs.mjs",
-    "qa:geometry-writing-room": "node --experimental-strip-types scripts/export-geometry-writing-space.mjs"
+    "qa:geometry-writing-room": "node --experimental-strip-types scripts/export-geometry-writing-space.mjs",
+    "qa:seo-readiness": "node --experimental-strip-types scripts/export-seo-readiness.mjs"
   },
   "dependencies": {
     "astro": "^5.15.3",
