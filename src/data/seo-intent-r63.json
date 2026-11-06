@@ -1,0 +1,875 @@
+{
+  "schema": "mathworks-r63-intent-triage/v1",
+  "state": "INITIAL_SYSTEMATIC_TRIAGE_NOT_SERP_VERIFIED",
+  "method": "Exact original CSV terms examined against the supported math.ts generators. These are actionable mismatch flags, not an assertion that every other term is approved.",
+  "issues": [
+    {
+      "slug": "two-digit-multiplication-worksheets",
+      "keyword": "multiplication worksheets 2 digit by 1",
+      "classification": "wrong-page",
+      "suggestedRoute": null,
+      "reason": "Factor size conflicts with the 2-digit-by-2-digit only generator; use specialized 2x1/3x2 routes."
+    },
+    {
+      "slug": "two-digit-multiplication-worksheets",
+      "keyword": "multiplication worksheets 3 digits by 2 digits",
+      "classification": "wrong-page",
+      "suggestedRoute": null,
+      "reason": "Factor size conflicts with the 2-digit-by-2-digit only generator; use specialized 2x1/3x2 routes."
+    },
+    {
+      "slug": "inequalities-worksheets",
+      "keyword": "triangle inequality theorem worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Symbolic one/two-step inequalities do not implement triangle-inequality geometry or compound AND/OR inequality sets."
+    },
+    {
+      "slug": "inequalities-worksheets",
+      "keyword": "compound inequality worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Symbolic one/two-step inequalities do not implement triangle-inequality geometry or compound AND/OR inequality sets."
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "surface area of rectangular prism worksheet",
+      "classification": "wrong-page",
+      "suggestedRoute": "surface-area-worksheets",
+      "reason": "This page calculates volume, while the existing surface-area generator can cover rectangular-prism faces."
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "surface area of rectangular prism worksheet with answers",
+      "classification": "wrong-page",
+      "suggestedRoute": "surface-area-worksheets",
+      "reason": "This page calculates volume, while the existing surface-area generator can cover rectangular-prism faces."
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "surface area of a rectangular prism worksheet answers",
+      "classification": "wrong-page",
+      "suggestedRoute": "surface-area-worksheets",
+      "reason": "This page calculates volume, while the existing surface-area generator can cover rectangular-prism faces."
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "volume of a prism and cylinder worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Only rectangular prisms are implemented; cylinders or triangular prisms are unsupported."
+    },
+    {
+      "slug": "volume-of-rectangular-prisms-worksheets",
+      "keyword": "volume of triangular prism worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Only rectangular prisms are implemented; cylinders or triangular prisms are unsupported."
+    },
+    {
+      "slug": "area-worksheets",
+      "keyword": "composite figures area worksheet pdf",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Squares/rectangles are implemented, not composite areas or circular sectors."
+    },
+    {
+      "slug": "area-worksheets",
+      "keyword": "area of a sector of a circle worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Squares/rectangles are implemented, not composite areas or circular sectors."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "printable multiplication tables",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "multiplication tables print",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "multiplication facts chart printable",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "multiplication table to 100",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "times table to 100",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "free multiplication times table",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "printable times table",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "printable multiplication table",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "times tables printable",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "times tables workbook printable",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Static multiplication charts/tables and workbook format are not equivalent to printable fact-drill questions."
+    },
+    {
+      "slug": "multiplication-tables-worksheets",
+      "keyword": "multiplication by 3 digits worksheets",
+      "classification": "wrong-page",
+      "suggestedRoute": "three-digit-by-two-digit-multiplication-worksheets",
+      "reason": "3-digit multiplicands are beyond the 1–12 multiplication facts generator."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication worksheet two digit",
+      "classification": "wrong-page",
+      "suggestedRoute": "two-digit-multiplication-worksheets",
+      "reason": "Strict multi-digit multiplication queries are better served by dedicated column-practice generators."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "2 digit multiplication worksheet",
+      "classification": "wrong-page",
+      "suggestedRoute": "two-digit-multiplication-worksheets",
+      "reason": "Strict multi-digit multiplication queries are better served by dedicated column-practice generators."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3 and 2 digit multiplication worksheets",
+      "classification": "wrong-page",
+      "suggestedRoute": "two-digit-multiplication-worksheets",
+      "reason": "Strict multi-digit multiplication queries are better served by dedicated column-practice generators."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "2 digit and 3 digit multiplication worksheets",
+      "classification": "wrong-page",
+      "suggestedRoute": "two-digit-multiplication-worksheets",
+      "reason": "Strict multi-digit multiplication queries are better served by dedicated column-practice generators."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "math worksheets multiplication and division",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication and division worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "fact families multiplication and division",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "division multiplication fact families worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication and division worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication and division fact families",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "division and multiplication worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication division worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Combined multiplication-division tests and fact-family tasks are not generated here."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication word problems grade 4",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication story problems",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "area model multiplication worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication arrays worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "gelosia multiplication worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication on number line",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication of whole numbers on number line",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "No story problems, array sheets, lattice method, area model or number-line multiplication diagram generator exists on this page."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication 100",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "one hundred multiplication problems",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "timed multiplication worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication fluency worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3 digit by 3 digit multiplication",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3-digit by 3-digit multiplication worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3 by 3 digit multiplication worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3 digit by 3 digit multiplication worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3 digit multiplication worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "three digit multiplication",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "3 digit by 1 digit multiplication worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "multiplication-worksheets",
+      "keyword": "multiplication problem solving",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "A timed, 100-question, specific 3x3 or fluency-assessment mode is not a proven task match."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fraction times fraction worksheet",
+      "classification": "wrong-page",
+      "suggestedRoute": "multiplying-fractions-worksheets",
+      "reason": "Multiplication-only fraction requests should use the existing targeted multiply-fractions generator."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "converting from fractions to decimals worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fractions to decimals worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fraction strips printable",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fractions into decimals worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "decimal to fraction and fraction to decimal worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fractions on a number line worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fraction pictures",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "changing mixed fractions to improper fractions worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "number line fractions worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fraction number lines worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Current fraction operation questions do not generate decimal conversions, strips, number-line templates, pictures or mixed-number conversions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "dividing fractions word problems",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "The generator has no fraction word-problem mode."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "simplifying fractions worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "simplifying fractions worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "fraction simplification worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "reducing fractions a worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "simplify fractions worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "reduce fractions worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "simplifying fractions worksheet pdf",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Binary arithmetic with reduced results is different from standalone simplifying/reducing fractions."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "dividing fractions by whole numbers worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Fraction arithmetic has no explicit whole-number-divisor targeted mode; SERP task fit needs checking."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "divide fractions by whole numbers worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Fraction arithmetic has no explicit whole-number-divisor targeted mode; SERP task fit needs checking."
+    },
+    {
+      "slug": "fractions-worksheets",
+      "keyword": "division of fractions by whole numbers worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Fraction arithmetic has no explicit whole-number-divisor targeted mode; SERP task fit needs checking."
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition with pictures",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Number expression addition does not create visual picture addition or decimal addition."
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition pictures",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Number expression addition does not create visual picture addition or decimal addition."
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition problems with decimals",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Number expression addition does not create visual picture addition or decimal addition."
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition to 20 worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Fixed 0–20 addition and timed tests require their own assessment/number-range options."
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition timed test",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Fixed 0–20 addition and timed tests require their own assessment/number-range options."
+    },
+    {
+      "slug": "addition-worksheets",
+      "keyword": "addition facts worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Fixed 0–20 addition and timed tests require their own assessment/number-range options."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "adding subtracting decimals worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Subtraction worksheet is integer-based; no decimal arithmetic is implemented."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "adding and subtracting decimals worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Subtraction worksheet is integer-based; no decimal arithmetic is implemented."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "adding and subtracting with decimals worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Subtraction worksheet is integer-based; no decimal arithmetic is implemented."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "2 digit subtraction without regrouping",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The subtracting engine uses three-digit minuends; no one/two-digit-only mode is verified."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "single digit subtraction worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The subtracting engine uses three-digit minuends; no one/two-digit-only mode is verified."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "two digit subtraction without regrouping",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The subtracting engine uses three-digit minuends; no one/two-digit-only mode is verified."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "subtraction worksheets single digit",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The subtracting engine uses three-digit minuends; no one/two-digit-only mode is verified."
+    },
+    {
+      "slug": "subtraction-worksheets",
+      "keyword": "subtracting 2 digit numbers from 2 digit numbers",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The subtracting engine uses three-digit minuends; no one/two-digit-only mode is verified."
+    },
+    {
+      "slug": "place-value-worksheets",
+      "keyword": "place value chart to millions",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "A static place-value chart template is not part of the digit/value question generator."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "decimal division worksheets",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This page generates division facts; decimal division and story problems are not implemented."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "division equation word problems",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This page generates division facts; decimal division and story problems are not implemented."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "division word problems for 4th graders",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This page generates division facts; decimal division and story problems are not implemented."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "word problem with division",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This page generates division facts; decimal division and story problems are not implemented."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "3 digit by 1 digit division",
+      "classification": "wrong-page",
+      "suggestedRoute": "long-division-worksheets",
+      "reason": "A three-digit dividend by one-digit divisor should use the long-division specialist instead of simple facts."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "3rd grade division worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Grade-specific claims need curriculum alignment beyond the fact-only division generator."
+    },
+    {
+      "slug": "division-worksheets",
+      "keyword": "division worksheets grade 4",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Grade-specific claims need curriculum alignment beyond the fact-only division generator."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of pyramids worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of a triangular prism worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area square pyramid worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of triangular pyramid worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "square pyramid surface area worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area cylinder worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of cylinder worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "cylinder surface area worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of nets worksheet pdf",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area and volume of a cylinder worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of prisms and cylinders worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "Cubes and rectangular prisms are supported, not cylinders, pyramids, nets or triangular prisms."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "surface area of prisms worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Generic prism or area/volume combined wording is broader than the actual cube/rectangular-prism area generator."
+    },
+    {
+      "slug": "surface-area-worksheets",
+      "keyword": "area and surface area worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Generic prism or area/volume combined wording is broader than the actual cube/rectangular-prism area generator."
+    },
+    {
+      "slug": "functions-worksheets",
+      "keyword": "graph of a function worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This generator evaluates linear functions and missing inputs, not graphing or quadratic transformations."
+    },
+    {
+      "slug": "functions-worksheets",
+      "keyword": "quadratic functions and transformations worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This generator evaluates linear functions and missing inputs, not graphing or quadratic transformations."
+    },
+    {
+      "slug": "functions-worksheets",
+      "keyword": "functions and graphs worksheet",
+      "classification": "unsupported",
+      "suggestedRoute": null,
+      "reason": "This generator evaluates linear functions and missing inputs, not graphing or quadratic transformations."
+    },
+    {
+      "slug": "functions-worksheets",
+      "keyword": "function not a function worksheet",
+      "classification": "wrong-page",
+      "suggestedRoute": "domain-range-worksheets",
+      "reason": "Function-or-not classification is in the domain/range relation generator, not general function evaluation."
+    },
+    {
+      "slug": "functions-worksheets",
+      "keyword": "identifying a function worksheet",
+      "classification": "wrong-page",
+      "suggestedRoute": "domain-range-worksheets",
+      "reason": "Function-or-not classification is in the domain/range relation generator, not general function evaluation."
+    },
+    {
+      "slug": "multiplying-fractions-worksheets",
+      "keyword": "how to multiply mixed fractions with whole numbers",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Mixed fractions and whole-number factor tasks are not explicitly provided by the current fraction×fraction options."
+    },
+    {
+      "slug": "multiplying-fractions-worksheets",
+      "keyword": "multiplying fractions times whole numbers worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Mixed fractions and whole-number factor tasks are not explicitly provided by the current fraction×fraction options."
+    },
+    {
+      "slug": "multiplying-fractions-worksheets",
+      "keyword": "multiplying mixed fractions worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "Mixed fractions and whole-number factor tasks are not explicitly provided by the current fraction×fraction options."
+    },
+    {
+      "slug": "slope-worksheets",
+      "keyword": "find slope and y intercept from graph worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The generator computes slopes from pairs of coordinates; graph-first or slope-intercept form tasks need live SERP task review."
+    },
+    {
+      "slug": "slope-worksheets",
+      "keyword": "finding slope from a graph worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The generator computes slopes from pairs of coordinates; graph-first or slope-intercept form tasks need live SERP task review."
+    },
+    {
+      "slug": "slope-worksheets",
+      "keyword": "finding a slope from a graph worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The generator computes slopes from pairs of coordinates; graph-first or slope-intercept form tasks need live SERP task review."
+    },
+    {
+      "slug": "slope-worksheets",
+      "keyword": "worksheet slope intercept form",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The generator computes slopes from pairs of coordinates; graph-first or slope-intercept form tasks need live SERP task review."
+    },
+    {
+      "slug": "slope-worksheets",
+      "keyword": "graph slope worksheet",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The generator computes slopes from pairs of coordinates; graph-first or slope-intercept form tasks need live SERP task review."
+    },
+    {
+      "slug": "slope-worksheets",
+      "keyword": "8th grade slope worksheets",
+      "classification": "needs-review",
+      "suggestedRoute": null,
+      "reason": "The generator computes slopes from pairs of coordinates; graph-first or slope-intercept form tasks need live SERP task review."
+    }
+  ]
+}
