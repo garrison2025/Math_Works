@@ -10,6 +10,8 @@ import {createFractionLinePack,type FractionLineTask,type FractionLineRange} fro
 import {createFractionLinePdf} from '../lib/fraction-number-line-pdf';
 import {createDecimalDivisionPack,type DecimalDivisionDivisor,type DecimalDivisionPrecision} from '../lib/decimal-division';
 import {createDecimalDivisionPdf} from '../lib/decimal-division-pdf';
+import {createDecimalAddSubPack,type DecimalAddSubOperation,type DecimalAddSubPrecision,type DecimalAddSubRegrouping,type DecimalAddSubTopic} from '../lib/decimal-add-sub';
+import {createDecimalAddSubPdf} from '../lib/decimal-add-sub-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -276,6 +278,39 @@ function setup(root:HTMLElement){
      inform('Exact decimal division '+mode+' PDF downloaded. Repeat the seed and selectors to reproduce; the original integer division worksheet is unchanged.');
     }catch(e){inform(e instanceof Error?'Decimal division PDF failed: '+e.message:'Decimal division PDF failed.',true);}
     finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R68: opt-in vertically aligned exact decimal addition/subtraction packs.
+ // Never mutate the v18 integer generator, original answer map or share link.
+ if(topic==='addition-worksheets'||topic==='subtraction-worksheets'||topic==='mixed-addition-subtraction-worksheets'){
+  const operationSelect=root.querySelector<HTMLSelectElement>('[data-decimal-add-sub-operation]');
+  const placesSelect=root.querySelector<HTMLSelectElement>('[data-decimal-add-sub-places]');
+  const regroupSelect=root.querySelector<HTMLSelectElement>('[data-decimal-add-sub-regrouping]');
+  for(const output of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="decimal-add-sub-'+output+'"]');
+   if(!button||!operationSelect||!placesSelect||!regroupSelect)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const params=state(),operation=operationSelect.value as DecimalAddSubOperation;
+     const precision=placesSelect.value as DecimalAddSubPrecision;
+     const regrouping=regroupSelect.value as DecimalAddSubRegrouping;
+     inform('Preparing exact decimal '+output+' with vertically aligned place values...');
+     const pack=createDecimalAddSubPack(topic as DecimalAddSubTopic,params.n,params.q,
+      params.difficulty,operation,precision,regrouping);
+     const bytes=await createDecimalAddSubPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='decimal-column-'+topic+'-'+operation+'-'+precision+'-'+regrouping+'-'+output+
+      '-seed'+params.n+'-'+params.difficulty+'-'+params.q+'-'+paper.value.toLowerCase()+'-r68.pdf';
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R68 decimal '+output+' PDF downloaded. Same seed and selectors reproduce the same sheet; original integer practice unchanged.');
+    }catch(e){
+     inform(e instanceof Error?'R68 decimal PDF failed: '+e.message:'R68 decimal PDF failed.',true);
+    }finally{button.disabled=false;}
    });
   }
  }
