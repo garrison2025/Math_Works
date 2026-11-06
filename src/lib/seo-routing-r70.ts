@@ -1,7 +1,7 @@
 /** R70 verified task-to-specialist navigation; does not rewrite historical
  * Semrush rows, assert fresh Google ranks, or authorize indexing.
  */
-import routing from '../data/seo-routing-r70.json';
+import routing from '../data/seo-routing-r70.json' with {type:'json'};
 export type CorrectedTaskLink={slug:string;label:string;description:string};
 export function correctedTaskLinksFor(sourceSlug:string):CorrectedTaskLink[]{
  const grouped=new Map<string,CorrectedTaskLink>();
