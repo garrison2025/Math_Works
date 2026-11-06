@@ -19,7 +19,7 @@ const server=createServer((req,res)=>{
   let path=resolve(site,`.${requested}`);
   if(path!==site&&!path.startsWith(site+sep)){res.writeHead(403);res.end();return;}
   if(existsSync(path)&&statSync(path).isDirectory())path=join(path,'index.html');
-  if(!existsSync(path)||!statSync(path).isFile()){res.writeHead(404);res.end('Not found');return;}
+  if(!existsSync(path)||!statSync(path).isFile()){res.writeHead(404,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});createReadStream(join(site,'404.html')).pipe(res);return;}
   res.writeHead(200,{'Content-Type':mime[extname(path)]??'application/octet-stream','Cache-Control':'no-store'});
   createReadStream(path).pipe(res);
  }catch(error){res.writeHead(400);res.end('Invalid path');}
@@ -47,6 +47,20 @@ async function verifyPdf(download,label,{paper='Letter'}={}){
 try {
  if(!executablePath)throw Error('Chromium/Google Chrome not found on runner; browser QA cannot be marked PASS');
  browser=await chromium.launch({executablePath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ // Use an isolated context: expected 404 responses must not pollute the asset-error monitor.
+ const missingContext=await browser.newContext({viewport:{width:390,height:844}});
+ const missingPage=await missingContext.newPage();
+ for(const missing of ['word-problems-worksheets','geometry-general-worksheets','not-a-real-worksheet-r81']){
+  const response=await missingPage.goto(base+'/'+missing+'/',{waitUntil:'load'});
+  assert.equal(response?.status(),404,'Missing/HOLD must return HTTP 404, never homepage 200: '+missing);
+  assert.match(await missingPage.locator('h1').innerText(),/worksheet page isn.t available/i);
+  assert.equal(await missingPage.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  assert.equal(await missingPage.locator('link[rel="canonical"]').count(),0);
+  assert.equal(await missingPage.locator('[data-workspace]').count(),0);
+ }
+ await missingPage.screenshot({path:join(out,'r81-404-mobile.png'),fullPage:true});
+ await missingContext.close();
+ events.push({kind:'404',status:'pass',scope:'two HOLD routes and arbitrary unknown path return distinct HTTP 404 HTML'});
  const context=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
  // R42: request-level privacy evidence, including failed local assets. Collect
  // before the very first navigation, not after page loading has finished.
