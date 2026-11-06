@@ -483,3 +483,46 @@ handwriting comfort and duplex classroom printing still require actual
 paper and a human. The Cloudflare preview remains \`noindex,nofollow\`
 with no purchased production domain, and the deployed Cloudflare commit
 SHA must be verified separately from GitHub CI.
+
+### R61 — diagram-based calculation handwriting space and printed-row acceptance
+
+The existing PDF offered topic-specific pencil rules for fractions and
+equations, digit-aware long-division scratch rows, and an optional extra-room
+setting. A printability audit found that **calculation-based geometry
+illustrations had no default calculation lines below the picture**.
+Students using the standard setting were forced to write around or over the
+printed diagram. The question/answer/steps math and the 51 indexed-candidate
+route definitions were not changed.
+
+The standard **student questions** PDF now includes one full-width line
+under simpler shape area and angle calculations, or two for multi-step
+triangle/parallelogram/trapezoid area, volume, surface area, and Pythagorean
+problems, on ten verified geometry topics. Opt-in *Extra writing room* adds
+one further line to those drawings. These lines are included in
+font-measured question heights **before pagination**; their 21pt spacing
+and the full-width 40pt-margin geometry layout remain unchanged.
+Statistics reading/plotting, basic angle recognition, long division, the
+calibrated protractor and other specialized figures receive no new default
+rules. The last two retain their original integrated work/scale layouts.
+Teacher answer keys and worked steps NEVER gain question-writing guides.
+
+Regression evidence is emitted by
+\`npm run qa:geometry-writing-room\`, which generates **90 real PDFs**
+for 15 topics (10 calculation families and 5 unchanged controls),
+both Letter and A4, across standard questions, extra-room questions
+and corresponding teacher answers. An independent PyMuPDF check reads
+actual stroked PDF lines, matches them to the correct numbered problem,
+checks that all are beneath each diagram and clear of the next prompt,
+checks accurate 21pt rule spacing, paper-safe margins, PDF page sequence,
+answer isolation and 8/8 exercises without loss. Deliberately corrupted
+line layouts are covered by Python adversarial tests. Existing
+51-generator maximum-count exports, fraction bar vector inspection,
+long-division guide checks, line collision/margin audits, browser smoke
+and Firefox QA remain in the blocking CI pipeline.
+
+The evidence is **digital-print only**, not proof that a real teacher
+prefers the writing dimensions or that the user's physical printer
+reproduces PDF vectors at 100% scale. Schoolteacher approval, measured
+A4/Letter test prints and Cloudflare deployed commit confirmation are
+separate pending gates. Preview remains \`noindex,nofollow\`, and no
+production domain has been purchased or approved for indexation.
