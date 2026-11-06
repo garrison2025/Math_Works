@@ -606,6 +606,7 @@ try{
  await page.locator('[data-field="paper"]').selectOption('Letter');
  for(const kind of ['nets','composite']){
   assert.equal(await page.locator('[data-r80-'+kind+']').count(),1);
+  assert.equal(await page.locator('[data-r80-'+kind+'-mode]').count(),1,'R80 skill selector must exist');
   await page.locator('[data-r80-'+kind+'-mode]').selectOption('mixed');
   for(const edition of ['questions','answers','steps']){
    const pending=page.waitForEvent('download',{timeout:55000});
