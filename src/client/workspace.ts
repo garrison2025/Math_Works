@@ -26,6 +26,8 @@ import {createR74PracticePdf} from '../lib/r74-practice-pdf';
 import {createTrianglePack,type TriangleMode} from '../lib/triangle-inequality-pack';
 import {createCompositePack,type CompositeMode} from '../lib/composite-area-pack';
 import {createR75GeometryPdf} from '../lib/r75-geometry-pdf';
+import {createCylinderPack,type CylinderMode} from '../lib/cylinder-pack';
+import {createCylinderPdf} from '../lib/cylinder-pdf';
 import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
@@ -535,6 +537,30 @@ function setup(root:HTMLElement){
      inform('R75 composite '+mode+' '+output+' PDF downloaded with matching L geometry and teacher keys.');
     }catch(e){inform(e instanceof Error?'Composite area PDF failed: '+e.message:'Composite area PDF failed.',true);}
     finally{b.disabled=false;}
+   });
+  }
+ }
+ // R76: exact closed or lateral cylinder area, volume and combined PDFs.
+ if(topic==='surface-area-worksheets'){
+  const selected=root.querySelector<HTMLSelectElement>('[data-r76-cylinder-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="r76-cylinder-'+output+'"]');
+   if(!button||!selected)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const now=state(),mode=selected.value as CylinderMode;
+     inform('Checking cylinder dimensions and exact pi formulas for '+output+'...');
+     const pack=createCylinderPack('surface-area-worksheets',now.n,now.q,now.difficulty,mode);
+     const bytes=await createCylinderPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');
+     a.href=url;
+     a.download='cylinder-'+mode+'-'+output+'-seed'+now.n+'-'+now.difficulty+'-'+now.q+'-'+paper.value.toLowerCase()+'-r76.pdf';
+     document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R76 cylinder '+mode+' '+output+' PDF ready with exact pi and proportional net.');
+    }catch(e){inform(e instanceof Error?'Cylinder PDF failed: '+e.message:'Cylinder PDF failed.',true);}
+    finally{button.disabled=false;}
    });
   }
  }
