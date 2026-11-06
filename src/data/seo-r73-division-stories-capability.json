@@ -1,0 +1,49 @@
+{
+  "schema": "mathworks-r73-division-word-problems-capability/v1",
+  "date": "2026-11-06",
+  "feature": "R73.1 genuine seeded word problems requiring interpretation of exact integer quotients and remainders: equal sharing, full groups and leftovers, round up a transport vehicle, or report only leftover items",
+  "actualRoute": "division-worksheets",
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "division word problems",
+      "sourceMonthlyVolume": 1300,
+      "sourceKD": 28,
+      "sourceRoute": "division-worksheets",
+      "newCapability": "Printable real story problems with computed quotient/remainder and interpretation-sensitive teacher keys."
+    },
+    {
+      "keyword": "division word problems for 4th graders",
+      "sourceMonthlyVolume": 320,
+      "sourceKD": 17,
+      "sourceRoute": "division-worksheets",
+      "newCapability": "Small/medium whole-number word-problem contexts and reasoning about leftovers; no guaranteed curriculum certification."
+    }
+  ],
+  "source": "Original owner-provided 488-row keyword-evidence.csv and historic intent flags, not current Google US rankings or keyword updates.",
+  "scopeLimits": [
+    "No multi-step algebraic word problems or unknown variables",
+    "Only whole-number arithmetic, one-digit divisors 2-9",
+    "Exact sharing has remainder zero; other remainder contexts require positive remainder",
+    "No grade certification, district approval or Common Core alignment claim",
+    "Teacher answers include units and the interpretation of leftovers, not merely numerical quotient",
+    "The original division v18 share URL does not include the new story selector"
+  ],
+  "publicReferences": [
+    {
+      "url": "https://www.commoncoresheets.com/interpreting-remainders-in-division-word-problems/556",
+      "evidence": "Separates full groups, leftover quantities, rounding up, and amount needed to fill another group."
+    },
+    {
+      "url": "https://www.k5learning.com/free-math-worksheets/fourth-grade-4/word-problems/multiplication-division",
+      "evidence": "Public fourth-grade word-problem examples distinguish numerical quotient and interpreted remainders."
+    }
+  ],
+  "sourceKeywordCSVModified": false,
+  "original51V18GeneratorsModified": false,
+  "currentUsGoogleSerpVerified": false,
+  "indexApproved": false,
+  "previewNoindex": true,
+  "cloudflareDeploymentShaVerified": false,
+  "physicalPrintTestConfirmed": false,
+  "teacherReviewConfirmed": false
+}
