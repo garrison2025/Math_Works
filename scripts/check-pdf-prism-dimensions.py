@@ -31,15 +31,16 @@ def observed_labels(doc):
                     if (rect.x0<36 or rect.x1>page.rect.width-36
                           or rect.y0<36 or rect.y1>page.rect.height-36):
                         raise AssertionError(f'{text!r} exceeds safe page text area: {rect}')
-                    spans.append((text,rect))
+                    spans.append((page.number,text,rect))
     # No two semantic label rectangles may collide in the physical PDF.
-    for i,(text,a) in enumerate(spans):
-        for other,b in spans[i+1:]:
+    for i,(page_no,text,a) in enumerate(spans):
+        for other_page,other,b in spans[i+1:]:
+            if other_page!=page_no:continue
             overlap=a&b
             if overlap.is_empty:continue
             if overlap.width>2 and overlap.height>2:
                 raise AssertionError(f'Dimension captions overlap: {text!r} and {other!r}')
-    return Counter(text for text,_ in spans),disclaimers
+    return Counter(text for _,text,_ in spans),disclaimers
 
 def expected_counter(record):
     tokens=[]
