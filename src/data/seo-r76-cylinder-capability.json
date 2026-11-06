@@ -1,0 +1,62 @@
+{
+  "schema": "mathworks-r76-cylinder-and-sector-geometry-capability/v1",
+  "date": "2026-11-06",
+  "feature": "R76.1 dedicated cylinder exact total/lateral surface area and volume worksheets plus corrected R74 sector/semicircle PDF geometry",
+  "actualRoutes": [
+    "surface-area-worksheets",
+    "area-worksheets"
+  ],
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "surface area of a cylinder worksheet",
+      "sourceMonthlyVolume": 320,
+      "sourceKD": 3,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Exact total area of two circular bases plus lateral cylinder rectangle, drawn as a true proportional unrolled net."
+    },
+    {
+      "keyword": "surface area cylinder worksheet",
+      "sourceMonthlyVolume": 140,
+      "sourceKD": 5,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Dedicated surface area worksheet with independent complete and curved-only modes."
+    },
+    {
+      "keyword": "surface area of cylinder worksheet",
+      "sourceMonthlyVolume": 260,
+      "sourceKD": 5,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Closed cylinder exact pi coefficient student/teacher/steps."
+    },
+    {
+      "keyword": "cylinder surface area worksheet",
+      "sourceMonthlyVolume": 110,
+      "sourceKD": 3,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Real cylinder net and exact area formula practice, radius and height labelled."
+    },
+    {
+      "keyword": "surface area and volume of a cylinder worksheet",
+      "sourceMonthlyVolume": 110,
+      "sourceKD": 9,
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Explicit paired total surface area and volume mode, correctly distinguishing squared versus cubed units."
+    }
+  ],
+  "source": "Historical 488-row owner supplied keyword-evidence.csv and R62/R63 unsupported classifications; figures are old supplied Semrush evidence, not present-day Google rankings",
+  "scopeLimits": [
+    "Closed total surface area includes two bases; lateral surface area excludes them; volume uses cubic units.",
+    "Only right circular cylinders with integer positive radius and height; no hollow cylinders, oblique cylinders, cones, prisms, composite solids or arbitrary cross-section certification.",
+    "Unrolled proportional net is a 2D schematic scaled using circumference 2*pi*r, height h and two radius-r disks; it is not a perspective projection.",
+    "R74 partial circle boundaries corrected to actual sector outlines, with radial lines and chords at angular increments <=5 degrees; full-circle and inverse-radius diagrams remain distinct.",
+    "Original v18 51-topic worksheets, share URLs and unchanged original CSV remain intact."
+  ],
+  "original488RowsEdited": false,
+  "originalV18GeneratorEdited": false,
+  "currentLiveSerpOrRankingVerified": false,
+  "previewNoindex": true,
+  "approvedForIndexing": false,
+  "physicalPrinterCheck": false,
+  "teacherReviewed": false,
+  "cloudflareShaVerified": false
+}

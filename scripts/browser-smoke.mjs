@@ -1118,6 +1118,36 @@ try {
   }finally{await ctx.close()}
  }
  events.push({kind:'interaction',name:'R75 15 actual A4 triangle theorem and L-area student/key/step downloads; v18 unchanged',status:'pass'});
+ // R76 actual user download coverage: exact cylinder total/lateral and paired volume.
+ for(const skill of ['total-surface','lateral-surface','surface-and-volume']){
+  const ctx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:850}});
+  try{
+   const p=await ctx.newPage();
+   p.on('pageerror',e=>pageErrors.push('R76 cylinder '+skill+': '+e.message));
+   await p.goto(base+'/surface-area-worksheets/',{waitUntil:'networkidle'});
+   assert.equal(await p.locator('[data-r76-cylinder]').count(),1);
+   assert.equal(await p.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+   const original=await p.locator('.problem .q').first().innerText();
+   await p.locator('[data-field="paper"]').selectOption('A4');
+   await p.locator('[data-r76-cylinder-mode]').selectOption(skill);
+   for(const output of ['questions','answers','steps']){
+    const awaiting=p.waitForEvent('download',{timeout:40000});
+    await p.locator('[data-action="r76-cylinder-'+output+'"]').click();
+    let dl;try{dl=await awaiting}catch(e){
+     const status=await p.locator('[data-status]').innerText();
+     throw new Error('R76 '+skill+'/'+output+' '+status+'; '+e);
+    }
+    const pdf=await verifyPdf(dl,'R76 cylinder '+skill+' '+output,{paper:'A4'});
+    assert.equal(pdf.getPageCount(),3);
+    assert.match(pdf.getTitle()??'',/R76\.1/);
+    assert.match(pdf.getTitle()??'',new RegExp(output));
+   }
+   assert.equal(await p.locator('.problem .q').first().innerText(),original);
+   if(skill==='surface-and-volume')
+    await p.screenshot({path:join(out,'r76-cylinder-student-controls.png'),fullPage:true});
+  }finally{await ctx.close();}
+ }
+ events.push({kind:'interaction',name:'R76 nine actual A4 cylinder net student, key, steps downloads with original prism worksheets untouched',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
