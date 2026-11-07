@@ -10,6 +10,8 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **R94 engineering increment (2026-11-07):** [PR #23](https://github.com/garrison2025/Math_Works/pull/23) merged as `9f0bf13d1b7559843138c07af58edbb2d1b28ab6` after [PR CI run 42361569197](https://github.com/garrison2025/Math_Works/actions/runs/42361569197) succeeded for both main checks. Worked-step export is independently authorized for **27 base topics** (the previous 23 plus complementary/supplementary angles, triangle-angle sum, vertical angles, and rectangular prism volume/missing height). The PDF stress gate covers **516 documents**, of which 108 are step PDFs. The [license-scope review](R94-LICENSE-SCOPE-REVIEW.md) groups 14 optional Sharp/libvips package records; no human legal review was signed. **R94 merged-main Cloudflare SHA, teacher, physical printer, real screen reader, domain and public search indexing are not independently signed off.**
 
+**R95 merged engineering result (2026-11-07):** [PR #24](https://github.com/garrison2025/Math_Works/pull/24) merged as `12abee36ebbd975834d5dce58d64e8d97ce01e17`. [PR CI run 42363816146](https://github.com/garrison2025/Math_Works/actions/runs/42363816146) passed both primary and Firefox jobs. There are now **51 of 51 independently reconstructed base-generator worked-step topics**; the maximum-count PDF release suite requires **612 actual PDFs (204 student, 204 answer, 204 step)**. The new static distribution SHA-256/license-scope check records real Cloudflare artifacts and blocks bundled native Sharp binaries; it does **not** approve legal obligations. See [R95 release gates](R95-RELEASE-GATE-MATRIX.md). This is still a **non-indexed preview**, not formal human teacher/physical print/assistive technology/GSC release approval. The R95 merged-main deployment SHA remains to be independently checked.
+
 **Human-print/domain release gates:** See [RELEASE-R93-OWNER-ACCEPTANCE.md](RELEASE-R93-OWNER-ACCEPTANCE.md).
 
 **Single source of truth:** See [CURRENT-STATUS.md](CURRENT-STATUS.md) for actual verified deployment, owner-approved V2 scope, and outstanding human/physical-print gates. Historical R1–R91 notes below are not newer release certificates.
@@ -18,7 +20,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
-- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 27 independently reconstructed base math topics after the R94 merge), direct printing, Letter/A4 paper.
+- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 51 independently reconstructed base math topics after the R95 merge), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-approved V2.0 KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts; no new SERP review is required for implementation). 437 entries point to live generators, 51 to the four deliberately held V2 intents. Use the R89 built-page report to check exact landing and selected task options.
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
