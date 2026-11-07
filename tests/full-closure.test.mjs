@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 import {makeWorksheet} from '../src/lib/math.ts';
 import {EXTRA_PACK_KEYS,buildExtraPackLink,parseExtraPackLink} from '../src/lib/extra-pack-link.ts';
 import {makeClosurePack,verifyClosurePack,CLOSURE_MODES,polynomialText,latticeDiagonals,triangularPyramidArea} from '../src/lib/closure-math.ts';
-import {createClosurePdf} from '../src/lib/closure-pdf.ts';
+import {createClosurePdf,closurePlaneDiagramGeometry} from '../src/lib/closure-pdf.ts';
 import {createMultDivisionPack,verifyMultDivisionPack} from '../src/lib/multiplication-division-practice.ts';
 import cap from '../src/data/seo-closure-capability.json' with {type:'json'};
 import a from '../src/data/seo-intent-review.json' with {type:'json'};
@@ -167,4 +167,24 @@ test('R87: source instructions and release record match shipped PDF sharing',()=
  assert.match(status,/934a1c650046cdde5f56df397ddf266b27a677ae/);
  assert.match(status,/42334530550/);
  assert.doesNotMatch(status,/closure branch: CANDIDATE/);
+});
+
+test('R88: plane P contains all z=0 schematic points and excludes raised D',()=>{
+ const inside=(pt,corners)=>{
+  const crosses=corners.map((p,i)=>{
+   const q=corners[(i+1)%corners.length];
+   return (q.x-p.x)*(pt.y-p.y)-(q.y-p.y)*(pt.x-p.x);
+  });
+  return crosses.every(v=>v>=-1e-9);
+ };
+ for(const [x,y] of [[0,0],[310,215],[85,-75]]){
+  const g=closurePlaneDiagramGeometry(x,y);
+  for(const name of ['A','B','C'])
+   assert.ok(inside(g[name],g.corners),name+' must lie within the drawn plane outline');
+  assert.ok(!inside(g.D,g.corners),'D (positive z) must be outside the plane outline');
+  assert.equal(g.A.x,g.D.x,'AD should visually leave plane P vertically');
+  assert.ok(g.D.y>g.C.y,'D must clearly be raised above C');
+ }
+ assert.throws(()=>closurePlaneDiagramGeometry(Number.NaN,0));
+ assert.throws(()=>closurePlaneDiagramGeometry(0,Infinity));
 });
