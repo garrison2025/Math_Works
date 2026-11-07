@@ -4,7 +4,7 @@ import {diagramSVG} from '../lib/diagram';
 import {titleFor} from '../lib/site';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {topicOptionsFor} from '../lib/topic-options';
-import {supportsExactNumber} from '../lib/answer-check';
+import {supportsPracticeAnswer} from '../lib/practice-answer';
 import {fractionLayoutFor,fractionMarkup} from '../lib/fraction-layout';
 import {makeClosurePack,CLOSURE_MODES,type ClosureTopic} from '../lib/closure-math';
 const {slug}=Astro.props;
@@ -12,7 +12,7 @@ const worksheet=makeWorksheet(slug,20261104,8,'standard');
 const hasSteps=hasVerifiedSteps(slug);
 const specificOptions=topicOptionsFor(slug);
 const hasDiagram=worksheet.problems.some(p=>Boolean(p.diagramSpec));
-const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));
+const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsPracticeAnswer(slug,p.expectedAnswer));
 const hasClosure=Object.hasOwn(CLOSURE_MODES,slug);
 const closureModes=hasClosure?CLOSURE_MODES[slug as ClosureTopic]:[];
 const closureExample=hasClosure?makeClosurePack(slug as ClosureTopic,20261104,8,'standard').problems[0]:null;
@@ -442,14 +442,14 @@ const closureLabels:Record<string,string>={mixed:'Alternate exercise forms','ord
     </details>
     <div class="status" aria-live="polite" role="status" data-status>8 questions ready · All generation happens on your device.</div><p class="controls-foot">Free to use · No account · No stored student data. The practice PDF and answer key use the same seed. Worked steps are provided for verified topics only.</p>
   </aside>
-  <section class="panel preview-panel" aria-label="Live worksheet preview"><div class="preview-head"><div><strong>Live page preview</strong><a class="mobile-jump" href="#worksheet-settings">Customize &amp; download ↓</a><div><small data-summary>8 questions · Standard · US Letter</small></div></div><div class="preview-tools" role="group" aria-label="Preview mode"><button type="button" class="toggle" aria-pressed="true" data-mode="questions">Questions</button><button type="button" class="toggle" aria-pressed="false" data-mode="answers">Answers</button><button type="button" class="toggle" aria-pressed="false" data-mode="steps" disabled={!hasSteps} title={hasSteps?"Review worked steps":"Not yet verified for this topic"}>Steps</button><button type="button" class="toggle" data-action="practice" aria-pressed="false" hidden={!canGradeSample} title="Check numeric answers privately in this browser">Practice online</button></div></div>
+  <section class="panel preview-panel" aria-label="Live worksheet preview"><div class="preview-head"><div><strong>Live page preview</strong><a class="mobile-jump" href="#worksheet-settings">Customize &amp; download ↓</a><div><small data-summary>8 questions · Standard · US Letter</small></div></div><div class="preview-tools" role="group" aria-label="Preview mode"><button type="button" class="toggle" aria-pressed="true" data-mode="questions">Questions</button><button type="button" class="toggle" aria-pressed="false" data-mode="answers">Answers</button><button type="button" class="toggle" aria-pressed="false" data-mode="steps" disabled={!hasSteps} title={hasSteps?"Review worked steps":"Not yet verified for this topic"}>Steps</button><button type="button" class="toggle" data-action="practice" aria-pressed="false" hidden={!canGradeSample} title="Check exact text or numeric answers privately in this browser">Practice online</button></div></div>
   {hasClosure&&<div class="special-live-preview" data-special-live-preview hidden>
     <div class="special-live-head"><div><strong>Exact specialist student PDF</strong><p>Same seed, questions and vector diagrams as the downloaded student edition.</p></div>
     <button type="button" class="btn btn-secondary" data-action="closure-return-preview">Return to base worksheet</button></div>
     <iframe data-closure-preview class="special-pdf-iframe" title="Exact specialist student worksheet PDF" hidden></iframe>
   </div>}
   <div class="sheet-outer"><div id="worksheet-print" class="print-sheet" data-print-sheet><div class="sheet-top"><div><h2>{titleFor(slug)}</h2><p data-sheet-caption>Practice worksheet · Sheet ID {worksheet.seed}</p></div><span class="sheet-logo">MATH STUDIO</span></div><div class="sheet-name"><span>Name: _____________________</span><span>Date: ______________</span></div><div class:list={['problems-grid',{'with-diagrams':hasDiagram}]} data-problems>{worksheet.problems.map((p,i)=><div class="problem"><div class="no">{String(i+1).padStart(2,'0')}</div><div class="q">{p.payload.question}</div><Fragment set:html={fractionMarkup(fractionLayoutFor(slug,p.payload.question))}/>{p.diagramSpec&&<Fragment set:html={diagramSVG(p.diagramSpec)}/>}</div>)}</div><div class="sheet-footer"><span data-sheet-footer>Practice · Seed {worksheet.seed}</span><span data-page-footer>Generated locally • mathworksheetstudio</span></div></div></div>
-  <div class="practice-actions" data-practice-actions hidden><p><strong>Quick answer check</strong> · Your answers stay in this browser. Type an integer, decimal or fraction, then check without revealing the answer key.</p><div class="practice-buttons"><button type="button" class="btn btn-primary" data-action="check-practice">Check my answers</button><button type="button" class="btn" data-action="clear-practice">Clear responses</button></div><p role="status" aria-live="polite" data-practice-summary>Enter your answers to begin.</p></div>
+  <div class="practice-actions" data-practice-actions hidden><p><strong>Quick answer check</strong> · Your answers stay in this browser. Enter the answer format shown beside each question, then check without revealing the answer key.</p><div class="practice-buttons"><button type="button" class="btn btn-primary" data-action="check-practice">Check my answers</button><button type="button" class="btn" data-action="clear-practice">Clear responses</button></div><p role="status" aria-live="polite" data-practice-summary>Enter your answers to begin.</p></div>
   </section>
 </section>
 <script>
