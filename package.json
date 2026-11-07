@@ -2,6 +2,7 @@
   "name": "math-worksheet-studio",
   "version": "0.1.0",
   "private": true,
+  "engines": {"node": ">=22.22.0 <23"},
   "type": "module",
   "scripts": {
     "prepare:assets": "node --experimental-strip-types scripts/prepare.mjs",
@@ -71,12 +72,12 @@
     "qa:r84-multiplication": "node --experimental-strip-types scripts/export-r84-multiplication-models.mjs"
   },
   "dependencies": {
-    "astro": "^5.15.3",
+    "astro": "^7.4.7",
     "pdf-lib": "^1.17.1"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",
-    "sharp": "^0.34.2",
+    "sharp": "^0.35.5",
     "typescript": "^5.8.3",
     "playwright-core": "^1.55.0"
   }
