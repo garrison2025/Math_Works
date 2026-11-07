@@ -20,5 +20,6 @@ test('release only explicitly approved specialized topics; no hubs or HOLD',()=>
  assert.ok(!paths.includes(`/${hold}/`));
  assert.ok(isIndexablePath(`/${tool}/`,base,topics));
  assert.ok(!isIndexablePath(`/${hub}/`,base,topics));
- assert.equal(paths.length,5);
+ assert.ok(paths.includes("/terms/"));
+ assert.equal(paths.length,6);
 });
