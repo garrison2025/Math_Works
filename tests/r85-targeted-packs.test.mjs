@@ -32,7 +32,7 @@ test('R85 seeded math: 3 difficulties, all 12 real practice types and 32/40 samp
    }
    if(topic==='fractions'&&mode==='divide-stories'){
     assert.ok(p.a>=3&&p.b%p.a!==0);
-    assert.equal((p.b/p.a)/(1/p.a),Number(p.answer));
+    assert.equal(BigInt(p.b)*BigInt(p.a),BigInt(Number(p.answer))*BigInt(p.a), 'fraction division cross-multiplication must be exact');
    }
    if(topic==='addition-pictures')assert.equal(Number(p.answer),p.a+p.b);
    if(topic==='place-value')assert.equal(String(p.a).length,7);
