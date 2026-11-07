@@ -4,8 +4,33 @@
 
 **Last independently verified main deployment:** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary steps, 15 Firefox steps) with Cloudflare Pages reporting success for this exact SHA. Real npm production and complete dependency audits reported zero known advisories at scan time; 296 package license declarations were recorded with 14 LGPL/mixed-license entries flagged for owner legal review. R93 shipped eight more independently reconstructed base arithmetic step families (23 total), 408 real teacher review examples, 56 A4/Letter print/check PDFs and a real Chromium 35-state/5-width responsive and accessibility check. All owner V2.0 488 source keywords, 51 working tools, 4 intentional HOLDs and preview `noindex,nofollow` are unchanged. **Qualified teacher sign-off, physical ruler/printer measurements, real-device screen-reader review, custom-domain ownership and GSC verification are NOT RUN.**
 
+## R94 merged engineering increment (not a human release certificate)
+
+R94 [PR #23](https://github.com/garrison2025/Math_Works/pull/23) merged to main at
+commit `9f0bf13d1b7559843138c07af58edbb2d1b28ab6`.
+The exact final PR-head SHA `ca460e57954003c76b631f8eea9507806bd36faa` passed
+[GitHub Actions run 42361569197](https://github.com/garrison2025/Math_Works/actions/runs/42361569197):
+`test-and-build` **success** and `firefox-qa` **success**.
+R94 independently reconstructed the worked steps for four additional original-topic families:
+complementary/supplementary angles, triangle angle sum, vertical/adjacent angles,
+and rectangular prism volume/missing-height problems. Authorized base steps are
+**27 topics** (R93 23 + R94 4). The exact full PDF stress gate now requires
+**516 PDFs = 204 question + 204 answer + 108 step editions** from 102 cases.
+This did not change the 51 built generators, 488 approved keyword evidence rows,
+or intentional four HOLDs and noindex rules.
+
+The 14 flagged LGPL/mixed license entries are all optional development platform
+packages in the Sharp/libvips family, not 14 separate directly declared production
+dependencies; see [R94 license-scope triage](R94-LICENSE-SCOPE-REVIEW.md).
+This technical classification does **not** replace human legal review.
+R94 merged-main CI and exact-SHA Cloudflare deployment were **not independently
+re-verified in this update**; the R93 merged-main verified deployment below
+remains the last specifically documented deployment baseline.
+Teacher review (408), physical print/ruler, NVDA/VoiceOver, owned domain, GSC
+and public indexing all remain **NOT RUN / NOT APPROVED**.
+
 ## Actual scope
-55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 23 core worked-step families have independent base-generator certification after R93; other steps must not be claimed as audited. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
+55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 27 core worked-step families have independent base-generator certification after R94; other steps must not be claimed as audited. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
 
 ## Source-frozen V2.0 keywords (owner-approved development dataset; no new SERP research required)
 
