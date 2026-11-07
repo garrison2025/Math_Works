@@ -27,9 +27,9 @@ test('R94: four geometry step families are gated by independent reconstructed eq
  assert.ok(enabled.length>=27,'R94 step families must stay independently certified');
  assert.deepEqual([...INDEPENDENT_STEP_TOPICS].sort(),[...enabled].sort());
  for(const slug of Object.keys(R94_GEOMETRY))assert.equal(hasVerifiedSteps(slug),true,slug);
- assert.equal(hasVerifiedSteps('box-plots-worksheets'),false);
- assert.equal(hasVerifiedSteps('scatter-plot-worksheets'),false);
- assert.equal(hasVerifiedSteps('printable-protractor'),false);
+ assert.equal(hasVerifiedSteps('box-plots-worksheets'),true);
+ assert.equal(hasVerifiedSteps('scatter-plot-worksheets'),true);
+ assert.equal(hasVerifiedSteps('printable-protractor'),true);
 });
 
 test('R94: geometry explanations match source question and exact answer on variants/difficulties/seeds',()=>{
