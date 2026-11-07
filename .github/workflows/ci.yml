@@ -36,6 +36,16 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: R95 inspect real Cloudflare static distribution for native dependency payloads
+        run: npm run qa:r95-static-distribution
+      - name: Archive R95 exact static distributable file hashes and license-scope triage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r95-cloudflare-static-distribution-and-license-scope
+          path: qa-artifacts/r95-static-distribution/
+          retention-days: 30
+          if-no-files-found: warn
       - name: R93 export complete 408-question teacher and real A4 Letter physical-print packet
         run: npm run qa:r93-teacher-print
       - name: Archive human-release review forms and actual student/key/calibration PDFs
