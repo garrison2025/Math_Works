@@ -1288,8 +1288,8 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
- // R84: real visual multiplication, preserved original worksheet, 12 PDF
- // downloads, and a versioned share link restoring the selected extra task.
+ // R84 Chromium: actual user task, 12 files, true model switch and copied
+ // settings restoration, with the original generator remaining identical.
  await page.goto(base+'/multiplication-worksheets/',{waitUntil:'networkidle'});
  const r84Original=await page.locator('.problem .q').first().innerText();
  await page.locator('[data-field="paper"]').selectOption('A4');
@@ -1302,8 +1302,25 @@ try {
    const pending=page.waitForEvent('download',{timeout:60000});
    await page.locator('[data-action="r84-multiplication-'+edition+'"]').click();
    const file=await pending;
-   assert.match(file.suggestedFilename(),new RegExp('multiplication-visual-'+task+'-'+edition+'-seed.*-r84\\.pdf
- // original v18 worksheet seed, question set and public link identity stay intact.
+   const filename=file.suggestedFilename();
+   assert.ok(filename.includes('multiplication-visual-'+task+'-'+edition+'-seed'),filename);
+   assert.ok(filename.endsWith('-r84.pdf'),filename);
+   const doc=await verifyPdf(file,'R84 '+task+' '+edition,{paper:'A4'});
+   assert.equal(doc.getPageCount(),4);
+   assert.match(doc.getTitle()??'',/R84/);
+  }
+  assert.equal(await page.locator('.problem .q').first().innerText(),r84Original);
+ }
+ await r84Selector.selectOption('number-line');
+ await page.locator('[data-r84-multiplication-models] [data-action="share-extra"]').click();
+ const r84Url=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.equal(new URL(r84Url).searchParams.get('xp_r84-multiplication-mode'),'number-line');
+ await page.goto(r84Url,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r84-multiplication-mode]').inputValue(),'number-line');
+ assert.equal(await page.locator('.problem .q').first().innerText(),r84Original);
+ assert.match(await page.locator('[data-status]').innerText(),/Restored 1 optional PDF setting/);
+ events.push({kind:'interaction',name:'R84 visual multiplication 12 PDFs and seeded share restore',status:'pass'});
+ // R82 share-link regressions: original v18 identity remains intact.
  const extensionShareChecks=[
   {route:'two-step-equations-worksheets',selections:[['equation-kind','fraction']],pdfAction:'equation-pack-questions',filename:/fraction.*questions.*\.pdf$/i},
   {route:'fractions-worksheets',selections:[['fraction-line-task','plot'],['fraction-line-range','zero-two']],pdfAction:'fraction-line-questions',filename:/fraction-number-line.*plot.*zero-two.*questions.*\.pdf$/i},
