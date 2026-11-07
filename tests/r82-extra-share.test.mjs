@@ -11,7 +11,7 @@ const original=buildWorksheetLink('https://math-works.pages.dev/surface-area-wor
 
 test('R82 every PDF-only extension selector is explicitly whitelisted and unique',()=>{
  const astro=readFileSync(new URL('../src/components/Workspace.astro',import.meta.url),'utf8');
- const published=[...new Set([...astro.matchAll(/<select\\b[^>]*\\bdata-([a-z0-9-]+)(?=[\\s>])/g)]
+ const published=[...new Set([...astro.matchAll(/<select\b[^>]*\bdata-([a-z0-9-]+)(?=[\s>])/g)]
   .map(match=>match[1]).filter(key=>key!=='field'&&key!=='option'))].sort();
  assert.equal(EXTRA_PACK_KEYS.length,24);
  assert.deepEqual([...EXTRA_PACK_KEYS].sort(),published,'New PDF-only select must be added to reproducible URL whitelist');

@@ -1291,10 +1291,10 @@ try {
  // R82: share links restore selections for independent PDF-only generators;
  // original v18 worksheet seed, question set and public link identity stay intact.
  const extensionShareChecks=[
-  {route:'two-step-equations-worksheets',selections:[['equation-kind','fraction']],pdfAction:'equation-pack-questions',filename:/fraction.*questions.*\\.pdf$/i},
-  {route:'fractions-worksheets',selections:[['fraction-line-task','plot'],['fraction-line-range','zero-two']],pdfAction:'fraction-line-questions',filename:/fraction-number-line.*plot.*zero-two.*questions.*\\.pdf$/i},
-  {route:'addition-worksheets',selections:[['decimal-add-sub-places','hundredths'],['decimal-add-sub-regrouping','yes']],pdfAction:'decimal-add-sub-questions',filename:/decimal.*questions.*\\.pdf$/i},
-  {route:'surface-area-worksheets',selections:[['r80-nets-mode','square-pyramid'],['r80-composite-mode','right-step']],pdfAction:'r80-nets-questions',filename:/surface-area-nets-square-pyramid-questions.*\\.pdf$/i}
+  {route:'two-step-equations-worksheets',selections:[['equation-kind','fraction']],pdfAction:'equation-pack-questions',filename:/fraction.*questions.*\.pdf$/i},
+  {route:'fractions-worksheets',selections:[['fraction-line-task','plot'],['fraction-line-range','zero-two']],pdfAction:'fraction-line-questions',filename:/fraction-number-line.*plot.*zero-two.*questions.*\.pdf$/i},
+  {route:'addition-worksheets',selections:[['decimal-add-sub-places','hundredths'],['decimal-add-sub-regrouping','yes']],pdfAction:'decimal-add-sub-questions',filename:/decimal.*questions.*\.pdf$/i},
+  {route:'surface-area-worksheets',selections:[['r80-nets-mode','square-pyramid'],['r80-composite-mode','right-step']],pdfAction:'r80-nets-questions',filename:/surface-area-nets-square-pyramid-questions.*\.pdf$/i}
  ];
  for(const spec of extensionShareChecks){
   await page.goto(base+'/'+spec.route+'/',{waitUntil:'networkidle'});
