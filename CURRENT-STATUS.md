@@ -2,7 +2,7 @@
 
 **2026-11-07 software feature-closure: MERGED to main; latest merged-main quality checks PASSED. Teacher and physical-print release sign-off remain NOT YET COMPLETED.**
 
-**Last independently verified main deployment:** R88 PR #16 merged as `b54f365625603fd201edc094ec6f74deb27e793c`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42341851522) **PASS** (161 test-and-build steps, 11 Firefox steps), and Cloudflare Pages reported success on this exact SHA. R89 extends keyword-to-live-page auditing and subject directories; its separate PR and CI must pass before deployment can be claimed. Preview pages use `noindex,nofollow`.
+**Last independently verified main deployment:** R89 PR #17 merged as `9e4b2c7ab2cbf4620cf9ed74ae06e8c58fa67e3c`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42346795272) **PASS** (163 test-and-build steps, 11 Firefox steps), and Cloudflare Pages reported success on that exact SHA. Six V2 subject directories and the 488-row original keyword deployment matrix are now merged. R90 improves findability and adds the V2 Terms page; it remains a candidate until its own checks and deployment succeed. Preview pages use `noindex,nofollow`.
 
 ## Actual scope
 55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 15 core worked-step families have independent base-generator certification; other steps must not be claimed as audited. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
