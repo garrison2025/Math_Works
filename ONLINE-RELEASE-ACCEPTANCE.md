@@ -33,7 +33,7 @@ The waiver does **not** mean unresolved digital defects are accepted. Re-run the
 ## How to report release status
 
 - `ONLINE VERIFIED`: a specifically named test, live page or build has actually been checked against a recorded SHA.
-- `OWNER WAIVED — NOT PHYSICALLY TESTED`: an optional real-world procedure will not block release; never relabel it PASS.
+- `OWNER-WAIVED — NOT PHYSICALLY TESTED`: an optional real-world procedure will not block release; never relabel it PASS.
 - `PENDING EXTERNAL ACTION`: domain ownership, GSC login/TXT, owner indexing decision or a material unresolved compliance issue.
 - `NOT CHECKED`: no reliable evidence available. Do not infer a pass.
 
