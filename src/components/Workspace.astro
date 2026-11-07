@@ -25,21 +25,21 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <p class="hint">Make a separate reproducible practice pack with exact decimal or simplified fraction answers. Student, answer-key and worked-step PDFs share the same seed, difficulty, question count, equation form, and paper settings above. These downloads do not replace the original integer generator or its live preview.</p>
 <div class="field"><label for={`equation-kind-${slug}`}>Number type for extra practice</label><select id={`equation-kind-${slug}`} data-equation-kind><option value="decimal">Decimals · exact tenths / hundredths</option><option value="fraction">Fractions · exact simplified answers</option></select></div>
 <div class="download-grid"><button type="button" class="btn btn-secondary" data-action="equation-pack-questions">Extra practice PDF</button><button type="button" class="btn" data-action="equation-pack-answers">Extra answer key PDF</button><button type="button" class="btn" data-action="equation-pack-steps">Extra worked steps PDF</button></div>
-<p class="hint">The existing “Copy reproducible link” applies only to the original worksheet, not this separate extension. To recreate an extra pack, select the same number type and options with the same seed.</p>
+<p class="hint">Copy reproducible link remembers the selected number type for this PDF-only pack. After opening it, use the same extra PDF button to reproduce the pack; the original live preview remains separate.</p>
 </div>}{(slug==='number-line-worksheets'||slug==='fractions-worksheets')&&<div class="calibration-card" data-r66-fraction-number-line aria-label="Printable fraction number line practice">
 <strong>Fractions on a number line</strong>
 <p class="hint">Generate real fraction number-line diagrams with exact tick positions. Separate student and teacher PDFs; independent of your original number-line or fraction worksheet above.</p>
 <div class="field"><label for="fraction-line-task">Fraction-line task</label><select id="fraction-line-task" data-fraction-line-task><option value="identify">Identify the fraction at a marked dot</option><option value="plot">Plot the given fraction on a blank line</option></select></div>
 <div class="field"><label for="fraction-line-range">Number-line interval</label><select id="fraction-line-range" data-fraction-line-range><option value="zero-one">0–1 · proper fractions</option><option value="zero-two">0–2 · includes improper fractions</option></select></div>
 <div class="download-grid"><button type="button" class="btn btn-secondary" data-action="fraction-line-questions">Fraction number-line student PDF</button><button type="button" class="btn" data-action="fraction-line-answers">Fraction number-line answer PDF</button></div>
-<p class="hint">The same seed, difficulty, question count, task and interval reproduce the same sheet. Large question sets may include denominators up to 12. The original reproducible worksheet share link does not include these extra selectors.</p>
+<p class="hint">The same seed, difficulty, question count, task and interval reproduce the same sheet. Large question sets may include denominators up to 12. Copy reproducible link also saves these extra selectors when selected; open the link and choose the matching PDF download button.</p>
 </div>}{slug==='division-worksheets'&&<div class="calibration-card" data-r67-decimal-division aria-label="Decimal division worksheets">
 <strong>Decimal division practice with answers</strong>
 <p class="hint">Generate a separate exact decimal division worksheet with decimal quotients. Choose whole-number or decimal divisors, select tenths or hundredths, and download matching student, answer and worked-step PDFs. The original integer division facts generator remains unchanged.</p>
 <div class="field"><label for="decimal-divisor-kind">Divisor type</label><select id="decimal-divisor-kind" data-decimal-divisor><option value="mixed">Mix whole and decimal divisors</option><option value="whole">Whole-number divisors only</option><option value="decimal">Decimal divisors only</option></select></div>
 <div class="field"><label for="decimal-quotient-precision">Quotient precision</label><select id="decimal-quotient-precision" data-decimal-precision><option value="mixed">Mix tenths and hundredths</option><option value="tenths">Tenths only</option><option value="hundredths">Hundredths only</option></select></div>
 <div class="download-grid"><button type="button" class="btn btn-secondary" data-action="decimal-division-questions">Decimal student PDF</button><button type="button" class="btn" data-action="decimal-division-answers">Decimal answer key PDF</button><button type="button" class="btn" data-action="decimal-division-steps">Decimal worked steps PDF</button></div>
-<p class="hint">Only terminating decimals with an exact noninteger quotient; no rounding, remainders, or repeating decimals. Same seed, difficulty, question count, divisor mode and precision reproduce the same pack. The original worksheet share link does not include these extra settings.</p>
+<p class="hint">Only terminating decimals with an exact noninteger quotient; no rounding, remainders, or repeating decimals. Same seed, difficulty, question count, divisor mode and precision reproduce the same pack. Copy reproducible link also restores the selected decimal settings for this PDF-only pack.</p>
 </div>}{(slug==='addition-worksheets'||slug==='subtraction-worksheets'||slug==='mixed-addition-subtraction-worksheets')&&<div class="calibration-card" data-r68-decimal-add-sub aria-label="Aligned decimal addition and subtraction worksheet practice">
 <strong>Decimal addition and subtraction — column worksheets</strong>
 <p class="hint">Print decimal-point-aligned vertical problems using exact tenths and hundredths, with optional carrying or borrowing practice. The three PDF downloads use identical seed, quantity and settings; the original integer practice and its preview remain unchanged.</p>
@@ -59,7 +59,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <option value="no">No carrying or borrowing</option>
 </select></div>
 <div class="download-grid"><button type="button" class="btn btn-secondary" data-action="decimal-add-sub-questions">Decimal student PDF</button><button type="button" class="btn" data-action="decimal-add-sub-answers">Decimal answer PDF</button><button type="button" class="btn" data-action="decimal-add-sub-steps">Decimal worked steps PDF</button></div>
-<p class="hint">Students receive aligned column arithmetic with blank result lines; teachers receive matching exact keys and inverse-operation checks. Subtraction results are nonnegative. The original Copy reproducible link does not include these extra decimal settings.</p>
+<p class="hint">Students receive aligned column arithmetic with blank result lines; teachers receive matching exact keys and inverse-operation checks. Subtraction results are nonnegative. Copy reproducible link restores the selected decimal settings; use the same PDF button after opening the link.</p>
 </div>}{slug==='fractions-worksheets'&&<div class="calibration-card" data-r69-conversion aria-label="Fractions and decimals conversion worksheets">
 <strong>Convert fractions and decimals — printable practice</strong>
 <p class="hint">Separate exact conversion practice, with genuinely reduced fractions and terminating decimals. Download matching student, answer and worked-step PDFs without changing your original fraction arithmetic sheet.</p>
@@ -79,10 +79,10 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="conversion-answers">Conversion answer key PDF</button>
 <button type="button" class="btn" data-action="conversion-steps">Conversion worked steps PDF</button>
 </div>
-<p class="hint">Fractions may be greater than one. All decimal results are exact, never rounded. Reuse the seed, question count, difficulty, conversion direction and decimal places to recreate the same pack. The original Copy reproducible link does not encode these additional settings.</p>
+<p class="hint">Fractions may be greater than one. All decimal results are exact, never rounded. Reuse the seed, question count, difficulty, conversion direction and decimal places to recreate the same pack. Copy reproducible link restores the chosen conversion direction and decimal precision.</p>
 </div>}{(slug==='multiplication-worksheets'||slug==='division-worksheets')&&<div class="calibration-card" data-r71-multdiv-pack aria-label="Multiplication division fact-family and area-model printable practice">
 <strong>Multiplication &amp; division skill packs</strong>
-<p class="hint">Build a separate PDF with real mixed multiply/divide problems or all four related fact-family equations. Multiplication also supports a split rectangular area model with partial-product boxes. Your original v18 worksheet and its share link stay unchanged.</p>
+<p class="hint">Build a separate PDF with real mixed multiply/divide problems or all four related fact-family equations. Multiplication also supports a split rectangular area model with partial-product boxes. Your original v18 worksheet preview is unchanged. Copy reproducible link can also restore these optional PDF panel settings.</p>
 <div class="field"><label for={`multdiv-mode-${slug}`}>Practice mode</label><select id={`multdiv-mode-${slug}`} data-multdiv-mode>
 <option value="mixed-facts">Mixed multiplication and division facts</option>
 <option value="fact-family">Four linked multiplication/division fact-family equations</option>
@@ -126,7 +126,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="division-story-answers">Division story answer PDF</button>
 <button type="button" class="btn" data-action="division-story-steps">Division story worked steps PDF</button>
 </div>
-<p class="hint">Includes 2- or 3-digit totals with one-digit divisors. Teacher keys state units and explain why a remainder means leftovers, a full-group limit or another vehicle. Seeds, difficulty, question count, Letter/A4 paper and writing room apply. The original division-facts worksheet and share link remain unchanged; no grade-level certification is claimed.</p>
+<p class="hint">Includes 2- or 3-digit totals with one-digit divisors. Teacher keys state units and explain why a remainder means leftovers, a full-group limit or another vehicle. Seeds, difficulty, question count, Letter/A4 paper and writing room apply. The original division-facts worksheet remains unchanged; Copy reproducible link also restores the selected story mode. No grade-level certification is claimed.</p>
 </div>}{slug==='inequalities-worksheets'&&<div class="calibration-card" data-r74-inequalities aria-label="Translate sentences and graph compound inequalities">
 <strong>Word-to-inequality and compound AND/OR practice</strong>
 <p class="hint">Translate “at most,” “at least,” “less than” and “greater than” into correct inequalities. Practice both bounded intersections (AND) and separated solution rays (OR), with correctly open or filled endpoints.</p>
@@ -161,7 +161,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r74-circle-answers">Circle answer PDF</button>
 <button type="button" class="btn" data-action="r74-circle-steps">Circle worked steps PDF</button>
 </div>
-<p class="hint">Example: a 90° sector with radius 6 cm has area 9π cm². PDF diagrams use true angular vectors; only the teacher file shows exact results. These optional packs do not change the original rectangle/square worksheet or its share link.</p>
+<p class="hint">Example: a 90° sector with radius 6 cm has area 9π cm². PDF diagrams use true angular vectors; only the teacher file shows exact results. These optional PDFs do not alter the original rectangle/square generator. Copy reproducible link can restore the chosen circle practice mode.</p>
 </div>}{slug==='inequalities-worksheets'&&<div class="calibration-card" data-r75-triangle aria-label="Triangle inequality theorem side-length practice">
 <strong>Triangle inequality theorem — side feasibility and strict bounds</strong>
 <p class="hint">These are true geometry side-length tasks, separate from algebra inequality solving. Decide whether three lengths form a nondegenerate triangle, find the permitted third-side interval, or count valid positive integer third sides.</p>
@@ -177,7 +177,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r75-triangle-answers">Triangle answer key PDF</button>
 <button type="button" class="btn" data-action="r75-triangle-steps">Triangle worked steps PDF</button>
 </div>
-<p class="hint">For sides 5 cm and 8 cm, the third side must satisfy 3 &lt; x &lt; 13 cm; endpoints are not allowed. The displayed line segments use proportional lengths and do not falsely depict impossible triangles. Original algebra practice and its share link remain unchanged.</p>
+<p class="hint">For sides 5 cm and 8 cm, the third side must satisfy 3 &lt; x &lt; 13 cm; endpoints are not allowed. The displayed line segments use proportional lengths and do not falsely depict impossible triangles. Original algebra practice remains unchanged. Copy reproducible link also restores the triangle task selector.</p>
 </div>}{slug==='area-worksheets'&&<div class="calibration-card" data-r75-composite aria-label="L-shaped composite area with exact subtraction and splitting">
 <strong>L-shaped composite figures — calculate the missing rectangle</strong>
 <p class="hint">Each figure is a true L-shaped polygon with a rectangular top-right cutout. Compute its exact area by subtracting the missing corner or adding two nonoverlapping rectangles. Matching diagrams mark the actual full width, full height and cutout dimensions.</p>
@@ -192,7 +192,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r75-composite-answers">L-shape answer key PDF</button>
 <button type="button" class="btn" data-action="r75-composite-steps">L-shape worked steps PDF</button>
 </div>
-<p class="hint">Example: a 10 cm × 8 cm outline missing a 3 cm × 2 cm corner has area 74 cm². The vector diagram uses true proportional dimensions; the PDF contains separate practice, teacher answers and worked methods. Original rectangular area worksheets and share links remain unchanged.</p>
+<p class="hint">Example: a 10 cm × 8 cm outline missing a 3 cm × 2 cm corner has area 74 cm². The vector diagram uses true proportional dimensions; the PDF contains separate practice, teacher answers and worked methods. Original rectangular area worksheets remain unchanged. Copy reproducible link also restores the composite-area task selector.</p>
 </div>}{slug==='surface-area-worksheets'&&<div class="calibration-card" data-r76-cylinder aria-label="Exact right circular cylinder net, total and lateral surface area and volume">
 <strong>Cylinder surface area and volume — exact π worksheet PDFs</strong>
 <p class="hint">A closed cylinder has two circular bases plus a curved side. Practice total surface area <strong>2πr² + 2πrh</strong>, curved lateral area <strong>2πrh</strong>, volume <strong>πr²h</strong>, or both area and volume. The diagrams are accurately scaled <em>unfolded nets</em>: one circumference-by-height rectangle and two radius-r circles.</p>
@@ -209,7 +209,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r76-cylinder-answers">Cylinder answer key PDF</button>
 <button type="button" class="btn" data-action="r76-cylinder-steps">Cylinder worked steps PDF</button>
 </div>
-<p class="hint">Example: r = 3 cm, h = 5 cm: total area 48π cm², lateral area 30π cm², volume 45π cm³. All values are exact, with correct square/cubic units. This optional panel does not replace the existing prism/cube generator or change worksheet share links. Print at 100% scale.</p>
+<p class="hint">Example: r = 3 cm, h = 5 cm: total area 48π cm², lateral area 30π cm², volume 45π cm³. All values are exact, with correct square/cubic units. This optional panel does not replace the prism/cube generator. Copy reproducible link also restores the cylinder task selector. Print at 100% scale.</p>
 </div>}{slug==='mean-median-mode-range-worksheets'&&<div class="calibration-card" data-r77-frequency-dotplot aria-label="Statistical frequency dot plots for reading and graphing observations">
 <strong>Statistical frequency dot plots — read and draw real data</strong>
 <p class="hint">This is a true statistical dot plot, not a count-the-pictures exercise. Each dot represents one observation at a numerical value from 1 to 10. Read frequency, mode, median or range from stacked data, or draw the plot from an actual list. Numeric ticks are equally spaced, with no answer dots shown on student drawing sheets.</p>
@@ -227,7 +227,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r77-dotplot-answers">Dot plot answer key PDF</button>
 <button type="button" class="btn" data-action="r77-dotplot-steps">Dot plot worked steps PDF</button>
 </div>
-<p class="hint">A column with three dots at 5 means the data contain three observations equal to 5. Read modes from tallest stacks; for even data counts, average the two central ordered observations. Original mean, median, mode and range worksheets and share links are unchanged. These PDF-only extensions do not constitute new keyword certification.</p>
+<p class="hint">A column with three dots at 5 means the data contain three observations equal to 5. Read modes from tallest stacks; for even data counts, average the two central ordered observations. Original mean, median, mode and range practice remains unchanged. Copy reproducible link also restores this dot-plot selector. These PDF-only extensions do not constitute new keyword certification.</p>
 </div>}{slug==='volume-of-rectangular-prisms-worksheets'&&<div class="calibration-card" data-r78-solids aria-label="Real right triangular prism volume worksheets and unfolded vector nets">
 <strong>Right triangular prism volume — exact geometric nets</strong>
 <p class="hint">This separate skill uses a right-triangle base with perpendicular legs a and b, and a prism length L. The formula is <strong>V = (a × b ÷ 2) × L</strong>. A true unfolded net shows both triangular bases and three proportional side rectangles. This is not a renamed rectangular-prism question.</p>
@@ -240,7 +240,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r78-solids-answers">Triangle prism teacher key PDF</button>
 <button type="button" class="btn" data-action="r78-solids-steps">Triangle prism worked steps PDF</button>
 </div>
-<p class="hint">Example: 3–4–5 cm triangular base, prism length 7 cm: base area 3 × 4 / 2 = 6 cm², volume 42 cm³. Paper and seed are reproducible. Original rectangular prism exercises and share links stay unchanged.</p>
+<p class="hint">Example: 3–4–5 cm triangular base, prism length 7 cm: base area 3 × 4 / 2 = 6 cm², volume 42 cm³. Paper and seed are reproducible. Original rectangular prism exercises stay unchanged. Copy reproducible link also restores this net/volume selector.</p>
 </div>}{slug==='surface-area-worksheets'&&<div class="calibration-card" data-r78-solids aria-label="True triangular prism and square or regular triangular pyramid surface area nets">
 <strong>Prism and pyramid surface area — original unfolded nets</strong>
 <p class="hint">Practise a closed right triangular prism, a right square pyramid, or a REGULAR triangular pyramid (tetrahedron). The diagrams show true proportional nets, not generic perspective sketches. Formulas: prism <strong>2B + PL</strong>, square pyramid <strong>s² + 2sl</strong> where l is face slant height, regular tetrahedron <strong>s²√3</strong>.</p>
@@ -272,7 +272,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r79-mixed-solid-answers">Mixed teacher key PDF</button>
 <button type="button" class="btn" data-action="r79-mixed-solid-steps">Mixed worked steps PDF</button>
 </div>
-<p class="hint">With mixed mode and at least 3 questions, all three types appear. Closed surface area includes all faces and both cylinder bases; volume uses cubic units. The original v18 generator, standalone geometry extensions and shared worksheet URLs remain intact. Print at 100% scale.</p>
+<p class="hint">With mixed mode and at least 3 questions, all three types appear. Closed surface area includes all faces and both cylinder bases; volume uses cubic units. The original v18 generator remains intact; Copy reproducible link also remembers this mixed-solids mode. Print at 100% scale.</p>
 </div>}{slug==='surface-area-worksheets'&&<>
 <div class="calibration-card" data-r80-nets aria-label="Calculate actual total surface area directly from unfolded net vectors">
 <strong>Surface area from actual solid nets — six shape modes</strong>
@@ -310,6 +310,7 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <p class="hint">Only two-block orthogonal solids with full-depth contacts are supported. This module does not claim to solve arbitrary touching shapes, oblique joints or curved composite surfaces. All student and teacher pages use the same original dimensions.</p>
 </div>
 </>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
+    <p class="hint" data-r82-share-help>Links save the worksheet seed, difficulty, question count, paper settings and any selected optional PDF-panel modes. Open the link to restore these choices, then click the matching student, answer-key or worked-steps download button. No student responses are included.</p>
     <details class="calibration-card" data-print-calibration>
       <summary>Printer scale check <span class="calibration-mini">Recommended before classroom printing</span></summary>
       <p>Download a one-page calibration PDF using the paper size selected above. Print at <strong>Actual size / 100%</strong> with Fit/Shrink disabled. Use a physical ruler to measure both 100 mm reference bars.</p>

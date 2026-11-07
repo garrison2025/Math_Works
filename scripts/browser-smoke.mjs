@@ -1288,6 +1288,39 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
+ // R82: share links restore selections for independent PDF-only generators;
+ // original v18 worksheet seed, question set and public link identity stay intact.
+ const extensionShareChecks=[
+  {route:'two-step-equations-worksheets',selections:[['equation-kind','fraction']],pdfAction:'equation-pack-questions',filename:/fraction.*questions.*\\.pdf$/i},
+  {route:'fractions-worksheets',selections:[['fraction-line-task','plot'],['fraction-line-range','zero-two']],pdfAction:'fraction-line-questions',filename:/fraction-number-line.*plot.*zero-two.*questions.*\\.pdf$/i},
+  {route:'addition-worksheets',selections:[['decimal-add-sub-places','hundredths'],['decimal-add-sub-regrouping','yes']],pdfAction:'decimal-add-sub-questions',filename:/decimal.*questions.*\\.pdf$/i},
+  {route:'surface-area-worksheets',selections:[['r80-nets-mode','square-pyramid'],['r80-composite-mode','right-step']],pdfAction:'r80-nets-questions',filename:/surface-area-nets-square-pyramid-questions.*\\.pdf$/i}
+ ];
+ for(const spec of extensionShareChecks){
+  await page.goto(base+'/'+spec.route+'/',{waitUntil:'networkidle'});
+  const oldQuestion=await page.locator('.problem .q').first().innerText();
+  for(const [key,value] of spec.selections)await page.locator('[data-'+key+']').selectOption(value);
+  await page.locator('[data-action="share"]').click();
+  const copied=await page.evaluate(()=>navigator.clipboard.readText());
+  const copiedUrl=new URL(copied);
+  assert.equal(copiedUrl.origin,base);
+  assert.equal(copiedUrl.pathname,'/'+spec.route+'/');
+  assert.equal(copiedUrl.searchParams.get('gv'),'18');
+  assert.equal(copiedUrl.searchParams.get('xpv'),'1');
+  for(const [key,value] of spec.selections)assert.equal(copiedUrl.searchParams.get('xp_'+key),value);
+  assert.ok(!copied.toLowerCase().includes('student'), 'No student response should appear in copied URLs');
+  await page.goto(copied,{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.problem .q').first().innerText(),oldQuestion);
+  for(const [key,value] of spec.selections)assert.equal(await page.locator('[data-'+key+']').inputValue(),value);
+  const download=page.waitForEvent('download',{timeout:50000});
+  await page.locator('[data-action="'+spec.pdfAction+'"]').click();
+  const exported=await download;
+  assert.match(exported.suggestedFilename(),spec.filename,spec.route+' extension PDF mode filename');
+  await verifyPdf(exported,'R82 restored '+spec.route);
+ }
+ await page.goto(base+'/surface-area-worksheets/?gv=18&seed=20261104&difficulty=standard&quantity=8&paper=Letter&xpv=1&xp_r80-nets-mode=not-a-real-option&xp_equation-kind=fraction',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r80-nets-mode]').inputValue(),'mixed','Invalid extra options should be ignored');
+ events.push({kind:'interaction',name:'R82 four extension share links restore 8 selected options with actual matching PDF downloads; injection rejected',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});

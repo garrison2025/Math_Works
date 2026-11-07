@@ -40,6 +40,7 @@ import type {WritingRoom} from '../lib/writing-room';
 import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
 import {buildWorksheetLink,parseWorksheetLink} from '../lib/worksheet-link';
+import {EXTRA_PACK_KEYS,buildExtraPackLink,parseExtraPackLink,type ExtraPackSelection} from '../lib/extra-pack-link';
 import {checkExactNumber,supportsExactNumber} from '../lib/answer-check';
 import {fractionLayoutFor,fractionMarkup} from '../lib/fraction-layout';
 const esc=(s:string)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -80,6 +81,20 @@ function setup(root:HTMLElement){
   if(Number(quantity.value)>maximum){quantity.value=String([...quantity.options].filter(o=>!o.disabled).at(-1)?.value||4);}
  }
 
+ // PDF-only panels use the same seed/difficulty/paper as the main worksheet,
+ // but each panel has its own selector. Include *only* known rendered selects.
+ function extraSelections(): ExtraPackSelection[] {
+  const selections: ExtraPackSelection[]=[];
+  for(const key of EXTRA_PACK_KEYS){
+   const select=root.querySelector<HTMLSelectElement>(`[data-${key}]`);
+   if(!select)continue;
+   const options=[...select.options];
+   const defaultValue=options.find(option=>option.defaultSelected)?.value??options[0]?.value;
+   if(defaultValue===undefined)continue;
+   selections.push({key,allowed:options.map(option=>option.value),defaultValue,selectedValue:select.value});
+  }
+  return selections;
+ }
  function setExportReady(ready:boolean){
   for(const action of ['worksheet','answers','print','share','steps']){
    const button=root.querySelector<HTMLButtonElement>(`[data-action="${action}"]`);
@@ -473,7 +488,7 @@ function setup(root:HTMLElement){
      const a=document.createElement('a');a.href=url;
      a.download='inequalities-'+skill+'-'+mode+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r74.pdf';
      document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-     inform('R74 '+skill+' '+mode+' PDF downloaded. Original v18 practice is unchanged.');
+     inform('R74 '+skill+' '+mode+' PDF downloaded. Original v18 practice unchanged; extra PDF selector choices can be shared.');
     }catch(e){inform(e instanceof Error?'Inequality extension PDF failed: '+e.message:'Inequality extension PDF failed.',true);}
     finally{b.disabled=false;}
    });
@@ -496,7 +511,7 @@ function setup(root:HTMLElement){
      const a=document.createElement('a');a.href=url;
      a.download='circle-area-'+skill+'-'+mode+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r74.pdf';
      document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-     inform('R74 '+skill+' '+mode+' PDF downloaded. Original rectangle/square practice is unchanged.');
+     inform('R74 '+skill+' '+mode+' PDF downloaded. Original rectangle/square practice unchanged; selected extra settings can be shared.');
     }catch(e){inform(e instanceof Error?'Circle extension PDF failed: '+e.message:'Circle extension PDF failed.',true);}
     finally{b.disabled=false;}
    });
@@ -519,7 +534,7 @@ function setup(root:HTMLElement){
      const a=document.createElement('a');a.href=url;
      a.download='triangle-inequality-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r75.pdf';
      document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-     inform('R75 triangle '+mode+' '+output+' PDF downloaded. Original v18 worksheet and share link unchanged.');
+     inform('R75 triangle '+mode+' '+output+' PDF downloaded. Original v18 worksheet unchanged; extra selector choices can be shared.');
     }catch(e){inform(e instanceof Error?'Triangle theorem PDF failed: '+e.message:'Triangle theorem PDF failed.',true);}
     finally{b.disabled=false;}
    });
@@ -589,7 +604,7 @@ function setup(root:HTMLElement){
      const a=document.createElement('a');a.href=url;
      a.download='statistical-dot-plots-'+task+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r77.pdf';
      document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
-     inform('R77 statistical dot plot '+task+' '+output+' PDF downloaded. Original statistics and share URL unchanged.');
+     inform('R77 statistical dot plot '+task+' '+output+' PDF downloaded. Original statistics unchanged; extra choices are captured by reproducible links.');
     }catch(e){inform(e instanceof Error?'Frequency dot plot PDF failed: '+e.message:'Frequency dot plot PDF failed.',true);}
     finally{b.disabled=false;}
    });
@@ -612,7 +627,7 @@ function setup(root:HTMLElement){
      const link=document.createElement('a');link.href=href;
      link.download='true-solid-net-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r78.pdf';
      document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(href),60000);
-     inform('R78 exact '+mode+' '+output+' PDF downloaded. Original v18 worksheet and share URL unchanged.');
+     inform('R78 exact '+mode+' '+output+' PDF downloaded. Original v18 worksheet unchanged; extra choices are captured by reproducible links.');
     }catch(error){
      inform(error instanceof Error?'Prism/pyramid PDF failed: '+error.message:'Prism/pyramid PDF failed.',true);
     }finally{button.disabled=false;}
@@ -662,7 +677,7 @@ function setup(root:HTMLElement){
       link.download='surface-area-'+skill+'-'+mode+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r80.pdf';
       document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(href),60000);
-      inform('R80 '+skill+' '+output+' PDF downloaded; the original worksheet and share link are unchanged.');
+      inform('R80 '+skill+' '+output+' PDF downloaded; the original worksheet is unchanged; extra choices are captured by reproducible links.');
      }catch(error){
       inform(error instanceof Error?'R80 surface area PDF failed: '+error.message:'R80 surface area PDF failed.',true);
      }finally{button.disabled=false;}
@@ -673,9 +688,13 @@ function setup(root:HTMLElement){
  for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper,writingRoom.value as WritingRoom);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}${m==='questions'&&writingRoom.value==='extra'?'-extra-room':''}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded${m==='questions'&&writingRoom.value==='extra'?' with extra pencil lines':''} · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
  root.querySelector<HTMLButtonElement>('[data-action="share"]')?.addEventListener('click',async()=>{
   if(!worksheet)rebuild();if(!worksheet)return;
-  const params=state();const url=buildWorksheetLink(window.location.href,topic,{seed:params.n,difficulty:params.difficulty,quantity:params.q,paper:paper.value as Paper,options:params.options,writingRoom:writingRoom.value==='extra'?'extra':undefined});
-  try{await navigator.clipboard.writeText(url);inform('Reproducible worksheet link copied. Only your settings are in the URL; no student information.');}
-  catch {window.prompt('Copy this worksheet link:',url);inform('Share link prepared; copy it from the dialog.');}
+  const params=state();
+  const core=buildWorksheetLink(window.location.href,topic,{seed:params.n,difficulty:params.difficulty,quantity:params.q,paper:paper.value as Paper,options:params.options,writingRoom:writingRoom.value==='extra'?'extra':undefined});
+  const selections=extraSelections();
+  const url=buildExtraPackLink(core,selections);
+  const hasExtras=selections.some(s=>s.selectedValue!==s.defaultValue);
+  try{await navigator.clipboard.writeText(url);inform(hasExtras?'Copied a reproducible link with worksheet and selected extra PDF options. Choose the same extra download button after opening it. No student information is included.':'Reproducible worksheet link copied. Extra PDF panels use their displayed default options; no student information is included.');}
+  catch {window.prompt('Copy this worksheet and extra settings link:',url);inform('Reproducible settings link prepared; copy it from the dialog.');}
  });
  const loaded=parseWorksheetLink(window.location.href,topic);
  if(loaded.seed!==undefined)seedInput.value=String(loaded.seed);
@@ -684,6 +703,11 @@ function setup(root:HTMLElement){
  if(loaded.paper)paper.value=loaded.paper;
  if(loaded.writingRoom)writingRoom.value=loaded.writingRoom;
  for(const def of topicDefs){const value=loaded.options?.[def.key];const el=root.querySelector<HTMLSelectElement>(`[data-option="${def.key}"]`);if(value&&el)el.value=value;}
+ const extraFromLink=parseExtraPackLink(window.location.href,extraSelections());
+ for(const key of EXTRA_PACK_KEYS){
+  const value=extraFromLink[key],el=root.querySelector<HTMLSelectElement>(`[data-${key}]`);
+  if(value!==undefined&&el)el.value=value;
+ }
  rebuild();
  const params=new URL(window.location.href).searchParams;
  if(params.has('seed') && params.get('gv')!==GENERATOR_VERSION){
