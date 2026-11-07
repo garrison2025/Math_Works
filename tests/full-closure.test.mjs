@@ -147,3 +147,24 @@ test('Closure: all plane and four-face pyramid edges use PDF-native geometry; no
  assert.match(workspace,/refreshSpecialExample\?\.\(\)/,
   'Programmatic shared URL settings and New set must update the current example');
 });
+
+test('R87: source instructions and release record match shipped PDF sharing',()=>{
+ const page=readFileSync(new URL('../src/pages/[slug]/index.astro',import.meta.url),'utf8');
+ const workspace=readFileSync(new URL('../src/client/workspace.ts',import.meta.url),'utf8');
+ const status=readFileSync(new URL('../CURRENT-STATUS.md',import.meta.url),'utf8');
+ for(const obsolete of [
+  'The original share link does not encode',
+  'The original Copy reproducible link does not',
+  'Existing algebra-inequality share URLs do not encode',
+  'The original reproducible worksheet link does <strong>not</strong> encode'
+ ]){
+  assert.ok(!page.includes(obsolete),'outdated sharing claim: '+obsolete);
+ }
+ assert.match(page,/Copy reproducible link saves the decimal operation/);
+ assert.match(page,/Copy reproducible link saves the selected division-story/);
+ assert.match(workspace,/previewGeneration\+\+/);
+ assert.match(workspace,/requestedGeneration!==previewGeneration/);
+ assert.match(status,/934a1c650046cdde5f56df397ddf266b27a677ae/);
+ assert.match(status,/42334530550/);
+ assert.doesNotMatch(status,/closure branch: CANDIDATE/);
+});
