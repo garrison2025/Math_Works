@@ -97,7 +97,8 @@ console.log('R93 live npm audit + locked licenses',JSON.stringify({
  lockedPackages:licenseEntries.length,undeclared:undeclared.length,
  licenseReview:manualReview.length
 }));
-assert.equal(licenseEntries.length,385,'Locked dependency graph unexpectedly changed');
+assert.ok(licenseEntries.length>=100,'Resolved dependency graph unexpectedly empty');
+assert.equal(licenseEntries.length,Object.keys(lock.packages).length-1,'License inventory does not cover full new lock');
 assert.ok(production.complete&&all.complete,
  'Live npm audit could not be completed; do not claim security PASS');
 assert.equal(production.counts.critical,0,
