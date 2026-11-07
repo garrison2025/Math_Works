@@ -137,3 +137,13 @@ test('Closure: 31 declared optional modes, exact specialist link restoration, ho
  assert.match(status,/\b488\b/);assert.match(status,/\b343\b/);assert.match(status,/\b63\b/);
  assert.match(status,/noindex,nofollow/);assert.match(status,/NOT YET COMPLETED/);
 });
+
+test('Closure: all plane and four-face pyramid edges use PDF-native geometry; no flipped SVG paths',()=>{
+ const source=readFileSync(new URL('../src/lib/closure-pdf.ts',import.meta.url),'utf8');
+ assert.doesNotMatch(source,/\.drawSvgPath\(/,'SVG coordinate transforms must not displace PDF geometry');
+ assert.match(source,/\[\[o,aa\],\[aa,bb\],\[bb,o\]\]/);
+ assert.match(source,/corners\[\(i\+1\)%corners\.length\]/);
+ const workspace=readFileSync(new URL('../src/client/workspace.ts',import.meta.url),'utf8');
+ assert.match(workspace,/refreshSpecialExample\?\.\(\)/,
+  'Programmatic shared URL settings and New set must update the current example');
+});

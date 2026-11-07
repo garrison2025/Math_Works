@@ -72,9 +72,10 @@ function drawPlane(pg:PDFPage,p:ClosureProblem,x:number,y:number,
   D={x:x+40,y:y+126};
  const corners=[{x:x+8,y:y+25},{x:x+162,y:y+25},
   {x:x+183,y:y+102},{x:x+35,y:y+102}];
- pg.drawSvgPath('M '+corners.map(v=>v.x+','+v.y).join(' L ')+' Z',{
-  color:light,borderColor:guide,borderWidth:.75,opacity:.95
- });
+ // PDF-native line operators use PDF coordinates directly.
+ // drawSvgPath flips Y in pdf-lib; it must never be used here.
+ for(let i=0;i<corners.length;i++)
+  line(pg,corners[i],corners[(i+1)%corners.length],.85,guide);
  for(const [u,v] of [[A,B],[A,C],[A,D]]){
   line(pg,u,v,1.25,u===A&&v===D?accent:ink);
  }
@@ -118,9 +119,10 @@ function drawPyramid(pg:PDFPage,p:ClosureProblem,x:number,y:number,
  const scale=Math.min(160/(maxX-minX),117/(maxY-minY));
  const trans=(q:Pt)=>({x:x+15+(q.x-minX)*scale,y:y+28+(q.y-minY)*scale});
  const o=trans(O),aa=trans(A),bb=trans(B),u=trans(U),v=trans(V),w=trans(W);
- pg.drawSvgPath('M '+[o,aa,bb].map(q=>q.x+','+q.y).join(' L ')+' Z',{
-  color:light,borderColor:accent,borderWidth:1
- });
+ // Draw the real three sides of the base via PDF-native coordinates,
+ // so all four unfolded faces are physically on the same page.
+ for(const [p1,p2] of [[o,aa],[aa,bb],[bb,o]] as [Pt,Pt][])
+  line(pg,p1,p2,1.1,accent);
  for(const [q,r] of [[o,u],[aa,u],[o,v],[bb,v],[aa,w],[bb,w]] as [Pt,Pt][])
   line(pg,q,r,1.05,ink);
  label(pg,'a='+a,(o.x+aa.x)/2-8,o.y+5,regular,7.3);

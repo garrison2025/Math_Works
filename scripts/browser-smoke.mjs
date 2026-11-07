@@ -1334,6 +1334,8 @@ try {
     assert.equal(new URL(shared).searchParams.get('xp_closure-mode'),spec.mode);
     await pg.goto(shared,{waitUntil:'networkidle'});
     assert.equal(await pg.locator('[data-closure-mode]').inputValue(),spec.mode);
+    assert.equal(await pg.locator('[data-closure-example] p').first().innerText(),sample,
+     'Shared seed and specialist mode must refresh the visible sample');
     assert.equal(await pg.locator('.problem .q').first().innerText(),baseQuestion);
    }
   }finally{await cx.close();}

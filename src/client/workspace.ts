@@ -64,6 +64,7 @@ function setup(root:HTMLElement){
  const sheetCaption=root.querySelector<HTMLElement>('[data-sheet-caption]')!;
  const sheetFooter=root.querySelector<HTMLElement>('[data-sheet-footer]')!;
  let mode:PdfMode='questions';let worksheet:Worksheet|undefined;let practiceMode=false;
+ let refreshSpecialExample:(()=>void)|undefined;
  function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));}
  function updatePracticeUI(){
   const available=canPractice(),button=root.querySelector<HTMLButtonElement>('[data-action="practice"]')!;
@@ -125,7 +126,7 @@ function setup(root:HTMLElement){
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
   updatePracticeUI();
  }
- function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
+ function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();refreshSpecialExample?.();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
    worksheet=undefined;setExportReady(false);
    list.classList.remove('with-diagrams');list.innerHTML='<p class="empty">Enter a valid seed and settings to generate a worksheet. Previously shown questions have been cleared.</p>';
    summary.textContent='Worksheet unavailable';sheetCaption.textContent='Check settings before printing';sheetFooter.textContent='No valid worksheet to export';
@@ -451,6 +452,7 @@ function setup(root:HTMLElement){
    }catch{sample.querySelector('p')!.textContent='Choose valid settings to preview this exact example.';}
    invalidate();
   };
+  refreshSpecialExample=updateExample;
   for(const el of [selector,seedInput,difficulty,quantity,paper,writingRoom]){
    el.addEventListener('change',updateExample);
   }
