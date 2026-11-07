@@ -49,7 +49,7 @@ import {hasVerifiedSteps} from '../lib/capabilities';
 import {normalizeTopicOptions,topicOptionsFor,maxQuantityForTopic,type TopicOptions} from '../lib/topic-options';
 import {buildWorksheetLink,parseWorksheetLink} from '../lib/worksheet-link';
 import {EXTRA_PACK_KEYS,buildExtraPackLink,parseExtraPackLink,type ExtraPackSelection} from '../lib/extra-pack-link';
-import {checkExactNumber,supportsExactNumber} from '../lib/answer-check';
+import {checkPracticeAnswer,practiceAnswerFormat,supportsPracticeAnswer} from '../lib/practice-answer';
 import {fractionLayoutFor,fractionMarkup} from '../lib/fraction-layout';
 const esc=(s:string)=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function setup(root:HTMLElement){
@@ -65,7 +65,7 @@ function setup(root:HTMLElement){
  const sheetFooter=root.querySelector<HTMLElement>('[data-sheet-footer]')!;
  let mode:PdfMode='questions';let worksheet:Worksheet|undefined;let practiceMode=false;
  let refreshSpecialExample:(()=>void)|undefined;
- function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));}
+ function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsPracticeAnswer(topic,p.expectedAnswer));}
  function updatePracticeUI(){
   const available=canPractice(),button=root.querySelector<HTMLButtonElement>('[data-action="practice"]')!;
   if(!available)practiceMode=false;
@@ -117,7 +117,10 @@ function setup(root:HTMLElement){
     const wrap=document.createElement('div');wrap.className='practice-answer';
     const label=document.createElement('label');label.textContent='Your answer';label.htmlFor=`practice-answer-${i}`;
     const input=document.createElement('input');input.type='text';input.id=label.htmlFor;input.autocomplete='off';
-    input.inputMode='decimal';input.maxLength=64;input.placeholder='e.g. 3/4';input.dataset.practiceInput=String(i);
+    const format=practiceAnswerFormat(topic,s.problems[i].expectedAnswer);
+    input.inputMode=format.kind==='numeric'?'decimal':'text';
+    input.maxLength=100;input.placeholder=format.hint;input.setAttribute('aria-description',format.hint);
+    input.dataset.practiceInput=String(i);
     const feedback=document.createElement('small');feedback.dataset.practiceFeedback=String(i);feedback.setAttribute('role','status');
     wrap.append(label,input,feedback);cards[i]?.append(wrap);
    });
@@ -149,9 +152,9 @@ function setup(root:HTMLElement){
    const feedback=root.querySelector<HTMLElement>(`[data-practice-feedback="${i}"]`)!;
    if(!value){feedback.textContent='Not answered';input.removeAttribute('aria-invalid');continue;}
    attempted++;
-   const result=checkExactNumber(worksheet.problems[i].expectedAnswer,value);
+   const result=checkPracticeAnswer(topic,worksheet.problems[i].expectedAnswer,value);
    if(result==='correct'){correct++;feedback.textContent='Correct';input.setAttribute('aria-invalid','false');}
-   else if(result==='invalid'){feedback.textContent='Use a number, decimal or fraction (such as 3/4).';input.setAttribute('aria-invalid','true');}
+   else if(result==='invalid'){feedback.textContent='Use the requested answer format: '+practiceAnswerFormat(topic,worksheet.problems[i].expectedAnswer).hint+'.';input.setAttribute('aria-invalid','true');}
    else{feedback.textContent='Not quite — try again.';input.setAttribute('aria-invalid','true');}
   }
   root.querySelector<HTMLElement>('[data-practice-summary]')!.textContent=`${correct} correct / ${attempted} attempted / ${worksheet.problems.length} total. No answers or scores are sent to a server.`;

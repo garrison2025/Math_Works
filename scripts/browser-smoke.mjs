@@ -1623,6 +1623,56 @@ try {
  assert.equal(await page.locator('[data-equation-kind]').inputValue(),'fraction');
  assert.match(await page.locator('[data-status]').innerText(),/Restored 1 optional PDF setting/);
  events.push({kind:'interaction',name:'R83 contextual share buttons in two distant optional PDF panels: copy, reload, restore, and exact geometry PDF download',status:'pass'});
+ // R96: verify the exact built Chromium UI accepts 7 nonnumeric answer types,
+ // with no hidden answer leakage back into practice and no string-eval fallback.
+ const typedPractice=[
+  {slug:'angle-worksheets',option:null},
+  {slug:'coordinate-plane-worksheets',option:{key:'quadrant',value:'II'}},
+  {slug:'percentages-worksheets',option:{key:'direction',value:'fraction-to-percent'}},
+  {slug:'scientific-notation-worksheets',option:{key:'direction',value:'to-scientific'}},
+  {slug:'systems-equations-worksheets',option:{key:'method',value:'parallel'}},
+  {slug:'domain-range-worksheets',option:{key:'task',value:'domain'}},
+  {slug:'inequalities-worksheets',option:{key:'coefficient',value:'negative'}}
+ ];
+ for(const item of typedPractice){
+  await page.goto(base+'/'+item.slug+'/',{waitUntil:'networkidle'});
+  if(item.option)await page.locator('[data-option="'+item.option.key+'"]').selectOption(item.option.value);
+  assert.equal(await page.locator('[data-action="practice"]').isVisible(),true,
+   'R96 missing typed Practice online button '+item.slug);
+  await page.locator('[data-mode="answers"]').click();
+  const answerRaw=await page.locator('.problem .answer-text').first().innerText();
+  assert.ok(answerRaw.startsWith('Answer: '),item.slug+' missing answer fixture');
+  const known=answerRaw.slice('Answer: '.length).trim();
+  await page.locator('[data-mode="questions"]').click();
+  assert.equal(await page.locator('.problem .answer-text').count(),0,
+   'R96 answer key leaked back into question preview '+item.slug);
+  await page.locator('[data-action="practice"]').click();
+  const input=page.locator('[data-practice-input="0"]');
+  assert.ok((await input.getAttribute('placeholder'))?.length>8);
+  await input.fill(known);
+  await page.locator('[data-action="check-practice"]').click();
+  assert.equal(await page.locator('[data-practice-feedback="0"]').innerText(),'Correct',
+   item.slug+' valid typed answer rejected by rendered browser app');
+  await input.fill('1+1;alert(1)');
+  await page.locator('[data-action="check-practice"]').click();
+  assert.notEqual(await page.locator('[data-practice-feedback="0"]').innerText(),'Correct',
+   item.slug+' accepted injected expression as correct answer');
+  await page.locator('[data-action="share"]').click();
+  const url=await page.evaluate(()=>navigator.clipboard.readText());
+  assert.ok(!url.includes('alert')&&!url.includes('practice-answer')&&!url.includes('userAnswer'),
+   'R96 copied link must never include student response '+item.slug);
+ }
+ for(const slug of ['number-line-worksheets','printable-protractor']){
+  await page.goto(base+'/'+slug+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('[data-action="practice"]').isVisible(),false,
+   'R96 cannot pretend to grade physical marking tasks from text '+slug);
+ }
+ await page.goto(base+'/box-plots-worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-option="statistic"]').selectOption('draw');
+ assert.equal(await page.locator('[data-action="practice"]').isVisible(),false,
+  'R96 must not substitute summary text for visual box plot drawing assessment');
+ events.push({kind:'interaction',name:'R96 exact typed answers: seven real topic pages, invalid expression rejection, zero practice answer leakage and physical marking not autograded',status:'pass'});
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
