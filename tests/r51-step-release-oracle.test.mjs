@@ -32,7 +32,7 @@ const options={
 const newTopics=Object.keys(options);
 test('R51: every authorized PDF worked-step topic has independent arithmetic reconstruction',()=>{
  const enabled=verifiedStepTopics();
- assert.equal(enabled.length,15);
+ assert.equal(enabled.length,23);
  assert.deepEqual([...INDEPENDENT_STEP_TOPICS].sort(),[...enabled].sort());
  assert.equal(newTopics.length,7);
 });
