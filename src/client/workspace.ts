@@ -686,16 +686,43 @@ function setup(root:HTMLElement){
   }
  }
  for(const name of ['worksheet','answers','steps']as const){const b=root.querySelector<HTMLButtonElement>(`[data-action="${name}"]`)!;b.addEventListener('click',async()=>{try{if(name==='steps'&&!stepsEnabled)throw new Error('Worked steps are not verified for this topic. Use the answer key.');if(!worksheet)rebuild();if(!worksheet)return; b.disabled=true;inform('Preparing a vector PDF…');const m:PdfMode=name==='worksheet'?'questions':name;const bytes=await createWorksheetPdf(worksheet,titleFor(topic),m,paper.value as Paper,writingRoom.value as WritingRoom);const blob=new Blob([new Uint8Array(bytes)],{type:'application/pdf'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`${topic}-v${worksheet.generatorVersion}-${m}-${worksheet.seed}-${worksheet.optionsHash}-${paper.value.toLowerCase()}${m==='questions'&&writingRoom.value==='extra'?'-extra-room':''}.pdf`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);inform(`${m==='questions'?'Worksheet':m==='answers'?'Answer key':'Worked steps'} PDF downloaded${m==='questions'&&writingRoom.value==='extra'?' with extra pencil lines':''} · Seed ${worksheet.seed} · Config ${worksheet.optionsHash}.`);}catch(e){inform(e instanceof Error?`PDF failed: ${e.message}`:'PDF generation failed.',true);}finally{b.disabled=false;}});}
- root.querySelector<HTMLButtonElement>('[data-action="share"]')?.addEventListener('click',async()=>{
-  if(!worksheet)rebuild();if(!worksheet)return;
-  const params=state();
-  const core=buildWorksheetLink(window.location.href,topic,{seed:params.n,difficulty:params.difficulty,quantity:params.q,paper:paper.value as Paper,options:params.options,writingRoom:writingRoom.value==='extra'?'extra':undefined});
-  const selections=extraSelections();
-  const url=buildExtraPackLink(core,selections);
-  const hasExtras=selections.some(s=>s.selectedValue!==s.defaultValue);
-  try{await navigator.clipboard.writeText(url);inform(hasExtras?'Copied a reproducible link with worksheet and selected extra PDF options. Choose the same extra download button after opening it. No student information is included.':'Reproducible worksheet link copied. Extra PDF panels use their displayed default options; no student information is included.');}
-  catch {window.prompt('Copy this worksheet and extra settings link:',url);inform('Reproducible settings link prepared; copy it from the dialog.');}
- });
+ // R83: put a contextual share action immediately below each optional PDF pack.
+ // All shortcuts use the *same* R82 versioned, validated link builder as the
+ // primary share button; no separate state and no student responses in URLs.
+ async function copySettingsLink(){
+  if(!worksheet){rebuild();if(!worksheet)return;}
+  let url:string,hasExtras:boolean;
+  try{
+   const params=state();
+   const core=buildWorksheetLink(window.location.href,topic,{seed:params.n,difficulty:params.difficulty,quantity:params.q,paper:paper.value as Paper,options:params.options,writingRoom:writingRoom.value==='extra'?'extra':undefined});
+   const selections=extraSelections();
+   url=buildExtraPackLink(core,selections);
+   hasExtras=selections.some(s=>s.selectedValue!==s.defaultValue);
+  }catch(error){inform(error instanceof Error?'Could not copy settings: '+error.message:'Could not copy worksheet settings.',true);return;}
+  try{
+   await navigator.clipboard.writeText(url);
+   inform(hasExtras?'Copied reproducible worksheet and extra PDF settings. Open the link and use the matching PDF download button; no student answers are included.':'Copied reproducible worksheet settings. Extra PDF panels have their default choices; no student answers are included.');
+  }catch{
+   window.prompt('Copy the reproducible worksheet and extra PDF settings link:',url);
+   inform('Reproducible settings link prepared; copy it from the dialog.');
+  }
+ }
+ root.querySelector<HTMLButtonElement>('[data-action="share"]')?.addEventListener('click',copySettingsLink);
+ for(const panel of root.querySelectorAll<HTMLElement>('.calibration-card')){
+  const hasExtraChoice=EXTRA_PACK_KEYS.some(key=>panel.querySelector(`[data-${key}]`)!==null);
+  if(!hasExtraChoice)continue;
+  const downloadGrid=panel.querySelector<HTMLElement>('.download-grid');
+  if(!downloadGrid||panel.querySelector('[data-action="share-extra"]'))continue;
+  const shareButton=document.createElement('button');
+  shareButton.type='button';
+  shareButton.className='btn btn-soft extra-share-shortcut';
+  shareButton.dataset.action='share-extra';
+  shareButton.textContent='Copy settings link for this PDF pack';
+  const panelTitle=panel.querySelector('strong')?.textContent?.trim()||'optional PDF practice';
+  shareButton.setAttribute('aria-label','Copy reproducible link for '+panelTitle);
+  shareButton.addEventListener('click',copySettingsLink);
+  downloadGrid.insertAdjacentElement('afterend',shareButton);
+ }
  const loaded=parseWorksheetLink(window.location.href,topic);
  if(loaded.seed!==undefined)seedInput.value=String(loaded.seed);
  if(loaded.difficulty)difficulty.value=loaded.difficulty;
@@ -712,6 +739,9 @@ function setup(root:HTMLElement){
  const params=new URL(window.location.href).searchParams;
  if(params.has('seed') && params.get('gv')!==GENERATOR_VERSION){
   inform('This shared link uses an older or unversioned generator. Its original questions may differ after an update. Copy a fresh link to preserve the current version.',true);
+ }else if(Object.keys(extraFromLink).length>0 && worksheet){
+  const restored=Object.keys(extraFromLink).length;
+  inform('Restored '+restored+' optional PDF setting'+(restored===1?'':'s')+' from the shared link. Select the corresponding extra student/key/steps PDF download button.');
  }
 }
 export function initWorkspaces(){document.querySelectorAll<HTMLElement>('[data-workspace]').forEach(el=>{if(el.dataset.ready)return;el.dataset.ready='true';setup(el);});}

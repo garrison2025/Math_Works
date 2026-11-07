@@ -2,7 +2,10 @@
 
 An original, browser-first US-English printable math worksheet generator built with Astro, TypeScript and pdf-lib. Source: `garrison2025/Math_Works`.
 
-**Project state:** functional implementation draft; **not yet production accepted**. All preview routes intentionally emit `noindex` until a verified custom domain and manual QA are complete. Review `RELEASE-EVIDENCE.md` before enabling indexing.
+**Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
+
+**Current verified baseline (2026-11-07):** R82 on main, [Actions #416](https://github.com/garrison2025/Math_Works/actions/runs/42319014926) **PASS**. Read [CURRENT-STATUS.md](CURRENT-STATUS.md) for current functional scope, all 488 keyword statuses, launch gates and R83 changes. The detailed R1–R73 notes below are historical snapshots, not the final/current QA state.
+
 
 ## Scope
 

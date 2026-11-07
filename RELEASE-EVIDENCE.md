@@ -1,4 +1,7 @@
-# Release evidence | 2026-11-04
+# Release evidence | historical QA log beginning 2026-11-04
+
+**Current verified baseline (2026-11-07):** R82 on main, [Actions #416](https://github.com/garrison2025/Math_Works/actions/runs/42319014926) **PASS**. Read [CURRENT-STATUS.md](CURRENT-STATUS.md) for current functional scope, all 488 keyword statuses, launch gates and R83 changes. The detailed R1–R73 notes below are historical snapshots, not the final/current QA state.
+
 
 This file distinguishes implemented code, local checks and outstanding gates. **The site is not production-ready.**
 
