@@ -126,7 +126,7 @@ export async function createGraphPdf(pack:GraphPack,edition:GraphEdition,paper:P
   }
   label(pg,'R86 actual vector graph  |  '+edition+'  |  '+paper+
    '  |  Seed '+pack.seed+'  |  '+pageNumber+'/'+count+
-   '  |  Print at Actual Size',left,35,regular,7.1,muted);
+   '  |  Print at Actual Size',left,42,regular,7.1,muted);
  }
  pdf.setCreator('Math Worksheet Studio');
  pdf.setTitle('R86 '+pack.mode+' '+edition+' '+paper+' seed '+pack.seed);
