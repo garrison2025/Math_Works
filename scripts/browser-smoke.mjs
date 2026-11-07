@@ -1327,6 +1327,11 @@ try {
    const frame=pg.locator('[data-closure-preview]');
    assert.equal(await frame.isVisible(),true);
    assert.ok((await frame.getAttribute('src'))?.startsWith('blob:'));
+   assert.equal(await pg.locator('[data-special-live-preview]').isVisible(),true);
+   assert.equal(await pg.locator('.sheet-outer').isVisible(),false);
+   await pg.locator('[data-action="closure-return-preview"]').click();
+   assert.equal(await pg.locator('.sheet-outer').isVisible(),true);
+   assert.equal(await pg.locator('[data-special-live-preview]').isVisible(),false);
    assert.equal(await pg.locator('.problem .q').first().innerText(),baseQuestion);
    if(['order-angles','subtraction','line-plane'].includes(spec.mode)){
     await pg.locator('[data-closure-card] [data-action="share-extra"]').click();

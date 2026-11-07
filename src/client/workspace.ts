@@ -432,11 +432,14 @@ function setup(root:HTMLElement){
  if(root.querySelector('[data-closure-card]')){
   const selector=root.querySelector<HTMLSelectElement>('[data-closure-mode]')!;
   const preview=root.querySelector<HTMLIFrameElement>('[data-closure-preview]')!;
+  const livePreview=root.querySelector<HTMLElement>('[data-special-live-preview]')!;
+  const basePaper=root.querySelector<HTMLElement>('.sheet-outer')!;
   const sample=root.querySelector<HTMLElement>('[data-closure-example]')!;
   let previewURL:string|undefined;
   const invalidate=()=>{
    if(previewURL){URL.revokeObjectURL(previewURL);previewURL=undefined;}
    preview.hidden=true;preview.removeAttribute('src');
+   livePreview.hidden=true;basePaper.hidden=false;
   };
   const create=async(edition:'questions'|'answers'|'steps')=>{
    const s=state(),pack=makeClosurePack(topic as ClosureTopic,s.n,s.q,
@@ -475,6 +478,8 @@ function setup(root:HTMLElement){
     finally{button.disabled=false;}
    });
   }
+  root.querySelector<HTMLButtonElement>('[data-action="closure-return-preview"]')!
+   .addEventListener('click',()=>{invalidate();inform('Returned to the original v18 worksheet preview.');});
   const button=root.querySelector<HTMLButtonElement>('[data-action="closure-preview"]')!;
   button.addEventListener('click',async()=>{
    button.disabled=true;
@@ -483,7 +488,8 @@ function setup(root:HTMLElement){
     invalidate();
     previewURL=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
     preview.src=previewURL;preview.hidden=false;
-    inform('Showing the real student PDF below. The teacher key uses identical questions.');
+    livePreview.hidden=false;basePaper.hidden=true;
+    inform('Showing the real student PDF in the right preview. The teacher key uses identical questions.');
    }catch(e){inform(e instanceof Error?e.message:'Specialist preview failed.',true)}
    finally{button.disabled=false;}
   });

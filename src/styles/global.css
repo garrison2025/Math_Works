@@ -73,3 +73,12 @@
 .sample-math-question p{margin:6px 0}.sample-math-question summary{cursor:pointer;color:#15588b;font-weight:600}
 @media(max-width:630px){.special-pdf-iframe{height:440px}}
 @media print{.special-pdf-iframe,.sample-math-question{display:none!important}}
+
+/* Full-width specialist paper on the RIGHT, instead of a tiny settings-column iframe. */
+.special-live-preview{padding:14px 16px;min-width:0}
+.special-live-preview[hidden],.sheet-outer[hidden]{display:none!important}
+.special-live-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.special-live-head strong{font-size:.92rem;color:#142a43}
+.special-live-head p{font-size:.77rem;line-height:1.5;color:#576477;margin:4px 0 0}
+.special-live-preview .special-pdf-iframe{min-height:560px;height:min(78vh,820px);background:white}
+@media(max-width:630px){.special-live-preview{padding:10px}.special-live-preview .special-pdf-iframe{min-height:400px;height:480px}}
