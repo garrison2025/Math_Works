@@ -1321,6 +1321,40 @@ try {
  await page.goto(base+'/surface-area-worksheets/?gv=18&seed=20261104&difficulty=standard&quantity=8&paper=Letter&xpv=1&xp_r80-nets-mode=not-a-real-option&xp_equation-kind=fraction',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-r80-nets-mode]').inputValue(),'mixed','Invalid extra options should be ignored');
  events.push({kind:'interaction',name:'R82 four extension share links restore 8 selected options with actual matching PDF downloads; injection rejected',status:'pass'});
+ // R83: verify each extra PDF panel has a share shortcut near the download
+ // buttons. The shortcut shares selected pack choices, not student answers.
+ await page.goto(base+'/surface-area-worksheets/',{waitUntil:'networkidle'});
+ const r83Nets=page.locator('[data-r80-nets] [data-action="share-extra"]');
+ const r83Composite=page.locator('[data-r80-composite] [data-action="share-extra"]');
+ assert.equal(await r83Nets.count(),1);
+ assert.equal(await r83Composite.count(),1);
+ assert.equal(await page.locator('[data-print-calibration] [data-action="share-extra"]').count(),0,'Printer scale panel must not receive a pack share action');
+ await page.locator('[data-r80-nets-mode]').selectOption('regular-tetrahedron');
+ await page.locator('[data-r80-composite-mode]').selectOption('left-step');
+ await r83Nets.click();
+ const r83Share=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.equal(new URL(r83Share).searchParams.get('xp_r80-nets-mode'),'regular-tetrahedron');
+ assert.equal(new URL(r83Share).searchParams.get('xp_r80-composite-mode'),'left-step');
+ assert.match(await page.locator('[data-status]').innerText(),/Copied reproducible worksheet and extra PDF settings/);
+ await page.goto(r83Share,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r80-nets-mode]').inputValue(),'regular-tetrahedron');
+ assert.equal(await page.locator('[data-r80-composite-mode]').inputValue(),'left-step');
+ assert.match(await page.locator('[data-status]').innerText(),/Restored 2 optional PDF settings/);
+ const r83Pdf=page.waitForEvent('download',{timeout:50000});
+ await page.locator('[data-action="r80-nets-questions"]').click();
+ const r83DL=await r83Pdf;
+ assert.match(r83DL.suggestedFilename(),/surface-area-nets-regular-tetrahedron-questions.*\.pdf$/i);
+ await verifyPdf(r83DL,'R83 contextual net PDF');
+ await page.goto(base+'/two-step-equations-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r65-equation-pack] [data-action="share-extra"]').count(),1);
+ await page.locator('[data-equation-kind]').selectOption('fraction');
+ await page.locator('[data-r65-equation-pack] [data-action="share-extra"]').click();
+ const r83EquationLink=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.equal(new URL(r83EquationLink).searchParams.get('xp_equation-kind'),'fraction');
+ await page.goto(r83EquationLink,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-equation-kind]').inputValue(),'fraction');
+ assert.match(await page.locator('[data-status]').innerText(),/Restored 1 optional PDF setting/);
+ events.push({kind:'interaction',name:'R83 contextual share buttons in two distant optional PDF panels: copy, reload, restore, and exact geometry PDF download',status:'pass'});
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});

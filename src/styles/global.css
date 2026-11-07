@@ -58,3 +58,10 @@
 /* R53: classroom-scale long division SVG with 4-5 visible writing rows. */
 .problem svg.long-division-vector{height:auto;max-height:265px}
 @media(max-width:630px){.problem svg.long-division-vector{max-height:235px}}
+
+
+/* R83 contextual share links for long teacher worksheet settings panels. */
+.calibration-card .extra-share-shortcut{margin-top:10px;width:100%;min-height:42px;font-size:.8rem;border-style:dashed;background:#edf6ff;color:#124e83}
+.calibration-card .extra-share-shortcut:hover:not(:disabled){background:#dfeefa;border-color:#7ba9ce}
+.calibration-card .extra-share-shortcut:focus-visible{outline:3px solid #1665ad;outline-offset:3px}
+@media print{.extra-share-shortcut{display:none!important}}
