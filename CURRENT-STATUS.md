@@ -2,10 +2,10 @@
 
 **2026-11-07 software feature-closure: MERGED to main; latest merged-main quality checks PASSED. Teacher and physical-print release sign-off remain NOT YET COMPLETED.**
 
-**Last independently verified main deployment:** R91 PR #19 merged as `fcad6781b14b42630da41527f3bdc02f433e9149`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42351072259) **PASS** (167 primary steps, 14 Firefox steps), and Cloudflare Pages reported success on the same SHA. R91 compared 816 exact generated questions and answers across Chromium and Firefox in 102 scenarios (51 built V2 routes, two seeded configs each), with zero differences. R89/R90 preserved the owner's 488 original keywords and shipped six subject directories, 437 non-HOLD search aliases and Terms. R92 npm dependency locking is pending its own PR/CI and release; preview stays `noindex,nofollow`.
+**Last independently verified main deployment:** R92 PR #20 merged as `9e09049e26e55cfac4637e32b179202e2fb026d3`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42353338178) **PASS** (169 primary steps, 15 Firefox steps); Cloudflare Pages reported success on the same SHA. R92 locked 385 npm third-party package entries and moved both CI jobs to clean `npm ci`. R91 verified 816 exact generated questions/answers across Chromium/Firefox in 102 scenarios, zero differences. R89/R90 kept all original owner V2 keywords and added six directories, 437 working keyword aliases and Terms. R93 extra audited arithmetic steps and launch-evidence kits are candidates until R93 independent CI. Preview stays `noindex,nofollow`.
 
 ## Actual scope
-55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 15 core worked-step families have independent base-generator certification; other steps must not be claimed as audited. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
+55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 15 previously released core worked-step families have independent base-generator certification (R93 proposes eight more, subject to math and CI proof); other steps must not be claimed as audited. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
 
 ## Source-frozen V2.0 keywords (owner-approved development dataset; no new SERP research required)
 
@@ -23,6 +23,8 @@
 The **63** remaining historical flags and **343** other source rows are archival audit labels, **not a request to re-research the approved V2.0 dataset**. User explicitly directed development to deploy the supplied 488 terms without fresh US SERP or KD checks. Exactly **437** source keyword rows point to the **51 built working pages**; **51** rows belong to **four V2.0 HOLDs** and must not be misrepresented as deployed. Fifteen historically incorrect task links have option-level corrections. Old source Semrush Volume/KD remain snapshots, not ranking or traffic claims.
 
 ## Release gates — NOT YET COMPLETED
+
+R93 pending: live registry advisory and per-package license evidence, 408-row teacher review packet, physical print sample kit and five-viewport automated browser QA. These tools and samples do **not** by themselves sign off a human teacher, physical printer or owned domain. See [RELEASE-R93-OWNER-ACCEPTANCE.md](RELEASE-R93-OWNER-ACCEPTANCE.md).
 
 - Automated engineering: independent seeded math and exact PDF geometry; all 51 original generators, Chrome and Firefox downloads; static metadata, 404 and `noindex,nofollow` gate. The latest merged main passed these automated checks at the SHA stated above. Subsequent releases require fresh evidence.
 - Human: teacher mathematical proofreading, accessibility and print-layout visual review, real printer and ruler calibration at Actual Size / 100% **NOT RUN**. These are independent of digital CI.
