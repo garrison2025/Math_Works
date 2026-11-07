@@ -1288,6 +1288,45 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
+ // R86: four modes in isolated Chromium contexts; 12 actual downloads
+ // including true vector graph plots, read-graph and quadratic transforms.
+ for(const graphMode of ['mixed','linear-graph','read-graph','quadratic-transform']){
+  const graphContext=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},
+   permissions:['clipboard-read','clipboard-write']});
+  try{
+   const graphPage=await graphContext.newPage();
+   await graphPage.goto(base+'/functions-worksheets/',{waitUntil:'networkidle'});
+   const oldFirst=await graphPage.locator('.problem .q').first().innerText();
+   assert.equal(await graphPage.locator('[data-r86-graph-mode]').count(),1);
+   assert.equal(await graphPage.locator('[data-r86-graph-pack] [data-action="share-extra"]').count(),1);
+   await graphPage.locator('[data-r86-graph-mode]').selectOption(graphMode);
+   await graphPage.locator('[data-field="paper"]').selectOption('A4');
+   for(const edition of ['questions','answers','steps']){
+    const pending=graphPage.waitForEvent('download',{timeout:60000});
+    await graphPage.locator('[data-action="r86-graphs-'+edition+'"]').click();
+    let dl;
+    try{dl=await pending;}catch(error){
+     const status=await graphPage.locator('[data-status]').innerText();
+     throw new Error('R86 '+graphMode+' '+edition+' download failed: '+status+'; '+String(error));
+    }
+    assert.ok(dl.suggestedFilename().includes('r86-function-graphs-'+graphMode+'-'+edition),dl.suggestedFilename());
+    const doc=await verifyPdf(dl,'R86 '+graphMode+' '+edition,{paper:'A4'});
+    assert.equal(doc.getPageCount(),4);
+    assert.match(doc.getTitle()??'',/R86/);
+   }
+   assert.equal(await graphPage.locator('.problem .q').first().innerText(),oldFirst);
+   if(graphMode!=='mixed'){
+    await graphPage.locator('[data-r86-graph-pack] [data-action="share-extra"]').click();
+    const link=await graphPage.evaluate(()=>navigator.clipboard.readText());
+    assert.equal(new URL(link).searchParams.get('xp_r86-graph-mode'),graphMode);
+    await graphPage.goto(link,{waitUntil:'networkidle'});
+    assert.equal(await graphPage.locator('[data-r86-graph-mode]').inputValue(),graphMode);
+    assert.equal(await graphPage.locator('.problem .q').first().innerText(),oldFirst);
+    assert.match(await graphPage.locator('[data-status]').innerText(),/Restored 1 optional PDF setting/);
+   }
+  }finally{await graphContext.close();}
+ }
+ events.push({kind:'interaction',name:'R86 actual 12 A4 function graph PDFs, 3 share restores and unchanged v18 page',status:'pass'});
  // R85: four authentic seeded extension families, each in an isolated
  // browser context so automated PDF downloads never hit Chromium's per-tab
  // multi-download limit. Verify three real PDFs and share-mode round trips.

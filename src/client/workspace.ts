@@ -20,6 +20,8 @@ import {createMultiplicationModelPack,type MultiplicationModelMode} from '../lib
 import {createMultiplicationModelPdf} from '../lib/multiplication-models-pdf';
 import {createR85Pack,type R85Topic} from '../lib/r85-targeted-packs';
 import {createR85Pdf} from '../lib/r85-targeted-pdf';
+import {createGraphPack,type GraphMode} from '../lib/r86-function-graphs';
+import {createGraphPdf} from '../lib/r86-function-graphs-pdf';
 import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
@@ -418,6 +420,34 @@ function setup(root:HTMLElement){
     }catch(e){
      inform(e instanceof Error?'Multiplication/division PDF failed: '+e.message:'Multiplication/division PDF failed.',true);
     }finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R86 true coordinate graphs, actual plotted teacher functions and exact
+ // quadratic translations. This is an independent PDF pack only.
+ if(topic==='functions-worksheets'){
+  const graphMode=root.querySelector<HTMLSelectElement>('[data-r86-graph-mode]');
+  for(const edition of ['questions','answers','steps'] as const){
+   const btn=root.querySelector<HTMLButtonElement>('[data-action="r86-graphs-'+edition+'"]');
+   if(!graphMode||!btn)continue;
+   btn.addEventListener('click',async()=>{
+    btn.disabled=true;
+    try{
+     const options=state(),selection=graphMode.value as GraphMode;
+     inform('Validating '+selection+' coordinates and building graph PDF...');
+     const pack=createGraphPack(options.n,options.q,options.difficulty,selection);
+     const bytes=await createGraphPdf(pack,edition,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');
+     a.href=url;a.download='r86-function-graphs-'+selection+'-'+edition+
+      '-seed'+options.n+'-'+paper.value.toLowerCase()+'.pdf';
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R86 '+selection+' '+edition+' PDF downloaded. Base function worksheet is unchanged.');
+    }catch(e){
+     inform(e instanceof Error?'R86 graph PDF failed: '+e.message:'R86 graph PDF failed.',true);
+    }finally{btn.disabled=false}
    });
   }
  }
