@@ -16,6 +16,15 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: R89 audit original V2 488 terms against 51 real routes and preselected modes
+        run: npm run qa:v2-keyword-deployment
+      - name: Archive the 488-row V2 source keyword to actual built-page mapping
+        uses: actions/upload-artifact@v4
+        with:
+          name: r89-488-v2-keyword-to-deployed-page-matrix
+          path: qa-artifacts/r89-v2-keyword-deployment/
+          retention-days: 30
+          if-no-files-found: error
       - name: R62 export complete source-grounded keyword intent and SEO release status
         run: npm run qa:seo-readiness
       - name: R63 inspect all 488 original keywords against exact 145 source-backed intent flags
