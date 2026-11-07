@@ -19,6 +19,7 @@
     "qa:v2-keyword-deployment": "node --experimental-strip-types scripts/audit-v2-keyword-deployment.mjs",
     "qa:r90-directory-search": "node --experimental-strip-types scripts/audit-r90-directory-search.mjs",
     "qa:r93-supply-chain": "node scripts/r93-supply-chain-sca.mjs",
+    "qa:r95-static-distribution": "node scripts/r95-static-distribution.mjs",
     "qa:r93-teacher-print": "node --experimental-strip-types scripts/r93-teacher-print-packet.mjs",
     "qa:r93-ux-a11y": "node scripts/r93-ux-accessibility.mjs",
     "qa:browser": "node scripts/browser-smoke.mjs",
