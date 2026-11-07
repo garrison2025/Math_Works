@@ -103,7 +103,7 @@ test('R86 40-question maximum = 20 pages; v18 preview unaffected; shared optiona
  const pdf=await PDFDocument.load(await createGraphPdf(pack,'steps','Letter','extra'));
  assert.equal(pdf.getPageCount(),20);
  assert.deepEqual(makeWorksheet('functions-worksheets',20261104,8,'standard'),original);
- assert.equal(EXTRA_PACK_KEYS.length,30);
+ assert.equal(EXTRA_PACK_KEYS.length,31);
  const key='r86-graph-mode',opts=[{key,allowed:GRAPH_MODES,defaultValue:'mixed',selectedValue:'quadratic-transform'}];
  const base='https://math-works.pages.dev/functions-worksheets/?gv=18&seed=20261107&quantity=8';
  const share=buildExtraPackLink(base,opts);

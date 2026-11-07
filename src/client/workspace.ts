@@ -22,6 +22,8 @@ import {createR85Pack,type R85Topic} from '../lib/r85-targeted-packs';
 import {createR85Pdf} from '../lib/r85-targeted-pdf';
 import {createGraphPack,type GraphMode} from '../lib/r86-function-graphs';
 import {createGraphPdf} from '../lib/r86-function-graphs-pdf';
+import {makeClosurePack,type ClosureTopic,type ClosureMode} from '../lib/closure-math';
+import {createClosurePdf} from '../lib/closure-pdf';
 import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
@@ -62,6 +64,7 @@ function setup(root:HTMLElement){
  const sheetCaption=root.querySelector<HTMLElement>('[data-sheet-caption]')!;
  const sheetFooter=root.querySelector<HTMLElement>('[data-sheet-footer]')!;
  let mode:PdfMode='questions';let worksheet:Worksheet|undefined;let practiceMode=false;
+ let refreshSpecialExample:(()=>void)|undefined;
  function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));}
  function updatePracticeUI(){
   const available=canPractice(),button=root.querySelector<HTMLButtonElement>('[data-action="practice"]')!;
@@ -123,7 +126,7 @@ function setup(root:HTMLElement){
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
   updatePracticeUI();
  }
- function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
+ function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();refreshSpecialExample?.();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
    worksheet=undefined;setExportReady(false);
    list.classList.remove('with-diagrams');list.innerHTML='<p class="empty">Enter a valid seed and settings to generate a worksheet. Previously shown questions have been cleared.</p>';
    summary.textContent='Worksheet unavailable';sheetCaption.textContent='Check settings before printing';sheetFooter.textContent='No valid worksheet to export';
@@ -422,6 +425,74 @@ function setup(root:HTMLElement){
     }finally{button.disabled=false;}
    });
   }
+ }
+
+ // One consolidated release closure: five true new specialist PDF subjects.
+ // All three editions and the visible PDF viewer use the very same builder.
+ if(root.querySelector('[data-closure-card]')){
+  const selector=root.querySelector<HTMLSelectElement>('[data-closure-mode]')!;
+  const preview=root.querySelector<HTMLIFrameElement>('[data-closure-preview]')!;
+  const livePreview=root.querySelector<HTMLElement>('[data-special-live-preview]')!;
+  const basePaper=root.querySelector<HTMLElement>('.sheet-outer')!;
+  const sample=root.querySelector<HTMLElement>('[data-closure-example]')!;
+  let previewURL:string|undefined;
+  const invalidate=()=>{
+   if(previewURL){URL.revokeObjectURL(previewURL);previewURL=undefined;}
+   preview.hidden=true;preview.removeAttribute('src');
+   livePreview.hidden=true;basePaper.hidden=false;
+  };
+  const create=async(edition:'questions'|'answers'|'steps')=>{
+   const s=state(),pack=makeClosurePack(topic as ClosureTopic,s.n,s.q,
+    s.difficulty,selector.value as ClosureMode);
+   return createClosurePdf(pack,edition,paper.value as Paper,writingRoom.value as WritingRoom);
+  };
+  const updateExample=()=>{
+   try{
+    const s=state(),q=makeClosurePack(topic as ClosureTopic,s.n,1,
+     s.difficulty,selector.value as ClosureMode).problems[0];
+    sample.querySelector('p')!.textContent=q.question;
+    sample.querySelector('details p')!.textContent=q.answer;
+   }catch{sample.querySelector('p')!.textContent='Choose valid settings to preview this exact example.';}
+   invalidate();
+  };
+  refreshSpecialExample=updateExample;
+  for(const el of [selector,seedInput,difficulty,quantity,paper,writingRoom]){
+   el.addEventListener('change',updateExample);
+  }
+  seedInput.addEventListener('input',invalidate);
+  for(const edition of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="closure-'+edition+'"]')!;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     inform('Generating actual specialist '+edition+' PDF...');
+     const s=state(),bytes=await create(edition),url=URL.createObjectURL(
+      new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='math-specialist-'+topic+'-'+selector.value+'-'+edition+
+      '-seed'+s.n+'-'+paper.value+'.pdf';
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Matching specialist '+edition+' PDF downloaded; base worksheet unchanged.');
+    }catch(e){inform(e instanceof Error?e.message:'Specialist PDF failed.',true)}
+    finally{button.disabled=false;}
+   });
+  }
+  root.querySelector<HTMLButtonElement>('[data-action="closure-return-preview"]')!
+   .addEventListener('click',()=>{invalidate();inform('Returned to the original v18 worksheet preview.');});
+  const button=root.querySelector<HTMLButtonElement>('[data-action="closure-preview"]')!;
+  button.addEventListener('click',async()=>{
+   button.disabled=true;
+   try{
+    const bytes=await create('questions');
+    invalidate();
+    previewURL=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+    preview.src=previewURL;preview.hidden=false;
+    livePreview.hidden=false;basePaper.hidden=true;
+    inform('Showing the real student PDF in the right preview. The teacher key uses identical questions.');
+   }catch(e){inform(e instanceof Error?e.message:'Specialist preview failed.',true)}
+   finally{button.disabled=false;}
+  });
  }
 
  // R86 true coordinate graphs, actual plotted teacher functions and exact

@@ -6,12 +6,18 @@ import {hasVerifiedSteps} from '../lib/capabilities';
 import {topicOptionsFor} from '../lib/topic-options';
 import {supportsExactNumber} from '../lib/answer-check';
 import {fractionLayoutFor,fractionMarkup} from '../lib/fraction-layout';
+import {makeClosurePack,CLOSURE_MODES,type ClosureTopic} from '../lib/closure-math';
 const {slug}=Astro.props;
 const worksheet=makeWorksheet(slug,20261104,8,'standard');
 const hasSteps=hasVerifiedSteps(slug);
 const specificOptions=topicOptionsFor(slug);
 const hasDiagram=worksheet.problems.some(p=>Boolean(p.diagramSpec));
 const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));
+const hasClosure=Object.hasOwn(CLOSURE_MODES,slug);
+const closureModes=hasClosure?CLOSURE_MODES[slug as ClosureTopic]:[];
+const closureExample=hasClosure?makeClosurePack(slug as ClosureTopic,20261104,8,'standard').problems[0]:null;
+const closureLabels:Record<string,string>={mixed:'Alternate exercise forms','order-sides':'Rank triangle sides','order-angles':'Rank triangle angles',addition:'Add polynomials',subtraction:'Subtract polynomials','plane-points':'Locate points on a plane','line-plane':'Find line–plane intersection','unique-plane':'Determine a plane from three noncollinear points',lattice:'Two-digit diagonal lattice multiplication','right-triangular-pyramid':'Nonregular right triangular-pyramid surface area'};
+
 ---
 <section class="workspace" data-workspace data-topic={slug} aria-label="Worksheet generator">
   <aside id="worksheet-settings" class="panel settings"><h2 class="panel-title">Customize worksheet</h2><p class="panel-sub">Your practice set is created right in this browser.</p>
@@ -403,6 +409,24 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r86-graphs-steps">Worked graph reasoning PDF</button>
 </div>
 <p class="hint">Both axes use the same numeric unit length and label -6 to +6. Quadratic diagrams show a faint y = x^2 parent curve. The seed, selected mode, A4/US Letter, difficulty and question count can be shared with the adjacent copy-settings link. Graph families are defined, not an exhaustive graphing curriculum.</p>
+</div>}{hasClosure&&<div class="calibration-card" data-closure-card aria-label="Five missing mathematical specialist activities">
+<strong>Specialist worksheet: real diagrams and exact worked answers</strong>
+<p class="hint">This is a genuine additional worksheet, not a keyword-only page. All generated mathematical diagrams, student questions, teacher keys and explanations share the same seed.</p>
+<div class="field"><label for="closure-mode">Specialist practice</label>
+<select id="closure-mode" data-closure-mode>
+{closureModes.map((value,i)=><option value={value} selected={i===0}>{closureLabels[value]}</option>)}
+</select></div>
+<div class="sample-math-question" data-closure-example>
+<strong>Real fixed-seed example</strong><p>{closureExample?.question}</p>
+<details><summary>Show exact example answer</summary><p>{closureExample?.answer}</p></details></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="closure-questions">Download student PDF</button>
+<button type="button" class="btn" data-action="closure-answers">Matching teacher answers PDF</button>
+<button type="button" class="btn" data-action="closure-steps">Worked-step PDF</button>
+</div>
+<button type="button" class="btn btn-soft" data-action="closure-preview">Preview this exact PDF on the page</button>
+
+<p class="hint">The sample is readable without JavaScript. The embedded PDF preview is built from the actual student PDF for the current settings. Base v18 examples above remain unchanged.</p>
 </div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <p class="hint" data-r82-share-help>Links save the worksheet seed, difficulty, question count, paper settings and any selected optional PDF-panel modes. Open the link to restore these choices, then click the matching student, answer-key or worked-steps download button. No student responses are included.</p>
     <details class="calibration-card" data-print-calibration>
@@ -419,6 +443,11 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
     <div class="status" aria-live="polite" role="status" data-status>8 questions ready · All generation happens on your device.</div><p class="controls-foot">Free to use · No account · No stored student data. The practice PDF and answer key use the same seed. Worked steps are provided for verified topics only.</p>
   </aside>
   <section class="panel preview-panel" aria-label="Live worksheet preview"><div class="preview-head"><div><strong>Live page preview</strong><a class="mobile-jump" href="#worksheet-settings">Customize &amp; download ↓</a><div><small data-summary>8 questions · Standard · US Letter</small></div></div><div class="preview-tools" role="group" aria-label="Preview mode"><button type="button" class="toggle" aria-pressed="true" data-mode="questions">Questions</button><button type="button" class="toggle" aria-pressed="false" data-mode="answers">Answers</button><button type="button" class="toggle" aria-pressed="false" data-mode="steps" disabled={!hasSteps} title={hasSteps?"Review worked steps":"Not yet verified for this topic"}>Steps</button><button type="button" class="toggle" data-action="practice" aria-pressed="false" hidden={!canGradeSample} title="Check numeric answers privately in this browser">Practice online</button></div></div>
+  {hasClosure&&<div class="special-live-preview" data-special-live-preview hidden>
+    <div class="special-live-head"><div><strong>Exact specialist student PDF</strong><p>Same seed, questions and vector diagrams as the downloaded student edition.</p></div>
+    <button type="button" class="btn btn-secondary" data-action="closure-return-preview">Return to base worksheet</button></div>
+    <iframe data-closure-preview class="special-pdf-iframe" title="Exact specialist student worksheet PDF" hidden></iframe>
+  </div>}
   <div class="sheet-outer"><div id="worksheet-print" class="print-sheet" data-print-sheet><div class="sheet-top"><div><h2>{titleFor(slug)}</h2><p data-sheet-caption>Practice worksheet · Sheet ID {worksheet.seed}</p></div><span class="sheet-logo">MATH STUDIO</span></div><div class="sheet-name"><span>Name: _____________________</span><span>Date: ______________</span></div><div class:list={['problems-grid',{'with-diagrams':hasDiagram}]} data-problems>{worksheet.problems.map((p,i)=><div class="problem"><div class="no">{String(i+1).padStart(2,'0')}</div><div class="q">{p.payload.question}</div><Fragment set:html={fractionMarkup(fractionLayoutFor(slug,p.payload.question))}/>{p.diagramSpec&&<Fragment set:html={diagramSVG(p.diagramSpec)}/>}</div>)}</div><div class="sheet-footer"><span data-sheet-footer>Practice · Seed {worksheet.seed}</span><span data-page-footer>Generated locally • mathworksheetstudio</span></div></div></div>
   <div class="practice-actions" data-practice-actions hidden><p><strong>Quick answer check</strong> · Your answers stay in this browser. Type an integer, decimal or fraction, then check without revealing the answer key.</p><div class="practice-buttons"><button type="button" class="btn btn-primary" data-action="check-practice">Check my answers</button><button type="button" class="btn" data-action="clear-practice">Clear responses</button></div><p role="status" aria-live="polite" data-practice-summary>Enter your answers to begin.</p></div>
   </section>

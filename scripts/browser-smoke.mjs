@@ -1288,6 +1288,71 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
+ // ONE-STAGE CLOSURE: five exact real specialist modes, fifteen actual
+ // PDF browser downloads, five PDF viewer previews and three share restores.
+ // Separate contexts avoid Chrome's per-tab automatic multi-download throttle.
+ for(const spec of [
+  {topic:'angle-worksheets',mode:'order-angles'},
+  {topic:'mixed-addition-subtraction-worksheets',mode:'subtraction'},
+  {topic:'lines-rays-segments-worksheets',mode:'line-plane'},
+  {topic:'multiplication-worksheets',mode:'lattice'},
+  {topic:'surface-area-worksheets',mode:'right-triangular-pyramid'}
+ ]){
+  const cx=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},
+   permissions:['clipboard-read','clipboard-write']});
+  try{
+   const pg=await cx.newPage();
+   await pg.goto(base+'/'+spec.topic+'/',{waitUntil:'networkidle'});
+   const baseQuestion=await pg.locator('.problem .q').first().innerText();
+   assert.equal(await pg.locator('[data-closure-card]').count(),1);
+   const select=pg.locator('[data-closure-mode]');
+   await select.selectOption(spec.mode);
+   await pg.locator('[data-field="paper"]').selectOption('A4');
+   const sample=await pg.locator('[data-closure-example] p').first().innerText();
+   assert.ok(sample.length>25,'Specialist sample must be real text for '+spec.topic);
+   for(const edition of ['questions','answers','steps']){
+    const download=pg.waitForEvent('download',{timeout:60000});
+    await pg.locator('[data-action="closure-'+edition+'"]').click();
+    let file;
+    try{file=await download;}catch(error){
+     throw Error(spec.topic+' '+edition+' failed to download: '+
+      await pg.locator('[data-status]').innerText()+'; '+error);
+    }
+    assert.ok(file.suggestedFilename().includes(edition),file.suggestedFilename());
+    const doc=await verifyPdf(file,'closure '+spec.topic+' '+edition,{paper:'A4'});
+    assert.equal(doc.getPageCount(),4);
+    assert.match(doc.getTitle()??'',/Closure/);
+   }
+   await pg.locator('[data-action="closure-preview"]').click();
+   const frame=pg.locator('[data-closure-preview]');
+   assert.equal(await frame.isVisible(),true);
+   assert.ok((await frame.getAttribute('src'))?.startsWith('blob:'));
+   assert.equal(await pg.locator('[data-special-live-preview]').isVisible(),true);
+   assert.equal(await pg.locator('.sheet-outer').isVisible(),false);
+   await pg.locator('[data-action="closure-return-preview"]').click();
+   assert.equal(await pg.locator('.sheet-outer').isVisible(),true);
+   assert.equal(await pg.locator('[data-special-live-preview]').isVisible(),false);
+   assert.equal(await pg.locator('.problem .q').first().innerText(),baseQuestion);
+   if(['order-angles','subtraction','line-plane'].includes(spec.mode)){
+    await pg.locator('[data-closure-card] [data-action="share-extra"]').click();
+    const shared=await pg.evaluate(()=>navigator.clipboard.readText());
+    assert.equal(new URL(shared).searchParams.get('xp_closure-mode'),spec.mode);
+    await pg.goto(shared,{waitUntil:'networkidle'});
+    assert.equal(await pg.locator('[data-closure-mode]').inputValue(),spec.mode);
+    assert.equal(await pg.locator('[data-closure-example] p').first().innerText(),sample,
+     'Shared seed and specialist mode must refresh the visible sample');
+    assert.equal(await pg.locator('.problem .q').first().innerText(),baseQuestion);
+   }
+  }finally{await cx.close();}
+ }
+ // With JS disabled, a real seeded practice prompt must survive on the HTML.
+ const noJS=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});
+ try{
+  const samplePage=await noJS.newPage();
+  await samplePage.goto(base+'/angle-worksheets/',{waitUntil:'load'});
+  assert.ok((await samplePage.locator('[data-closure-example] p').first().innerText()).includes('Triangle'));
+ }finally{await noJS.close();}
+ events.push({kind:'interaction',name:'Closure 15 authentic A4 PDFs, 5 embedded PDF previews, 3 share restores, JS-off sample, baseline v18 invariance',status:'pass'});
  // R86: four modes in isolated Chromium contexts; 12 actual downloads
  // including true vector graph plots, read-graph and quadratic transforms.
  for(const graphMode of ['mixed','linear-graph','read-graph','quadratic-transform']){
