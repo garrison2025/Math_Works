@@ -23,6 +23,10 @@ export const INDEPENDENT_STEP_TOPICS=Object.freeze([
  'multiplying-fractions-worksheets',
  'long-division-worksheets',
  'mean-absolute-deviation-worksheets',
+ 'complementary-supplementary-angles-worksheets',
+ 'triangle-angle-sum-worksheets',
+ 'vertical-angles-worksheets',
+ 'volume-of-rectangular-prisms-worksheets',
  'one-step-equations-worksheets',
  'order-of-operations-worksheets',
  'equivalent-fractions-worksheets',
@@ -421,6 +425,43 @@ function expectedSteps(p:Problem):string[]{
   if(!(a+b)||double%(a+b)!==0n)throw Error('Worked-step audit: impossible trapezoid height');
   return ['Area = (a + b) × height / 2',
    'Height = 2 × '+areaText+' / ('+a+' + '+b+') = '+(double/(a+b))+' units'];
+ }
+
+ case 'complementary-supplementary-angles-worksheets':{
+  const m=requireMatch(q,/^Find the angle (complementary|supplementary) to (\d+)°\.$/);
+  const x=BigInt(m[2]),total=m[1]==='complementary'?90n:180n;
+  if(x<=0n||x>=total)throw Error('Worked-step audit: invalid angle relationship');
+  return ['Subtract '+x+'° from '+total+'°','Answer: '+(total-x)+'°'];
+ }
+ case 'triangle-angle-sum-worksheets':{
+  const m=requireMatch(q,/^Triangle angles are (\d+)° and (\d+)°\. Find the third angle\.$/);
+  const a=BigInt(m[1]),b=BigInt(m[2]),missing=180n-a-b;
+  if(a<=0n||b<=0n||missing<=0n)throw Error('Worked-step audit: impossible triangle');
+  return ['Angles sum to 180°','180 − '+a+' − '+b+' = '+missing+'°'];
+ }
+ case 'vertical-angles-worksheets':{
+  const m=requireMatch(q,/^Intersecting lines make an angle of (\d+)°\. Find its (adjacent supplementary|vertical) angle\.$/);
+  const angle=BigInt(m[1]),adjacent=m[2]==='adjacent supplementary';
+  if(angle<=0n||angle>=180n)throw Error('Worked-step audit: invalid intersecting angle');
+  return [
+   adjacent?'Angles on a straight line add to 180°':'Vertical angles are equal',
+   'Answer: '+(adjacent?180n-angle:angle)+'°'
+  ];
+ }
+ case 'volume-of-rectangular-prisms-worksheets':{
+  const missing=q.match(/^A rectangular prism has volume (\d+) cubic units, length (\d+) and width (\d+)\. Find its height\.$/);
+  if(missing){
+   const volume=BigInt(missing[1]),length=BigInt(missing[2]),width=BigInt(missing[3]);
+   if(volume<=0n||length<=0n||width<=0n||volume%(length*width)!==0n)
+    throw Error('Worked-step audit: impossible prism height');
+   const height=volume/(length*width);
+   return ['V = length × width × height',
+    'h = '+volume+' ÷ ('+length+' × '+width+') = '+height+' units'];
+  }
+  const m=requireMatch(q,/^Find the volume of a rectangular prism (\d+) × (\d+) × (\d+)\.$/);
+  const length=BigInt(m[1]),width=BigInt(m[2]),height=BigInt(m[3]);
+  if(length<=0n||width<=0n||height<=0n)throw Error('Worked-step audit: invalid prism dimensions');
+  return ['V = length × width × height','V = '+(length*width*height)+' cubic units'];
  }
  default:throw Error('Worked-step audit: unsupported independent topic '+p.topicId);
  }

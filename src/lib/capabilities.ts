@@ -24,7 +24,11 @@ const STEP_TOPICS=new Set([
  'area-of-triangles-worksheets',
  'area-of-parallelograms-worksheets',
  'area-of-trapezoids-worksheets',
- 'mean-absolute-deviation-worksheets'
+ 'mean-absolute-deviation-worksheets',
+ 'complementary-supplementary-angles-worksheets',
+ 'triangle-angle-sum-worksheets',
+ 'vertical-angles-worksheets',
+ 'volume-of-rectangular-prisms-worksheets'
 ]);
 export const hasVerifiedSteps=(topicId:string)=>STEP_TOPICS.has(topicId);
 export const verifiedStepTopics=()=>[...STEP_TOPICS];
