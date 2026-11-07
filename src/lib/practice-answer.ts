@@ -24,7 +24,7 @@ const en=(s:string)=>s.trim().replace(/\s+/g,' ').toLowerCase();
 const normalizeEnum=(topic:string,s:string)=>{
  const raw=en(s);
  if(topic==='coordinate-plane-worksheets')return raw.replace(/^quadrant\s+/,'').toUpperCase();
- if(topic==='scatter-plot-worksheets')return raw==='none'?'no clear linear trend':raw.replace(/\s+(?:linear\s+)?trend$/,'');
+ if(topic==='scatter-plot-worksheets')return raw==='none'||raw==='no clear linear trend'?'no clear linear trend':raw.replace(/\s+(?:linear\s+)?trend$/,'');
  if(topic==='mean-median-mode-range-worksheets'&&raw==='none')return 'no mode';
  return raw;
 };
