@@ -34,6 +34,24 @@ jobs:
         run: npm run qa:seo-progress-r79
       - name: R80 original 488-keyword audit after true net-area and joined composite 3D worksheets
         run: npm run qa:seo-progress-r80
+      - name: R84 audit original 488 keywords after five real multiplication visual skills
+        run: npm run qa:seo-progress-r84
+      - name: Archive R84 488 original keywords and 80 remaining historical flags
+        uses: actions/upload-artifact@v4
+        with:
+          name: r84-488-keyword-coverage
+          path: qa-artifacts/r84-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
+      - name: R84 export 24 A4 and Letter vector multiplication practice PDFs
+        run: npm run qa:r84-multiplication
+      - name: Archive R84 real visual multiplication PDFs and original problem manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: r84-multiplication-24-pdf-fixtures
+          path: qa-artifacts/r84-multiplication-visual-stories/
+          retention-days: 30
+          if-no-files-found: error
       - name: Archive R80 488 original keyword statuses and 85 remaining historical flagged issues
         uses: actions/upload-artifact@v4
         with:

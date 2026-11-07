@@ -1,0 +1,74 @@
+{
+  "schema": "mathworks-r84-multiplication-models/v1",
+  "asOf": "2026-11-07",
+  "feature": "Deterministic dot-array diagrams, uniformly scaled equal-jump multiplication number lines, and elementary equal-groups word problems",
+  "actualRoute": "multiplication-worksheets",
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "multiplication story problems",
+      "sourceMonthlyVolume": 880,
+      "sourceKD": 24,
+      "actualPage": "multiplication-worksheets",
+      "newCapability": "Distinct school, shop and group multiplication situations using whole numbers, matching student sheets, answer keys and exact reasoning"
+    },
+    {
+      "keyword": "multiplication arrays worksheets",
+      "sourceMonthlyVolume": 880,
+      "sourceKD": 20,
+      "actualPage": "multiplication-worksheets",
+      "newCapability": "True vector dot grids with exactly rows x columns points; blank student totals and verified keys"
+    },
+    {
+      "keyword": "multiplication word problems grade 4",
+      "sourceMonthlyVolume": 590,
+      "sourceKD": 20,
+      "actualPage": "multiplication-worksheets",
+      "newCapability": "Elementary multiplication story situations with exact whole-number answers, without claimed official grade-four standards certification"
+    },
+    {
+      "keyword": "multiplication on number line",
+      "sourceMonthlyVolume": 320,
+      "sourceKD": 27,
+      "actualPage": "multiplication-worksheets",
+      "newCapability": "Uniform-width repeated equal-unit jumps from zero with hidden student final value and labeled teacher key"
+    },
+    {
+      "keyword": "multiplication of whole numbers on number line",
+      "sourceMonthlyVolume": 210,
+      "sourceKD": 21,
+      "actualPage": "multiplication-worksheets",
+      "newCapability": "Whole-number equal-jump multiplication number line diagrams, separately printable student and teacher editions"
+    }
+  ],
+  "featureScope": {
+    "modes": [
+      "mixed",
+      "arrays",
+      "number-line",
+      "stories"
+    ],
+    "difficulty": [
+      "easy",
+      "standard",
+      "challenge"
+    ],
+    "quantity": "1..40",
+    "paper": [
+      "A4",
+      "Letter"
+    ],
+    "outputs": [
+      "questions",
+      "answers",
+      "steps"
+    ],
+    "version": "R84.1"
+  },
+  "originalOwner488RowsEdited": false,
+  "originalV18GeneratorEdited": false,
+  "approvedForIndexing": false,
+  "gradeFourStandardsCertification": "NOT REVIEWED",
+  "teacherManualReview": "NOT RUN",
+  "physicalPrintScale": "NOT RUN",
+  "previewRobots": "noindex,nofollow"
+}

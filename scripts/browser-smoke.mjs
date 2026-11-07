@@ -1288,8 +1288,49 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
- // R82: share links restore selections for independent PDF-only generators;
- // original v18 worksheet seed, question set and public link identity stay intact.
+ // R84 Chromium: 4 isolated sessions, 3 real PDFs per session.
+ // Chromium limits automatic multi-file downloads within a single tab;
+ // these are separate teacher activities, not 12 automated downloads per tab.
+ await page.goto(base+'/multiplication-worksheets/',{waitUntil:'networkidle'});
+ const r84Original=await page.locator('.problem .q').first().innerText();
+ const r84Selector=page.locator('[data-r84-multiplication-mode]');
+ assert.equal(await r84Selector.count(),1);
+ assert.equal(await page.locator('[data-r84-multiplication-models] [data-action="share-extra"]').count(),1);
+ for(const task of ['mixed','arrays','number-line','stories']){
+  const r84Context=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  try{
+   const r84Page=await r84Context.newPage();
+   await r84Page.goto(base+'/multiplication-worksheets/',{waitUntil:'networkidle'});
+   await r84Page.locator('[data-field="paper"]').selectOption('A4');
+   await r84Page.locator('[data-r84-multiplication-mode]').selectOption(task);
+   for(const edition of ['questions','answers','steps']){
+    const pending=r84Page.waitForEvent('download',{timeout:45000});
+    await r84Page.locator('[data-action="r84-multiplication-'+edition+'"]').click();
+    let file;
+    try{file=await pending;}catch(error){
+     const message=await r84Page.locator('[data-status]').innerText();
+     throw new Error('R84 isolated download '+task+' / '+edition+' failed: '+message+'; '+String(error));
+    }
+    const filename=file.suggestedFilename();
+    assert.ok(filename.includes('multiplication-visual-'+task+'-'+edition+'-seed'),filename);
+    assert.ok(filename.endsWith('-r84.pdf'),filename);
+    const doc=await verifyPdf(file,'R84 '+task+' '+edition,{paper:'A4'});
+    assert.equal(doc.getPageCount(),4);
+    assert.match(doc.getTitle()??'',/R84/);
+   }
+   assert.equal(await r84Page.locator('.problem .q').first().innerText(),r84Original);
+  }finally{await r84Context.close();}
+ }
+ await r84Selector.selectOption('number-line');
+ await page.locator('[data-r84-multiplication-models] [data-action="share-extra"]').click();
+ const r84Url=await page.evaluate(()=>navigator.clipboard.readText());
+ assert.equal(new URL(r84Url).searchParams.get('xp_r84-multiplication-mode'),'number-line');
+ await page.goto(r84Url,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-r84-multiplication-mode]').inputValue(),'number-line');
+ assert.equal(await page.locator('.problem .q').first().innerText(),r84Original);
+ assert.match(await page.locator('[data-status]').innerText(),/Restored 1 optional PDF setting/);
+ events.push({kind:'interaction',name:'R84 isolated Chromium sessions: 12 PDFs and link restore, stable base v18',status:'pass'});
+ // R82 share-link regressions: original v18 identity remains intact.
  const extensionShareChecks=[
   {route:'two-step-equations-worksheets',selections:[['equation-kind','fraction']],pdfAction:'equation-pack-questions',filename:/fraction.*questions.*\.pdf$/i},
   {route:'fractions-worksheets',selections:[['fraction-line-task','plot'],['fraction-line-range','zero-two']],pdfAction:'fraction-line-questions',filename:/fraction-number-line.*plot.*zero-two.*questions.*\.pdf$/i},

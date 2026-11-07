@@ -16,6 +16,8 @@ import {createFractionDecimalPack,type ConversionDirection,type ConversionPrecis
 import {createFractionDecimalPdf} from '../lib/fraction-decimal-conversion-pdf';
 import {createMultDivisionPack,type MultDivisionMode,type AreaFactors,type MultDivisionTopic} from '../lib/multiplication-division-practice';
 import {createMultDivisionPdf} from '../lib/multiplication-division-practice-pdf';
+import {createMultiplicationModelPack,type MultiplicationModelMode} from '../lib/multiplication-models';
+import {createMultiplicationModelPdf} from '../lib/multiplication-models-pdf';
 import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
@@ -413,6 +415,33 @@ function setup(root:HTMLElement){
      inform(practice+' '+mode+' PDF downloaded. Use the same seed and options to recreate teacher/student sheets. Original v18 worksheet unchanged.');
     }catch(e){
      inform(e instanceof Error?'Multiplication/division PDF failed: '+e.message:'Multiplication/division PDF failed.',true);
+    }finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R84 independent visual multiplication worksheets: true arrays and scaled
+ // equal jumps, plus contextual stories. Original v18 worksheet is not mutated.
+ if(topic==='multiplication-worksheets'){
+  const selector=root.querySelector<HTMLSelectElement>('[data-r84-multiplication-mode]');
+  for(const output of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="r84-multiplication-'+output+'"]');
+   if(!button||!selector)continue;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     const s=state(),practice=selector.value as MultiplicationModelMode;
+     inform('Checking exact '+practice+' diagrams and preparing '+output+' PDF...');
+     const pack=createMultiplicationModelPack(s.n,s.q,s.difficulty,practice);
+     const bytes=await createMultiplicationModelPdf(pack,output,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const download=document.createElement('a');download.href=url;
+     download.download='multiplication-visual-'+practice+'-'+output+'-seed'+s.n+'-'+s.difficulty+'-'+s.q+'-'+paper.value.toLowerCase()+'-r84.pdf';
+     document.body.append(download);download.click();download.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R84 '+practice+' '+output+' PDF downloaded. Original multiplication preview unchanged.');
+    }catch(e){
+     inform(e instanceof Error?'R84 multiplication PDF failed: '+e.message:'R84 multiplication PDF failed.',true);
     }finally{button.disabled=false;}
    });
   }
