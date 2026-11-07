@@ -118,7 +118,7 @@ function setup(root:HTMLElement){
     const label=document.createElement('label');label.textContent='Your answer';label.htmlFor=`practice-answer-${i}`;
     const input=document.createElement('input');input.type='text';input.id=label.htmlFor;input.autocomplete='off';
     const format=practiceAnswerFormat(topic,s.problems[i].expectedAnswer);
-    input.inputMode=format.kind==='numeric'||format.kind==='percent'?'decimal':'text';
+    input.inputMode=format.kind==='numeric'?'decimal':'text';
     input.maxLength=100;input.placeholder=format.hint;input.setAttribute('aria-description',format.hint);
     input.dataset.practiceInput=String(i);
     const feedback=document.createElement('small');feedback.dataset.practiceFeedback=String(i);feedback.setAttribute('role','status');
