@@ -57,6 +57,8 @@
     "qa:seo-progress-r84": "node --experimental-strip-types scripts/export-seo-progress-r84.mjs",
     "qa:seo-progress-r85": "node --experimental-strip-types scripts/export-seo-progress-r85.mjs",
     "qa:seo-progress-r86": "node --experimental-strip-types scripts/export-seo-progress-r86.mjs",
+    "qa:seo-closure": "node --experimental-strip-types scripts/export-seo-closure.mjs",
+    "qa:closure-pdfs": "node --experimental-strip-types scripts/export-closure-pdfs.mjs",
     "qa:r86-graphs": "node --experimental-strip-types scripts/export-r86-function-graphs.mjs",
     "qa:r85-targeted": "node --experimental-strip-types scripts/export-r85-targeted-fixtures.mjs",
     "qa:r84-multiplication": "node --experimental-strip-types scripts/export-r84-multiplication-models.mjs"

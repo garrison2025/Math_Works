@@ -1,0 +1,51 @@
+{
+  "schema": "mathworks-closure-exact-historical-gap-reconciliation/v1",
+  "asOf": "2026-11-07",
+  "keywordsUnmodified": 488,
+  "notApprovedToIndex": true,
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "ordering triangle sides and angles worksheet",
+      "actualPage": "angle-worksheets",
+      "newCapability": "Seeded valid unequal-side triangles with genuinely proportional vector side lengths and opposite-angle ranking"
+    },
+    {
+      "keyword": "polynomial addition and subtraction worksheet",
+      "actualPage": "mixed-addition-subtraction-worksheets",
+      "newCapability": "Actual degree-2 polynomial addition/subtraction with unlike signs and exact like-term coefficient grid"
+    },
+    {
+      "keyword": "points lines planes worksheet",
+      "actualPage": "lines-rays-segments-worksheets",
+      "newCapability": "3D coordinate z=0 plane membership, noncollinear unique plane and real line-plane intersection tasks with labelled projection"
+    },
+    {
+      "keyword": "gelosia multiplication worksheets",
+      "actualPage": "multiplication-worksheets",
+      "newCapability": "2-digit lattice with 2x2 diagonals, true products, carrying and matching student/teacher files"
+    },
+    {
+      "keyword": "surface area of triangular pyramid worksheet",
+      "actualPage": "surface-area-worksheets",
+      "newCapability": "Right-triangle base nonregular triangular pyramid total area and accurate four-face unfolded vector net"
+    }
+  ],
+  "existingCapabilityUpdates": [
+    {
+      "keyword": "division multiplication fact families worksheets",
+      "actualPage": "multiplication-worksheets",
+      "existingRealFeature": "R71 multiplication and division fact-family mode generates the four real mutually inverse facts, student, answer and worked PDF. Not a new feature."
+    }
+  ],
+  "featureLimitations": [
+    "Only 2digit x 2digit lattice",
+    "Polynomial degree <=2",
+    "XYZ plane tasks z=0",
+    "Right-base triangular pyramid, apex vertically above one vertex; arbitrary oblique pyramids not claimed"
+  ],
+  "teacherSignoff": "NOT RUN",
+  "physicalPrint": "NOT RUN",
+  "formalDomain": "NOT PURCHASED",
+  "searchIndexApproval": false,
+  "previewRobots": "noindex,nofollow"
+}
