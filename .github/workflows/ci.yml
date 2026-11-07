@@ -28,7 +28,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: r93-live-npm-audit-and-385-package-license-inventory
+          name: r93-live-npm-audit-and-complete-package-license-inventory
           path: qa-artifacts/r93-supply-chain/
           retention-days: 30
           if-no-files-found: warn
