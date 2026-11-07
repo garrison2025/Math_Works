@@ -14,7 +14,14 @@ test('R83 release overview has a current single source of truth and no false sea
  assert.match(status,/\b343\b/);
  assert.match(status,/\b63\b/);
  assert.match(status,/\bnoindex,nofollow\b/);
- assert.match(status,/\bNOT YET COMPLETED\b/);
+ assert.match(status,/ONLINE-ONLY QA/);
+ assert.match(status,/OWNER-WAIVED/);
+ assert.match(status,/GSC/);
+ const online=here('ONLINE-RELEASE-ACCEPTANCE.md');
+ assert.match(online,/\.pages\.dev/);
+ assert.match(online,/noindex,nofollow/);
+ assert.match(online,/actual owned domain|owned domain/);
+ assert.match(online,/explicit.*indexing approval|explicit.*route authorization/);
  assert.match(status,/2026-11-07/);
  assert.equal(EXTRA_PACK_KEYS.length,31);
  const routes=JSON.parse(here('src/data/routes.json'));
