@@ -1299,9 +1299,14 @@ try {
  for(const task of ['mixed','arrays','number-line','stories']){
   await r84Selector.selectOption(task);
   for(const edition of ['questions','answers','steps']){
-   const pending=page.waitForEvent('download',{timeout:60000});
+   const pending=page.waitForEvent('download',{timeout:20000});
    await page.locator('[data-action="r84-multiplication-'+edition+'"]').click();
-   const file=await pending;
+   let file;
+   try{file=await pending;}catch(error){
+    const message=await page.locator('[data-status]').innerText();
+    throw new Error('R84 browser download '+task+' / '+edition+
+     ' FAILED. UI status: '+message+'; '+String(error));
+   }
    const filename=file.suggestedFilename();
    assert.ok(filename.includes('multiplication-visual-'+task+'-'+edition+'-seed'),filename);
    assert.ok(filename.endsWith('-r84.pdf'),filename);

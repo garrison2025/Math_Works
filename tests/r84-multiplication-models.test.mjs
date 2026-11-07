@@ -97,3 +97,14 @@ test('R84 five historical exact unsupported intents resolved narrowly, never aut
  assert.equal(capability.originalOwner488RowsEdited,false);
  assert.equal(capability.gradeFourStandardsCertification,'NOT REVIEWED');
 });
+
+test('R84 exact browser default seed 20261104 produces all PDF editions without errors',async()=>{
+ for(const mode of ['mixed','arrays','number-line','stories']){
+  const pack=createMultiplicationModelPack(20261104,8,'standard',mode);
+  for(const edition of ['questions','answers','steps']){
+   const bytes=await createMultiplicationModelPdf(pack,edition,'A4','standard');
+   const pdf=await PDFDocument.load(bytes);
+   assert.equal(pdf.getPageCount(),4);
+  }
+ }
+});
