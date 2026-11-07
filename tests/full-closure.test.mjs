@@ -135,7 +135,11 @@ test('Closure: 31 declared optional modes, exact specialist link restoration, ho
  }
  const status=readFileSync(new URL('../CURRENT-STATUS.md',import.meta.url),'utf8');
  assert.match(status,/\b488\b/);assert.match(status,/\b343\b/);assert.match(status,/\b63\b/);
- assert.match(status,/noindex,nofollow/);assert.match(status,/NOT YET COMPLETED/);
+ assert.match(status,/noindex,nofollow/);assert.match(status,/ONLINE-ONLY QA/);
+ const policy=readFileSync(new URL('../ONLINE-RELEASE-ACCEPTANCE.md',import.meta.url),'utf8');
+ assert.match(policy,/OWNER-WAIVED/);
+ assert.match(policy,/not physically tested|NOT PHYSICALLY TESTED/i);
+ assert.match(policy,/PUBLIC_INDEXABLE/);
 });
 
 test('Closure: all plane and four-face pyramid edges use PDF-native geometry; no flipped SVG paths',()=>{
