@@ -1297,7 +1297,7 @@ try {
   {route:'place-value-worksheets',topic:'place-value',mode:'find-digit'},
   {route:'division-worksheets',topic:'division-equations',mode:'round-up'}
  ]){
-  const isolated=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}});
+  const isolated=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
   try{
    const r85Page=await isolated.newPage();
    await r85Page.goto(base+'/'+spec.route+'/',{waitUntil:'networkidle'});
