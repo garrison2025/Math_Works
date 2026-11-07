@@ -1,0 +1,37 @@
+name: R93 one-time audited dependency upgrade
+on:
+  push:
+    branches:
+      - feat/r93-release-quality-closure-pack
+permissions:
+  contents: write
+jobs:
+  regenerate:
+    if: "!contains(github.event.head_commit.message, '[r93-deps-synced]')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.22.0'
+      - name: Resolve the documented patched Astro 7.4 and Sharp 0.35 dependencies
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Verify exact lock install, math and static build on latest approved Node 22
+        run: |
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm run test:math
+          npm run test:pdf
+          npm run build
+      - name: Commit the real regenerated lock onto this isolated R93 branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git commit -m "R93: verified patched dependency lock [r93-deps-synced]"
+            git push origin HEAD:feat/r93-release-quality-closure-pack
+          fi
