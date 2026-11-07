@@ -21,10 +21,40 @@ jobs:
           path: qa-artifacts/r92-npm-lock/summary.json
           retention-days: 30
           if-no-files-found: error
+      - name: R93 live npm vulnerability advisory scan and complete third-party SPDX inventory
+        timeout-minutes: 5
+        run: npm run qa:r93-supply-chain
+      - name: Archive actual npm advisory and license source evidence even when risk gate fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r93-live-npm-audit-and-385-package-license-inventory
+          path: qa-artifacts/r93-supply-chain/
+          retention-days: 30
+          if-no-files-found: warn
       - run: npm run test
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: R93 export complete 408-question teacher and real A4 Letter physical-print packet
+        run: npm run qa:r93-teacher-print
+      - name: Archive human-release review forms and actual student/key/calibration PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: r93-teacher-and-physical-print-human-signoff-kit
+          path: qa-artifacts/r93-teacher-print-acceptance/
+          retention-days: 30
+          if-no-files-found: error
+      - name: R93 test real 360 390 768 1280 1440 browser accessibility and UX
+        run: npm run qa:r93-ux-a11y
+      - name: Archive R93 viewport screenshots and explicit automated UX/a11y evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r93-responsive-keyboard-accessibility-and-screenshots
+          path: qa-artifacts/r93-ui-a11y/
+          retention-days: 30
+          if-no-files-found: warn
       - name: R90 verify actual 437 searchable live intents, correct modes, six directories and terms
         run: npm run qa:r90-directory-search
       - name: Archive independent R90 user-search deployment QA
