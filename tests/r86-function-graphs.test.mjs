@@ -17,7 +17,10 @@ test('R86: 2,400 reproducible exact function tasks with independent graph coordi
   assert.deepEqual(pack,createGraphPack(seed,40,difficulty,mode));
   verifyGraphPack(pack);
   assert.equal(pack.problems.length,40);
-  assert.equal(new Set(pack.problems.map(p=>p.question)).size,40);
+  // In read-graph mode the question text is intentionally the same,
+  // but the drawn function is different. Compare graph identities.
+  assert.equal(new Set(pack.problems.map(p=>
+   [p.kind,p.m,p.b,p.a,p.h,p.k,p.probeX].join('|'))).size,40);
   if(mode==='mixed')assert.deepEqual(new Set(pack.problems.map(p=>p.kind)),
    new Set(['linear-graph','read-graph','quadratic-transform']));
   for(const [index,p] of pack.problems.entries()){

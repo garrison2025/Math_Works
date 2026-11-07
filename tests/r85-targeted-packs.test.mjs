@@ -93,7 +93,7 @@ test('R85 40-task pagination and concurrency do not mutate baseline v18 generato
   assert.deepEqual(makeWorksheet(route,20261104,8,'standard'),originals[route]);
 });
 test('R85 four versioned settings links restore modes with no student answers',()=>{
- assert.equal(EXTRA_PACK_KEYS.length,29);
+ assert.equal(EXTRA_PACK_KEYS.length,30);
  for(const topic of topics){
   const key='r85-'+topic+'-mode',options=R85_MODES[topic];
   const choices=[{key,allowed:options,defaultValue:options[0],selectedValue:options[1]}];
