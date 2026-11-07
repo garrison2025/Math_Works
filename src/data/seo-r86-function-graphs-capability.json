@@ -1,0 +1,61 @@
+{
+  "schema": "mathworks-r86-true-function-graphs/v1",
+  "asOf": "2026-11-07",
+  "actualRoute": "functions-worksheets",
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "graph of a function worksheet",
+      "sourceMonthlyVolume": 210,
+      "sourceKD": 3,
+      "actualPage": "functions-worksheets",
+      "newCapability": "Student plots a true equal-unit linear coordinate graph from an exact point table or reads a real printed vector graph; separate teacher plotted graph and worked key"
+    },
+    {
+      "keyword": "quadratic functions and transformations worksheet",
+      "sourceMonthlyVolume": 260,
+      "sourceKD": 4,
+      "actualPage": "functions-worksheets",
+      "newCapability": "Plot a true y = a(x-h)^2+k parabola with a signed stretch/reflect, horizontal and vertical shift, faint parent parabola, marked vertex and exact symmetry-axis teacher key"
+    },
+    {
+      "keyword": "functions and graphs worksheet",
+      "sourceMonthlyVolume": 210,
+      "sourceKD": 12,
+      "actualPage": "functions-worksheets",
+      "newCapability": "Both real linear function plotting and graph reading with y-values, intercept, integer x tick locations, plus optional mixed quadratic transformations"
+    }
+  ],
+  "actualFeature": "R86.1 mathematically scaled [-6,6] vector grid, 3 exact modes and mixed",
+  "modes": [
+    "mixed",
+    "linear-graph",
+    "read-graph",
+    "quadratic-transform"
+  ],
+  "difficulty": [
+    "easy",
+    "standard",
+    "challenge"
+  ],
+  "paper": [
+    "A4",
+    "Letter"
+  ],
+  "output": [
+    "questions",
+    "answers",
+    "steps"
+  ],
+  "limitations": [
+    "Only integer-slope lines and vertically stretched, translated or reflected quadratic forms; not all function types",
+    "Student graph plotting is blank by design; read-graph questions include the actual plotted line",
+    "Digital tests are not physical printer or teacher approvals"
+  ],
+  "original488Edited": false,
+  "originalV18Edited": false,
+  "currentSerpChecked": false,
+  "indexApproved": false,
+  "teacherReview": "NOT RUN",
+  "physicalPrinter": "NOT RUN",
+  "robots": "noindex,nofollow"
+}

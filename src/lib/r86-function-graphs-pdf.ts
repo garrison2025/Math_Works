@@ -24,12 +24,12 @@ function wrap(s:string,font:PDFFont,sz:number,max:number):string[]{
  return out;
 }
 function plotCurve(pg:PDFPage,f:(x:number)=>number,
- start:number,step:number,color:ReturnType<typeof rgb>,thickness=1.6){
+ start:number,bottom:number,unit:number,color:ReturnType<typeof rgb>,thickness=1.6){
  let prev:{x:number;y:number}|undefined;
  // One common scale both axes; clipping samples is only for visual plotting.
- for(let i=0;i<=1200;i++){
-  const x=-GRAPH_GRID_EXTENT+i*.01,y=f(x),inside=y>=-6&&y<=6;
-  const current=inside?graphToPaper(x,y,start,step,step):undefined;
+ for(let i=0;i<=600;i++){
+  const x=-GRAPH_GRID_EXTENT+i*.02,y=f(x),inside=y>=-6&&y<=6;
+  const current=inside?graphToPaper(x,y,start,bottom,unit):undefined;
   if(prev&&current)pg.drawLine({start:prev,end:current,color,thickness});
   prev=current;
  }
@@ -56,13 +56,13 @@ function coordinateGrid(pg:PDFPage,p:GraphProblem,left:number,top:number,
  label(pg,'x',start+span+5,bottom+6*unit-1,bold,8);
  label(pg,'y',start+6*unit+4,bottom+span+5,bold,8);
  if(p.kind==='quadratic-transform'){
-  plotCurve(pg,x=>x*x,start,unit,reference,1);
+  plotCurve(pg,x=>x*x,start,bottom,unit,reference,1);
   label(pg,'thin gray: y = x^2',start+12,bottom+span+11,regular,7,muted);
  }
  if(p.kind==='read-graph'||!student){
   if(p.kind==='quadratic-transform')
-   plotCurve(pg,x=>parabolaAt(p.a,p.h,p.k,x),start,unit,curve,1.9);
-  else plotCurve(pg,x=>lineAt(p.m,p.b,x),start,unit,curve,1.9);
+   plotCurve(pg,x=>parabolaAt(p.a,p.h,p.k,x),start,bottom,unit,curve,1.9);
+  else plotCurve(pg,x=>lineAt(p.m,p.b,x),start,bottom,unit,curve,1.9);
  }
  if(!student){
   for(const point of p.plottedPoints){

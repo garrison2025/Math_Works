@@ -1,3 +1,9 @@
+**R86 candidate (NOT verified until CI, PR merge, Cloudflare SHA and main run succeed):** New exact equal-scale vector function graph plots, read-the-graph questions, and transformed quadratic diagrams. Three actual historical function graph keyword gaps are now implemented in code, leaving **6 unsupported + 59 review + 4 ambiguous = 69** historical flags; **343** other source keywords are not individually Google-US-SERP-verified. A further optional configuration selector brings total to **30**. No grade-standard certification, physical print signoff or indexing approval is implied. Source 488 keyword file and v18 worksheet generator remain unchanged.
+
+**Last fully verified main release:** R85 SHA `1dc7caf3b0902b2056565b9fd3f3940f964224c2`, [main CI #429](https://github.com/garrison2025/Math_Works/actions/runs/42328412463) PASS and Cloudflare SHA independently confirmed; preview `noindex,nofollow`.
+
+---
+
 **Latest fully verified release:** R84 on main `8a7a0ff5fcbca1a004eefb8d7400a20909b8921b`, [main CI #424](https://github.com/garrison2025/Math_Works/actions/runs/42325401594) PASS, Cloudflare build SHA matched, preview `noindex,nofollow`.
 
 **R85 proposed addition (not approved until its own CI, merge, Cloudflare SHA and main CI are verified):** real shaded fraction bars, mixed-to-improper conversion, fraction division context problems, picture addition, millions place-value charts and contextual division equations. Source-backed projected statuses: 58 implemented historical skills, 15 route corrections, 9 unsupported, 59 requiring meaning review, 4 ambiguous, 343 not individually reviewed; 72 flagged issues remain. Original 488 keyword data and original v18 worksheet generations are preserved. No independent teacher, actual paper print or formal-domain indexing signoff.
