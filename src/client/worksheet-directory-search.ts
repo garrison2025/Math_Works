@@ -79,14 +79,20 @@ export function initWorksheetDirectorySearch(){
     paint(q,[],false);
    }
   };
-  input.addEventListener('input',()=>{void update()});
-  form.addEventListener('submit',event=>{
+  let pendingQuery:Promise<void>=Promise.resolve();
+  input.addEventListener('input',()=>{pendingQuery=update()});
+  form.addEventListener('submit',async event=>{
    event.preventDefault();
+   const submitted=input.value;
+   // The first HTTP fetch may still be pending on a slow connection.
+   // Enter must resolve the exact query rather than silently doing nothing.
+   await pendingQuery;
+   if(input.value!==submitted)return; // Ignore an outdated submission.
    const first=matches.querySelector<HTMLAnchorElement>('a');
-   if(first){window.location.assign(first.href)}
+   if(first)window.location.assign(first.href);
   });
   clear.addEventListener('click',()=>{
-   input.value='';void update();input.focus();
+   input.value='';pendingQuery=update();input.focus();
   });
   reset();
  });
