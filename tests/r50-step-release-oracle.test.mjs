@@ -25,10 +25,10 @@ const cases={
   {distribution:'symmetric',size:'6'},
   {distribution:'skewed',size:'8'}]
 };
-test('R50: eight independent worked-step families remain a strict subset of the 15 authorized step topics',()=>{
+test('R50: eight independent worked-step families remain a strict subset of the 23 authorized step topics',()=>{
  const available=verifiedStepTopics();
- assert.equal(available.length,15);
- assert.equal(INDEPENDENT_STEP_TOPICS.length,15);
+ assert.equal(available.length,23);
+ assert.equal(INDEPENDENT_STEP_TOPICS.length,23);
  for(const topic of INDEPENDENT_STEP_TOPICS)
   assert.ok(available.includes(topic),topic+' no longer offers verified steps');
  for(const topic of Object.keys(cases))assert.ok(INDEPENDENT_STEP_TOPICS.includes(topic),topic);
@@ -58,7 +58,7 @@ test('R50: colluding answer fields remain correct while corrupted teaching arith
   await assert.rejects(createWorksheetPdf(broken,topic,'steps','A4'),/Worked-step audit:/,topic);
  }
 });
-test('R50: all 15 step-enabled topics reject unsafe or missing step prose',async()=>{
+test('R50: all 23 step-enabled topics reject unsafe or missing step prose',async()=>{
  for(const topic of verifiedStepTopics()){
   const sheet=makeWorksheet(topic,20261105,4,'standard');
   const first=sheet.problems[0];

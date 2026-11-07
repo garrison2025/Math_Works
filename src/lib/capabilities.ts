@@ -1,7 +1,15 @@
 /** Step PDFs are opt-in for independently tested math routines.
- * The fractions-worksheets CONDITIONAL_HUB is a single explicit exception
- * to the specialized-tool-only policy; it stays unindexable as a hub. */
+ * Addition, subtraction, multiplication, division and fractions are the five
+ * explicitly audited CONDITIONAL_HUB worked-step exceptions; they stay noindex. */
 const STEP_TOPICS=new Set([
+ 'two-digit-by-one-digit-multiplication-worksheets',
+ 'integer-operations-worksheets',
+ 'addition-worksheets',
+ 'subtraction-worksheets',
+ 'mixed-addition-subtraction-worksheets',
+ 'multiplication-worksheets',
+ 'multiplication-tables-worksheets',
+ 'division-worksheets',
  'two-digit-multiplication-worksheets',
  'three-digit-by-two-digit-multiplication-worksheets',
  'one-step-equations-worksheets',

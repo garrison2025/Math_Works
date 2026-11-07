@@ -38,15 +38,15 @@ assert.equal(missingIntegrity,0,'Third-party packages without recorded integrity
 assert.equal(nonRegistry,0,'Dependency source is missing or not HTTPS');
 const summary={
  schema:'mathworks-r92-locked-dependencies/v1',status:'PASS',
- nodeCI:'22',npmLockVersion:lock.lockfileVersion,
+ nodeCI:'22.23.4',npmLockVersion:lock.lockfileVersion,
  directRuntime:Object.keys(manifest.dependencies??{}).length,
  directDevelopment:Object.keys(manifest.devDependencies??{}).length,
  installedGraphPackages:locked,
  missingIntegrity,nonHttpsResolution:nonRegistry,
  sha256:createHash('sha256').update(raw).digest('hex'),
  ciInstall:'npm ci --no-audit --no-fund',
- verified:'Lock-to-manifest equivalence, every direct package resolved, 385 integrity checks and HTTPS URLs',
- notCovered:'npm audit risk review, dependency license review, all third-party security disclosures'
+ verified:'Lock-to-manifest equivalence, every direct package resolved, full actual dependency integrity checks and HTTPS URLs',
+ notCovered:'Full live npm audit and package license inventory use the independent R93 CI gate; human risk approval remains distinct'
 };
 const directory=join(root,'qa-artifacts','r92-npm-lock');
 mkdirSync(directory,{recursive:true});

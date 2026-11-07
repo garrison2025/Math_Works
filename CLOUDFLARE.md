@@ -5,7 +5,7 @@
 - Production branch: `main`
 - Build command: `npm run build`
 - Output directory: `dist`
-- Runtime: Node.js `22`
+- Runtime: Node.js `22.23.4` (pinned via `.node-version`)
 - Paid dependencies: none
 - ENV: `PUBLIC_INDEXABLE=false` (default), `PUBLIC_SITE_URL` unset until a custom domain is purchased.
 - Build installs open-source packages from npm; no paid data API or DB.

@@ -4,9 +4,11 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** R91 PR #19 merged as `fcad6781b14b42630da41527f3bdc02f433e9149`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42351072259) **PASS** (167 primary + 14 Firefox steps) with exact-SHA Cloudflare success. R91 independently compared 816 questions/answers across Chromium and Firefox with zero mismatches. R92 dependency locking and `npm ci` are unmerged candidates pending the new PR checks.
+**Current verified baseline (2026-11-07):** R92 PR #20 merge `9e09049e26e55cfac4637e32b179202e2fb026d3`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42353338178) **PASS** (169 primary + 15 Firefox steps) with exact-SHA Cloudflare success. The npm v3 lockfile pins 385 third-party packages and both jobs use `npm ci`. R93 is a new candidate: exact arithmetic explanations, live vulnerability/license reports, physical-print and teacher QA packets, and multi-viewport accessibility checks. Human gates remain NOT RUN.
 
 
+
+**Human-print/domain release gates:** See [RELEASE-R93-OWNER-ACCEPTANCE.md](RELEASE-R93-OWNER-ACCEPTANCE.md).
 
 **Single source of truth:** See [CURRENT-STATUS.md](CURRENT-STATUS.md) for actual verified deployment, owner-approved V2 scope, and outstanding human/physical-print gates. Historical R1–R91 notes below are not newer release certificates.
 
@@ -14,7 +16,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
-- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 15 reviewed topics), direct printing, Letter/A4 paper.
+- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 15 previously reviewed topics, with eight more in R93 pending CI), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-approved V2.0 KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts; no new SERP review is required for implementation). 437 entries point to live generators, 51 to the four deliberately held V2 intents. Use the R89 built-page report to check exact landing and selected task options.
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
