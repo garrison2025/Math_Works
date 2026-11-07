@@ -34,6 +34,24 @@ jobs:
         run: npm run qa:seo-progress-r79
       - name: R80 original 488-keyword audit after true net-area and joined composite 3D worksheets
         run: npm run qa:seo-progress-r80
+      - name: R86 source-preserving audit of 488 original keywords and 69 remaining flags
+        run: npm run qa:seo-progress-r86
+      - name: Archive R86 exact function graph SEO capability audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: r86-488-keyword-coverage
+          path: qa-artifacts/r86-488-keyword-current-coverage/
+          retention-days: 30
+          if-no-files-found: error
+      - name: R86 render 24 real A4 and Letter function graph, reading and quadratic PDFs
+        run: npm run qa:r86-graphs
+      - name: Archive R86 actual vector graph PDF fixtures and graph coordinate manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: r86-function-graphs-24-pdf-samples
+          path: qa-artifacts/r86-real-function-graphs/
+          retention-days: 30
+          if-no-files-found: error
       - name: R85 source-preserving audit of 488 keywords and 72 remaining flagged issues
         run: npm run qa:seo-progress-r85
       - name: Archive R85 source-grounded keyword coverage

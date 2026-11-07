@@ -606,6 +606,22 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R79 Firefox six real mixed-volume/mixed-surface Letter PDF student, answer and worked downloads',status:'pass'});
+ // R86 Firefox: real US Letter plotted line, graph-reading and quadratic PDFs.
+ await open('functions-worksheets');
+ const r86Original=await page.locator('.problem .q').first().innerText();
+ for(const selection of ['linear-graph','read-graph','quadratic-transform']){
+  await page.locator('[data-r86-graph-mode]').selectOption(selection);
+  const pending=page.waitForEvent('download',{timeout:60000});
+  await page.locator('[data-action="r86-graphs-answers"]').click();
+  const dl=await pending,path=join(out,dl.suggestedFilename());
+  await dl.saveAs(path);
+  const doc=await PDFDocument.load(readFileSync(path));
+  assert.equal(doc.getPageCount(),4);
+  assert.equal(doc.getPage(0).getWidth(),612);
+  assert.match(doc.getTitle()??'',/R86/);
+  assert.equal(await page.locator('.problem .q').first().innerText(),r86Original);
+ }
+ checks.push({name:'R86 Firefox three authentic Letter vector graph keys; base function preview invariant',status:'pass'});
  // R85 Firefox: prove four real US Letter PDFs, one from each new
  // family; each keeps the original v18 worksheet preview untouched.
  for(const spec of [
