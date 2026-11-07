@@ -992,6 +992,18 @@ try {
  assert.ok(searchRect&&searchRect.x>=-1&&searchRect.x+searchRect.width<=361,
   'Mobile 360px search input must fit viewport without horizontal overflow');
  await page.setViewportSize({width:1280,height:900});
+ // R90 regression: Enter/search button on slow network must wait for
+ // the pending keyword asset before navigating, not silently discard input.
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ await page.route('**/worksheet-search.json',async route=>{
+  await new Promise(resolve=>setTimeout(resolve,700));
+  await route.continue();
+ });
+ await page.locator('[data-directory-query]').fill('two step equations worksheet');
+ await page.locator('[data-directory-query]').press('Enter');
+ await page.waitForURL(/\/two-step-equations-worksheets\//,{timeout:12000});
+ assert.equal(await page.locator('[data-option="coefficient"]').count(),1);
+ await page.unroute('**/worksheet-search.json');
  await page.goto(base+'/terms/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('h1').innerText(),'Terms of Use');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
