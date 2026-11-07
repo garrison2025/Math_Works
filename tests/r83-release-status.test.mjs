@@ -12,16 +12,16 @@ test('R83 release overview has a current single source of truth and no false sea
  }
  assert.match(status,/\b488\b/);
  assert.match(status,/\b343\b/);
- assert.match(status,/\b80\b/);
+ assert.match(status,/\b72\b/);
  assert.match(status,/\bnoindex,nofollow\b/);
  assert.match(status,/\bNOT YET COMPLETED\b/);
  assert.match(status,/2026-11-07/);
- assert.equal(EXTRA_PACK_KEYS.length,25);
+ assert.equal(EXTRA_PACK_KEYS.length,29);
  const routes=JSON.parse(here('src/data/routes.json'));
  assert.equal(routes.length,55);
  assert.equal(routes.filter(r=>r.type!=='HOLD').length,51);
  assert.equal(routes.filter(r=>r.type==='HOLD').length,4);
- const actual=[50,15,17,59,4,343];
+ const actual=[58,15,9,59,4,343];
  assert.equal(actual.reduce((a,b)=>a+b,0),488);
- assert.equal(actual[2]+actual[3]+actual[4],80);
+ assert.equal(actual[2]+actual[3]+actual[4],72);
 });

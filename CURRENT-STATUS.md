@@ -1,3 +1,9 @@
+**Latest fully verified release:** R84 on main `8a7a0ff5fcbca1a004eefb8d7400a20909b8921b`, [main CI #424](https://github.com/garrison2025/Math_Works/actions/runs/42325401594) PASS, Cloudflare build SHA matched, preview `noindex,nofollow`.
+
+**R85 proposed addition (not approved until its own CI, merge, Cloudflare SHA and main CI are verified):** real shaded fraction bars, mixed-to-improper conversion, fraction division context problems, picture addition, millions place-value charts and contextual division equations. Source-backed projected statuses: 58 implemented historical skills, 15 route corrections, 9 unsupported, 59 requiring meaning review, 4 ambiguous, 343 not individually reviewed; 72 flagged issues remain. Original 488 keyword data and original v18 worksheet generations are preserved. No independent teacher, actual paper print or formal-domain indexing signoff.
+
+---
+
 # Current release status — Math Worksheet Studio
 
 **Review baseline:** 2026-11-07, R82 verified on main commit `d8cb1562523ab28647b55a160ac686ff9100930f`.

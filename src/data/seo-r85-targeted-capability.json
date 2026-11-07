@@ -1,0 +1,90 @@
+{
+  "schema": "mathworks-r85-verified-new-skills/v1",
+  "asOf": "2026-11-07",
+  "actualRoute": "multiple existing conditional worksheet routes",
+  "keywordCapabilityUpdates": [
+    {
+      "keyword": "fraction pictures",
+      "actualPage": "fractions-worksheets",
+      "sourceMonthlyVolume": 880,
+      "sourceKD": 23,
+      "newCapability": "True 2–12 equal-part vector bar with distinct visibly shaded numerators and teacher key"
+    },
+    {
+      "keyword": "changing mixed fractions to improper fractions worksheets",
+      "actualPage": "fractions-worksheets",
+      "sourceMonthlyVolume": 390,
+      "sourceKD": 14,
+      "newCapability": "Reproducible mixed-number conversion with exact numerator whole x denominator plus remainder"
+    },
+    {
+      "keyword": "dividing fractions word problems",
+      "actualPage": "fractions-worksheets",
+      "sourceMonthlyVolume": 1000,
+      "sourceKD": 23,
+      "newCapability": "Fractional-ribbon, juice and string division contexts with exact whole-number portion quotients"
+    },
+    {
+      "keyword": "addition with pictures",
+      "actualPage": "addition-worksheets",
+      "sourceMonthlyVolume": 590,
+      "sourceKD": 16,
+      "newCapability": "Two separate countable vector-object groups, matching key and addition steps"
+    },
+    {
+      "keyword": "addition pictures",
+      "actualPage": "addition-worksheets",
+      "sourceMonthlyVolume": 260,
+      "sourceKD": 22,
+      "newCapability": "Source-backed real printable dot and tile picture addition, not numeric-only questions"
+    },
+    {
+      "keyword": "place value chart to millions",
+      "actualPage": "place-value-worksheets",
+      "sourceMonthlyVolume": 390,
+      "sourceKD": 10,
+      "newCapability": "Real seven-column millions-to-ones digit-position table with student and teacher versions"
+    },
+    {
+      "keyword": "division equation word problems",
+      "actualPage": "division-worksheets",
+      "sourceMonthlyVolume": 720,
+      "sourceKD": 21,
+      "newCapability": "Contextual division word problems requiring dividend/divisor/quotient/remainder equation and interpretation"
+    },
+    {
+      "keyword": "word problem with division",
+      "actualPage": "division-worksheets",
+      "sourceMonthlyVolume": 480,
+      "sourceKD": 24,
+      "newCapability": "Authentic division stories with equal sharing, full groups, rounding and leftovers, all with exact equations"
+    }
+  ],
+  "geometryConstraints": "Fraction bars divide one fixed physical width into equal denominator segments; picture addition draws exactly a+b vector objects; place-value charts have seven equally spaced columns.",
+  "supportedPdfModes": [
+    "questions",
+    "answers",
+    "steps"
+  ],
+  "paper": [
+    "A4",
+    "Letter"
+  ],
+  "quantity": "1..40",
+  "difficulty": [
+    "easy",
+    "standard",
+    "challenge"
+  ],
+  "originalOwner488RowsEdited": false,
+  "originalGeneratorV18Edited": false,
+  "approvedForIndexing": false,
+  "teacherApproval": "NOT RUN",
+  "physicalPrint": "NOT RUN",
+  "currentGoogleSerp": "NOT REVALIDATED",
+  "limitations": [
+    "Fraction division stories yield whole numbers of complete portions; they do not claim all fractional-quotient skills.",
+    "No curriculum-grade certification for worksheet topics."
+  ],
+  "previewRobots": "noindex,nofollow"
+}

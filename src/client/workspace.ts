@@ -18,6 +18,8 @@ import {createMultDivisionPack,type MultDivisionMode,type AreaFactors,type MultD
 import {createMultDivisionPdf} from '../lib/multiplication-division-practice-pdf';
 import {createMultiplicationModelPack,type MultiplicationModelMode} from '../lib/multiplication-models';
 import {createMultiplicationModelPdf} from '../lib/multiplication-models-pdf';
+import {createR85Pack,type R85Topic} from '../lib/r85-targeted-packs';
+import {createR85Pdf} from '../lib/r85-targeted-pdf';
 import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
@@ -416,6 +418,40 @@ function setup(root:HTMLElement){
     }catch(e){
      inform(e instanceof Error?'Multiplication/division PDF failed: '+e.message:'Multiplication/division PDF failed.',true);
     }finally{button.disabled=false;}
+   });
+  }
+ }
+
+ // R85: source-backed picture models, exact fraction division contexts,
+ // 7-digit millions charts, and context-sensitive division equations.
+ // Keep the v18 base worksheet unchanged; all editions are separate PDFs.
+ for(const spec of [
+  {route:'fractions-worksheets',kind:'fractions'},
+  {route:'addition-worksheets',kind:'addition-pictures'},
+  {route:'place-value-worksheets',kind:'place-value'},
+  {route:'division-worksheets',kind:'division-equations'}
+ ] as const){
+  if(topic!==spec.route)continue;
+  const selected=root.querySelector<HTMLSelectElement>('[data-r85-'+spec.kind+'-mode]');
+  if(!selected)continue;
+  for(const edition of ['questions','answers','steps'] as const){
+   const btn=root.querySelector<HTMLButtonElement>('[data-action="r85-'+spec.kind+'-'+edition+'"]');
+   if(!btn)continue;
+   btn.addEventListener('click',async()=>{
+    btn.disabled=true;
+    try{
+     const s=state(),option=selected.value;
+     inform('Checking R85 '+spec.kind+' '+option+' and building '+edition+' PDF...');
+     const pack=createR85Pack(spec.kind as R85Topic,s.n,s.q,s.difficulty,option);
+     const bytes=await createR85Pdf(pack,edition,paper.value as Paper,writingRoom.value as WritingRoom);
+     const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='r85-'+spec.kind+'-'+option+'-'+edition+'-seed'+s.n+'-'+paper.value.toLowerCase()+'.pdf';
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('R85 '+spec.kind+' '+option+' '+edition+' PDF downloaded. Original worksheet unchanged.');
+    }catch(e){inform(e instanceof Error?'R85 PDF error: '+e.message:'R85 PDF generation failed.',true)}
+    finally{btn.disabled=false}
    });
   }
  }
