@@ -16,6 +16,15 @@ jobs:
       - run: npm run test:pdf
       - run: npm run build
       - run: npm run audit:static
+      - name: R90 verify actual 437 searchable live intents, correct modes, six directories and terms
+        run: npm run qa:r90-directory-search
+      - name: Archive independent R90 user-search deployment QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: r90-437-live-keyword-search-and-terms
+          path: qa-artifacts/r90-worksheet-search/
+          retention-days: 30
+          if-no-files-found: error
       - name: R89 audit original V2 488 terms against 51 real routes and preselected modes
         run: npm run qa:v2-keyword-deployment
       - name: Archive the 488-row V2 source keyword to actual built-page mapping
