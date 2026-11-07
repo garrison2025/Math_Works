@@ -164,8 +164,8 @@ test('R89: source instructions, share settings and latest verified main release 
  assert.match(page,/Copy reproducible link saves the selected division-story/);
  assert.match(workspace,/previewGeneration\+\+/);
  assert.match(workspace,/requestedGeneration!==previewGeneration/);
- assert.match(status,/9e4b2c7ab2cbf4620cf9ed74ae06e8c58fa67e3c/);
- assert.match(status,/42346795272/);
+ assert.match(status,/f7511acb25a99af701b0106ef4e4418f1148d052/);
+ assert.match(status,/42349485764/);
  assert.doesNotMatch(status,/closure branch: CANDIDATE/);
 });
 
