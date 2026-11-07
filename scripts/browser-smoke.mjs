@@ -12,7 +12,7 @@ import {PDFDocument} from 'pdf-lib';
 const site=resolve('dist'),out=resolve('qa-artifacts/browser');
 if(!existsSync(join(site,'index.html')))throw Error('Build dist/ before running browser QA');
 mkdirSync(out,{recursive:true});
-const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.ico':'image/x-icon','.xml':'application/xml','.txt':'text/plain'};
+const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.webp':'image/webp','.png':'image/png','.ico':'image/x-icon','.xml':'application/xml','.txt':'text/plain','.json':'application/json'};
 const server=createServer((req,res)=>{
  try {
   const url=new URL(req.url??'/', 'http://localhost'),requested=decodeURIComponent(url.pathname);
@@ -964,6 +964,38 @@ try {
   assert.equal(await page.locator('.directory-nav a').count(),6);
  }
  events.push({kind:'interaction',name:'R89 six subject directories and true corrected exercise settings in Chromium',status:'pass'});
+ // R90 real browsing: search the owner-approved source terms without
+ // creating new SEO pages or exposing any of the four HOLD route paths.
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ const search=page.locator('[data-directory-query]');
+ assert.equal(await search.isVisible(),true);
+ await search.fill('function not a function worksheet');
+ const exactTask=page.locator('[data-directory-matches] a[href*="opt_task=function-test"]').first();
+ await exactTask.waitFor({state:'visible',timeout:12000});
+ assert.ok((await exactTask.getAttribute('href')).startsWith('/domain-range-worksheets/'));
+ await exactTask.click();
+ assert.ok(page.url().includes('/domain-range-worksheets/'));
+ assert.equal(await page.locator('[data-option="task"]').inputValue(),'function-test',
+  'Clicked R90 search result must restore the exact V2 practice mode');
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-directory-query]').fill('8th grade math worksheets');
+ await page.waitForFunction(()=>document.querySelector('[data-directory-status]')?.textContent?.includes('0 topic'));
+ assert.equal(await page.locator('[data-directory-matches] a').count(),0,
+  'HOLD grade keywords must never appear as working search destinations');
+ await page.locator('[data-directory-clear]').click();
+ assert.equal(await page.locator('.directory-card:visible').count(),51);
+ await page.setViewportSize({width:360,height:740});
+ await page.locator('[data-directory-query]').fill('fraction times fraction worksheet');
+ await page.locator('[data-directory-matches] a[href*="/multiplying-fractions-worksheets/"]').first()
+  .waitFor({state:'visible',timeout:12000});
+ const searchRect=await page.locator('[data-directory-query]').boundingBox();
+ assert.ok(searchRect&&searchRect.x>=-1&&searchRect.x+searchRect.width<=361,
+  'Mobile 360px search input must fit viewport without horizontal overflow');
+ await page.setViewportSize({width:1280,height:900});
+ await page.goto(base+'/terms/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('h1').innerText(),'Terms of Use');
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ events.push({kind:'interaction',name:'R90 exact-keyword search, restored option, HOLD exclusion, clear action, 360px and Terms',status:'pass'});
  // R71 each mode downloads three ACTUAL PDF files through isolated
  // Playwright contexts to avoid Chrome's multi-download suppression.
  for(const input of [
