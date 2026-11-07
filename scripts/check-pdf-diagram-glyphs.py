@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """R43: independent actual-PDF text oracle for math diagram operator glyphs.
-Checks all 516 R93 stress-PDF artifacts, including 27 independently certified worked-step topic families. Fail on visually ambiguous 'x' or 'deg' in
+Checks all 612 R93 stress-PDF artifacts, including 51 independently certified worked-step topic families. Fail on visually ambiguous 'x' or 'deg' in
 angle/column-multiplication diagrams, regardless of math engine assertions.
 """
 import json
@@ -47,11 +47,11 @@ def check_text(topic,mode,question_count,text):
 def run(folder):
     manifest=json.loads((folder/'manifest.json').read_text(encoding='utf8'))
     cases={(case['topic'],case['difficulty']):case for case in manifest['cases']}
-    if manifest['summary']['topics']!=51 or len(cases)!=102 or len(manifest['files'])!=516:
-        raise AssertionError('R94 full-stress scope changed; require 51 topics, 102 cases and 516 PDFs')
+    if manifest['summary']['topics']!=51 or len(cases)!=102 or len(manifest['files'])!=612:
+        raise AssertionError('R95 full-stress scope changed; require 51 topics, 102 cases and 612 PDFs')
     modes={mode:sum(1 for entry in manifest['files'] if entry['mode']==mode)
            for mode in ('questions','answers','steps')}
-    if modes!={'questions':204,'answers':204,'steps':108}:
+    if modes!={'questions':204,'answers':204,'steps':204}:
         raise AssertionError('R93 complete student, answer and 23-family worked-step PDF coverage changed: '+str(modes))
     files=[r for r in manifest['files'] if r['topic'] in (set(ANGLE_TOPICS)|MULTIPLICATION_TOPICS)]
     if len(files)<28:
