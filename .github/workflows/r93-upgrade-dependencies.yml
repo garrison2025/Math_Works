@@ -16,7 +16,7 @@ jobs:
           persist-credentials: true
       - uses: actions/setup-node@v4
         with:
-          node-version: '22.22.0'
+          node-version: '22.23.4'
       - name: Resolve the documented patched Astro 7.4 and Sharp 0.35 dependencies
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Verify exact lock install, math and static build on latest approved Node 22
