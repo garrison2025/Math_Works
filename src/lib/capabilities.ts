@@ -1,6 +1,6 @@
 /** Step PDFs are opt-in for independently tested math routines.
- * Fractions, multiplication and division are the three explicitly certified
- * CONDITIONAL_HUB worked-step exceptions; none becomes indexable as a hub. */
+ * Addition, subtraction, multiplication, division and fractions are the five
+ * explicitly audited CONDITIONAL_HUB worked-step exceptions; they stay noindex. */
 const STEP_TOPICS=new Set([
  'two-digit-by-one-digit-multiplication-worksheets',
  'integer-operations-worksheets',
