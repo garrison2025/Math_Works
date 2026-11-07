@@ -1329,6 +1329,16 @@ try {
    assert.ok((await frame.getAttribute('src'))?.startsWith('blob:'));
    assert.equal(await pg.locator('[data-special-live-preview]').isVisible(),true);
    assert.equal(await pg.locator('.sheet-outer').isVisible(),false);
+   // Settings changes must discard the now-obsolete specialist PDF in the viewer.
+   // The original v18 worksheet should be visible again without reloading.
+   if(spec.topic==='angle-worksheets'){
+    await pg.locator('[data-field="paper"]').selectOption('Letter');
+    assert.equal(await frame.isVisible(),false,'Changed paper must clear old specialist PDF');
+    assert.equal(await pg.locator('.sheet-outer').isVisible(),true);
+    await pg.locator('[data-field="paper"]').selectOption('A4');
+    await pg.locator('[data-action="closure-preview"]').click();
+    assert.equal(await frame.isVisible(),true,'New preview should use new paper settings');
+   }
    await pg.locator('[data-action="closure-return-preview"]').click();
    assert.equal(await pg.locator('.sheet-outer').isVisible(),true);
    assert.equal(await pg.locator('[data-special-live-preview]').isVisible(),false);
