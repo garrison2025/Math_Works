@@ -21,7 +21,8 @@ test('R83 release overview has a current single source of truth and no false sea
  assert.match(online,/\.pages\.dev/);
  assert.match(online,/noindex,nofollow/);
  assert.match(online,/actual owned domain|owned domain/);
- assert.match(online,/explicit.*indexing approval|explicit.*route authorization/);
+ assert.match(online,/owner's later explicit decision/);
+ assert.match(online,/approved route allowlist/);
  assert.match(status,/2026-11-07/);
  assert.equal(EXTRA_PACK_KEYS.length,31);
  const routes=JSON.parse(here('src/data/routes.json'));
