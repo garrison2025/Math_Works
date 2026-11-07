@@ -7,6 +7,14 @@ import {hasVerifiedSteps} from './capabilities.ts';
 import type {Problem,Worksheet} from './math.ts';
 
 export const INDEPENDENT_STEP_TOPICS=Object.freeze([
+ 'two-digit-by-one-digit-multiplication-worksheets',
+ 'integer-operations-worksheets',
+ 'addition-worksheets',
+ 'subtraction-worksheets',
+ 'mixed-addition-subtraction-worksheets',
+ 'multiplication-worksheets',
+ 'multiplication-tables-worksheets',
+ 'division-worksheets',
  'two-digit-multiplication-worksheets',
  'three-digit-by-two-digit-multiplication-worksheets',
  'two-step-equations-worksheets',
@@ -46,6 +54,86 @@ function format(n:number|string):string{return String(n);}
 function expectedSteps(p:Problem):string[]{
  const q=p.payload.question;
  switch(p.topicId){
+ case 'two-digit-by-one-digit-multiplication-worksheets':
+ case 'multiplication-worksheets':
+ case 'multiplication-tables-worksheets':{
+  const m=requireMatch(q,/^(\d+) × (\d+) = ____$/);
+  const x=BigInt(m[1]),y=BigInt(m[2]),tens=x/10n*10n,ones=x%10n,product=x*y;
+  return tens>0n?[
+   'Split '+x+' into '+tens+' + '+ones+'.',
+   'Multiply: '+tens+' × '+y+' = '+tens*y+'; '+ones+' × '+y+' = '+ones*y+'.',
+   'Add partial products: '+tens*y+' + '+ones*y+' = '+product+'.'
+  ]:[
+   x+' groups of '+y+' makes '+product+'.',
+   'Inverse check: '+product+' ÷ '+y+' = '+x+'.'
+  ];
+ }
+ case 'integer-operations-worksheets':{
+  const division=q.match(/^(-?\d+) ÷ \((-?\d+)\) = ____$/);
+  if(division){
+   const dividend=BigInt(division[1]),d=BigInt(division[2]);
+   if(!d||dividend%d)throw Error('Worked-step audit: integer division invalid');
+   const quotient=dividend/d;
+   return ['Check inverse multiplication: '+d+' × '+quotient+' = '+dividend+'.',
+    'Therefore '+dividend+' ÷ ('+d+') = '+quotient+'.'];
+  }
+  const m=requireMatch(q,/^(-?\d+) ([+−×]) \((-?\d+)\) = ____$/);
+  const x=BigInt(m[1]),y=BigInt(m[3]),op=m[2];
+  const value=op==='+'?x+y:op==='−'?x-y:x*y;
+  return [
+   'Calculate with integer signs: '+x+' '+op+' ('+y+') = '+value+'.',
+   op==='+'?'Inverse check: '+value+' − ('+y+') = '+x+'.':
+    op==='−'?'Inverse check: '+value+' + ('+y+') = '+x+'.':
+    y!==0n?'Inverse check: '+value+' ÷ ('+y+') = '+x+'.':
+    'Zero-product check: '+x+' × 0 = 0.'
+  ];
+ }
+ case 'addition-worksheets':{
+  const m=requireMatch(q,/^(\d+) \+ (\d+) = ____$/);
+  const x=Number(m[1]),y=Number(m[2]);
+  if(x<100||x>999||y<100||y>999)throw Error('Worked-step audit: invalid addition digits');
+  const ones=x%10+y%10,c1=Math.floor(ones/10);
+  const tens=Math.floor(x/10)%10+Math.floor(y/10)%10+c1,c2=Math.floor(tens/10);
+  const hundreds=Math.floor(x/100)+Math.floor(y/100)+c2;
+  return [
+   'Ones: '+x%10+' + '+y%10+' = '+ones+'; write '+ones%10+', carry '+c1+'.',
+   'Tens: '+(Math.floor(x/10)%10)+' + '+(Math.floor(y/10)%10)+' + '+c1+' = '+tens+'; write '+tens%10+', carry '+c2+'.',
+   'Hundreds and thousands: '+Math.floor(x/100)+' + '+Math.floor(y/100)+' + '+c2+' = '+hundreds+'.',
+   'Combine columns: '+x+' + '+y+' = '+(x+y)+'.'
+  ];
+ }
+ case 'subtraction-worksheets':{
+  const m=requireMatch(q,/^(\d+) − (\d+) = ____$/);
+  const x=Number(m[1]),y=Number(m[2]);
+  if(x<300||x>999||y<100||y>x)throw Error('Worked-step audit: invalid subtraction digits');
+  const b1=x%10<y%10?1:0,ones=x%10+10*b1-y%10;
+  const baseTens=Math.floor(x/10)%10-b1,yTens=Math.floor(y/10)%10;
+  const b2=baseTens<yTens?1:0,tens=baseTens+10*b2-yTens;
+  const hundreds=Math.floor(x/100)-b2-Math.floor(y/100);
+  return [
+   'Ones: '+x%10+(b1?' + 10 borrowed':'')+' − '+y%10+' = '+ones+'.',
+   'Tens: '+baseTens+(b2?' + 10 borrowed':'')+' − '+yTens+' = '+tens+'.',
+   'Hundreds: '+Math.floor(x/100)+' − '+b2+' − '+Math.floor(y/100)+' = '+hundreds+'.',
+   'Combine columns: '+x+' − '+y+' = '+(x-y)+'.'
+  ];
+ }
+ case 'mixed-addition-subtraction-worksheets':{
+  const m=requireMatch(q,/^(\d+) ([+−]) (\d+) = ____$/);
+  const x=BigInt(m[1]),y=BigInt(m[3]),op=m[2],answer=op==='+'?x+y:x-y;
+  return [
+   'Calculate: '+x+' '+op+' '+y+' = '+answer+'.',
+   op==='+'?'Inverse check: '+answer+' − '+y+' = '+x+'.':
+    'Inverse check: '+answer+' + '+y+' = '+x+'.'
+  ];
+ }
+ case 'division-worksheets':{
+  const m=requireMatch(q,/^(\d+) ÷ (\d+) = ____$/);
+  const dividend=BigInt(m[1]),d=BigInt(m[2]);
+  if(!d||dividend%d)throw Error('Worked-step audit: invalid division question');
+  const quotient=dividend/d;
+  return ['Use inverse multiplication: '+d+' × '+quotient+' = '+dividend+'.',
+   'Therefore '+dividend+' ÷ '+d+' = '+quotient+'.'];
+ }
  case 'two-digit-multiplication-worksheets':{
   const m=requireMatch(q,/^(\d+) × (\d+) = ____$/);
   const a=Number(m[1]),b=Number(m[2]);
@@ -339,7 +427,7 @@ function expectedSteps(p:Problem):string[]{
 }
 
 /** Called only for an authorized worked-steps PDF, after answer verification.
- * All 15 step-capable topics now receive independent full-step reconstruction.
+ * All 23 authorized base-step topics receive independent full-step reconstruction.
  * Fail closed if a newly enabled step topic has no independent implementation.
  */
 export function assertWorksheetSteps(sheet:Worksheet):void{
