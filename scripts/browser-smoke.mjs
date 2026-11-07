@@ -1293,7 +1293,7 @@ try {
  // multi-download limit. Verify three real PDFs and share-mode round trips.
  for(const spec of [
   {route:'fractions-worksheets',topic:'fractions',mode:'divide-stories'},
-  {route:'addition-worksheets',topic:'addition-pictures',mode:'small'},
+  {route:'addition-worksheets',topic:'addition-pictures',mode:'standard'},
   {route:'place-value-worksheets',topic:'place-value',mode:'find-digit'},
   {route:'division-worksheets',topic:'division-equations',mode:'round-up'}
  ]){
