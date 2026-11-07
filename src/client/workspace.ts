@@ -436,7 +436,10 @@ function setup(root:HTMLElement){
   const basePaper=root.querySelector<HTMLElement>('.sheet-outer')!;
   const sample=root.querySelector<HTMLElement>('[data-closure-example]')!;
   let previewURL:string|undefined;
+  // Prevent stale asynchronous PDF generations from replacing newer settings.
+  let previewGeneration=0;
   const invalidate=()=>{
+   previewGeneration++;
    if(previewURL){URL.revokeObjectURL(previewURL);previewURL=undefined;}
    preview.hidden=true;preview.removeAttribute('src');
    livePreview.hidden=true;basePaper.hidden=false;
@@ -483,9 +486,14 @@ function setup(root:HTMLElement){
   const button=root.querySelector<HTMLButtonElement>('[data-action="closure-preview"]')!;
   button.addEventListener('click',async()=>{
    button.disabled=true;
+   invalidate();
+   const requestedGeneration=previewGeneration;
    try{
     const bytes=await create('questions');
-    invalidate();
+    if(requestedGeneration!==previewGeneration){
+     inform('Worksheet settings changed during PDF preparation. Select Preview again.');
+     return;
+    }
     previewURL=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
     preview.src=previewURL;preview.hidden=false;
     livePreview.hidden=false;basePaper.hidden=true;
