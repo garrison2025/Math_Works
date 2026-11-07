@@ -2,6 +2,14 @@
  * The fractions-worksheets CONDITIONAL_HUB is a single explicit exception
  * to the specialized-tool-only policy; it stays unindexable as a hub. */
 const STEP_TOPICS=new Set([
+ 'two-digit-by-one-digit-multiplication-worksheets',
+ 'integer-operations-worksheets',
+ 'addition-worksheets',
+ 'subtraction-worksheets',
+ 'mixed-addition-subtraction-worksheets',
+ 'multiplication-worksheets',
+ 'multiplication-tables-worksheets',
+ 'division-worksheets',
  'two-digit-multiplication-worksheets',
  'three-digit-by-two-digit-multiplication-worksheets',
  'one-step-equations-worksheets',
