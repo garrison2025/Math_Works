@@ -148,7 +148,7 @@ test('Closure: all plane and four-face pyramid edges use PDF-native geometry; no
   'Programmatic shared URL settings and New set must update the current example');
 });
 
-test('R87: source instructions and release record match shipped PDF sharing',()=>{
+test('R89: source instructions, share settings and latest verified main release record agree',()=>{
  const page=readFileSync(new URL('../src/pages/[slug]/index.astro',import.meta.url),'utf8');
  const workspace=readFileSync(new URL('../src/client/workspace.ts',import.meta.url),'utf8');
  const status=readFileSync(new URL('../CURRENT-STATUS.md',import.meta.url),'utf8');
@@ -164,8 +164,8 @@ test('R87: source instructions and release record match shipped PDF sharing',()=
  assert.match(page,/Copy reproducible link saves the selected division-story/);
  assert.match(workspace,/previewGeneration\+\+/);
  assert.match(workspace,/requestedGeneration!==previewGeneration/);
- assert.match(status,/934a1c650046cdde5f56df397ddf266b27a677ae/);
- assert.match(status,/42334530550/);
+ assert.match(status,/b54f365625603fd201edc094ec6f74deb27e793c/);
+ assert.match(status,/42341851522/);
  assert.doesNotMatch(status,/closure branch: CANDIDATE/);
 });
 
