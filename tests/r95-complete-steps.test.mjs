@@ -56,7 +56,9 @@ test('R95: independently reconstruct 24 families including targeted variants acr
     for(let seed=1;seed<=50;seed++){
      const worksheet=makeWorksheet(slug,seed,4,difficulty,settings);
      assertWorksheetMath(worksheet);
-     assertWorksheetSteps(worksheet);
+     try{assertWorksheetSteps(worksheet)}catch(error){
+      throw new Error('R95 step regression '+slug+' options='+JSON.stringify(settings)+' difficulty='+difficulty+' seed='+seed+' question='+worksheet.problems[0]?.payload.question+' : '+String(error),{cause:error});
+     }
      cases+=worksheet.problems.length;
     }
    }
