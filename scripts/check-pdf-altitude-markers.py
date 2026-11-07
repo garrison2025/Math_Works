@@ -44,11 +44,11 @@ def validate_pairs(strokes,expected,label):
 
 def run(folder):
     manifest=json.loads((folder/'manifest.json').read_text(encoding='utf8'))
-    if manifest['summary']['topics']!=51 or len(manifest['cases'])!=102 or len(manifest['files'])!=516:
-        raise AssertionError('R55 requires the complete R94 51-topic, 102-case, 516-PDF fixture corpus')
+    if manifest['summary']['topics']!=51 or len(manifest['cases'])!=102 or len(manifest['files'])!=612:
+        raise AssertionError('R55 requires the complete R95 51-topic, 102-case, 612-PDF fixture corpus')
     modes={m:sum(f['mode']==m for f in manifest['files']) for m in ('questions','answers','steps')}
-    if modes!={'questions':204,'answers':204,'steps':108}:
-        raise AssertionError('R55 PDF student/key/27-step-family matrix incomplete: '+str(modes))
+    if modes!={'questions':204,'answers':204,'steps':204}:
+        raise AssertionError('R55 PDF student/key/51-step-family matrix incomplete: '+str(modes))
     selected=[r for r in manifest['files'] if r['topic'] in KINDS]
     if len(selected)!=36:
         raise AssertionError(f'Expected 36 topic-PDF documents (3 × 2 difficulties × 2 paper × 3 modes), got {len(selected)}')

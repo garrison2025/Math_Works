@@ -4,9 +4,37 @@
  * listed topics; do not claim the unlisted step topics are re-derived.
  */
 import {hasVerifiedSteps} from './capabilities.ts';
+import {expectedRemainingA} from './r95-step-part-a.ts';
+import {expectedRemainingB} from './r95-step-part-b.ts';
+import {expectedRemainingC} from './r95-step-part-c.ts';
+import {expectedRemainingD} from './r95-step-part-d.ts';
 import type {Problem,Worksheet} from './math.ts';
 
 export const INDEPENDENT_STEP_TOPICS=Object.freeze([
+ 'inequalities-worksheets',
+ 'decimal-multiplication-worksheets',
+ 'place-value-worksheets',
+ 'decimal-place-value-worksheets',
+ 'percentages-worksheets',
+ 'scientific-notation-worksheets',
+ 'gcf-worksheets',
+ 'systems-equations-worksheets',
+ 'functions-worksheets',
+ 'function-tables-worksheets',
+ 'linear-equations-worksheets',
+ 'slope-worksheets',
+ 'domain-range-worksheets',
+ 'number-recognition-worksheets',
+ 'number-line-worksheets',
+ 'coordinate-plane-worksheets',
+ 'area-worksheets',
+ 'surface-area-worksheets',
+ 'angle-worksheets',
+ 'lines-rays-segments-worksheets',
+ 'mean-median-mode-range-worksheets',
+ 'box-plots-worksheets',
+ 'scatter-plot-worksheets',
+ 'printable-protractor',
  'two-digit-by-one-digit-multiplication-worksheets',
  'integer-operations-worksheets',
  'addition-worksheets',
@@ -463,12 +491,16 @@ function expectedSteps(p:Problem):string[]{
   if(length<=0n||width<=0n||height<=0n)throw Error('Worked-step audit: invalid prism dimensions');
   return ['V = length × width × height','V = '+(length*width*height)+' cubic units'];
  }
- default:throw Error('Worked-step audit: unsupported independent topic '+p.topicId);
+ default:{
+  const derived=expectedRemainingA(p)??expectedRemainingB(p)??expectedRemainingC(p)??expectedRemainingD(p);
+  if(derived!==null)return derived;
+  throw Error('Worked-step audit: unsupported independent topic '+p.topicId);
+ }
  }
 }
 
 /** Called only for an authorized worked-steps PDF, after answer verification.
- * All 23 authorized base-step topics receive independent full-step reconstruction.
+ * All 51 authorized generator families receive independent full-step reconstruction.
  * Fail closed if a newly enabled step topic has no independent implementation.
  */
 export function assertWorksheetSteps(sheet:Worksheet):void{
@@ -479,7 +511,9 @@ export function assertWorksheetSteps(sheet:Worksheet):void{
    p.solutionSteps.length>14||p.solutionSteps.some(step=>
     typeof step!=='string'||step.trim().length<5||
     step.length>1600||/[\u0000-\u0008\u000e-\u001f]/.test(step)||
-    /\b(?:undefined|NaN|Infinity)\b/.test(step)))
+    (/\b(?:NaN|Infinity)\b/.test(step)||
+     (/\bundefined\b/.test(step)&&
+      step!=='The denominator is zero: the line is vertical and the slope is undefined.'))))
    throw Error('Worked-step audit: missing, invalid or unsafe teaching step '+p.id);
   if(!audited.has(sheet.topicId))throw Error('Worked-step audit: unverified step topic '+sheet.topicId);
   const expected=expectedSteps(p);

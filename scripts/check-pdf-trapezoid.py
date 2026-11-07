@@ -53,11 +53,11 @@ def check_five_strokes(strokes,bottom_value,top_value):
 
 def run(folder):
     manifest=json.loads((folder/'manifest.json').read_text(encoding='utf8'))
-    if manifest['summary']['topics']!=51 or len(manifest['cases'])!=102 or len(manifest['files'])!=516:
-        raise AssertionError('R94 full 51-topic, 102-case, 516-PDF release corpus was reduced')
+    if manifest['summary']['topics']!=51 or len(manifest['cases'])!=102 or len(manifest['files'])!=612:
+        raise AssertionError('R95 full 51-topic, 102-case, 612-PDF release corpus was reduced')
     mode_counts={name:sum(record['mode']==name for record in manifest['files'])
                  for name in ('questions','answers','steps')}
-    if mode_counts!={'questions':204,'answers':204,'steps':108}:
+    if mode_counts!={'questions':204,'answers':204,'steps':204}:
         raise AssertionError('R44 requires all 204 practice, 204 teacher keys and 108 independently reviewed steps: '+str(mode_counts))
     cases={(c['topic'],c['difficulty']):c for c in manifest['cases']}
     relevant=[f for f in manifest['files'] if f['topic']==TOPIC]
