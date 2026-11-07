@@ -4,7 +4,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** R82 on main, [Actions #416](https://github.com/garrison2025/Math_Works/actions/runs/42319014926) **PASS**. Read [CURRENT-STATUS.md](CURRENT-STATUS.md) for current functional scope, all 488 keyword statuses, launch gates and R83 changes. The detailed R1–R73 notes below are historical snapshots, not the final/current QA state.
+**Current verified baseline (2026-11-07):** PR #14 merge `934a1c650046cdde5f56df397ddf266b27a677ae`, [Actions #436](https://github.com/garrison2025/Math_Works/actions/runs/42334530550) **PASS** on main. This is software verification only; see [CURRENT-STATUS.md](CURRENT-STATUS.md) for the 488-keyword audit and human/launch blockers. Historical R1–R86 notes below are not independent current release certificates.
 
 
 ## Scope

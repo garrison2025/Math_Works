@@ -436,15 +436,21 @@ function setup(root:HTMLElement){
   const basePaper=root.querySelector<HTMLElement>('.sheet-outer')!;
   const sample=root.querySelector<HTMLElement>('[data-closure-example]')!;
   let previewURL:string|undefined;
+  // Prevent stale asynchronous PDF generations from replacing newer settings.
+  let previewGeneration=0;
   const invalidate=()=>{
+   previewGeneration++;
    if(previewURL){URL.revokeObjectURL(previewURL);previewURL=undefined;}
    preview.hidden=true;preview.removeAttribute('src');
    livePreview.hidden=true;basePaper.hidden=false;
   };
   const create=async(edition:'questions'|'answers'|'steps')=>{
+   // Capture one immutable export identity before yielding to the PDF renderer.
    const s=state(),pack=makeClosurePack(topic as ClosureTopic,s.n,s.q,
     s.difficulty,selector.value as ClosureMode);
-   return createClosurePdf(pack,edition,paper.value as Paper,writingRoom.value as WritingRoom);
+   const exportPaper=paper.value as Paper,room=writingRoom.value as WritingRoom;
+   const bytes=await createClosurePdf(pack,edition,exportPaper,room);
+   return {bytes,pack,exportPaper};
   };
   const updateExample=()=>{
    try{
@@ -466,11 +472,12 @@ function setup(root:HTMLElement){
     button.disabled=true;
     try{
      inform('Generating actual specialist '+edition+' PDF...');
-     const s=state(),bytes=await create(edition),url=URL.createObjectURL(
+     const {bytes,pack,exportPaper}=await create(edition);
+     const url=URL.createObjectURL(
       new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
      const a=document.createElement('a');a.href=url;
-     a.download='math-specialist-'+topic+'-'+selector.value+'-'+edition+
-      '-seed'+s.n+'-'+paper.value+'.pdf';
+     a.download='math-specialist-'+topic+'-'+pack.mode+'-'+edition+
+      '-seed'+pack.seed+'-'+pack.difficulty+'-'+pack.quantity+'-'+exportPaper.toLowerCase()+'.pdf';
      document.body.append(a);a.click();a.remove();
      setTimeout(()=>URL.revokeObjectURL(url),60000);
      inform('Matching specialist '+edition+' PDF downloaded; base worksheet unchanged.');
@@ -483,9 +490,14 @@ function setup(root:HTMLElement){
   const button=root.querySelector<HTMLButtonElement>('[data-action="closure-preview"]')!;
   button.addEventListener('click',async()=>{
    button.disabled=true;
+   invalidate();
+   const requestedGeneration=previewGeneration;
    try{
-    const bytes=await create('questions');
-    invalidate();
+    const {bytes}=await create('questions');
+    if(requestedGeneration!==previewGeneration){
+     inform('Worksheet settings changed during PDF preparation. Select Preview again.');
+     return;
+    }
     previewURL=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
     preview.src=previewURL;preview.hidden=false;
     livePreview.hidden=false;basePaper.hidden=true;
