@@ -511,7 +511,9 @@ export function assertWorksheetSteps(sheet:Worksheet):void{
    p.solutionSteps.length>14||p.solutionSteps.some(step=>
     typeof step!=='string'||step.trim().length<5||
     step.length>1600||/[\u0000-\u0008\u000e-\u001f]/.test(step)||
-    (/\b(?:NaN|Infinity)\b/.test(step)||\n     (/\bundefined\b/.test(step)&&\n      step!=='The denominator is zero: the line is vertical and the slope is undefined.'))))
+    (/\b(?:NaN|Infinity)\b/.test(step)||
+     (/\bundefined\b/.test(step)&&
+      step!=='The denominator is zero: the line is vertical and the slope is undefined.'))))
    throw Error('Worked-step audit: missing, invalid or unsafe teaching step '+p.id);
   if(!audited.has(sheet.topicId))throw Error('Worked-step audit: unverified step topic '+sheet.topicId);
   const expected=expectedSteps(p);
