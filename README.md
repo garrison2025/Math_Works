@@ -7,6 +7,9 @@ An original, browser-first US-English printable math worksheet generator built w
 **Current verified baseline (2026-11-07):** R91 PR #19 merged as `fcad6781b14b42630da41527f3bdc02f433e9149`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42351072259) **PASS** (167 primary + 14 Firefox steps) with exact-SHA Cloudflare success. R91 independently compared 816 questions/answers across Chromium and Firefox with zero mismatches. R92 dependency locking and `npm ci` are unmerged candidates pending the new PR checks.
 
 
+
+**Single source of truth:** See [CURRENT-STATUS.md](CURRENT-STATUS.md) for actual verified deployment, owner-approved V2 scope, and outstanding human/physical-print gates. Historical R1–R91 notes below are not newer release certificates.
+
 ## Scope
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
