@@ -1,6 +1,9 @@
 # Release evidence | historical QA log beginning 2026-11-04
 
-**Current independently verified baseline (2026-11-07):** R90 PR #18 merged-main SHA `f7511acb25a99af701b0106ef4e4418f1148d052`, [Actions run 42349485764](https://github.com/garrison2025/Math_Works/actions/runs/42349485764) **PASS**: 165 test/build steps, 11 Firefox checks, and Cloudflare success on the exact commit. R88 separately inspected 54 specialist PDFs/216 pages. R89 verified 488 exact supplied keyword-to-route mappings and shipped six V2 directories; R90 shipped a 437-working-keyword search and Terms. R91 cross-browser seeded question/answer equivalence is pending its own CI. Teacher review and physical printer calibration remain **NOT RUN**. No indexing approval has been given. Read [CURRENT-STATUS.md](CURRENT-STATUS.md) for current scope. Notes below are historical snapshots, not release certificates.
+**Current independently verified baseline (2026-11-07):** R91 PR #19 merged-main SHA `fcad6781b14b42630da41527f3bdc02f433e9149`, [Actions run 42351072259](https://github.com/garrison2025/Math_Works/actions/runs/42351072259) **PASS**: 167 primary steps, 14 Firefox checks, and Cloudflare success on that exact SHA. R91 independently compared 816 visible questions and answers, 51 real routes × 2 seeded options each, across Chromium and Firefox with zero differences. R89/R90 shipped the owner's frozen 488 keywords, 437 non-HOLD searchable aliases, six directories and Terms. R92 package-lock/CI reproducibility is a candidate until its independent CI. Teacher review, 100%-scale physical printer measurements, full dependency vulnerability/license review and formal indexing approval remain **NOT RUN**.
+
+
+**Current status:** See [CURRENT-STATUS.md](CURRENT-STATUS.md) for deployed SHA and outstanding launch gates. Later log sections are historical QA snapshots, not proof of latest release.
 
 
 This file distinguishes implemented code, local checks and outstanding gates. **The site is not approved for public indexing or physical-print certification; the preview is functional.**
