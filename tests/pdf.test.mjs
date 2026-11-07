@@ -29,9 +29,10 @@ for(const topic of mathTopics)test(`PDF roundtrip: ${topic}`,async()=>{
   assert.ok(doc.getTitle()?.includes(sheet.optionsHash),`PDF config identity missing: ${topic} ${paper} ${mode}`);
  }
 });
-test('PDF steps reject unreviewed topics rather than imply verified solution',async()=>{
- const sheet=makeWorksheet('box-plots-worksheets',7,8);
- await assert.rejects(()=>createWorksheetPdf(sheet,'Box Plots','steps','Letter'),/not yet verified/);
+test('PDF steps do not authorize intentionally held or nonexistent topic IDs',()=>{
+ assert.equal(hasVerifiedSteps('word-problems-worksheets'),false);
+ assert.equal(hasVerifiedSteps('worksheets-by-grade'),false);
+ assert.equal(hasVerifiedSteps('never-defined-worksheets'),false);
 });
 test('multipage output has no zero-page or lost-page failures',async()=>{
  for(const topic of ['two-step-equations-worksheets','box-plots-worksheets']){
