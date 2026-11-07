@@ -33,5 +33,6 @@ jobs:
           git add package-lock.json
           if ! git diff --cached --quiet; then
             git commit -m "R93: verified patched dependency lock [r93-deps-synced]"
+            git pull --rebase origin feat/r93-release-quality-closure-pack
             git push origin HEAD:feat/r93-release-quality-closure-pack
           fi
