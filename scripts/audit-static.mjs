@@ -27,6 +27,22 @@ const check = (slug) => {
   }
 };
 check('');
+// A real 404.html disables Cloudflare Pages SPA fallback for absent/HOLD paths.
+const notFoundFile=join(dist,'404.html');
+assert.ok(existsSync(notFoundFile),'Missing custom 404.html: Cloudflare would otherwise serve the homepage for unknown paths');
+const notFound=readFileSync(notFoundFile,'utf8');
+assert.match(notFound,/<h1[^>]*>This worksheet page isn.t available\.<\/h1>/i);
+assert.match(notFound,/name="robots"\s+content="noindex,nofollow"/i);
+// When CI/Cloudflare supplies a commit SHA, embed it so deployed HTML is traceable.
+const buildSha=process.env.CF_PAGES_COMMIT_SHA||process.env.GITHUB_SHA||'';
+if(/^[a-f0-9]{40}$/i.test(buildSha)){
+ const home=readFileSync(join(dist,'index.html'),'utf8');
+ assert.ok(home.includes('name="math-works-build-sha"'), 'Build revision not visible in HTML');
+ assert.ok(home.includes(`content="${buildSha.toLowerCase()}"`), 'Build revision does not match CI/deploy environment');
+}
+
+assert.doesNotMatch(notFound,/<link\s+rel="canonical"/i);
+assert.doesNotMatch(notFound,/data-workspace|class="problems-grid"/i);
 for(const route of routes){
  assert.ok(!seen.has(route.slug),`Duplicate route: ${route.slug}`);seen.add(route.slug);
  if(route.type==='HOLD')assert.ok(!existsSync(join(dist,route.slug,'index.html')),`HOLD page published: ${route.slug}`);

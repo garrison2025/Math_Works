@@ -18,7 +18,7 @@ const server=createServer((req,res)=>{
   let file=resolve(root,'.'+decodeURIComponent(pathURL.pathname));
   if(file!==root&&!file.startsWith(root+sep)){res.writeHead(403);res.end();return;}
   if(existsSync(file)&&statSync(file).isDirectory())file=join(file,'index.html');
-  if(!existsSync(file)||!statSync(file).isFile()){res.writeHead(404);res.end();return;}
+  if(!existsSync(file)||!statSync(file).isFile()){res.writeHead(404,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'});createReadStream(join(root,'404.html')).pipe(res);return;}
   res.writeHead(200,{'Content-Type':mime[extname(file)]??'application/octet-stream','Cache-Control':'no-store'});
   createReadStream(file).pipe(res);
  }catch{res.writeHead(400);res.end();}
@@ -32,6 +32,13 @@ try{
  const page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  const open=async url=>page.goto(`${address}/${url}/`,{waitUntil:'networkidle'});
+ for(const missing of ['worksheets-by-grade','unknown-r81-worksheet']){
+  const response=await page.goto(`${address}/${missing}/`,{waitUntil:'load'});
+  assert.equal(response?.status(),404);
+  assert.match(await page.locator('h1').innerText(),/worksheet page isn.t available/i);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ }
+ checks.push({name:'R81 Firefox HOLD and unknown URLs show 404, not soft-404 homepage',status:'pass'});
  await open('systems-equations-worksheets');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('.problem').count(),8);
