@@ -48,7 +48,7 @@ for(const route of routes){
  if(route.type==='HOLD')assert.ok(!existsSync(join(dist,route.slug,'index.html')),`HOLD page published: ${route.slug}`);
  else check(route.slug);
 }
-for(const path of ['robots.txt','about/index.html','privacy/index.html','contact/index.html','sitemap.xml']) assert.ok(existsSync(join(dist,path)),`Missing supporting file: ${path}`);
+for(const path of ['robots.txt','about/index.html','privacy/index.html','contact/index.html','terms/index.html','sitemap.xml']) assert.ok(existsSync(join(dist,path)),`Missing supporting file: ${path}`);
 console.log(`STATIC AUDIT PASS: ${routes.filter(r=>r.type!=='HOLD').length} preview topics, unique routes, 51 WebP assets, noindex metadata, support pages.`);
 
 /** R41 source-to-built-site SEO intent audit: never release guessed keywords. */
