@@ -23,7 +23,7 @@ for(const route of live){
    slug:route.slug,caseId:route.slug+'-'+String(i+1).padStart(2,'0'),seed,
    problem:prob.payload.question,expectedAnswer:prob.expectedAnswer,
    independentlyVerifiedBaseSteps:hasVerifiedSteps(route.slug),
-   steps:hasVerifiedSteps(route.slug)?prob.solutionSteps.join(' | '):'Not independently certified in base v18',
+   steps:hasVerifiedSteps(route.slug)?prob.solutionSteps.join(' | '):'Not independently certified in base v18 (export blocked)',
    teacherMath:'NOT REVIEWED',teacherClarity:'NOT REVIEWED',
    diagramLegibility:'NOT REVIEWED',curriculumFit:'NOT REVIEWED',
    reviewerName:'',reviewDate:'',notes:''
@@ -78,7 +78,7 @@ const checklist=[
  '- Open \`teacher-math-review-408-cases.csv\`: 8 seeded examples from **each of 51 working routes**.',
  '- For each sample verify the question is unambiguous, the answer is mathematically correct, diagrams agree with the written problem, and grade suitability is appropriate.',
  '- Inspect 408 rows; enter reviewer name/date, explicit PASS or FAIL in math/clarity/diagram/curriculum columns, and a defect/issue link for every FAIL.',
- '- For the 23 independently verified **base** worked-step topics, compare printed explanation against the actual arithmetic; other specialized PDF packs have different assertions and are not automatically equivalent to base worked-step certification.',
+ '- For the 51 independently reconstructed **base** worked-step topics after R95, compare printed explanation against the actual arithmetic; other specialized PDF packs have different assertions and are not automatically equivalent to base worked-step certification.',
  '- Teacher approval requires every relevant row marked PASS, no open blocker, and a human signature. This report does **not** issue approval.',
  '',
  '## Physical printer',
