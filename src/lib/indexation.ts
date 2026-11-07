@@ -13,7 +13,7 @@ export function releasePaths(input:PublishInputs,topics:readonly TopicEntry[]):s
  const approved=new Set(input.routes.split(',').map(s=>s.trim()).filter(Boolean));
  const paths=topics.filter(t=>t.type==='CONDITIONAL_TOOL' && approved.has(t.slug)).map(t=>`/${t.slug}/`);
  // Do not publish an empty public-facing site. Hubs and HOLDs need separate owner QA approval.
- return paths.length ? ['/','/about/','/contact/','/privacy/',...paths] : [];
+ return paths.length ? ['/','/about/','/contact/','/privacy/','/terms/',...paths] : [];
 }
 export function isIndexablePath(path:string,input:PublishInputs,topics:readonly TopicEntry[]):boolean {
  return releasePaths(input,topics).includes(path);
