@@ -4,7 +4,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** R92 PR #20 merge `9e09049e26e55cfac4637e32b179202e2fb026d3`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42353338178) **PASS** (169 primary + 15 Firefox steps) with exact-SHA Cloudflare success. The npm v3 lockfile pins 385 third-party packages and both jobs use `npm ci`. R93 is a new candidate: exact arithmetic explanations, live vulnerability/license reports, physical-print and teacher QA packets, and multi-viewport accessibility checks. Human gates remain NOT RUN.
+**Current verified baseline (2026-11-07):** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary + 15 Firefox steps), exact-SHA Cloudflare success. npm production and full-dependency advisory scans each returned zero known vulnerabilities at scan time; machine license inventory covers 296 entries, with 14 LGPL/mixed-license entries requiring human legal review. R93 enables 23 independently verified base math-step PDF topics and provides 408-case teacher/56-PDF physical print packets plus 35 responsive/a11y browser checks. Teacher/printer/screen-reader sign-off, purchased domain and Search Console are still NOT DONE.
 
 
 
@@ -16,7 +16,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 - 55 owner-approved topic intents; 51 rendered pages (43 specialized tools, 8 conditional hubs), 4 HOLD excluded from builds.
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
-- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 15 previously reviewed topics, with eight more in R93 pending CI), direct printing, Letter/A4 paper.
+- Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 15 previously reviewed topics, including eight more certified by the R93 merged-main CI), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
 - 488 owner-approved V2.0 KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts; no new SERP review is required for implementation). 437 entries point to live generators, 51 to the four deliberately held V2 intents. Use the R89 built-page report to check exact landing and selected task options.
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
