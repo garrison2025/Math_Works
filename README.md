@@ -4,7 +4,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** R90 PR #18 merge `f7511acb25a99af701b0106ef4e4418f1148d052`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42349485764) **PASS** (165 primary + 11 Firefox steps) with exact-SHA Cloudflare success. R89 delivered 488 frozen keyword-to-route checks and six V2 directories. R90 delivered 437 working-keyword search aliases, precise math task option links and Terms. R91 browser-to-browser math text/answer parity is a separate quality candidate until CI passes. This is software verification only; see [CURRENT-STATUS.md](CURRENT-STATUS.md) for the 488-keyword audit and human/launch blockers. Historical R1–R86 notes below are not independent current release certificates.
+**Current verified baseline (2026-11-07):** R91 PR #19 merged as `fcad6781b14b42630da41527f3bdc02f433e9149`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42351072259) **PASS** (167 primary + 14 Firefox steps) with exact-SHA Cloudflare success. R91 independently compared 816 questions/answers across Chromium and Firefox with zero mismatches. R92 dependency locking and `npm ci` are unmerged candidates pending the new PR checks.
 
 
 ## Scope
@@ -23,7 +23,7 @@ An original, browser-first US-English printable math worksheet generator built w
 ## Getting started
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run test
 npm run build
@@ -1231,3 +1231,7 @@ release. Purchasing a custom domain, real printer and teacher
 acceptance testing, verified Cloudflare deployed commit,
 current independent US SERP/GSC evidence and explicit
 page-by-page index approval remain separate prerequisites.
+
+### Deterministic dependency installs (R92)
+
+The repo has a committed npm v3 `package-lock.json` from Node 22. Use `npm ci` (not `npm install`) so CI and Cloudflare project installs resolve the same pinned packages; the CI lockfile audit rejects package manifest/lock divergence and entries without HTTPS/integrity. This verifies reproducible dependency resolution, **not** that upstream packages are free from vulnerabilities or license problems. The temporary bootstrap workflow was removed before merge.
