@@ -24,7 +24,8 @@ export const EXTRA_PACK_KEYS = [
   "r78-solid-mode",
   "r79-mixed-solid-mode",
   "r80-nets-mode",
-  "r80-composite-mode"
+  "r80-composite-mode",
+  "r84-multiplication-mode"
 ] as const;
 export type ExtraPackKey = (typeof EXTRA_PACK_KEYS)[number];
 export type ExtraPackSelection = {

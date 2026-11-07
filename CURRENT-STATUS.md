@@ -8,7 +8,7 @@ This document is a point-in-time status, not proof that any later commit has pas
 
 - **55 owner-supplied SEO/topic route intents:** **51 built topic pages** (43 conditional specialized tools, 8 conditional hubs); **4 HOLD** routes are deliberately absent and return custom HTTP 404 rather than silently serving the homepage. These are site pages, not a claim of 51 separately certified math curricula.
 - **51 baseline deterministic generators:** stable v18 base worksheet share identity, answer keys, independent oracles and vector PDF stress testing. **15** base-topic worked-step PDF families have independent full-chain verification; other topics must not be advertised as reviewed step downloads.
-- **24 optional PDF-only configuration selectors** across equation, fraction, decimal, arithmetic, statistics and solid-geometry extension panels. R82 reproducible links preserve nondefault extension selectors via allowlisted `xpv=1` / `xp_...` arguments while maintaining legacy default URLs; the extra PDF must still be downloaded from the corresponding panel. No student answer is embedded in the link.
+- **25 optional PDF-only configuration selectors** across equation, fraction, decimal, arithmetic, statistics and solid-geometry extension panels. R82 reproducible links preserve nondefault extension selectors via allowlisted `xpv=1` / `xp_...` arguments while maintaining legacy default URLs; the extra PDF must still be downloaded from the corresponding panel. No student answer is embedded in the link.
 - R80's genuine unfolded nets and joined rectangular-prism L solids are separate specialist PDF packs. Existing original worksheet answers remain unchanged.
 - A4/US Letter layout, separate student/answer/available step PDFs, writing-room settings and printable calibration PDFs all have automated digital checks.
 
@@ -52,3 +52,10 @@ Until explicitly approved, the Cloudflare `.pages.dev` preview intentionally ret
 The 24 optional selectors can exist in multiple panels on the same topic page; the existing bottom-of-settings share button remains. R83 inserts a **keyboard-operable, topic-labeled copy-settings shortcut** adjacent to each panel with a supported selector. Both shortcuts call the same R82 URL builder and restore logic. These links encode all nondefault selector choices present on the page, not just the clicked panel; the corresponding PDF download remains a separate explicit user action. Static no-JavaScript worksheet previews and unseeded fixed charts are unaffected.
 
 The README and RELEASE-EVIDENCE below retain archival entries from older release rounds; any old `NOT RUN`, `CI PENDING`, or “link does not include extras” statement is **historical**, not the current assessment.
+
+
+## R84 multiplication models — feature branch, approval pending
+
+The new multiplication specialist has opt-in separate PDFs for dot arrays, equal-unit jumps on a true linear number line, and contextual whole-number stories, plus mixed practice. Students receive blanks; matched teachers get answers and checkable steps. R83 contextual sharing includes the new `r84-multiplication-mode` selector. The original v18 questions/keys remain unchanged.
+
+Five source-backed missing keyword tasks gain actual functions. **Subject to R84 CI evidence:** the original 488 keyword statuses change to 50 narrow implemented skills, 15 corrected routes, 17 unsupported functions, 59 review, 4 ambiguous and 343 not individually SERP-reviewed: 80 previous flags remain. No traffic projection or certified grade-four standards alignment is implied. Teacher signoff, actual paper print measurement, a purchased domain and per-page indexation approval remain NOT RUN / NOT APPROVED.
