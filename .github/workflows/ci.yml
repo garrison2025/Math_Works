@@ -221,6 +221,16 @@ jobs:
           path: qa-artifacts/browser/
           retention-days: 7
           if-no-files-found: warn
+      - name: R91 capture exact Chromium math and independent answers for all 51 V2 tools
+        timeout-minutes: 6
+        run: npm run qa:r91-chromium-math
+      - name: Archive Chromium golden math snapshot for Firefox comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: r91-chromium-exact-math-reference
+          path: qa-artifacts/r91-browser-parity/chromium.json
+          retention-days: 30
+          if-no-files-found: error
       - name: Generate PDF golden fixtures
         run: npm run qa:pdf-samples
       - name: Stress test all 51 live worksheet PDFs at maximum count
@@ -631,12 +641,26 @@ jobs:
         with:
           name: math-works-built-site
           path: dist/
+      - uses: actions/download-artifact@v4
+        with:
+          name: r91-chromium-exact-math-reference
+          path: qa-artifacts/r91-chromium-reference/
       - name: Install Playwright Firefox browser
         timeout-minutes: 7
         run: npx playwright-core install firefox
       - name: Firefox PDF download and mobile QA
         timeout-minutes: 5
         run: npm run qa:firefox
+      - name: R91 verify all 102 generated Firefox math snapshots exactly match Chromium
+        timeout-minutes: 6
+        run: npm run qa:r91-firefox-math
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r91-cross-browser-exact-math-comparison
+          path: qa-artifacts/r91-browser-parity/
+          retention-days: 30
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:

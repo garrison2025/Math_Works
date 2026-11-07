@@ -4,7 +4,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** R89 PR #17 merge `9e4b2c7ab2cbf4620cf9ed74ae06e8c58fa67e3c`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42346795272) **PASS** (163 primary + 11 Firefox steps) with exact-SHA Cloudflare success. The 488-row V2 keyword landing audit and six directories are part of main. R90 search and Terms remain candidates until separately verified. This is software verification only; see [CURRENT-STATUS.md](CURRENT-STATUS.md) for the 488-keyword audit and human/launch blockers. Historical R1–R86 notes below are not independent current release certificates.
+**Current verified baseline (2026-11-07):** R90 PR #18 merge `f7511acb25a99af701b0106ef4e4418f1148d052`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42349485764) **PASS** (165 primary + 11 Firefox steps) with exact-SHA Cloudflare success. R89 delivered 488 frozen keyword-to-route checks and six V2 directories. R90 delivered 437 working-keyword search aliases, precise math task option links and Terms. R91 browser-to-browser math text/answer parity is a separate quality candidate until CI passes. This is software verification only; see [CURRENT-STATUS.md](CURRENT-STATUS.md) for the 488-keyword audit and human/launch blockers. Historical R1–R86 notes below are not independent current release certificates.
 
 
 ## Scope

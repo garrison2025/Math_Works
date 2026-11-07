@@ -19,6 +19,8 @@
     "qa:r90-directory-search": "node --experimental-strip-types scripts/audit-r90-directory-search.mjs",
     "qa:browser": "node scripts/browser-smoke.mjs",
     "qa:firefox": "node scripts/firefox-smoke.mjs",
+    "qa:r91-chromium-math": "node --experimental-strip-types scripts/qa-r91-browser-parity.mjs chromium",
+    "qa:r91-firefox-math": "node --experimental-strip-types scripts/qa-r91-browser-parity.mjs firefox",
     "qa:protractor-instruments": "node --experimental-strip-types scripts/export-protractor-instruments.mjs",
     "qa:print-calibration": "node --experimental-strip-types scripts/export-print-calibration.mjs",
     "qa:writing-room": "node --experimental-strip-types scripts/export-writing-room.mjs",
