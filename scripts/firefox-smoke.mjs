@@ -606,6 +606,29 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R79 Firefox six real mixed-volume/mixed-surface Letter PDF student, answer and worked downloads',status:'pass'});
+ // ONE-STAGE CLOSURE: independent Firefox actual US Letter PDFs across
+ // all five newly implemented mathematical specialist families.
+ for(const spec of [
+  {topic:'angle-worksheets',mode:'order-angles'},
+  {topic:'mixed-addition-subtraction-worksheets',mode:'subtraction'},
+  {topic:'lines-rays-segments-worksheets',mode:'line-plane'},
+  {topic:'multiplication-worksheets',mode:'lattice'},
+  {topic:'surface-area-worksheets',mode:'right-triangular-pyramid'}
+ ]){
+  await open(spec.topic);
+  const before=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-closure-mode]').selectOption(spec.mode);
+  const promise=page.waitForEvent('download',{timeout:60000});
+  await page.locator('[data-action="closure-answers"]').click();
+  const file=await promise,target=join(out,file.suggestedFilename());
+  await file.saveAs(target);
+  const doc=await PDFDocument.load(readFileSync(target));
+  assert.equal(doc.getPageCount(),4);
+  assert.equal(doc.getPage(0).getWidth(),612);
+  assert.match(doc.getTitle()??'',/Closure/);
+  assert.equal(await page.locator('.problem .q').first().innerText(),before);
+ }
+ checks.push({name:'Closure five real Letter teacher PDF downloads, no baseline regressions in Firefox',status:'pass'});
  // R86 Firefox: real US Letter plotted line, graph-reading and quadratic PDFs.
  await open('functions-worksheets');
  const r86Original=await page.locator('.problem .q').first().innerText();

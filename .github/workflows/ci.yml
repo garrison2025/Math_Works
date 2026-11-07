@@ -34,6 +34,24 @@ jobs:
         run: npm run qa:seo-progress-r79
       - name: R80 original 488-keyword audit after true net-area and joined composite 3D worksheets
         run: npm run qa:seo-progress-r80
+      - name: Closure final 488 source-keyword exact capability reconciliation
+        run: npm run qa:seo-closure
+      - name: Archive closure genuine 488-source-keyword audit and 63 remaining review flags
+        uses: actions/upload-artifact@v4
+        with:
+          name: closure-final-488-keyword-audit
+          path: qa-artifacts/closure-488-keyword-coverage/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Closure generate thirty actual mathematical practice PDFs in both paper sizes
+        run: npm run qa:closure-pdfs
+      - name: Archive closure 30 actual four-face net, lattice, plane, triangle and polynomial PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: closure-30-actual-specialist-pdfs
+          path: qa-artifacts/closure-30-actual-worksheet-pdfs/
+          retention-days: 30
+          if-no-files-found: error
       - name: R86 source-preserving audit of 488 original keywords and 69 remaining flags
         run: npm run qa:seo-progress-r86
       - name: Archive R86 exact function graph SEO capability audit
