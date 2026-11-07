@@ -3,6 +3,9 @@
 **Current independently verified baseline (2026-11-07):** R91 PR #19 merged-main SHA `fcad6781b14b42630da41527f3bdc02f433e9149`, [Actions run 42351072259](https://github.com/garrison2025/Math_Works/actions/runs/42351072259) **PASS**: 167 primary steps, 14 Firefox checks, and Cloudflare success on that exact SHA. R91 independently compared 816 visible questions and answers, 51 real routes × 2 seeded options each, across Chromium and Firefox with zero differences. R89/R90 shipped the owner's frozen 488 keywords, 437 non-HOLD searchable aliases, six directories and Terms. R92 package-lock/CI reproducibility is a candidate until its independent CI. Teacher review, 100%-scale physical printer measurements, full dependency vulnerability/license review and formal indexing approval remain **NOT RUN**.
 
 
+**Current status:** See [CURRENT-STATUS.md](CURRENT-STATUS.md) for deployed SHA and outstanding launch gates. Later log sections are historical QA snapshots, not proof of latest release.
+
+
 This file distinguishes implemented code, local checks and outstanding gates. **The site is not approved for public indexing or physical-print certification; the preview is functional.**
 
 | Gate | Evidence/status |
