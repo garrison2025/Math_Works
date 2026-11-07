@@ -1319,6 +1319,8 @@ try {
       await pg.locator('[data-status]').innerText()+'; '+error);
     }
     assert.ok(file.suggestedFilename().includes(edition),file.suggestedFilename());
+    assert.ok(file.suggestedFilename().includes('seed20261104-standard-8-a4'),
+     'Filename must identify the same seed, difficulty, count and paper as the PDF: '+file.suggestedFilename());
     const doc=await verifyPdf(file,'closure '+spec.topic+' '+edition,{paper:'A4'});
     assert.equal(doc.getPageCount(),4);
     assert.match(doc.getTitle()??'',/Closure/);
