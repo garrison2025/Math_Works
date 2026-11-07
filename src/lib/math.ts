@@ -45,7 +45,16 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
  const a=()=>r.int(2,max), b=()=>r.int(2,max);
  let question='',answer='',steps:string[]=[],diagram:Diagram|undefined;
  const make=(q:string,ans:string|number,...s:string[])=>{question=q;answer=String(ans);steps=s.length?s:[`Evaluate: ${q}`,`Answer: ${ans}`]};
- const m=(x:number,y:number)=>make(`${x} × ${y} = ____`,x*y,`${x} × ${y} = ${x*y}`);
+ const m=(x:number,y:number)=>{
+  const product=x*y,tens=Math.floor(x/10)*10,ones=x%10;
+  if(tens)make(`${x} × ${y} = ____`,product,
+   `Split ${x} into ${tens} + ${ones}.`,
+   `Multiply: ${tens} × ${y} = ${tens*y}; ${ones} × ${y} = ${ones*y}.`,
+   `Add partial products: ${tens*y} + ${ones*y} = ${product}.`);
+  else make(`${x} × ${y} = ____`,product,
+   `${x} groups of ${y} makes ${product}.`,
+   `Inverse check: ${product} ÷ ${y} = ${x}.`);
+ };
  const frac=(n:number,d:number)=>asText(rational(BigInt(n),BigInt(d)));
  const signed=()=>r.int(-max,max);
  switch(topicId){
@@ -55,7 +64,23 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
   const [x,y]=r.pick(oneDigitProducts[opts.regrouping as 'mixed'|'yes'|'no']);
   m(x,y);diagram={kind:'column-multiplication',values:[x,y]};break}
 
- case 'integer-operations-worksheets':{const x=signed(),y=signed()||2,op=opts.operation==='mixed'?r.pick(['+','−','×','÷']):({addition:'+',subtraction:'−',multiplication:'×',division:'÷'} as Record<string,string>)[opts.operation];if(op==='÷'){const q=r.int(-9,9),d=r.pick([-6,-5,-4,-3,-2,2,3,4,5,6]);make(`${q*d} ÷ (${d}) = ____`,q,`Division is the inverse of multiplication: ${d} × ${q} = ${q*d}`)}else make(`${x} ${op} (${y}) = ____`,op==='+'?x+y:op==='−'?x-y:x*y,`Apply integer sign rules`,`${x} ${op} (${y}) = ${op==='+'?x+y:op==='−'?x-y:x*y}`);break}
+ case 'integer-operations-worksheets':{
+ const x=signed(),y=signed()||2;
+ const op=opts.operation==='mixed'?r.pick(['+','−','×','÷']):({addition:'+',subtraction:'−',multiplication:'×',division:'÷'} as Record<string,string>)[opts.operation];
+ if(op==='÷'){
+  const quotient=r.int(-9,9),d=r.pick([-6,-5,-4,-3,-2,2,3,4,5,6]),dividend=quotient*d;
+  make(`${dividend} ÷ (${d}) = ____`,quotient,
+   `Check inverse multiplication: ${d} × ${quotient} = ${dividend}.`,
+   `Therefore ${dividend} ÷ (${d}) = ${quotient}.`);
+ }else{
+  const result=op==='+'?x+y:op==='−'?x-y:x*y;
+  make(`${x} ${op} (${y}) = ____`,result,
+   `Calculate with integer signs: ${x} ${op} (${y}) = ${result}.`,
+   op==='+'?`Inverse check: ${result} − (${y}) = ${x}.`:
+    op==='−'?`Inverse check: ${result} + (${y}) = ${x}.`:
+    y!==0?`Inverse check: ${result} ÷ (${y}) = ${x}.`:`Zero-product check: ${x} × 0 = 0.`);
+ }break;
+}
  case 'one-step-equations-worksheets':{const x=signed(),k=r.int(1,max)*(r.int(0,1)?-1:1);if((opts.operation==='mixed'?r.int(0,1):opts.operation==='addition'?1:0))make(`Solve: x ${k<0?'−':'+'} ${Math.abs(k)} = ${x+k}`,`x = ${x}`,`Subtract ${k} from both sides`,`x = ${x}`);else make(`Solve: ${k}x = ${k*x}`,`x = ${x}`,`Divide both sides by ${k}`,`x = ${x}`);break}
  case 'two-step-equations-worksheets':{const x=signed(),coef=r.pick(opts.coefficient==='mixed'?[-5,-4,-3,-2,2,3,4,5]:opts.coefficient==='positive'?[2,3,4,5]:[-5,-4,-3,-2]),k=signed(),c=coef*x+k;make(`Solve: ${coef}x ${k<0?'−':'+'} ${Math.abs(k)} = ${c}`,`x = ${x}`,`Subtract ${k} from both sides: ${coef}x = ${c-k}`,`Divide by ${coef}: x = ${x}`,`Check: ${coef} × ${x} + (${k}) = ${c}`);break}
  case 'order-of-operations-worksheets':{
@@ -149,7 +174,14 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
    if(opts.regrouping==='mixed'||(opts.regrouping==='yes')===carry)break;
   }
   if(opts.regrouping!=='mixed'&&((opts.regrouping==='yes')!==carry))throw Error('Cannot generate addition choice');
-  make(`${x} + ${y} = ____`,x+y,`Column addition gives ${x+y}`);break}
+  const ones=x%10+y%10,carryOnes=Math.floor(ones/10);
+  const tens=Math.floor(x/10)%10+Math.floor(y/10)%10+carryOnes,carryTens=Math.floor(tens/10);
+  const hundreds=Math.floor(x/100)+Math.floor(y/100)+carryTens;
+  make(`${x} + ${y} = ____`,x+y,
+   `Ones: ${x%10} + ${y%10} = ${ones}; write ${ones%10}, carry ${carryOnes}.`,
+   `Tens: ${Math.floor(x/10)%10} + ${Math.floor(y/10)%10} + ${carryOnes} = ${tens}; write ${tens%10}, carry ${carryTens}.`,
+   `Hundreds and thousands: ${Math.floor(x/100)} + ${Math.floor(y/100)} + ${carryTens} = ${hundreds}.`,
+   `Combine columns: ${x} + ${y} = ${x+y}.`);break}
  case 'subtraction-worksheets':{
   let x=0,y=0,borrow=false;
   for(let attempt=0;attempt<250;attempt++){
@@ -160,13 +192,31 @@ export function sampleProblem(topicId:string,seed:number,difficulty:Difficulty='
    if(opts.borrowing==='mixed'||(opts.borrowing==='yes')===borrow)break;
   }
   if(opts.borrowing!=='mixed'&&((opts.borrowing==='yes')!==borrow))throw Error('Cannot generate borrowing choice');
-  make(`${x} − ${y} = ____`,x-y,`Column subtraction gives ${x-y}`);break}
- case 'mixed-addition-subtraction-worksheets':{const x=r.int(100,900),y=r.int(50,900),op=opts.operation==='mixed'?r.pick(['+','−']):opts.operation==='addition'?'+':'−';make(`${x} ${op} ${y} = ____`,op==='+'?x+y:x-y,`Calculate ${x} ${op} ${y}`,`Check using inverse operations`);break}
+  const borrowOnes=x%10<y%10?1:0;
+  const ones=x%10+10*borrowOnes-y%10;
+  const tbase=Math.floor(x/10)%10-borrowOnes,ty=Math.floor(y/10)%10;
+  const borrowTens=tbase<ty?1:0,tens=tbase+10*borrowTens-ty;
+  const hundreds=Math.floor(x/100)-borrowTens-Math.floor(y/100);
+  make(`${x} − ${y} = ____`,x-y,
+   `Ones: ${x%10}${borrowOnes?' + 10 borrowed':''} − ${y%10} = ${ones}.`,
+   `Tens: ${tbase}${borrowTens?' + 10 borrowed':''} − ${ty} = ${tens}.`,
+   `Hundreds: ${Math.floor(x/100)} − ${borrowTens} − ${Math.floor(y/100)} = ${hundreds}.`,
+   `Combine columns: ${x} − ${y} = ${x-y}.`);break}
+ case 'mixed-addition-subtraction-worksheets':{
+ const x=r.int(100,900),y=r.int(50,900),op=opts.operation==='mixed'?r.pick(['+','−']):opts.operation==='addition'?'+':'−';
+ const answer=op==='+'?x+y:x-y;
+ make(`${x} ${op} ${y} = ____`,answer,
+  `Calculate: ${x} ${op} ${y} = ${answer}.`,
+  op==='+'?`Inverse check: ${answer} − ${y} = ${x}.`:`Inverse check: ${answer} + ${y} = ${x}.`);
+ break;
+}
  case 'multiplication-worksheets':{const type=opts.factors==='mixed'?r.pick(['mixed','times-tables','two-digit-by-one-digit']):opts.factors; if(type==='times-tables')m(r.int(1,12),r.int(1,12));else if(type==='two-digit-by-one-digit')m(r.int(12,99),r.int(2,9));else m(a(),b());break}
  case 'multiplication-tables-worksheets':{const x=opts.table==='mixed'?r.int(1,12):Number(opts.table),y=r.int(1,12);m(x,y);break}
  case 'division-worksheets':{
   const d=opts.divisor==='mixed'?r.int(2,12):Number(opts.divisor),q=r.int(2,12);
-  make(`${d*q} ÷ ${d} = ____`,q,`Because ${d} × ${q} = ${d*q}`);break}
+  make(`${d*q} ÷ ${d} = ____`,q,
+   `Use inverse multiplication: ${d} × ${q} = ${d*q}.`,
+   `Therefore ${d*q} ÷ ${d} = ${q}.`);break}
  case 'long-division-worksheets':{
   const divisorType=opts.divisorDigits==='mixed'?r.pick(['one','two']):opts.divisorDigits;
   const digitCount=opts.dividendDigits==='mixed'?r.pick([3,4]):opts.dividendDigits==='three'?3:4;
