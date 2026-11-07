@@ -4,6 +4,31 @@
 
 **Last independently verified main deployment:** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary steps, 15 Firefox steps) with Cloudflare Pages reporting success for this exact SHA. Real npm production and complete dependency audits reported zero known advisories at scan time; 296 package license declarations were recorded with 14 LGPL/mixed-license entries flagged for owner legal review. R93 shipped eight more independently reconstructed base arithmetic step families (23 total), 408 real teacher review examples, 56 A4/Letter print/check PDFs and a real Chromium 35-state/5-width responsive and accessibility check. All owner V2.0 488 source keywords, 51 working tools, 4 intentional HOLDs and preview `noindex,nofollow` are unchanged. **Qualified teacher sign-off, physical ruler/printer measurements, real-device screen-reader review, custom-domain ownership and GSC verification are NOT RUN.**
 
+## R95 merged: all 51 worksheet worked-step families are independently reconstructed
+
+R95 [PR #24](https://github.com/garrison2025/Math_Works/pull/24) merged into `main`
+as `12abee36ebbd975834d5dce58d64e8d97ce01e17` after exact PR-head
+`d07d0691c4e5ecd6464a020e535e0e249d00ea4b` passed
+[full PR CI run 42363816146](https://github.com/garrison2025/Math_Works/actions/runs/42363816146):
+both `test-and-build` and `firefox-qa` **success**.
+R95 covers the remaining 24 original generators with question/diagram-based
+independent worked-step math reconstruction and targeted adversarial tests,
+bringing **base steps to 51/51 active generator families**. The complete digital
+PDF stress corpus is **612 PDFs = 204 student + 204 teacher answers + 204 worked
+steps** from 102 generator/difficulty cases. Four intentional HOLDs are excluded.
+Other specialist PDF packs have their own audits; base step certification is not
+qualified-teacher pedagogical approval.
+
+Live dependency risk triage still requires human legal sign-off. An additional
+CI scan lists the *actual* Cloudflare dist asset paths/hashes and fails if
+Sharp/libvips native or WASM binaries are inadvertently published; it does not
+establish compliance across other distribution channels. See
+[R95 release gate matrix](R95-RELEASE-GATE-MATRIX.md) for evidence and all owner
+tasks. **R95 merged-main CI, Cloudflare exact-SHA deployment, qualified teacher
+408-case review, physical printer measurement, real NVDA/VoiceOver/TalkBack,
+legal approval, owned domain and GSC remain separate gates until independently
+verified.** No domain, sitemap authorization, ads or public indexing is approved.
+
 ## R94 merged engineering increment (not a human release certificate)
 
 R94 [PR #23](https://github.com/garrison2025/Math_Works/pull/23) merged to main at
@@ -30,7 +55,7 @@ Teacher review (408), physical print/ruler, NVDA/VoiceOver, owned domain, GSC
 and public indexing all remain **NOT RUN / NOT APPROVED**.
 
 ## Actual scope
-55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 27 core worked-step families have independent base-generator certification after R94; other steps must not be claimed as audited. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
+55 user-source route intents: 51 real built math pages / deterministic v18 worksheet generators, 4 deliberate HOLD 404s. 51 core worked-step families have independent base-generator digital certification after R95; human teaching approval and specialist packs remain separate. R66–R86 implemented additional genuine specialist PDF packs. The merged closure adds five specifically scoped real worksheet types and records one previously implemented R71 fact-family capability, without changing the v18 baseline.
 
 ## Source-frozen V2.0 keywords (owner-approved development dataset; no new SERP research required)
 
