@@ -324,7 +324,70 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 </div>
 <p class="hint">Only two-block orthogonal solids with full-depth contacts are supported. This module does not claim to solve arbitrary touching shapes, oblique joints or curved composite surfaces. All student and teacher pages use the same original dimensions.</p>
 </div>
-</>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
+</>}{slug==='fractions-worksheets'&&<div class="calibration-card" data-r85-fractions aria-label="Fraction pictures, improper fractions and fraction division stories">
+<strong>Fraction pictures, improper fractions and fraction division stories</strong>
+<p class="hint">Three separate exact practice types: shaded equal-part bars, mixed-to-improper conversion, and fraction division with whole portions. Students see the same models as the teacher edition.</p>
+<div class="field"><label for="r85-fractions-mode">Practice type</label>
+<select id="r85-fractions-mode" data-r85-fractions-mode>
+<option value="pictures">Shade and read fractions in a real bar</option>
+<option value="mixed-to-improper">Convert mixed numbers to improper fractions</option>
+<option value="divide-stories">Divide fractions in real situations</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="r85-fractions-questions">R85 student questions PDF</button>
+<button type="button" class="btn" data-action="r85-fractions-answers">Matching teacher answers PDF</button>
+<button type="button" class="btn" data-action="r85-fractions-steps">Exact worked explanations PDF</button>
+</div>
+<p class="hint">This PDF-only extension uses the current worksheet seed, quantity, difficulty, writing space and paper size. Copy this panel's settings link to reproduce it. It does not change the original v18 worksheet preview; real teacher and print acceptance remain pending.</p>
+</div>}
+{slug==='addition-worksheets'&&<div class="calibration-card" data-r85-addition-pictures aria-label="Picture addition — count actual objects">
+<strong>Picture addition — count actual objects</strong>
+<p class="hint">Two groups of vector dots or tiles, with the total left blank on student pages and exact sums in the answer and worked-step PDFs.</p>
+<div class="field"><label for="r85-addition-pictures-mode">Practice type</label>
+<select id="r85-addition-pictures-mode" data-r85-addition-pictures-mode>
+<option value="small">Smaller picture groups (1–6 each)</option>
+<option value="standard">Varied picture groups</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="r85-addition-pictures-questions">R85 student questions PDF</button>
+<button type="button" class="btn" data-action="r85-addition-pictures-answers">Matching teacher answers PDF</button>
+<button type="button" class="btn" data-action="r85-addition-pictures-steps">Exact worked explanations PDF</button>
+</div>
+<p class="hint">This PDF-only extension uses the current worksheet seed, quantity, difficulty, writing space and paper size. Copy this panel's settings link to reproduce it. It does not change the original v18 worksheet preview; real teacher and print acceptance remain pending.</p>
+</div>}
+{slug==='place-value-worksheets'&&<div class="calibration-card" data-r85-place-value aria-label="Real seven-column place-value charts — through millions">
+<strong>Real seven-column place-value charts — through millions</strong>
+<p class="hint">A real seven-column millions-to-ones table. Choose whether to fill in every digit or identify a digit in a requested place. Students receive blank chart cells.</p>
+<div class="field"><label for="r85-place-value-mode">Practice type</label>
+<select id="r85-place-value-mode" data-r85-place-value-mode>
+<option value="fill-chart">Fill all seven place-value columns</option>
+<option value="find-digit">Find one specified place-value digit</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="r85-place-value-questions">R85 student questions PDF</button>
+<button type="button" class="btn" data-action="r85-place-value-answers">Matching teacher answers PDF</button>
+<button type="button" class="btn" data-action="r85-place-value-steps">Exact worked explanations PDF</button>
+</div>
+<p class="hint">This PDF-only extension uses the current worksheet seed, quantity, difficulty, writing space and paper size. Copy this panel's settings link to reproduce it. It does not change the original v18 worksheet preview; real teacher and print acceptance remain pending.</p>
+</div>}
+{slug==='division-worksheets'&&<div class="calibration-card" data-r85-division-equations aria-label="Division word problems — write an equation">
+<strong>Division word problems — write an equation</strong>
+<p class="hint">Use real context and write dividend / divisor = quotient, with a remainder when needed. Then interpret whether the answer is groups, leftovers, rounding up or sharing.</p>
+<div class="field"><label for="r85-division-equations-mode">Practice type</label>
+<select id="r85-division-equations-mode" data-r85-division-equations-mode>
+<option value="mixed">Mixed exact and remainder stories</option>
+<option value="equal-sharing">Equal sharing with no remainder</option>
+<option value="full-groups">Full groups and leftovers</option>
+<option value="round-up">Round up to enough buses or shuttles</option>
+<option value="leftovers">Find remaining objects</option>
+</select></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="r85-division-equations-questions">R85 student questions PDF</button>
+<button type="button" class="btn" data-action="r85-division-equations-answers">Matching teacher answers PDF</button>
+<button type="button" class="btn" data-action="r85-division-equations-steps">Exact worked explanations PDF</button>
+</div>
+<p class="hint">This PDF-only extension uses the current worksheet seed, quantity, difficulty, writing space and paper size. Copy this panel's settings link to reproduce it. It does not change the original v18 worksheet preview; real teacher and print acceptance remain pending.</p>
+</div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <p class="hint" data-r82-share-help>Links save the worksheet seed, difficulty, question count, paper settings and any selected optional PDF-panel modes. Open the link to restore these choices, then click the matching student, answer-key or worked-steps download button. No student responses are included.</p>
     <details class="calibration-card" data-print-calibration>
       <summary>Printer scale check <span class="calibration-mini">Recommended before classroom printing</span></summary>

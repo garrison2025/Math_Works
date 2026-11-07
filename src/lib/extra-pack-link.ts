@@ -25,7 +25,11 @@ export const EXTRA_PACK_KEYS = [
   "r79-mixed-solid-mode",
   "r80-nets-mode",
   "r80-composite-mode",
-  "r84-multiplication-mode"
+  "r84-multiplication-mode",
+  "r85-fractions-mode",
+  "r85-addition-pictures-mode",
+  "r85-place-value-mode",
+  "r85-division-equations-mode"
 ] as const;
 export type ExtraPackKey = (typeof EXTRA_PACK_KEYS)[number];
 export type ExtraPackSelection = {

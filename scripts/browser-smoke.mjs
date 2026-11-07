@@ -1288,6 +1288,50 @@ try {
   }finally{await ctx.close();}
  }
  events.push({kind:'interaction',name:'R80 six true 4-page net/composite A4 teacher and student PDFs, original surface area unchanged',status:'pass'});
+ // R85: four authentic seeded extension families, each in an isolated
+ // browser context so automated PDF downloads never hit Chromium's per-tab
+ // multi-download limit. Verify three real PDFs and share-mode round trips.
+ for(const spec of [
+  {route:'fractions-worksheets',topic:'fractions',mode:'divide-stories'},
+  {route:'addition-worksheets',topic:'addition-pictures',mode:'standard'},
+  {route:'place-value-worksheets',topic:'place-value',mode:'find-digit'},
+  {route:'division-worksheets',topic:'division-equations',mode:'round-up'}
+ ]){
+  const isolated=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
+  try{
+   const r85Page=await isolated.newPage();
+   await r85Page.goto(base+'/'+spec.route+'/',{waitUntil:'networkidle'});
+   const baseProblem=await r85Page.locator('.problem .q').first().innerText();
+   const opt=r85Page.locator('[data-r85-'+spec.topic+'-mode]');
+   assert.equal(await opt.count(),1,'R85 selector missing: '+spec.topic);
+   assert.equal(await r85Page.locator('[data-r85-'+spec.topic+'] [data-action="share-extra"]').count(),1);
+   await r85Page.locator('[data-field="paper"]').selectOption('A4');
+   await opt.selectOption(spec.mode);
+   for(const edition of ['questions','answers','steps']){
+    const pending=r85Page.waitForEvent('download',{timeout:40000});
+    await r85Page.locator('[data-action="r85-'+spec.topic+'-'+edition+'"]').click();
+    let file;
+    try{file=await pending;}catch(error){
+     const status=await r85Page.locator('[data-status]').innerText();
+     throw new Error('R85 '+spec.topic+' '+edition+' failed: '+status+'; '+String(error));
+    }
+    const name=file.suggestedFilename();
+    assert.ok(name.includes('r85-'+spec.topic+'-'+spec.mode+'-'+edition),name);
+    const doc=await verifyPdf(file,'R85 '+spec.topic+' '+edition,{paper:'A4'});
+    assert.equal(doc.getPageCount(),4);
+    assert.match(doc.getTitle()??'',/R85/);
+   }
+   assert.equal(await r85Page.locator('.problem .q').first().innerText(),baseProblem);
+   await r85Page.locator('[data-r85-'+spec.topic+'] [data-action="share-extra"]').click();
+   const share=await r85Page.evaluate(()=>navigator.clipboard.readText());
+   assert.equal(new URL(share).searchParams.get('xp_r85-'+spec.topic+'-mode'),spec.mode);
+   await r85Page.goto(share,{waitUntil:'networkidle'});
+   assert.equal(await r85Page.locator('[data-r85-'+spec.topic+'-mode]').inputValue(),spec.mode);
+   assert.equal(await r85Page.locator('.problem .q').first().innerText(),baseProblem);
+   assert.match(await r85Page.locator('[data-status]').innerText(),/Restored 1 optional PDF setting/);
+  }finally{await isolated.close();}
+ }
+ events.push({kind:'interaction',name:'R85 real picture/fraction/7-digit chart/division 12 PDF downloads, 4 share round-trips and v18 preview invariance',status:'pass'});
  // R84 Chromium: 4 isolated sessions, 3 real PDFs per session.
  // Chromium limits automatic multi-file downloads within a single tab;
  // these are separate teacher activities, not 12 automated downloads per tab.
