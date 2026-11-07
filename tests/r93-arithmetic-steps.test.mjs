@@ -18,7 +18,7 @@ const added={
 };
 test('R93: all eight newly enabled arithmetic families are independently audited and old 15 preserved',()=>{
  const enabled=verifiedStepTopics();
- assert.equal(enabled.length,23);
+ assert.ok(enabled.length>=23,'The 23 R93 step families must remain certified');
  assert.deepEqual([...INDEPENDENT_STEP_TOPICS].sort(),[...enabled].sort());
  assert.equal(Object.keys(added).length,8);
  for(const name of Object.keys(added))assert.ok(enabled.includes(name));
