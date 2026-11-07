@@ -934,19 +934,36 @@ try {
  assert.equal(await page.locator('[data-r69-conversion]').count(),0,
   'Fraction decimal conversion panel leaked to unrelated addition topic');
 
- // R70 real rendered route corrections: links must lead to implemented
- // specialist generators rather than historically misclassified hubs.
- for(const pair of [
-  ['volume-of-rectangular-prisms-worksheets','surface-area-worksheets'],
-  ['two-digit-multiplication-worksheets','two-digit-by-one-digit-multiplication-worksheets'],
-  ['functions-worksheets','domain-range-worksheets'],
-  ['multiplying-fractions-worksheets','fractions-worksheets']
+ // R89: real Chromium must restore the exercise option in a corrected link.
+ for(const [source,target,selection] of [
+  ['volume-of-rectangular-prisms-worksheets','surface-area-worksheets',{solid:'rectangular-prism'}],
+  ['two-digit-multiplication-worksheets','two-digit-by-one-digit-multiplication-worksheets',{regrouping:'mixed'}],
+  ['functions-worksheets','domain-range-worksheets',{task:'function-test'}],
+  ['multiplying-fractions-worksheets','fractions-worksheets',{operation:'mixed'}]
  ]){
-  await page.goto(base+'/'+pair[0]+'/',{waitUntil:'networkidle'});
+  await page.goto(base+'/'+source+'/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
   assert.equal(await page.locator('[data-r70-route-corrections]').count(),1);
-  assert.ok(await page.locator('[data-r70-route-corrections] a[href="/'+pair[1]+'/"]').count());
+  const anchors=page.locator('[data-r70-route-corrections] a[href^="/'+target+'/"]');
+  assert.ok(await anchors.count(),'Missing R89 corrected route '+target);
+  const href=await anchors.first().getAttribute('href'),url=new URL(href,base);
+  for(const [key,value] of Object.entries(selection))
+   assert.equal(url.searchParams.get('opt_'+key),value,'Source keyword link lost '+key);
+  await page.goto(url.toString(),{waitUntil:'networkidle'});
+  for(const [key,value] of Object.entries(selection))
+   assert.equal(await page.locator('[data-option="'+key+'"]').inputValue(),value,
+    'Real browser did not restore task option '+key);
  }
+ for(const [name,expected] of [
+  ['worksheets',51],['arithmetic',20],['fractions',4],
+  ['algebra',9],['geometry',14],['data-statistics',4]
+ ]){
+  await page.goto(base+'/'+name+'/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  assert.equal(await page.locator('.directory-card').count(),expected,'Incomplete V2 subject directory');
+  assert.equal(await page.locator('.directory-nav a').count(),6);
+ }
+ events.push({kind:'interaction',name:'R89 six subject directories and true corrected exercise settings in Chromium',status:'pass'});
  // R71 each mode downloads three ACTUAL PDF files through isolated
  // Playwright contexts to avoid Chrome's multi-download suppression.
  for(const input of [

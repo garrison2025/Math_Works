@@ -33,7 +33,7 @@ const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===ski
 
 ---
 <Layout title={`${title} – Free Printable PDF & Answer Key | Math Worksheet Studio`} description={topicIntro(route.slug)} canonicalPath={`/${route.slug}/`}>
-<div class="container"><section class="hero hero-compact"><div class="crumb"><a href="/">All math worksheets</a> / {category(route.slug)}</div><span class="eyebrow">Make it · Print it · Practice it</span><h1>{title}</h1><p>{topicIntro(route.slug)}</p></section><Workspace slug={route.slug}/>
+<div class="container"><section class="hero hero-compact"><div class="crumb"><a href="/worksheets/">All math worksheets</a> / {category(route.slug)}</div><span class="eyebrow">Make it · Print it · Practice it</span><h1>{title}</h1><p>{topicIntro(route.slug)}</p></section><Workspace slug={route.slug}/>
 {specialized?<section class="panel info-panel" data-seo-focus aria-label="Worksheet content and customization">
 <span class="eyebrow">Exact practice scope</span>
 <h2>{focusHeading}: printable practice options</h2>
@@ -204,7 +204,7 @@ const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===ski
 <span class="eyebrow">Use the matching math tool</span>
 <h2>More precise worksheets for related skills</h2>
 <p>Some tasks need their own exercise format rather than this broader topic. Open the matching generator below for the right numbers, diagrams or worked method.</p>
-<div class="skill-links">{reviewedTaskRoutes.map(link=><a class="skill-link" href={`/${link.slug}/`}><strong>{titleFor(link.slug)}</strong><span>{link.description}</span></a>)}</div>
+<div class="skill-links">{reviewedTaskRoutes.map(link=><a class="skill-link" href={link.href}><strong>{titleFor(link.slug)}</strong><span>{link.description}</span></a>)}</div>
 </section>}
-<section class="topic-section"><div class="section-header"><div><span class="eyebrow">Keep practicing</span><h2>Related worksheets</h2></div><a href="/#topics">Browse all topics</a></div><div class="topic-grid">{categories.map(r=><a href={`/${r.slug}/`} class="topic-card"><strong>{titleFor(r.slug)}</strong><small>Fresh printable questions with answers</small><span class="topic-link">Open worksheet →</span></a>)}</div></section>
+<section class="topic-section"><div class="section-header"><div><span class="eyebrow">Keep practicing</span><h2>Related worksheets</h2></div><a href="/worksheets/">Browse all topics</a></div><div class="topic-grid">{categories.map(r=><a href={`/${r.slug}/`} class="topic-card"><strong>{titleFor(r.slug)}</strong><small>Fresh printable questions with answers</small><span class="topic-link">Open worksheet →</span></a>)}</div></section>
 </div></Layout>

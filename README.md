@@ -4,7 +4,7 @@ An original, browser-first US-English printable math worksheet generator built w
 
 **Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** PR #14 merge `934a1c650046cdde5f56df397ddf266b27a677ae`, [Actions #436](https://github.com/garrison2025/Math_Works/actions/runs/42334530550) **PASS** on main. This is software verification only; see [CURRENT-STATUS.md](CURRENT-STATUS.md) for the 488-keyword audit and human/launch blockers. Historical R1–R86 notes below are not independent current release certificates.
+**Current verified baseline (2026-11-07):** R88 PR #16 merge `b54f365625603fd201edc094ec6f74deb27e793c`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42341851522) **PASS** (161 primary + 11 Firefox steps) with exact-SHA Cloudflare success. R89 adds source-approved keyword landing QA and V2 subject directories; check its PR CI before calling it released. This is software verification only; see [CURRENT-STATUS.md](CURRENT-STATUS.md) for the 488-keyword audit and human/launch blockers. Historical R1–R86 notes below are not independent current release certificates.
 
 
 ## Scope
@@ -13,7 +13,7 @@ An original, browser-first US-English printable math worksheet generator built w
 - Reproducible xorshift32 seed; generator/version IDs and matched answer maps.
 - Worksheet preview, independent browser-side practice and answer-key PDF exports (and worked steps for 15 reviewed topics), direct printing, Letter/A4 paper.
 - 51 topic-specific static WebP previews generated from deterministic problem objects; corrected SVG/PDF Cartesian charts and geometric endpoint symbols.
-- 488 owner-researched KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts).
+- 488 owner-approved V2.0 KD<=29 keyword evidence entries in `src/data/keyword-evidence.csv` (not expected traffic forecasts; no new SERP review is required for implementation). 437 entries point to live generators, 51 to the four deliberately held V2 intents. Use the R89 built-page report to check exact landing and selected task options.
 - Local/private operation; no accounts, DB, paid APIs, ads or analytics in this version.
 - Thirteen high-demand topic routes now have meaningful topic-specific selectors, including integer operation, one-/two-step equation form, inequality coefficient sign, grouping, equivalent-fraction blanks, fraction operation, times table, division remainder, statistics skill, scatter trend, number-line sign and coordinate quadrant.
 - The topic, seed, difficulty, number of questions and selected topic settings deterministically define a short configuration fingerprint. Worksheet/answer PDFs include the same fingerprint in their filename and document header; a "Copy reproducible link" control restores settings from the URL without storing student content.

@@ -1,9 +1,9 @@
 # Release evidence | historical QA log beginning 2026-11-04
 
-**Current verified baseline (2026-11-07):** PR #14 merged-main SHA `934a1c650046cdde5f56df397ddf266b27a677ae`, [Actions #436](https://github.com/garrison2025/Math_Works/actions/runs/42334530550) **PASS**. The independent live deployment SHA match was recorded in the [PR #14 final verification](https://github.com/garrison2025/Math_Works/pull/14#issuecomment-6701787107). Later changes need new proof. Teacher review, 100%-scale physical printer measurements, per-keyword US SERP review and indexing approval remain **NOT RUN**. Read [CURRENT-STATUS.md](CURRENT-STATUS.md) for current scope. Notes below are historical snapshots, not release certificates.
+**Current independently verified baseline (2026-11-07):** R88 PR #16 merged-main SHA `b54f365625603fd201edc094ec6f74deb27e793c`, [Actions run 42341851522](https://github.com/garrison2025/Math_Works/actions/runs/42341851522) **PASS**: 161 test/build steps and 11 Firefox checks, with Cloudflare success on the exact commit. R88 independently validated 54 specialist PDFs/216 printed pages; teacher review and physical printer calibration remain **NOT RUN**. The V2.0 keyword list is user-approved and must be deployed without requiring a new SERP study; the source data never proves future traffic. No indexing approval has been given. R89 is a separate candidate until its own CI/deployment checks pass. Read [CURRENT-STATUS.md](CURRENT-STATUS.md) for current scope. Notes below are historical snapshots, not release certificates.
 
 
-This file distinguishes implemented code, local checks and outstanding gates. **The site is not production-ready.**
+This file distinguishes implemented code, local checks and outstanding gates. **The site is not approved for public indexing or physical-print certification; the preview is functional.**
 
 | Gate | Evidence/status |
 |---|---|
