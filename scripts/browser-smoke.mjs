@@ -972,11 +972,17 @@ try {
  await search.fill('function not a function worksheet');
  const exactTask=page.locator('[data-directory-matches] a[href*="opt_task=function-test"]').first();
  await exactTask.waitFor({state:'visible',timeout:12000});
- assert.ok((await exactTask.getAttribute('href')).startsWith('/domain-range-worksheets/'));
+ const directHref=await exactTask.getAttribute('href');
+ assert.ok(directHref.startsWith('/domain-range-worksheets/'));
+ assert.equal(new URL(directHref,base).searchParams.get('opt_task'),'function-test',
+  'R90 search suggestion must encode the correct task before clicking');
  await exactTask.click();
- assert.ok(page.url().includes('/domain-range-worksheets/'));
+ await page.waitForURL(/\/domain-range-worksheets\//,{timeout:12000});
+ await page.waitForLoadState('networkidle');
+ await page.waitForFunction(()=>document.querySelector('[data-option="task"]')?.value==='function-test',
+  null,{timeout:12000});
  assert.equal(await page.locator('[data-option="task"]').inputValue(),'function-test',
-  'Clicked R90 search result must restore the exact V2 practice mode');
+  'Clicked R90 search result must restore the exact V2 practice mode after hydration');
  await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
  await page.locator('[data-directory-query]').fill('8th grade math worksheets');
  await page.waitForFunction(()=>document.querySelector('[data-directory-status]')?.textContent?.includes('0 topic'));
