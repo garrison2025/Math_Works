@@ -13,7 +13,19 @@ const getRoutes=(slug:WorksheetSection)=>available.filter(route=>worksheetSectio
   a.slug.localeCompare(b.slug));
 const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
 ---
-<div class="container">
+<div class="container" data-worksheet-directory>
+ <div class="directory-search" data-directory-search hidden>
+  <form role="search" aria-label="Search the worksheet library">
+   <label for="directory-query">Find a math worksheet</label>
+   <p id="directory-search-hint">Search by a math skill or exact worksheet phrase. Results lead only to working generators.</p>
+   <div class="directory-search-row">
+    <input id="directory-query" data-directory-query type="search" autocomplete="off" spellcheck="false" placeholder="e.g. rectangular prism surface area" aria-describedby="directory-search-hint directory-search-status" aria-controls="directory-matches"/>
+    <button type="button" data-directory-clear hidden aria-label="Clear worksheet search">Clear</button>
+   </div>
+  </form>
+  <p id="directory-search-status" data-directory-status role="status" aria-live="polite"></p>
+  <ul id="directory-matches" class="directory-matches" data-directory-matches hidden aria-label="Specific matched worksheet tasks"></ul>
+ </div>
  <nav class="directory-nav" aria-label="Math worksheet subject directories">
   <a href="/worksheets/" aria-current={!section?'page':undefined}>All worksheets</a>
   {WORKSHEET_SECTIONS.map(group=><a href={`/${group.slug}/`} aria-current={section===group.slug?'page':undefined}>{group.slug==='data-statistics'?'Data & statistics':group.slug.charAt(0).toUpperCase()+group.slug.slice(1)}</a>)}
@@ -28,7 +40,7 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
    {!section&&<a class="directory-more" href={`/${group.slug}/`}>View subject directory →</a>}
   </div>
   <div class="directory-grid">
-   {getRoutes(group.slug).map(route=><a class="directory-card" href={`/${route.slug}/`}>
+   {getRoutes(group.slug).map(route=><a class="directory-card" data-slug={route.slug} href={`/${route.slug}/`}>
     <span class="directory-card-type">{route.type==='CONDITIONAL_HUB'?'General practice':'Focused practice'}</span>
     <strong>{titleFor(route.slug)}</strong>
     <span class="directory-card-keyword">{primaries.get(route.slug)}</span>
@@ -40,6 +52,20 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
  <p class="directory-note">These are browser-based tools with reproducible practice sets and matching answer PDFs. Topic pages are not grade-level certifications. Broad or unbuilt concepts from the original planning sheet are deliberately not presented as working tools.</p>
 </div>
 <style>
+ .directory-search{padding:23px;margin:18px 0 12px;background:linear-gradient(135deg,#f3f8fc 0%,#f1f9f6 100%);border:1px solid #d7e0e9;border-radius:18px}
+ .directory-search label{display:block;color:#172337;font-size:1.12rem;font-weight:800}
+ .directory-search form>p{color:#53647a;margin:7px 0 14px;font-size:.87rem;line-height:1.5}
+ .directory-search-row{display:flex;gap:10px;max-width:730px}
+ .directory-search input{min-width:0;flex:1;height:48px;padding:0 14px;border:1.5px solid #9aabba;border-radius:10px;background:#fff;color:#172337;font:inherit;font-size:1rem}
+ .directory-search button{border:1px solid #9aabba;border-radius:10px;background:#fff;color:#172337;font-weight:750;padding:0 18px;min-height:44px;cursor:pointer}
+ .directory-search input:focus-visible,.directory-search button:focus-visible,.directory-matches a:focus-visible{outline:3px solid #187b68;outline-offset:3px}
+ .directory-search [data-directory-status]{color:#53647a;font-size:.84rem;line-height:1.5;margin:12px 0 0}
+ .directory-matches{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,285px),1fr));gap:8px;padding:0;margin:15px 0 0}
+ .directory-matches a{border:1px solid #d7e0e9;background:white;border-radius:10px;padding:13px 15px;display:flex;gap:6px;flex-direction:column;text-decoration:none;color:#172337}
+ .directory-matches a:hover{border-color:#1b64a5}
+ .directory-matches strong{line-height:1.35;font-size:.92rem}
+ .directory-matches span{color:#53647a;font-size:.77rem;line-height:1.45}
+ .directory-search[hidden],.directory-card[hidden],.directory-group[hidden],.directory-matches[hidden],.directory-search button[hidden]{display:none!important}
  .directory-nav{display:flex;gap:9px;overflow-x:auto;padding:12px 0 24px;scrollbar-width:thin}
  .directory-nav a{white-space:nowrap;flex:none;text-decoration:none;padding:10px 14px;border-radius:999px;border:1px solid #d7e0e9;color:#34485d;background:#fff;font-weight:650;font-size:.88rem}
  .directory-nav a[aria-current="page"]{background:#1b64a5;color:#fff;border-color:#1b64a5}
@@ -62,3 +88,5 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
  @media(max-width:680px){.directory-heading{align-items:start;flex-direction:column;gap:10px}.directory-grid{grid-template-columns:1fr}.directory-card{min-height:0}.directory-more{padding:3px 0}}
  @media(prefers-reduced-motion:reduce){.directory-card{transition:none}.directory-card:hover{transform:none}}
 </style>
+
+<script>import '../client/worksheet-directory-search.ts';</script>
