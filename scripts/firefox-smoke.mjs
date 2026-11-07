@@ -606,6 +606,28 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R79 Firefox six real mixed-volume/mixed-surface Letter PDF student, answer and worked downloads',status:'pass'});
+ // R85 Firefox: prove four real US Letter PDFs, one from each new
+ // family; each keeps the original v18 worksheet preview untouched.
+ for(const spec of [
+  {route:'fractions-worksheets',topic:'fractions',mode:'pictures'},
+  {route:'addition-worksheets',topic:'addition-pictures',mode:'small'},
+  {route:'place-value-worksheets',topic:'place-value',mode:'find-digit'},
+  {route:'division-worksheets',topic:'division-equations',mode:'equal-sharing'}
+ ]){
+  await open(spec.route);
+  const before=await page.locator('.problem .q').first().innerText();
+  await page.locator('[data-r85-'+spec.topic+'-mode]').selectOption(spec.mode);
+  const pending=page.waitForEvent('download',{timeout:60000});
+  await page.locator('[data-action="r85-'+spec.topic+'-questions"]').click();
+  const file=await pending,path=join(out,file.suggestedFilename());
+  await file.saveAs(path);
+  const doc=await PDFDocument.load(readFileSync(path));
+  assert.equal(doc.getPageCount(),4);
+  assert.equal(doc.getPage(0).getWidth(),612);
+  assert.match(doc.getTitle()??'',/R85/);
+  assert.equal(await page.locator('.problem .q').first().innerText(),before);
+ }
+ checks.push({name:'R85 Firefox four Letter PDF families and original v18 unchanged',status:'pass'});
  // R84 Firefox: real US Letter PDFs across all three new visual task
  // forms, preserving the baseline v18 multiplication question.
  await open('multiplication-worksheets');
