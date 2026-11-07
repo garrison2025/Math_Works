@@ -65,3 +65,11 @@
 .calibration-card .extra-share-shortcut:hover:not(:disabled){background:#dfeefa;border-color:#7ba9ce}
 .calibration-card .extra-share-shortcut:focus-visible{outline:3px solid #1665ad;outline-offset:3px}
 @media print{.extra-share-shortcut{display:none!important}}
+
+/* True generated PDF preview with visible static fixed-seed question fallback. */
+.special-pdf-iframe{display:block;width:100%;height:min(72vh,670px);min-height:330px;margin:12px 0;border:1px solid #d7e0e9;border-radius:10px;background:#fff}
+.special-pdf-iframe[hidden]{display:none!important}
+.sample-math-question{background:#f4f8fd;border:1px solid #d6e4f3;border-radius:11px;padding:12px;margin:12px 0;font-size:.86rem;line-height:1.48;overflow-wrap:anywhere}
+.sample-math-question p{margin:6px 0}.sample-math-question summary{cursor:pointer;color:#15588b;font-weight:600}
+@media(max-width:630px){.special-pdf-iframe{height:440px}}
+@media print{.special-pdf-iframe,.sample-math-question{display:none!important}}

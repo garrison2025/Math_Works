@@ -22,6 +22,8 @@ import {createR85Pack,type R85Topic} from '../lib/r85-targeted-packs';
 import {createR85Pdf} from '../lib/r85-targeted-pdf';
 import {createGraphPack,type GraphMode} from '../lib/r86-function-graphs';
 import {createGraphPdf} from '../lib/r86-function-graphs-pdf';
+import {makeClosurePack,type ClosureTopic,type ClosureMode} from '../lib/closure-math';
+import {createClosurePdf} from '../lib/closure-pdf';
 import {makeFractionStrips,type FractionStripSet} from '../lib/fraction-strips';
 import {createFractionStripsPdf} from '../lib/fraction-strips-pdf';
 import {createDivisionStoryPack,type DivisionStoryMode} from '../lib/division-word-problems';
@@ -422,6 +424,67 @@ function setup(root:HTMLElement){
     }finally{button.disabled=false;}
    });
   }
+ }
+
+ // One consolidated release closure: five true new specialist PDF subjects.
+ // All three editions and the visible PDF viewer use the very same builder.
+ if(root.querySelector('[data-closure-card]')){
+  const selector=root.querySelector<HTMLSelectElement>('[data-closure-mode]')!;
+  const preview=root.querySelector<HTMLIFrameElement>('[data-closure-preview]')!;
+  const sample=root.querySelector<HTMLElement>('[data-closure-example]')!;
+  let previewURL:string|undefined;
+  const invalidate=()=>{
+   if(previewURL){URL.revokeObjectURL(previewURL);previewURL=undefined;}
+   preview.hidden=true;preview.removeAttribute('src');
+  };
+  const create=async(edition:'questions'|'answers'|'steps')=>{
+   const s=state(),pack=makeClosurePack(topic as ClosureTopic,s.n,s.q,
+    s.difficulty,selector.value as ClosureMode);
+   return createClosurePdf(pack,edition,paper.value as Paper,writingRoom.value as WritingRoom);
+  };
+  const updateExample=()=>{
+   try{
+    const s=state(),q=makeClosurePack(topic as ClosureTopic,s.n,1,
+     s.difficulty,selector.value as ClosureMode).problems[0];
+    sample.querySelector('p')!.textContent=q.question;
+    sample.querySelector('details p')!.textContent=q.answer;
+   }catch{sample.querySelector('p')!.textContent='Choose valid settings to preview this exact example.';}
+   invalidate();
+  };
+  for(const el of [selector,seedInput,difficulty,quantity,paper,writingRoom]){
+   el.addEventListener('change',updateExample);
+  }
+  seedInput.addEventListener('input',invalidate);
+  for(const edition of ['questions','answers','steps'] as const){
+   const button=root.querySelector<HTMLButtonElement>('[data-action="closure-'+edition+'"]')!;
+   button.addEventListener('click',async()=>{
+    button.disabled=true;
+    try{
+     inform('Generating actual specialist '+edition+' PDF...');
+     const s=state(),bytes=await create(edition),url=URL.createObjectURL(
+      new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+     const a=document.createElement('a');a.href=url;
+     a.download='math-specialist-'+topic+'-'+selector.value+'-'+edition+
+      '-seed'+s.n+'-'+paper.value+'.pdf';
+     document.body.append(a);a.click();a.remove();
+     setTimeout(()=>URL.revokeObjectURL(url),60000);
+     inform('Matching specialist '+edition+' PDF downloaded; base worksheet unchanged.');
+    }catch(e){inform(e instanceof Error?e.message:'Specialist PDF failed.',true)}
+    finally{button.disabled=false;}
+   });
+  }
+  const button=root.querySelector<HTMLButtonElement>('[data-action="closure-preview"]')!;
+  button.addEventListener('click',async()=>{
+   button.disabled=true;
+   try{
+    const bytes=await create('questions');
+    invalidate();
+    previewURL=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
+    preview.src=previewURL;preview.hidden=false;
+    inform('Showing the real student PDF below. The teacher key uses identical questions.');
+   }catch(e){inform(e instanceof Error?e.message:'Specialist preview failed.',true)}
+   finally{button.disabled=false;}
+  });
  }
 
  // R86 true coordinate graphs, actual plotted teacher functions and exact

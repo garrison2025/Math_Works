@@ -30,7 +30,8 @@ export const EXTRA_PACK_KEYS = [
   "r85-addition-pictures-mode",
   "r85-place-value-mode",
   "r85-division-equations-mode",
-  "r86-graph-mode"
+  "r86-graph-mode",
+  "closure-mode"
 ] as const;
 export type ExtraPackKey = (typeof EXTRA_PACK_KEYS)[number];
 export type ExtraPackSelection = {

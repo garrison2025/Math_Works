@@ -6,12 +6,18 @@ import {hasVerifiedSteps} from '../lib/capabilities';
 import {topicOptionsFor} from '../lib/topic-options';
 import {supportsExactNumber} from '../lib/answer-check';
 import {fractionLayoutFor,fractionMarkup} from '../lib/fraction-layout';
+import {makeClosurePack,CLOSURE_MODES,type ClosureTopic} from '../lib/closure-math';
 const {slug}=Astro.props;
 const worksheet=makeWorksheet(slug,20261104,8,'standard');
 const hasSteps=hasVerifiedSteps(slug);
 const specificOptions=topicOptionsFor(slug);
 const hasDiagram=worksheet.problems.some(p=>Boolean(p.diagramSpec));
 const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsExactNumber(p.expectedAnswer));
+const hasClosure=Object.hasOwn(CLOSURE_MODES,slug);
+const closureModes=hasClosure?CLOSURE_MODES[slug as ClosureTopic]:[];
+const closureExample=hasClosure?makeClosurePack(slug as ClosureTopic,20261104,8,'standard').problems[0]:null;
+const closureLabels:Record<string,string>={mixed:'Alternate exercise forms','order-sides':'Rank triangle sides','order-angles':'Rank triangle angles',addition:'Add polynomials',subtraction:'Subtract polynomials','plane-points':'Locate points on a plane','line-plane':'Find line–plane intersection','unique-plane':'Determine a plane from three noncollinear points',lattice:'Two-digit diagonal lattice multiplication','right-triangular-pyramid':'Nonregular right triangular-pyramid surface area'};
+
 ---
 <section class="workspace" data-workspace data-topic={slug} aria-label="Worksheet generator">
   <aside id="worksheet-settings" class="panel settings"><h2 class="panel-title">Customize worksheet</h2><p class="panel-sub">Your practice set is created right in this browser.</p>
@@ -403,6 +409,24 @@ const canGradeSample=slug!=='decimal-place-value-worksheets'&&worksheet.problems
 <button type="button" class="btn" data-action="r86-graphs-steps">Worked graph reasoning PDF</button>
 </div>
 <p class="hint">Both axes use the same numeric unit length and label -6 to +6. Quadratic diagrams show a faint y = x^2 parent curve. The seed, selected mode, A4/US Letter, difficulty and question count can be shared with the adjacent copy-settings link. Graph families are defined, not an exhaustive graphing curriculum.</p>
+</div>}{hasClosure&&<div class="calibration-card" data-closure-card aria-label="Five missing mathematical specialist activities">
+<strong>Specialist worksheet: real diagrams and exact worked answers</strong>
+<p class="hint">This is a genuine additional worksheet, not a keyword-only page. All generated mathematical diagrams, student questions, teacher keys and explanations share the same seed.</p>
+<div class="field"><label for="closure-mode">Specialist practice</label>
+<select id="closure-mode" data-closure-mode>
+{closureModes.map((value,i)=><option value={value} selected={i===0}>{closureLabels[value]}</option>)}
+</select></div>
+<div class="sample-math-question" data-closure-example>
+<strong>Real fixed-seed example</strong><p>{closureExample?.question}</p>
+<details><summary>Show exact example answer</summary><p>{closureExample?.answer}</p></details></div>
+<div class="download-grid">
+<button type="button" class="btn btn-secondary" data-action="closure-questions">Download student PDF</button>
+<button type="button" class="btn" data-action="closure-answers">Matching teacher answers PDF</button>
+<button type="button" class="btn" data-action="closure-steps">Worked-step PDF</button>
+</div>
+<button type="button" class="btn btn-soft" data-action="closure-preview">Preview this exact PDF on the page</button>
+<iframe data-closure-preview class="special-pdf-iframe" title="Exact specialist student worksheet PDF" hidden></iframe>
+<p class="hint">The sample is readable without JavaScript. The embedded PDF preview is built from the actual student PDF for the current settings. Base v18 examples above remain unchanged.</p>
 </div>}<button type="button" class="btn btn-secondary" data-action="print">Open print-ready PDF</button><button type="button" class="btn" data-action="share">Copy reproducible link</button></div>
     <p class="hint" data-r82-share-help>Links save the worksheet seed, difficulty, question count, paper settings and any selected optional PDF-panel modes. Open the link to restore these choices, then click the matching student, answer-key or worked-steps download button. No student responses are included.</p>
     <details class="calibration-card" data-print-calibration>

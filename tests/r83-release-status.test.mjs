@@ -16,7 +16,7 @@ test('R83 release overview has a current single source of truth and no false sea
  assert.match(status,/\bnoindex,nofollow\b/);
  assert.match(status,/\bNOT YET COMPLETED\b/);
  assert.match(status,/2026-11-07/);
- assert.equal(EXTRA_PACK_KEYS.length,30);
+ assert.equal(EXTRA_PACK_KEYS.length,31);
  const routes=JSON.parse(here('src/data/routes.json'));
  assert.equal(routes.length,55);
  assert.equal(routes.filter(r=>r.type!=='HOLD').length,51);
