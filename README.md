@@ -1,10 +1,14 @@
 # Math Worksheet Studio
 
+**Current acceptance (2026-11-08):** The owner requires **online-only verification**. Physical A4/Letter printing and ruler measurements, signed 408-case teacher review, and real-device NVDA/VoiceOver/TalkBack are **optional, owner-waived and not physically verified**; they are not launch prerequisites. Exact-SHA mathematical/PDF/Chrome/Firefox/accessibility automation and actual Cloudflare preview checks remain required. See [the controlling online release matrix](ONLINE-RELEASE-ACCEPTANCE.md). A real domain, GSC verification and explicit per-route indexing approval are separate; `pages.dev` remains `noindex,nofollow`.
+
+**Current R96 verified online baseline:** [PR #25](https://github.com/garrison2025/Math_Works/pull/25), [Actions 42425824237](https://github.com/garrison2025/Math_Works/actions/runs/42425824237), merged commit `dc99e4b0f5a29e4d81ea524f2c2f730f7e7f09e3`; the matching SHA was seen on several live Cloudflare preview pages. R96 enables safe topic-specific typed-answer checking for online practice. This is not physical paper or real-assistive-device certification.
+
 An original, browser-first US-English printable math worksheet generator built with Astro, TypeScript and pdf-lib. Source: `garrison2025/Math_Works`.
 
-**Project state:** working preview with automated CI/PDF and cross-browser coverage, **not approved for public search indexing or teacher/physical print release**. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
+**Project state:** working preview with automated CI/PDF and cross-browser coverage; online acceptance is the owner-approved method, **not approved for public search indexing**. Physical/teacher release certification is not claimed or required. Site remains `noindex,nofollow` without a purchased domain or final owner acceptance.
 
-**Current verified baseline (2026-11-07):** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary + 15 Firefox steps), exact-SHA Cloudflare success. npm production and full-dependency advisory scans each returned zero known vulnerabilities at scan time; machine license inventory covers 296 entries, with 14 LGPL/mixed-license entries requiring human legal review. R93 enables 23 independently verified base math-step PDF topics and provides 408-case teacher/56-PDF physical print packets plus 35 responsive/a11y browser checks. Teacher/printer/screen-reader sign-off, purchased domain and Search Console are still NOT DONE.
+**Historical verified R93 baseline (2026-11-07):** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`, [merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary + 15 Firefox steps), exact-SHA Cloudflare success. npm production and full-dependency advisory scans each returned zero known vulnerabilities at scan time; machine license inventory covers 296 entries, with 14 LGPL/mixed-license entries requiring human legal review. R93 enables 23 independently verified base math-step PDF topics and provides 408-case teacher/56-PDF physical print packets plus 35 responsive/a11y browser checks. Teacher/printer/screen-reader sign-off, purchased domain and Search Console are still NOT DONE.
 
 
 
