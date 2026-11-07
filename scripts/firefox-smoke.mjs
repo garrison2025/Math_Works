@@ -606,6 +606,23 @@ try{
   assert.equal(await page.locator('.problem .q').first().innerText(),original);
  }
  checks.push({name:'R79 Firefox six real mixed-volume/mixed-surface Letter PDF student, answer and worked downloads',status:'pass'});
+ // R84 Firefox: real US Letter PDFs across all three new visual task
+ // forms, preserving the baseline v18 multiplication question.
+ await open('multiplication-worksheets');
+ const r84Baseline=await page.locator('.problem .q').first().innerText();
+ for(const task of ['arrays','number-line','stories']){
+  await page.locator('[data-r84-multiplication-mode]').selectOption(task);
+  const pending=page.waitForEvent('download',{timeout:60000});
+  await page.locator('[data-action="r84-multiplication-questions"]').click();
+  const file=await pending,target=join(out,file.suggestedFilename());
+  await file.saveAs(target);
+  const doc=await PDFDocument.load(readFileSync(target));
+  assert.equal(doc.getPageCount(),4);
+  assert.equal(doc.getPage(0).getWidth(),612);
+  assert.match(doc.getTitle()??'',/R84/);
+  assert.equal(await page.locator('.problem .q').first().innerText(),r84Baseline);
+ }
+ checks.push({name:'R84 Firefox genuine Letter multiplication arrays, jump diagrams and story PDFs; baseline stable',status:'pass'});
  // R80 Firefox: actual Letter PDF downloads for real face nets and two joined prisms.
  await open('surface-area-worksheets');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');

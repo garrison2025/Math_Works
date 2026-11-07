@@ -23,17 +23,17 @@ function wrap(s:string,font:PDFFont,size:number,max:number){
  if(line)result.push(line);
  return result;
 }
-function dotArray(page:PDFPage,p:MultiplicationModelProblem,left:number,top:number){
+function dotArray(page:PDFPage,p:MultiplicationModelProblem,left:number,top:number,font:PDFFont){
  const x=left+302,topY=top-70,gap=10.5,r=2.65;
  for(let row=0;row<p.groups;row++)for(let col=0;col<p.size;col++)
   page.drawCircle({x:x+col*gap,y:topY-row*gap,size:r,color:ink});
  draw(page,p.groups+' rows  /  '+p.size+' in each row',left+274,top-207,
-  fonts.regular,8,muted);
+  font,8,muted);
 }
 // The diagram uses one common linear x-scale: every jump has the same
 // physical width, proportional to its identical numerical size.
 function numberLine(page:PDFPage,p:MultiplicationModelProblem,
- left:number,right:number,top:number,teacher:boolean){
+ left:number,right:number,top:number,teacher:boolean,font:PDFFont){
  const y=top-127,x0=left+31,x1=right-21,width=x1-x0;
  const delta=width/p.groups;
  page.drawLine({start:{x:x0-9,y},end:{x:x1+8,y},color:ink,thickness:1.1});
@@ -44,8 +44,8 @@ function numberLine(page:PDFPage,p:MultiplicationModelProblem,
   page.drawLine({start:{x,y:y-5},end:{x,y:y+5},color:ink,thickness:.85});
   if(hop===0||hop===p.groups||teacher){
    const label=hop===0?'0':teacher?String(hop*p.size):hop===p.groups?'?':'';
-   if(label){const w=fonts.regular.widthOfTextAtSize(label,8);
-    draw(page,label,x-w/2,y-18,fonts.regular,8,hop===p.groups&&teacher?blue:ink);}
+   if(label){const w=font.widthOfTextAtSize(label,8);
+    draw(page,label,x-w/2,y-18,font,8,hop===p.groups&&teacher?blue:ink);}
   }
   if(hop===p.groups)break;
   const end=x+delta;
@@ -60,16 +60,15 @@ function numberLine(page:PDFPage,p:MultiplicationModelProblem,
   page.drawLine({start:{x:end-3,y:y+6},end:{x:end,y:y+9},color:blue,thickness:1});
  }
  draw(page,p.groups+' equal jumps, '+p.size+' units per jump',left+26,top-183,
-  fonts.regular,8.3,muted);
+  font,8.3,muted);
 }
-let fonts:{regular:PDFFont;bold:PDFFont};
 export async function createMultiplicationModelPdf(pack:MultiplicationModelPack,
  mode:MultiplicationModelPdfMode,paper:Paper,writingRoom:WritingRoom='standard'):Promise<Uint8Array>{
  verifyMultiplicationModelPack(pack);
  if(!['questions','answers','steps'].includes(mode)||!Object.hasOwn(sizes,paper)||
   !['standard','extra'].includes(writingRoom))throw Error('Invalid multiplication model PDF settings');
  const pdf=await PDFDocument.create();
- fonts={regular:await pdf.embedFont(StandardFonts.Helvetica),bold:await pdf.embedFont(StandardFonts.HelveticaBold)};
+ const fonts={regular:await pdf.embedFont(StandardFonts.Helvetica),bold:await pdf.embedFont(StandardFonts.HelveticaBold)};
  const [width,height]=sizes[paper],left=44,right=width-44,total=Math.ceil(pack.quantity/2);
  for(let start=0;start<pack.quantity;start+=2){
   const page=pdf.addPage([width,height]),pageNumber=Math.floor(start/2)+1;
@@ -93,8 +92,8 @@ export async function createMultiplicationModelPdf(pack:MultiplicationModelPack,
    }else{
     draw(page,'Answer: '+p.answer,left+10,top-55,fonts.bold,10,blue);
    }
-   if(p.kind==='arrays')dotArray(page,p,left,top);
-   else if(p.kind==='number-line')numberLine(page,p,left,right,top,mode!=='questions');
+   if(p.kind==='arrays')dotArray(page,p,left,top,fonts.regular);
+   else if(p.kind==='number-line')numberLine(page,p,left,right,top,mode!=='questions',fonts.regular);
    else if(mode==='questions'){
     for(let row=0;row<(writingRoom==='extra'?4:3);row++)
      page.drawLine({start:{x:left+22,y:top-97-row*26},end:{x:right-12,y:top-97-row*26},
