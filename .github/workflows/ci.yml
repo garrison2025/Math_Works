@@ -273,6 +273,15 @@ jobs:
         run: |
           python3 -m venv .venv-pdf-audit
           .venv-pdf-audit/bin/python -m pip install --disable-pip-version-check 'PyMuPDF==1.26.7'
+      - name: R88 inspect 54 actual specialist PDFs for exact 36pt glyph/vector boundaries
+        run: .venv-pdf-audit/bin/python scripts/check-specialist-pdf-bounds-r88.py
+      - name: Archive R88 216-page independent printed-bounds audit and visual preview sheets
+        uses: actions/upload-artifact@v4
+        with:
+          name: r88-54-specialist-print-bounds-and-previews
+          path: qa-artifacts/r88-specialist-print-audit/
+          retention-days: 30
+          if-no-files-found: error
       - name: R73 independently read all printed word problems, interpreted remainders and answers
         run: .venv-pdf-audit/bin/python scripts/check-division-word-problems-r73.py qa-artifacts/r73-division-word-problems
       - name: R74 independently recheck all 66 real PDFs for exact math, answer isolation and safe margins

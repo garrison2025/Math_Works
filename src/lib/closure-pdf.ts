@@ -64,14 +64,23 @@ function drawPolynomial(pg:PDFPage,p:ClosureProblem,x:number,y:number,
  digits.forEach((v,i)=>label(pg,show?String(v):'____',left+i*colW+8,top-70,bold,9,show?accent:muted));
  label(pg,'Combine like powers only.',x+8,y+15,regular,7.3,muted);
 }
+/** Schematic projection: A,B,C visibly IN plane P, D outside.
+ * Previously C was 3pt above its plane outline in the actual PDF.
+ * Real 3-D coordinates come from the separately verified seeded model.
+ */
+export function closurePlaneDiagramGeometry(x:number,y:number){
+ if(!Number.isFinite(x)||!Number.isFinite(y))throw Error('Invalid plane diagram origin');
+ const A={x:x+40,y:y+48},B={x:x+148,y:y+48},C={x:x+63,y:y+82},
+  D={x:x+40,y:y+126};
+ const corners=[{x:x+8,y:y+25},{x:x+162,y:y+25},
+  {x:x+183,y:y+102},{x:x+35,y:y+102}];
+ return {A,B,C,D,corners};
+}
 function drawPlane(pg:PDFPage,p:ClosureProblem,x:number,y:number,
  font:PDFFont,show:boolean){
  // Perspective projection is explicitly labelled schematic; z=0 is exact,
  // no invented metric lengths or angles in this picture.
- const A={x:x+40,y:y+48},B={x:x+148,y:y+48},C={x:x+63,y:y+105},
-  D={x:x+40,y:y+126};
- const corners=[{x:x+8,y:y+25},{x:x+162,y:y+25},
-  {x:x+183,y:y+102},{x:x+35,y:y+102}];
+ const {A,B,C,D,corners}=closurePlaneDiagramGeometry(x,y);
  // PDF-native line operators use PDF coordinates directly.
  // drawSvgPath flips Y in pdf-lib; it must never be used here.
  for(let i=0;i<corners.length;i++)
@@ -194,7 +203,7 @@ export async function createClosurePdf(pack:ClosurePack,edition:ClosureEdition,
    if(i===0)line(pg,{x:left,y:top-274},{x:right,y:top-274},.6,guide);
   }
   label(pg,'Math Worksheet Studio | '+edition+' | '+paper+' | Seed '+pack.seed+
-   ' | '+pageNo+'/'+pages,left,35,regular,7.4,muted);
+   ' | '+pageNo+'/'+pages,left,42,regular,7.4,muted);
  }
  doc.setCreator('Math Worksheet Studio');
  doc.setTitle('Closure '+pack.topic+' '+pack.mode+' '+edition+' '+paper+' seed '+pack.seed);
