@@ -1,8 +1,12 @@
 # Math Worksheet Studio — current release status (single source of truth)
 
-**2026-11-07 software feature-closure: MERGED to main; latest merged-main quality checks PASSED. Teacher and physical-print release sign-off remain NOT YET COMPLETED.**
+> **Current owner acceptance policy (2026-11-08): ONLINE-ONLY QA.** [R97 online release acceptance](ONLINE-RELEASE-ACCEPTANCE.md) overrides prior mandatory in-person teacher signatures, physical printing/ruler measurements and real-hardware/screen-reader sign-off. These tasks are **OWNER-WAIVED, NOT PHYSICALLY TESTED**; their absence no longer blocks online technical acceptance. Digital mathematical oracle/diagram/PDF/browser checks are still mandatory. No new domain, public indexing or GSC authorization has been granted.
 
-**Last independently verified main deployment:** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary steps, 15 Firefox steps) with Cloudflare Pages reporting success for this exact SHA. Real npm production and complete dependency audits reported zero known advisories at scan time; 296 package license declarations were recorded with 14 LGPL/mixed-license entries flagged for owner legal review. R93 shipped eight more independently reconstructed base arithmetic step families (23 total), 408 real teacher review examples, 56 A4/Letter print/check PDFs and a real Chromium 35-state/5-width responsive and accessibility check. All owner V2.0 488 source keywords, 51 working tools, 4 intentional HOLDs and preview `noindex,nofollow` are unchanged. **Qualified teacher sign-off, physical ruler/printer measurements, real-device screen-reader review, custom-domain ownership and GSC verification are NOT RUN.**
+**Latest independently verified online R96 baseline:** [PR #25](https://github.com/garrison2025/Math_Works/pull/25) passed both primary and Firefox jobs at exact PR-head `ccf46e1a46de91a32a792c0b190b78f5b08b4084` ([Actions 42425824237](https://github.com/garrison2025/Math_Works/actions/runs/42425824237)); merged main `dc99e4b0f5a29e4d81ea524f2c2f730f7e7f09e3` was independently observed as Cloudflare build SHA on the homepage, angles, percentages and number-line routes, all `noindex,nofollow`. R96 added exact typed-answer practice checking with adversarial/large-sample tests; optional physical gates do not negate this verified online evidence. A future docs-only merge still needs its own CI/deployment check.
+
+**Historical 2026-11-07 software feature-closure record:** merged/main quality checks passed; teacher and physical-print sign-offs were never completed and are now **owner-waived, not certified** under the 2026-11-08 online-only policy.
+
+**Historical R93 verified main deployment (superseded by R96 above):** R93 PR #21 merged as `682ef89d5e39b9a4e0005544b59936eae06188bd`. [Merged-main CI](https://github.com/garrison2025/Math_Works/actions/runs/42359110156) **PASS** (175 primary steps, 15 Firefox steps) with Cloudflare Pages reporting success for this exact SHA. Real npm production and complete dependency audits reported zero known advisories at scan time; 296 package license declarations were recorded with 14 LGPL/mixed-license entries flagged for owner legal review. R93 shipped eight more independently reconstructed base arithmetic step families (23 total), 408 real teacher review examples, 56 A4/Letter print/check PDFs and a real Chromium 35-state/5-width responsive and accessibility check. All owner V2.0 488 source keywords, 51 working tools, 4 intentional HOLDs and preview `noindex,nofollow` are unchanged. **Qualified teacher sign-off, physical ruler/printer measurements, real-device screen-reader review, custom-domain ownership and GSC verification are NOT RUN.**
 
 ## R95 merged: all 51 worksheet worked-step families are independently reconstructed
 
@@ -72,7 +76,7 @@ and public indexing all remain **NOT RUN / NOT APPROVED**.
 
 The **63** remaining historical flags and **343** other source rows are archival audit labels, **not a request to re-research the approved V2.0 dataset**. User explicitly directed development to deploy the supplied 488 terms without fresh US SERP or KD checks. Exactly **437** source keyword rows point to the **51 built working pages**; **51** rows belong to **four V2.0 HOLDs** and must not be misrepresented as deployed. Fifteen historically incorrect task links have option-level corrections. Old source Semrush Volume/KD remain snapshots, not ranking or traffic claims.
 
-## Release gates — NOT YET COMPLETED
+## Historical R93/R95 release gates — superseded where offline by R97 online-only policy
 
 R93 completed digitally: live registry advisory and per-package license evidence, 408-row teacher review packet, physical print sample kit and five-viewport automated browser QA. These tools and samples do **not** by themselves sign off a human teacher, physical printer or owned domain. See [RELEASE-R93-OWNER-ACCEPTANCE.md](RELEASE-R93-OWNER-ACCEPTANCE.md).
 
@@ -81,7 +85,7 @@ R93 completed digitally: live registry advisory and per-package license evidence
 - Launch: no formal custom domain yet; the owner-approved V2.0 keywords and 24 parent/child functional divisions are the build contract. Verify code, page/task mapping, internal links and rendering against that contract—**do not add a new SERP-research gate**. 0 pages have received a formal indexing sign-off. GSC submission **NOT RUN**; keep pages.dev `noindex,nofollow`.
 - Reader privacy: no user account or student answer persistence; future advertising requires audience/child-directed privacy analysis.
 
-**Do not equate code generation, CI-green, and human curriculum/print certification.**
+**Current policy:** online CI/browser/PDF mathematics evidence is the required engineering acceptance; 408-signature teacher review, physical printing and real-device screening are optional OWNER-WAIVED gaps, not PASS. Do not equate digital QA with human curriculum/print certification. Domain, GSC and indexation approvals remain separate.
 
 ## R92 dependency reproducibility (candidate until green CI and merge)
 
