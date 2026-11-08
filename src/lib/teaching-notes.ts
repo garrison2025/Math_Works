@@ -23,7 +23,7 @@ export const CLASSROOM_NOTES: Record<string, readonly [string, string]> = {
   "pythagorean-worksheets": ["The hypotenuse is opposite the right angle and is the longest side.","For a missing leg, subtract the known leg's square from the hypotenuse's square before taking the square root."],
   "three-digit-by-two-digit-multiplication-worksheets": ["Place the tens-place partial product one place to the left of the ones-place product.","Check carries and regrouping separately in each multiplication row."],
   "domain-range-worksheets": ["Domain is the set of input x-values and range is the set of output y-values.","A relation can share output values across inputs; list distinct values without duplicating them."],
-  "angle-worksheets": ["Identify the rays that form the angle and locate the common vertex.","Classify acute, right, obtuse, and straight angles by measure, not by unreliable drawing scale."],
+  "angle-worksheets": ["Identify the rays that form the angle and locate the common vertex.","Classify acute, right or obtuse angles by measure, not by unreliable drawing scale."],
   "vertical-angles-worksheets": ["Opposite angles formed by intersecting lines are vertical angles and have equal measures.","Adjacent angles on a straight line are supplementary; do not confuse these two relationships."],
   "mean-absolute-deviation-worksheets": ["Compute the arithmetic mean from all observations before calculating absolute differences.","Average the absolute deviations, not the signed deviations, which can cancel."],
   "multiplication-tables-worksheets": ["A product appears where the selected row and column factors meet.","Use commutativity to check 3 × 7 against 7 × 3 without confusing factors with sums."],
