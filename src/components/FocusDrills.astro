@@ -2,7 +2,7 @@
 import {makeFocusPack,pointAngleSvg} from '../lib/focus-drills.ts';
 const {scope='algebra'}=Astro.props as {scope?:'algebra'|'angles'};
 const isAngles=scope==='angles',id=isAngles?'angle-drill':'algebra-drill';
-const anchor=isAngles?'angle-drill':'algebra-focus-lab';
+const anchor=isAngles?'point-angle-lab':'algebra-focus-lab';
 const sample=makeFocusPack(20261108,8,isAngles?'point-angles':'mixed');
 const menu=isAngles?[['point-angles','Angles around a point — find the missing sector']]:
  [['mixed','Mixed algebra (three supported skills)'],['literal','Rearrange literal formulas'],['multi-step','Solve three-step linear equations'],['simplify','Distribute and collect like terms']];

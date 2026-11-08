@@ -41,14 +41,27 @@ test('homepage and library navigation use only the canonical subject hubs',()=>{
 });
 test('grade guide fragments resolve to real canonical subject sections',()=>{
  const grade=read('../src/pages/worksheets-by-grade/index.astro');
- const algebra=read('../src/components/FocusDrills.astro');
+ const focus=read('../src/components/FocusDrills.astro');
  const geometry=read('../src/pages/geometry/index.astro');
  assert.match(grade,/href="\/algebra\/#algebra-focus-lab"/);
  assert.match(grade,/href="\/geometry\/#point-angle-lab"/);
- assert.match(algebra,/id=\{anchor\}/);
- assert.match(algebra,/const anchor=isAngles\?'angle-drill':'algebra-focus-lab'/);
- assert.match(geometry,/id="point-angle-lab"/);
+ assert.match(focus,/id=\{anchor\}/);
+ assert.match(focus,/const anchor=isAngles\?'point-angle-lab':'algebra-focus-lab'/);
+ assert.match(geometry,/id="point-angle-intro-heading"/);
+ assert.doesNotMatch(geometry,/id="point-angle-lab"/);
 });
+test('homepage and WebSite schema clearly describe the local-first 51-generator brand',()=>{
+  const home=read('../src/pages/index.astro'),layout=read('../src/components/Layout.astro');
+  const title=home.match(/<Layout title="([^"]+)"/)?.[1]||'';
+  const description=home.match(/description="([^"]+)"/)?.[1]||'';
+  assert.match(title,/^Math Worksheet Studio \| Free Printable Math Worksheet Generator$/);
+  assert.ok(description.length>=110&&description.length<=160);
+  assert.match(description,/51 focused generators/);
+  assert.match(description,/student-data upload/);
+  assert.match(home,/51 focused math-topic generators, right in your browser/i);
+  assert.match(layout,/name:"Math Worksheet Studio"/);
+  assert.match(layout,/51 topic-specific math worksheet generators/);
+ });
 test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
  const rows=parseCSV(read('../src/data/keyword-evidence.csv')),columns=Object.fromEntries(rows[0].map((n,i)=>[n,i]));
  const evidence=rows.slice(1).map(row=>({keyword:stripTicks(row[columns.keyword]),volume:Number(row[columns.monthly_volume]),kd:Number(row[columns.semrush_kd]),slug:stripTicks(row[columns.canonical_candidate]).replace(/^\/|\/$/g,'')}));
@@ -61,5 +74,5 @@ test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
 test('topic snippets never promise a worked-step PDF where none is verified',()=>{
  assert.equal(Object.keys(TOPIC_SEO).length,51);
  for(const [slug,seo] of Object.entries(TOPIC_SEO))if(/worked[- ]steps?|worked solutions|solution steps/i.test(seo.description))assert.ok(hasVerifiedSteps(slug),'Unverified steps '+slug);
- const home=read('../src/pages/index.astro');assert.match(home,/worked steps are available on supported topics/i);assert.match(home,/without an account/i);assert.match(home,/A4 or US Letter/i);assert.doesNotMatch(home,/verified worked steps\./i);
+ const home=read('../src/pages/index.astro');assert.match(home,/worked steps are available on supported topics/i);assert.match(home,/No account/i);assert.match(home,/US Letter or A4/i);assert.doesNotMatch(home,/verified worked steps\./i);
 });
