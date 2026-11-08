@@ -49,7 +49,8 @@ test('grade guide fragments resolve to real canonical subject sections',()=>{
  assert.match(focus,/const anchor=isAngles\?'point-angle-lab':'algebra-focus-lab'/);
  assert.match(geometry,/id="point-angle-intro-heading"/);
  assert.doesNotMatch(geometry,/id="point-angle-lab"/);
- test('homepage and WebSite schema clearly describe the local-first 51-generator brand',()=>{
+});
+test('homepage and WebSite schema clearly describe the local-first 51-generator brand',()=>{
   const home=read('../src/pages/index.astro'),layout=read('../src/components/Layout.astro');
   const description=home.match(/description="([^"]+)"/)?.[1]||'';
   assert.ok(description.length>=110&&description.length<=160);
