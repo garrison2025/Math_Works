@@ -75,6 +75,9 @@ function independentlySolve(p){
  for(const step of p.steps)assert.ok(step.length>=10,'Trivial/incomplete worked step');
  const svg=wideDiagram(p);
  if(wideDiagramHeight(p)){
+  if(p.kind==='triangle-similarity'||(p.kind==='triangle-congruence'&&p.values.v===4))
+   assert.match(svg,/data-right-angle="true"/,'Right-angle proof diagram must visibly have 90-degree corners');
+  if(p.kind==='circle-semicircle')assert.ok(svg.includes('<path d="M 91 56 A 39 39'),'Semicircle must not be drawn as a full circle');
   assert.match(svg,/^<svg /);
   assert.match(svg,/<\/svg>$/);
   assert.ok(!svg.includes('<script'));

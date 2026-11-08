@@ -331,11 +331,17 @@ export function wideDiagram(p:WideProblem):string{
   return head+drawing+text(76,109,o.name)+end;
  }
  if(kind==='triangle-congruence'||kind==='triangle-similarity'||kind==='tri-angle'||kind==='tri-area'){
+  if(kind==='triangle-similarity'||(kind==='triangle-congruence'&&z.v===4)){
+   const right='<g data-right-angle="true"><path d="M 18 76 L 30 76 L 30 88 M 150 76 L 162 76 L 162 88" fill="none" stroke="#275d91" stroke-width="1.3"/></g>';
+   const pair='<polygon points="18,88 85,88 18,23" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/><polygon points="150,88 239,88 150,23" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/>';
+   return head+pair+right+text(9,19,'A')+text(9,103,'B')+text(86,103,'C')+text(141,19,'D')+text(140,103,'E')+text(240,103,'F')+text(78,115,'Right angles at B and E; not to scale')+end;
+  }
   let drawing='<polygon points="16,88 76,88 51,19" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/>'+text(7,102,'B')+text(80,102,'C')+text(46,15,'A');
   if(kind==='triangle-congruence'||kind==='triangle-similarity')drawing+='<polygon points="147,88 242,88 203,19" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/>'+text(139,102,'E')+text(244,102,'F')+text(197,15,'D');
   drawing+=text(90,110,kind==='triangle-similarity'?'similar · schematic':'not to scale');
   return head+drawing+end;
  }
+ if(kind==='circle-semicircle')return head+'<path d="M 91 56 A 39 39 0 0 1 169 56 L 91 56 Z" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/>'+line(130,56,169,56)+text(139,50,'r')+end;
  if(kind.startsWith('circle-'))return head+'<circle cx="130" cy="56" r="39" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/>'+line(130,56,169,56)+text(137,50,'r')+end;
  return '';
 }

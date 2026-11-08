@@ -30,6 +30,14 @@ function polygon(page:PDFPage,n:number,cx:number,cy:number,r:number){
  }));
  for(let i=0;i<n;i++)line(page,pts[i].x,pts[i].y,pts[(i+1)%n].x,pts[(i+1)%n].y);
 }
+function rightTriangle(page:PDFPage,x:number,y:number,scale:number){
+ const legH=54*scale,legW=67*scale,corner=9;
+ line(page,x,y,x+legW,y);
+ line(page,x,y,x,y+legH);
+ line(page,x,y+legH,x+legW,y);
+ line(page,x+corner,y,x+corner,y+corner);
+ line(page,x+corner,y+corner,x,y+corner);
+}
 function triangle(page:PDFPage,x:number,y:number,scale:number){
  const points=[[x,y],[x+55*scale,y],[x+34*scale,y+53*scale]];
  for(let j=0;j<3;j++)line(page,points[j][0],points[j][1],points[(j+1)%3][0],points[(j+1)%3][1]);
@@ -55,22 +63,29 @@ export function drawWideDiagram(page:PDFPage,p:WideProblem,x:number,y:number,fon
   return;
  }
  if(k.startsWith('circle-')){
-  page.drawCircle({x:center,y:mid,size:36,borderColor:blue,borderWidth:1.4});
+  if(k==='circle-semicircle'){
+   for(let j=0;j<24;j++){
+    const a=Math.PI*j/24,b=Math.PI*(j+1)/24;
+    line(page,center+36*Math.cos(a),mid+36*Math.sin(a),center+36*Math.cos(b),mid+36*Math.sin(b));
+   }
+   line(page,center-36,mid,center+36,mid);
+  }else page.drawCircle({x:center,y:mid,size:36,borderColor:blue,borderWidth:1.4});
   line(page,center,mid,center+36,mid);page.drawText('r',{x:center+12,y:mid+5,size:10,font,color:ink});
   return;
  }
  if(k.startsWith('tri-')||k==='triangle-congruence'||k==='triangle-similarity'){
-  triangle(page,x+10,y-85,1);
+  const right=k==='triangle-similarity'||(k==='triangle-congruence'&&z.v===4);
+  if(right)rightTriangle(page,x+10,y-85,1);else triangle(page,x+10,y-85,1);
   page.drawText('A',{x:x+40,y:y-24,size:9,font,color:ink});
   page.drawText('B',{x:x+3,y:y-94,size:9,font,color:ink});
   page.drawText('C',{x:x+68,y:y-94,size:9,font,color:ink});
   if(k==='triangle-congruence'||k==='triangle-similarity'){
-   triangle(page,x+147,y-85,1.15);
+   if(right)rightTriangle(page,x+147,y-85,1.15);else triangle(page,x+147,y-85,1.15);
    page.drawText('D',{x:x+181,y:y-18,size:9,font,color:ink});
    page.drawText('E',{x:x+140,y:y-94,size:9,font,color:ink});
    page.drawText('F',{x:x+219,y:y-94,size:9,font,color:ink});
   }
-  page.drawText('Schematic only: not to scale; use the written measurements.',{x,y:y-99,size:7.1,font,color:muted});
+  page.drawText(right?'Right angles at B and E; drawing not to scale.':'Schematic only: not to scale; use written measurements.',{x,y:y-99,size:7.1,font,color:muted});
  }
 }
 export async function createWidePdf(pack:WidePack,edition:WideEdition,paper:WidePaper):Promise<Uint8Array>{
