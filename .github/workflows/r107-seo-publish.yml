@@ -13,6 +13,7 @@ on:
       - 'public/robots.txt'
       - 'scripts/qa-r107-index-built.mjs'
       - 'tests/r108-seo-meta.test.mjs'
+      - 'scripts/qa-r108-lab-speed.mjs'
       - 'tests/r107-publication.test.mjs'
       - '.github/workflows/r107-seo-publish.yml'
   push:
@@ -49,6 +50,8 @@ jobs:
         run: npm run build
       - name: Inspect all 64 HTML pages, 64 canonical sitemap URLs, OG and topic-specific metadata
         run: node scripts/qa-r107-index-built.mjs
+      - name: Record reproducible mobile Chrome FCP/LCP/CLS lab metrics (not CrUX)
+        run: node scripts/qa-r108-lab-speed.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
