@@ -1,0 +1,39 @@
+# Math Worksheet Studio
+> Free printable mathematics practice generators. Worksheets and matching answer-key PDFs are generated in the browser without a student account.
+
+Website: https://mathworksheetstudio.com/
+Worksheets: https://mathworksheetstudio.com/worksheets/
+About and accuracy policy: https://mathworksheetstudio.com/about/
+Contact and corrections: https://mathworksheetstudio.com/contact/
+Public source repository: https://github.com/garrison2025/Math_Works
+
+## Working practice and discovery
+- Arithmetic worksheets: https://mathworksheetstudio.com/arithmetic/
+- Fraction worksheets: https://mathworksheetstudio.com/fractions/
+- Algebra worksheets: https://mathworksheetstudio.com/algebra/
+- Geometry worksheets: https://mathworksheetstudio.com/geometry/
+- Data and statistics worksheets: https://mathworksheetstudio.com/data-statistics/
+- Suggested grade pathways: https://mathworksheetstudio.com/worksheets-by-grade/
+- Original math word problems: https://mathworksheetstudio.com/word-problems-worksheets/
+
+## Specific tools with worked classroom guidance
+- Two-step equations: https://mathworksheetstudio.com/two-step-equations-worksheets/
+- Long division: https://mathworksheetstudio.com/long-division-worksheets/
+- Unlike-denominator fraction addition: https://mathworksheetstudio.com/adding-unlike-fractions-worksheets/
+- Triangle area: https://mathworksheetstudio.com/area-of-triangles-worksheets/
+- Surface area: https://mathworksheetstudio.com/surface-area-worksheets/
+- Rectangular-prism volume: https://mathworksheetstudio.com/volume-of-rectangular-prisms-worksheets/
+- Box plots: https://mathworksheetstudio.com/box-plots-worksheets/
+- Printable protractor: https://mathworksheetstudio.com/printable-protractor/
+
+## Accuracy and scope
+- 51 existing core topic generators plus separate original mixed-skill and word-problem tools.
+- The topic, selected options, generator version and random seed reproduce the same question set.
+- Student questions and separate matching answer keys are available; worked steps are available only on supported topics.
+- Grade pathways are suggestions, not certified curriculum coverage or test preparation endorsements.
+- Box plots use the exclusive median-of-halves quartile convention.
+- Printable protractors require a 100% print setting and an actual ruler measurement of the 50 mm calibration line.
+- The public repository documents code and automated checks, not independent teacher approval.
+- For errors, report the page, problem number, settings, seed and expected answer without student personal information.
+
+This optional navigation file does not replace the human-readable HTML pages, robots.txt or sitemap.xml.
