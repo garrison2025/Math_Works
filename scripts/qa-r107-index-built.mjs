@@ -22,7 +22,7 @@ for(const p of live){
  const description=meta(html,'description'),canon=origin+p;
  assert.equal(meta(html,'robots'),'index,follow,max-image-preview:large','robots '+p);
  assert.ok(html.includes('<link rel="canonical" href="'+canon+'"'),'canonical '+p);
- assert.ok(title.length>=22&&title.length<=67,'Title: '+p+' '+title.length);
+ assert.ok(title.length>=40&&title.length<=60,'Title: '+p+' '+title.length);
  assert.ok(description.length>=75&&description.length<=165,'Description: '+p+' '+description.length);
  assert.ok(!titles.has(title),'Repeated title '+title);
  assert.ok(!descs.has(description),'Repeated description '+description);
