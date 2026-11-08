@@ -1,0 +1,66 @@
+---
+import {makeFocusPack,pointAngleSvg} from '../lib/focus-drills.ts';
+const {scope='algebra'}=Astro.props as {scope?:'algebra'|'angles'};
+const isAngles=scope==='angles',id=isAngles?'angle-drill':'algebra-drill';
+const sample=makeFocusPack(20261108,8,isAngles?'point-angles':'mixed');
+const menu=isAngles?[['point-angles','Angles around a point — find the missing sector']]:
+ [['mixed','Mixed algebra (three supported skills)'],['literal','Rearrange literal formulas'],['multi-step','Solve three-step linear equations'],['simplify','Distribute and collect like terms']];
+---
+<section class="focus-workspace" data-focus-workspace data-focus-scope={scope} aria-label={isAngles?'Angles around a point exercise builder':'Algebra expression and equation worksheet builder'}>
+<aside class="panel focus-settings">
+ <span class="eyebrow">{isAngles?'Angle relationships · R100':'Algebra practice · R100'}</span>
+ <h2>{isAngles?'Make point-angle worksheets':'Build advanced algebra worksheets'}</h2>
+ <p>{isAngles?'Find a missing sector using four consecutive angles summing to exactly 360°. The actual drawn rays follow each question.':'Generate new formula rearrangements, three-step equations and distributive-property simplification questions with matching worked answers.'}</p>
+ <div class="focus-field"><label for={id+'-mode'}>Worksheet topic</label><select id={id+'-mode'} data-focus-mode>{menu.map(([value,label])=><option value={value}>{label}</option>)}</select></div>
+ <div class="focus-field"><label for={id+'-level'}>Number difficulty</label><select id={id+'-level'} data-focus-level><option value="easy">Easy</option><option value="standard" selected>Standard</option><option value="challenge">Challenge</option></select></div>
+ <div class="focus-row"><div class="focus-field"><label for={id+'-count'}>Questions</label><select id={id+'-count'} data-focus-count><option value="4">4</option><option value="8" selected>8</option><option value="12">12</option><option value="16">16</option><option value="20">20</option></select></div>
+ <div class="focus-field"><label for={id+'-paper'}>PDF paper</label><select id={id+'-paper'} data-focus-paper><option value="Letter">US Letter</option><option value="A4">A4</option></select></div></div>
+ <div class="focus-field"><label for={id+'-seed'}>Reproducible seed</label><input id={id+'-seed'} data-focus-seed type="number" min="0" max="4294967295" step="1" inputmode="numeric" value="20261108"/><p>Same seed, selected topic and difficulty regenerate the same original questions.</p></div>
+ <div class="focus-actions">
+  <button class="btn btn-primary" type="button" data-focus-new>Generate new practice</button>
+  <button class="btn btn-secondary" type="button" data-focus-download="questions">Download student PDF</button>
+  <button class="btn" type="button" data-focus-download="answers">Download answer key PDF</button>
+  <button class="btn" type="button" data-focus-download="steps">Download worked steps PDF</button>
+  <button class="btn btn-soft" type="button" data-focus-share>Copy worksheet settings link</button>
+ </div>
+ <p class="focus-note">Everything is computed locally. No account or saved student answers. Each PDF edition is separately generated from the exact same question set.</p>
+</aside>
+<div class="panel focus-preview">
+ <div class="focus-preview-header"><div><span class="eyebrow">Ready to print · Local-only</span><h2>{isAngles?'Angles Around a Point':'Algebra Focus Practice'}</h2><p>{isAngles?'Use 360° as the angle sum and identify the missing angle in each genuine vector diagram.':'Show equation transformations on paper, then compare with separate worked solutions.'}</p></div>
+ <button type="button" class="btn btn-soft" data-focus-toggle aria-pressed="false">Show answers and worked steps</button></div>
+ <p data-focus-status role="status" aria-live="polite">8 new practice questions ready.</p>
+ <div class="focus-sheet"><p class="focus-sheet-heading">Math Works · Student exercises · FD1</p>
+ <p class="focus-name">Name: _________________________ Date: _____________________</p>
+ <ol data-focus-list>{sample.problems.map(p=><li><p>{p.question}</p>{p.kind==='point-angles'&&<div class="focus-diagram" set:html={pointAngleSvg(p)}/>}<div class="focus-writing" aria-label="Space to work out a solution"></div></li>)}</ol>
+ </div>
+</div>
+</section>
+<style>
+.focus-workspace{display:grid;grid-template-columns:minmax(270px,316px) minmax(0,1fr);gap:20px;align-items:start;margin:22px 0 32px}
+.focus-settings,.focus-preview{padding:24px;min-width:0}
+.focus-settings h2,.focus-preview h2{font-size:clamp(1.15rem,2.3vw,1.5rem);line-height:1.23;margin:4px 0 12px}
+.focus-settings>p,.focus-preview-header p{line-height:1.62;color:#56687a;font-size:.9rem}
+.focus-field{margin:17px 0}.focus-field label{display:block;font-size:.85rem;font-weight:800;color:#293c50;margin-bottom:7px}
+.focus-field input,.focus-field select{min-height:46px;width:100%;border:1.5px solid #96aac0;border-radius:9px;background:#fff;color:#21354e;padding:9px 11px;font:inherit}
+.focus-field>p,.focus-note{font-size:.79rem;color:#64758a;line-height:1.55;margin:9px 0 0}
+.focus-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.focus-actions{display:grid;gap:9px;margin:22px 0 15px}.focus-actions button{min-height:44px;width:100%;white-space:normal}
+.focus-preview-header{display:flex;gap:15px;align-items:start;justify-content:space-between}
+.focus-preview-header button{flex:none;max-width:210px;min-height:44px;white-space:normal}
+[data-focus-status]{background:#e8f4ee;color:#215946;padding:10px 13px;font-size:.85rem;font-weight:750;border-radius:9px;margin:18px 0}
+[data-focus-status][data-error=true]{background:#fff1ee;color:#a12f25}
+.focus-sheet{background:white;border:1px solid #d9e2eb;box-shadow:0 6px 15px #152b440b;border-radius:12px;margin-top:17px;padding:24px 27px}
+.focus-sheet-heading{font-size:.72rem;font-weight:800;letter-spacing:.1em;color:#567087;text-transform:uppercase}
+.focus-name{font-size:.8rem;color:#4b5e72;margin:18px 0 23px;overflow-wrap:anywhere}
+[data-focus-list]{display:grid;gap:21px;padding-left:25px;margin:0;color:#203449}
+[data-focus-list]>li{line-height:1.52;padding-left:4px;overflow-wrap:break-word}
+[data-focus-list]>li>p{margin:0 0 10px}
+.focus-writing{min-height:30px;border-bottom:1px solid #bbc9d6}
+.focus-diagram{display:flex;justify-content:center;padding:5px;margin:0 0 10px;background:#f9fbfd;border:1px solid #e4ebf2;border-radius:10px}
+.focus-answer{color:#136449;font-weight:800}
+.focus-steps{margin:7px 0 0;padding-left:21px;color:#4b5f75;font-size:.9rem}
+.focus-field input:focus-visible,.focus-field select:focus-visible,.focus-actions button:focus-visible,.focus-preview-header button:focus-visible{outline:3px solid #167c68;outline-offset:3px}
+@media(max-width:930px){.focus-workspace{grid-template-columns:1fr}.focus-preview-header{flex-wrap:wrap}.focus-preview-header button{max-width:none}}
+@media(max-width:520px){.focus-settings,.focus-preview{padding:16px}.focus-sheet{padding:17px}.focus-row{grid-template-columns:1fr 1fr}}
+</style>
+<script>import '../client/focus-drills.ts';</script>

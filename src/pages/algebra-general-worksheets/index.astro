@@ -1,5 +1,6 @@
 ---
 import Layout from '../../components/Layout.astro';
+import FocusDrills from '../../components/FocusDrills.astro';
 import {titleFor} from '../../lib/site';
 import routes from '../../data/routes.json';
 const known=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
@@ -34,6 +35,8 @@ for(const m of modules)for(const [slug] of m.items)if(!known.has(slug))throw Err
 <p>Start with <a href="/one-step-equations-worksheets/">one-step equations</a> to practice inverse operations. Move to <a href="/two-step-equations-worksheets/">two-step equations</a>, then <a href="/inequalities-worksheets/">inequalities</a> or <a href="/systems-equations-worksheets/">systems</a>. For relationships between quantities, follow the functions and graphing tools below.</p>
 <p>This is an organized collection of distinct working tools, not a new all-in-one algebra exercise engine. The pages offer precise task selectors and reproducible math sets.</p>
 </section>
+<section id="algebra-focus-lab" aria-labelledby="algebra-focus-heading" class="panel info-panel"><span class="eyebrow">Original practice extensions · R100</span><h2 id="algebra-focus-heading">Rearrange formulas, solve multistep equations and simplify expressions</h2><p>These are real on-page, seeded worksheet generators with separate student/answer/worked-step PDFs, not links to unsupported skills. Formula rearrangement treats remaining letters as symbols; the multistep mode handles distributive brackets and integer solutions; simplification collects like terms.</p><p>Scope: exact one-variable linear equations of the form a(x + b) + c = d, four supported literal-equation structures, and one-variable linear distributive expressions. No quadratic equations, factoring, nonlinear literal equations or full Algebra I certification is claimed.</p></section>
+<FocusDrills scope="algebra"/>
 {modules.map((module,i)=><section class="algebra-module" aria-labelledby={'algebra-module-'+i}>
 <div class="algebra-heading"><span class="eyebrow">Practice path {i+1}</span><h2 id={'algebra-module-'+i}>{module.title}</h2><p>{module.intro}</p></div>
 <div class="algebra-card-grid">{module.items.map(([slug,summary])=><a href={'/'+slug+'/'} class="algebra-card"><strong>{titleFor(slug)}</strong><span>{summary}</span><small>Open worksheet generator →</small></a>)}</div>
@@ -45,7 +48,7 @@ for(const m of modules)for(const [slug] of m.items)if(!known.has(slug))throw Err
 <p>The slope between (1, 2) and (3, 6) is (6 − 2) / (3 − 1) = 2. A vertical line has an undefined slope because its change in x is zero.</p><p>Practice the number rule separately from graphing the actual points with <a href="/slope-worksheets/">slope worksheets</a> and <a href="/linear-equations-worksheets/">linear-equation worksheets</a>.</p></div>
 </section>
 <section class="panel info-panel">
-<h2>Scope and related practice</h2><p>These exercises cover the exact listed equation, inequality, linear-function, system and coordinate tasks. This directory does <strong>not</strong> present a dedicated literal-equation rearranging tool, factoring polynomials, quadratic equations or a complete Algebra I curriculum. Avoid using an unrelated worksheet for those tasks.</p>
+<h2>Scope and related practice</h2><p>These exercises cover the exact listed equation, inequality, linear-function, system and coordinate tasks. The on-page R100 practice lab above adds selected literal-equation rearrangements, distributive multistep equations and algebraic expression simplification. It does <strong>not</strong> cover every literal equation, factoring polynomials, quadratic equations or a complete Algebra I curriculum. Avoid using an unrelated worksheet for those tasks.</p>
 <p>Also explore <a href="/worksheets-by-grade/">math by suggested grade</a>, <a href="/geometry-general-worksheets/">geometry worksheets</a> and <a href="/word-problems-worksheets/">arithmetic word problems</a>.</p>
 </section>
 </div>

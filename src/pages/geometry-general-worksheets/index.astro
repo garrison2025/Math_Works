@@ -1,6 +1,7 @@
 ---
 import Layout from '../../components/Layout.astro';
 import SolidVolumes from '../../components/SolidVolumes.astro';
+import FocusDrills from '../../components/FocusDrills.astro';
 import {titleFor} from '../../lib/site';
 import routes from '../../data/routes.json';
 const known=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
@@ -43,6 +44,8 @@ for(const group of groups)for(const [slug] of group.items)if(!known.has(slug))th
 <section aria-labelledby="solid-volume-lab"><span class="eyebrow">Exact 3D measurement</span><h2 id="solid-volume-lab">Printable sphere, cone and pyramid volume practice</h2>
 <p>Choose a solid and generate exact volume problems with your own seed, matched teacher answers and worked-step PDFs. The triangular base altitude and the full pyramid height are treated as separate measurements.</p></section>
 <SolidVolumes/>
+<section id="point-angle-lab" aria-labelledby="point-angle-heading" class="panel info-panel"><span class="eyebrow">Exact angle relationships · R100</span><h2 id="point-angle-heading">Printable angles around a point worksheets</h2><p>Four genuine adjacent angle sectors meet at point O. The SVG diagram and printable PDF rays match the same integer-degree measurements. Solve the missing angle from a full turn of 360°, then compare with a separate answer key.</p><p>This is a narrow four-sector missing-angle drill, not a general compass, polygon theorem or proof course.</p></section>
+<FocusDrills scope="angles"/>
 {groups.map((group,i)=><section class="geometry-group" aria-labelledby={'geometry-group-'+i}>
 <div class="geometry-heading"><span class="eyebrow">Topic group {i+1}</span><h2 id={'geometry-group-'+i}>{group.title}</h2><p>{group.summary}</p></div>
 <div class="geometry-grid">{group.items.map(([slug,note])=><a class="geometry-card" href={'/'+slug+'/'}><strong>{titleFor(slug)}</strong><span>{note}</span><small>Open worksheet generator →</small></a>)}</div>
