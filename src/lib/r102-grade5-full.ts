@@ -232,7 +232,7 @@ export function grade5FullModel(kind:Grade5FullKind,z:Values):Model{
    'A quadrilateral has four right angles, opposite equal sides, and unequal adjacent sides. Name it.',
    'A quadrilateral has both pairs of opposite sides parallel, with no right angles and unequal adjacent sides. Name it.',
    'A quadrilateral has four equal sides but no right angles. Name it.',
-   'A quadrilateral has exactly one pair of parallel opposite sides. Name it (US inclusive terminology).'
+   'A quadrilateral has exactly one pair of parallel opposite sides. Name it (exactly one parallel pair).'
   ];const ans=['square','rectangle','parallelogram','rhombus','trapezoid'][v];
   return result(qs[v],ans,'Identify the defining side, angle and parallel-line properties.',
    'The best classification from the given properties is '+ans+'.');

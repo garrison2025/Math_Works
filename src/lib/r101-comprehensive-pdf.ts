@@ -43,14 +43,41 @@ function triangle(page:PDFPage,x:number,y:number,scale:number){
  for(let j=0;j<3;j++)line(page,points[j][0],points[j][1],points[(j+1)%3][0],points[(j+1)%3][1]);
 }
 export function wideDiagramHeight(p:WideProblem):number{
- return ['polygon-sides','g2-shape','real-shape','triangle-congruence','triangle-similarity','tri-angle','tri-area'].includes(p.kind)||p.kind.startsWith('circle-')?105:0;
+ if(p.kind==='g5s-g-read'||p.kind==='g5s-g-plot')return 245;
+ return ['g5s-md-lineplot','polygon-sides','g2-shape','real-shape','triangle-congruence','triangle-similarity','tri-angle','tri-area'].includes(p.kind)||p.kind.startsWith('circle-')?105:0;
 }
 /** Purpose-drawn vector, not extracted raster or a false-to-scale proof diagram. */
 export function drawWideDiagram(page:PDFPage,p:WideProblem,x:number,y:number,font:PDFFont){
  const k=p.kind,z=p.values,center=x+105,mid=y-50;
+ if(k==='g5s-md-lineplot'){
+  const xs=[x+45,x+105,x+165,x+225],totals=[z.a,z.b,z.c,z.d];
+  line(page,x+25,y-85,x+250,y-85);
+  for(let i=0;i<4;i++){
+   const xx=xs[i];line(page,xx,y-89,xx,y-81);
+   page.drawText(['1/8','1/4','3/8','1/2'][i],{x:xx-8,y:y-103,size:9,font,color:ink});
+   for(let j=0;j<totals[i];j++)page.drawText('x',{x:xx-3,y:y-72-16*j,size:13,font,color:blue});
+  }
+  return;
+ }
+ if(k==='g5s-g-read'||k==='g5s-g-plot'){
+  const ox=x+33,oy=y-211,unit=18;
+  for(let i=0;i<=10;i++){
+   const t=i*unit;line(page,ox+t,oy,ox+t,oy+10*unit);
+   line(page,ox,oy+t,ox+10*unit,oy+t);
+   page.drawText(String(i),{x:ox+t-(i>=10?4:2),y:oy-13,size:7.6,font,color:ink});
+   page.drawText(String(i),{x:ox-16,y:oy+t-3,size:7.6,font,color:ink});
+  }
+  if(k==='g5s-g-read'){
+   const px=ox+z.a*unit,py=oy+z.b*unit;
+   page.drawCircle({x:px,y:py,size:4,color:blue});
+   page.drawText('P',{x:px+6,y:py+6,size:9,font,color:ink});
+  }
+  page.drawText('x',{x:ox+191,y:oy-4,size:9,font,color:ink});
+  page.drawText('y',{x:ox-4,y:oy+189,size:9,font,color:ink});
+  return;
+ }
  if(k==='polygon-sides'){
   polygon(page,z.a,center,mid,36);
-  page.drawText(z.a+'-sided polygon',{x:x+160,y:y-91,size:8,font,color:muted});
   return;
  }
  if(k==='g2-shape'||k==='real-shape'){
