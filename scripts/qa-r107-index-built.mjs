@@ -46,6 +46,13 @@ for(const p of live){
  if(active.includes(p))assert.ok(html.includes('fixed-seed')||html.includes('Fixed-seed')||html.includes('Worked example'),'Real teaching example '+p);
  report.pages.push({path:p,titleLength:title.length,descriptionLength:description.length,ogImage:img});
 }
+const contrasted=active.filter(p=>read(p).includes('data-seo-skill-contrast'));
+assert.equal(contrasted.length,24,'Exactly 24 focused original contrast explanations');
+for(const p of active){
+ const html=read(p);
+ assert.match(html,/class="sample-img"[^>]*loading="lazy"[^>]*decoding="async"/,'Below-the-fold sample image deferred '+p);
+ assert.match(html,/class="sample-img"[^>]*width="1000"[^>]*height="560"/,'Image dimensions prevent layout shift '+p);
+}
 for(const p of held){
  const html=read(p);
  assert.equal(meta(html,'robots'),'noindex,follow','Navigation HOLD directive '+p);
