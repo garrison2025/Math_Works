@@ -60,7 +60,6 @@ test('homepage and WebSite schema clearly describe the local-first 51-generator 
   assert.match(layout,/name:"Math Worksheet Studio"/);
   assert.match(layout,/51 topic-specific math worksheet generators/);
  });
-});
 test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
  const rows=parseCSV(read('../src/data/keyword-evidence.csv')),columns=Object.fromEntries(rows[0].map((n,i)=>[n,i]));
  const evidence=rows.slice(1).map(row=>({keyword:stripTicks(row[columns.keyword]),volume:Number(row[columns.monthly_volume]),kd:Number(row[columns.semrush_kd]),slug:stripTicks(row[columns.canonical_candidate]).replace(/^\/|\/$/g,'')}));
