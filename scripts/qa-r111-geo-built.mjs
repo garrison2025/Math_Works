@@ -10,13 +10,16 @@ let answers=0;
 for(const [slug,guide] of Object.entries(GEO_GUIDES)){
  const path='/'+slug+'/';
  const html=read(path);
+ // Astro safely escapes apostrophes and ampersands in text nodes.
+ const readable=html.replace(/&#(?:0*39|x0*27);|&apos;/gi,"'")
+  .replace(/&quot;|&#(?:0*34|x0*22);/gi,'"').replace(/&amp;/g,'&')
+  .replace(/&lt;/g,'<').replace(/&gt;/g,'>');
  assert.match(html,/data-geo-answers\b/,'Visible answer section '+slug);
  assert.ok(html.includes('<link rel="canonical" href="'+source+path+'"'),'Preserve canonical '+slug);
  assert.match(html,/<meta name="robots" content="index,follow,max-image-preview:large"/,'Indexability '+slug);
  for(const item of guide.answers){
-  assert.ok(html.includes(item.question),'Missing visible question '+slug+': '+item.question);
-  assert.ok(html.includes(item.answer.replace(/&/g,'&amp;'))||
-            html.includes(item.answer),'Missing visible answer '+slug+': '+item.question);
+  assert.ok(readable.includes(item.question),'Missing visible question '+slug+': '+item.question);
+  assert.ok(readable.includes(item.answer),'Missing visible answer '+slug+': '+item.question);
   answers++;
  }
  assert.ok(html.includes('href="'+guide.related.href+'"'),'Missing related practice '+slug);
