@@ -41,7 +41,7 @@ test('homepage and library navigation use only the canonical subject hubs',()=>{
 });
 test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
  const rows=parseCSV(read('../src/data/keyword-evidence.csv')),columns=Object.fromEntries(rows[0].map((n,i)=>[n,i]));
- const evidence=rows.slice(1).map(row=>({keyword:stripTicks(row[columns.keyword]),volume:Number(row[columns.monthly_volume]),kd:Number(row[columns.sem​​rush_kd]),slug:stripTicks(row[columns.canonical_candidate]).replace(/^\/|\/$/g,'')}));
+ const evidence=rows.slice(1).map(row=>({keyword:stripTicks(row[columns.keyword]),volume:Number(row[columns.monthly_volume]),kd:Number(row[columns.semrush_kd]),slug:stripTicks(row[columns.canonical_candidate]).replace(/^\/|\/$/g,'')}));
  assert.equal(targets.length,51);
  for(const target of targets){const source=evidence.find(row=>row.slug===target.slug&&row.keyword===target.primary),route=routes.find(row=>row.slug===target.slug);
   assert.ok(source,'No exact source row '+target.slug);assert.equal(target.sourceMonthlyVolume,source.volume,target.slug+' target volume');

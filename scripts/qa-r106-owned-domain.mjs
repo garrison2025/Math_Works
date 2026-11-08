@@ -1,4 +1,4 @@
-/** R106 actual owned-domain read-only release gate; expect noindex until owner approval. */
+/** R109 actual owned-domain read-only release gate; checks 64 canonical URLs and legacy 301s. */
 import assert from 'node:assert/strict';
 import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 const sha=process.env.GITHUB_SHA;
@@ -77,7 +77,12 @@ async function verify(){
  for(const slug of ['algebra-general-worksheets','geometry-general-worksheets'])
   assert.ok(!sitemapUrls.includes(base+'/'+slug+'/'),'HOLD sitemap leak '+slug);
  assert.match(robots.text,/Sitemap: https:\/\/mathworksheetstudio\.com\/sitemap\.xml/);
- result.verified.push('Contact email, official canonicals, 64-URL sitemap and category/grade publication');
+ for(const [source,target] of [['/algebra-general-worksheets','/algebra/'],['/algebra-general-worksheets/','/algebra/'],['/geometry-general-worksheets','/geometry/'],['/geometry-general-worksheets/','/geometry/']]){
+  const rr=await fetch(base+source,{redirect:'manual',headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});
+  assert.equal(rr.status,301,'Legacy redirect '+source);
+  assert.equal(new URL(rr.headers.get('location')||'',base).pathname,target,'Redirect destination '+source);
+ }
+ result.verified.push('Contact email, 64 canonical sitemap URLs, four 301 subject URL variants and category/grade publication');
  try{const www=await get('https://www.mathworksheetstudio.com/');
   if(www.url!==base+'/')result.warnings.push('www apex 301 not independently verified: '+www.url);
  }catch(e){result.warnings.push('www is not yet verified or routable: '+String(e).slice(0,120));}

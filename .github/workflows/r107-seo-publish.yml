@@ -22,6 +22,9 @@ on:
   push:
     branches: [main]
     paths:
+      - 'public/_redirects'
+      - 'src/data/routes.json'
+      - 'tests/r109-seo-consolidation.test.mjs'
       - 'src/lib/publication.ts'
       - 'src/components/Layout.astro'
       - 'src/pages/sitemap.xml.ts'
