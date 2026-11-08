@@ -1,0 +1,84 @@
+---
+import Layout from '../../components/Layout.astro';
+import {titleFor} from '../../lib/site';
+import routes from '../../data/routes.json';
+const built=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
+const grades=[
+{grade:'Grade 5',anchor:'grade-5',description:'Whole-number operations, place value, decimal practice, fractions and area.',items:[
+['multiplication-tables-worksheets','Recall multiplication facts before multi-digit work'],
+['three-digit-by-two-digit-multiplication-worksheets','Practice multi-digit multiplication with column layouts'],
+['long-division-worksheets','Use long division with actual written working space'],
+['decimal-place-value-worksheets','Read and round decimals'],
+['equivalent-fractions-worksheets','Find equal fraction representations'],
+['adding-unlike-fractions-worksheets','Add exact fractions with unlike denominators'],
+['area-of-triangles-worksheets','Use base and perpendicular height'],
+['volume-of-rectangular-prisms-worksheets','Measure volume in cubic units']
+]},
+{grade:'Grade 6',anchor:'grade-6',description:'Ratio foundations, negative numbers, expressions, fractions and statistical summaries.',items:[
+['integer-operations-worksheets','Calculate with negative and positive integers'],
+['fractions-worksheets','Add, subtract, multiply and divide exact fractions'],
+['percentages-worksheets','Convert fractions and percents and find amounts'],
+['order-of-operations-worksheets','Apply parentheses and operation precedence'],
+['gcf-worksheets','Find the greatest common factor'],
+['coordinate-plane-worksheets','Read signed coordinate pairs'],
+['mean-median-mode-range-worksheets','Interpret common data summaries'],
+['area-of-parallelograms-worksheets','Find area using a perpendicular height']
+]},
+{grade:'Grade 7',anchor:'grade-7',description:'Rational numbers, equations, percentage changes and geometry.',items:[
+['integer-operations-worksheets','Use the four signed-integer operations'],
+['one-step-equations-worksheets','Solve exact one-step equations'],
+['two-step-equations-worksheets','Solve two-step linear equations'],
+['inequalities-worksheets','Solve and graph comparison conditions'],
+['percentages-worksheets','Find percent changes against the original value'],
+['area-of-trapezoids-worksheets','Use a pair of bases and height'],
+['mean-absolute-deviation-worksheets','Calculate mean absolute deviation exactly'],
+['scatter-plot-worksheets','Plot pairs or classify data trends']
+]},
+{grade:'Grade 8',anchor:'grade-8',description:'Linear functions, algebra, systems, coordinate reasoning and the Pythagorean theorem.',items:[
+['one-step-equations-worksheets','Solve one-variable equations'],
+['two-step-equations-worksheets','Reason through two-step linear equations'],
+['linear-equations-worksheets','Evaluate or plot y = mx + b'],
+['slope-worksheets','Calculate slope from two points'],
+['systems-equations-worksheets','Solve or classify linear systems'],
+['domain-range-worksheets','Identify domain, range and function relations'],
+['functions-worksheets','Evaluate input-output rules'],
+['function-tables-worksheets','Fill missing inputs and outputs'],
+['pythagorean-worksheets','Find missing right-triangle sides'],
+['scientific-notation-worksheets','Convert exact scientific notation'],
+['coordinate-plane-worksheets','Understand all four quadrants']
+]}] as const;
+for(const group of grades)for(const [slug] of group.items){if(!built.has(slug))throw Error('Grade directory cannot link an unbuilt worksheet: '+slug)}
+---
+<Layout title="Math Worksheets by Grade – Grades 5, 6, 7 & 8 | Math Worksheet Studio"
+ description="Choose real printable math worksheet generators by suggested grade 5, 6, 7 or 8 practice skills. Explore actual topics, PDF answer keys and independent practice tools." canonicalPath="/worksheets-by-grade/">
+<div class="container">
+<section class="hero hero-compact">
+<div class="crumb"><a href="/worksheets/">All math worksheets</a> / Grade navigation</div>
+<span class="eyebrow">Find a skill · Use a real worksheet tool</span>
+<h1>Math Worksheets by Grade</h1>
+<p>Start with a typical grade-level skill, then open an actual generator. These recommendations make it easier to navigate the existing math practice library; they are not a claim of official curriculum alignment or a complete grade-specific course.</p>
+</section>
+<nav class="grade-pills" aria-label="Jump to a grade">{grades.map(g=><a href={'#'+g.anchor}>{g.grade}</a>)}</nav>
+<div class="panel info-panel"><h2>How to choose a worksheet</h2>
+<p>Grade placement varies by school, state and learning sequence. Choose by the specific skill your student is studying. Each linked tool produces fresh math questions and matching downloadable answers. If a topic is too easy or too difficult, try its Easy, Standard or Challenge number settings before changing grade.</p>
+<p>These are subject-based selections, not a separate grade-specific generator. The printable PDFs are made on the linked worksheet pages.</p>
+</div>
+{grades.map(g=><section id={g.anchor} class="grade-section" aria-labelledby={g.anchor+'-heading'}>
+<div class="grade-heading"><span class="eyebrow">Suggested practice</span><h2 id={g.anchor+'-heading'}>{g.grade} math worksheets</h2><p>{g.description}</p><span>{g.items.length} working practice tools</span></div>
+<div class="grade-card-grid">{g.items.map(([slug,note])=><a class="grade-card" href={'/'+slug+'/'}><strong>{titleFor(slug)}</strong><span>{note}</span><small>Open working generator →</small></a>)}</div>
+</section>)}
+<section class="panel info-panel">
+<h2>Want to practice by subject instead?</h2><p>Use the <a href="/algebra-general-worksheets/">algebra worksheet directory</a>, <a href="/geometry-general-worksheets/">geometry worksheet directory</a>, or <a href="/word-problems-worksheets/">original word problems generator</a>. For the complete subject list, visit <a href="/worksheets/">all math worksheets</a>.</p>
+</section>
+</div>
+</Layout>
+<style>
+.grade-pills{display:flex;flex-wrap:wrap;gap:10px;padding:22px 0}.grade-pills a{border:1px solid #cbd8e5;padding:11px 17px;border-radius:999px;text-decoration:none;background:#fff;color:#184a71;font-weight:750}.grade-pills a:hover{border-color:#1b64a5;background:#edf6fd}
+.grade-section{margin:27px 0 38px;scroll-margin-top:40px}.grade-heading{display:flex;flex-direction:column;gap:6px;padding-bottom:15px}.grade-heading h2{font-size:clamp(1.35rem,2.5vw,1.9rem);margin:0}.grade-heading p{color:#53647a;margin:0}.grade-heading>span:last-child{color:#187b68;font-weight:750;font-size:.8rem}
+.grade-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.grade-card{border:1px solid #d7e0e9;background:#fff;border-radius:14px;padding:17px 19px;display:flex;flex-direction:column;gap:9px;text-decoration:none;color:#172337;min-height:150px}
+.grade-card strong{font-size:1rem}.grade-card span{font-size:.87rem;color:#53647a;line-height:1.45}.grade-card small{color:#1b64a5;font-size:.82rem;font-weight:800;margin-top:auto}
+.grade-card:hover{border-color:#1b64a5;box-shadow:0 6px 20px #1b64a514}
+.grade-card:focus-visible,.grade-pills a:focus-visible{outline:3px solid #187b68;outline-offset:3px}
+@media(max-width:600px){.grade-card-grid{grid-template-columns:1fr}.grade-card{min-height:0}}
+</style>

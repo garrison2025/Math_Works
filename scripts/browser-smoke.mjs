@@ -50,7 +50,7 @@ try {
  // Use an isolated context: expected 404 responses must not pollute the asset-error monitor.
  const missingContext=await browser.newContext({viewport:{width:390,height:844}});
  const missingPage=await missingContext.newPage();
- for(const missing of ['word-problems-worksheets','geometry-general-worksheets','not-a-real-worksheet-r81']){
+ for(const missing of ['not-a-real-worksheet-r81','not-a-real-worksheet-r98']){
   const response=await missingPage.goto(base+'/'+missing+'/',{waitUntil:'load'});
   assert.equal(response?.status(),404,'Missing/HOLD must return HTTP 404, never homepage 200: '+missing);
   assert.match(await missingPage.locator('h1').innerText(),/worksheet page isn.t available/i);
@@ -60,7 +60,7 @@ try {
  }
  await missingPage.screenshot({path:join(out,'r81-404-mobile.png'),fullPage:true});
  await missingContext.close();
- events.push({kind:'404',status:'pass',scope:'two HOLD routes and arbitrary unknown path return distinct HTTP 404 HTML'});
+ events.push({kind:'404',status:'pass',scope:'unknown paths return HTTP 404; four previous HOLD intents now have separate, still-noindex preview pages'});
  const context=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
  // R42: request-level privacy evidence, including failed local assets. Collect
  // before the very first navigation, not after page loading has finished.
@@ -960,7 +960,9 @@ try {
  ]){
   await page.goto(base+'/'+name+'/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
-  assert.equal(await page.locator('.directory-card').count(),expected,'Incomplete V2 subject directory');
+  assert.equal(await page.locator('.directory-group .directory-card').count(),expected,'Original V2 generators missing');
+  if(name==='worksheets')assert.equal(await page.locator('.directory-extras .directory-card').count(),4,
+   'Four new noindex guided pages not linked in main directory');
   assert.equal(await page.locator('.directory-nav a').count(),6);
  }
  events.push({kind:'interaction',name:'R89 six subject directories and true corrected exercise settings in Chromium',status:'pass'});
@@ -986,10 +988,13 @@ try {
  await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
  await page.locator('[data-directory-query]').fill('8th grade math worksheets');
  await page.waitForFunction(()=>document.querySelector('[data-directory-status]')?.textContent?.includes('0 topic'));
- assert.equal(await page.locator('[data-directory-matches] a').count(),0,
-  'HOLD grade keywords must never appear as working search destinations');
+ assert.equal(await page.locator('[data-directory-matches] a[href="/worksheets-by-grade/"]').count(),1,
+  'R98 grade search must offer the appropriate grade directory without asserting a single generator covers the entire grade');
+ assert.equal(await page.locator('[data-directory-matches] a[href^="/word-problems-worksheets/"]').count(),0,
+  'Grade keywords should not be routed to unrelated story problems');
  await page.locator('[data-directory-clear]').click();
- assert.equal(await page.locator('.directory-card:visible').count(),51);
+ assert.equal(await page.locator('.directory-group .directory-card:visible').count(),51);
+ assert.equal(await page.locator('.directory-extras .directory-card:visible').count(),4);
  await page.setViewportSize({width:360,height:740});
  await page.locator('[data-directory-query]').fill('fraction times fraction worksheet');
  await page.locator('[data-directory-matches] a[href*="/multiplying-fractions-worksheets/"]').first()
@@ -1013,7 +1018,10 @@ try {
  await page.goto(base+'/terms/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('h1').innerText(),'Terms of Use');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
- events.push({kind:'interaction',name:'R90 exact-keyword search, restored option, HOLD exclusion, clear action, 360px and Terms',status:'pass'});
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-directory-query]').fill('word problems with decimals');
+ await page.locator('[data-directory-matches] a[href="/word-problems-worksheets/"]').waitFor({state:'visible',timeout:12000});
+ events.push({kind:'interaction',name:'R90 exact V2 generator aliases plus four truthful guide suggestions, grade search, restored option, mobile and Terms',status:'pass'});
  // R71 each mode downloads three ACTUAL PDF files through isolated
  // Playwright contexts to avoid Chrome's multi-download suppression.
  for(const input of [
@@ -1672,6 +1680,67 @@ try {
  assert.equal(await page.locator('[data-action="practice"]').isVisible(),false,
   'R96 must not substitute summary text for visual box plot drawing assessment');
  events.push({kind:'interaction',name:'R96 exact typed answers: seven real topic pages, invalid expression rejection, zero practice answer leakage and physical marking not autograded',status:'pass'});
+
+ // R98: all four original HOLD intents have functional, still-unindexable preview pages.
+ for(const slug of ['word-problems-worksheets','worksheets-by-grade','algebra-general-worksheets','geometry-general-worksheets']){
+  const response=await page.goto(base+'/'+slug+'/',{waitUntil:'networkidle'});
+  assert.equal(response?.status(),200,'New page missing: '+slug);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  assert.equal(await page.locator('link[rel="canonical"]').count(),0);
+  assert.ok((await page.locator('h1').innerText()).length>9);
+ }
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ const r98Query=page.locator('[data-directory-query]');
+ await r98Query.fill('8th grade math worksheets');
+ await page.locator('[data-directory-matches] a[href="/worksheets-by-grade/"]').waitFor({timeout:12000});
+ assert.equal(await page.locator('.directory-extras a[href="/worksheets-by-grade/"]').isVisible(),true);
+ await r98Query.fill('word problems on proportions worksheet');
+ await page.locator('[data-directory-matches] a[href="/word-problems-worksheets/"]').waitFor({timeout:12000});
+ assert.equal(await page.locator('.directory-extras a[href="/word-problems-worksheets/"]').isVisible(),true);
+ await r98Query.fill('volume of a sphere worksheet');
+ assert.equal(await page.locator('[data-directory-matches] a[href="/geometry-general-worksheets/"]').count(),0,
+  'Unsupported sphere worksheet must not receive a misleading directory-search match');
+
+ await page.goto(base+'/worksheets-by-grade/',{waitUntil:'networkidle'});
+ assert.ok(await page.locator('#grade-8 .grade-card').count()>=8,'Grade 8 needs >=8 real topic links');
+ await page.goto(base+'/word-problems-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-story-list] > li').count(),8);
+ assert.equal(await page.locator('.story-solution').count(),0,'Student preview reveals the answer key');
+ await page.locator('[data-story-mode]').selectOption('decimals');
+ assert.match(await page.locator('[data-story-list] > li').first().innerText(),/liters of paint/);
+ await page.locator('[data-story-count]').selectOption('4');
+ await page.locator('[data-story-paper]').selectOption('A4');
+ await page.locator('[data-story-seed]').fill('314159');
+ await page.locator('[data-story-seed]').dispatchEvent('change');
+ const originalStory=await page.locator('[data-story-list] > li').first().innerText();
+ await page.locator('[data-story-toggle]').click();
+ assert.equal(await page.locator('.story-solution').count(),4);
+ await page.locator('[data-story-toggle]').click();
+ assert.equal(await page.locator('.story-solution').count(),0);
+ for(const edition of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-story-download="'+edition+'"]').click();
+  const file=await pending;
+  assert.ok(file.suggestedFilename().endsWith('-314159-decimals-standard-4-a4-'+edition+'.pdf'));
+  const doc=await verifyPdf(file,'R98 '+edition,{paper:'A4'});
+  assert.match(doc.getTitle()??'',/WP1-314159-decimals-standard-4/);
+ }
+ await page.locator('[data-story-share]').click();
+ const storyLink=await page.evaluate(()=>navigator.clipboard.readText());
+ const url=new URL(storyLink);
+ for(const [k,v] of [['wp_seed','314159'],['wp_mode','decimals'],['wp_level','standard'],['wp_count','4'],['wp_paper','A4']])
+  assert.equal(url.searchParams.get(k),v);
+ assert.ok(!storyLink.includes('student')&&!storyLink.includes('answer'));
+ await page.goto(storyLink,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-story-seed]').inputValue(),'314159');
+ assert.equal(await page.locator('[data-story-mode]').inputValue(),'decimals');
+ assert.equal(await page.locator('[data-story-list] > li').first().innerText(),originalStory);
+ await page.setViewportSize({width:390,height:844});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),
+  'Word story mobile page overflows at 390px');
+ await page.screenshot({path:join(out,'r98-word-stories-mobile.png'),fullPage:true});
+ await page.setViewportSize({width:1280,height:900});
+ events.push({kind:'interaction',name:'R98 four preview-only pages; independent 6-mode story tool: actual A4 PDFs, answer isolation, copy/reload, 390px mobile',status:'pass'});
 
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.

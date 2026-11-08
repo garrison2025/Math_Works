@@ -1,0 +1,66 @@
+---
+import Layout from '../../components/Layout.astro';
+import {titleFor} from '../../lib/site';
+import routes from '../../data/routes.json';
+const known=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
+const groups=[
+{title:'Area and measurement',summary:'Use the dimensions and perpendicular heights given in each question.',items:[
+ ['area-worksheets','Explore supported area tasks and specialist alternatives'],
+ ['area-of-triangles-worksheets','Find area = base x perpendicular height / 2'],
+ ['area-of-parallelograms-worksheets','Find base x perpendicular height'],
+ ['area-of-trapezoids-worksheets','Use the average of the two parallel bases times height'],
+ ['volume-of-rectangular-prisms-worksheets','Find a rectangular prism volume or missing dimension'],
+ ['surface-area-worksheets','Find the full outside area of a cube or rectangular prism']
+]},
+{title:'Angles, lines and shapes',summary:'Read exact vector diagrams and solve geometry problems with distinct mathematical rules.',items:[
+ ['angle-worksheets','Classify acute, right and obtuse angles'],
+ ['complementary-supplementary-angles-worksheets','Find angles that total 90 or 180 degrees'],
+ ['vertical-angles-worksheets','Use vertical equality and adjacent supplementary angles'],
+ ['triangle-angle-sum-worksheets','Find a missing triangle interior angle'],
+ ['lines-rays-segments-worksheets','Identify endpoints, arrowheads, lines and rays'],
+ ['printable-protractor','Print a 180-degree measurement tool with a digital calibration scale']
+]},
+{title:'Right triangles and coordinate geometry',summary:'Build toward side lengths, quadrants and graphing on an actual coordinate grid.',items:[
+ ['pythagorean-worksheets','Use a² + b² = c² on right triangles'],
+ ['coordinate-plane-worksheets','Locate and read ordered pairs with positive and negative axes'],
+ ['linear-equations-worksheets','Plot a line on a blank Cartesian grid']
+]}] as const;
+for(const group of groups)for(const [slug] of group.items)if(!known.has(slug))throw Error('Geometry directory points to an unavailable generator: '+slug);
+---
+<Layout title="Geometry Worksheets – Area, Angles, Volume & Graphing | Math Worksheet Studio"
+ description="Browse working geometry worksheet generators for area, volume, surface area, Pythagorean theorem, angle relationships, lines and coordinate graphs. Download matching PDFs." canonicalPath="/geometry-general-worksheets/">
+<div class="container">
+<section class="hero hero-compact">
+<div class="crumb"><a href="/worksheets/">All math worksheets</a> / Geometry &amp; graphs</div>
+<span class="eyebrow">Geometry practice by exact topic</span><h1>Geometry Worksheets</h1>
+<p>Find a real printable math tool for the geometry skill you are teaching. Each linked worksheet draws or calculates its own supported problems and keeps the answer key separate.</p>
+</section>
+<section class="panel info-panel"><h2>Choose a geometry task, not just a shape name</h2>
+<p>For area, decide whether you have a triangle, parallelogram or trapezoid; each uses a different formula. For three-dimensional solids, distinguish <a href="/volume-of-rectangular-prisms-worksheets/">volume</a> (cubic units) from <a href="/surface-area-worksheets/">surface area</a> (square units). For angles, distinguish classification from finding an unknown angle at an intersection or in a triangle.</p>
+<p>This directory organizes genuine generators. It is not a separate do-everything geometry PDF, and unsupported searches do not become features merely because they use the word “geometry.”</p>
+</section>
+{groups.map((group,i)=><section class="geometry-group" aria-labelledby={'geometry-group-'+i}>
+<div class="geometry-heading"><span class="eyebrow">Topic group {i+1}</span><h2 id={'geometry-group-'+i}>{group.title}</h2><p>{group.summary}</p></div>
+<div class="geometry-grid">{group.items.map(([slug,note])=><a class="geometry-card" href={'/'+slug+'/'}><strong>{titleFor(slug)}</strong><span>{note}</span><small>Open worksheet generator →</small></a>)}</div>
+</section>)}
+<section class="info-grid">
+<div class="panel info-panel"><h2>Example: why height matters</h2>
+<p>For a triangle with base 8 units and <strong>perpendicular</strong> height 5 units, area = (8 × 5) / 2 = <strong>20 square units</strong>. A slanted side is not automatically the height. Use the <a href="/area-of-triangles-worksheets/">triangle area generator</a> to practice this distinction.</p></div>
+<div class="panel info-panel"><h2>Example: a right triangle</h2>
+<p>If the legs measure 3 and 4 units, then the hypotenuse satisfies c² = 3² + 4² = 25, so c = <strong>5 units</strong>. Only use this equation when the triangle has a right angle.</p><p>Try <a href="/pythagorean-worksheets/">Pythagorean worksheets</a> with a missing leg or hypotenuse.</p></div>
+</section>
+<section class="panel info-panel">
+<h2>What's outside this directory's verified core generators?</h2>
+<p>These links do not claim a dedicated tool for circle theorem proofs, triangle congruence or similarity proofs, sphere volume, or general cone-volume equations. Some linked tools include separate specialist PDF extensions, but do not assume an unrelated keyword describes the default live generator.</p>
+<p>See also <a href="/algebra-general-worksheets/">algebra worksheets</a>, <a href="/worksheets-by-grade/">suggested grade-level practice</a> and the <a href="/worksheets/">full subject directory</a>.</p>
+</section>
+</div>
+</Layout>
+<style>
+.geometry-group{margin:31px 0 35px}.geometry-heading h2{font-size:clamp(1.35rem,2.6vw,1.85rem);margin:5px 0 9px}.geometry-heading p{color:#53647a;line-height:1.58;max-width:70ch}
+.geometry-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,252px),1fr));gap:13px}
+.geometry-card{display:flex;flex-direction:column;gap:9px;min-height:150px;background:#fff;border:1px solid #d7e0e9;border-radius:14px;padding:19px;text-decoration:none;color:#172337}
+.geometry-card strong{font-size:.99rem;line-height:1.35}.geometry-card span{color:#53647a;font-size:.86rem;line-height:1.5}.geometry-card small{margin-top:auto;color:#1b64a5;font-weight:800;font-size:.82rem}
+.geometry-card:hover{border-color:#1b64a5}.geometry-card:focus-visible{outline:3px solid #187b68;outline-offset:3px}
+@media(max-width:600px){.geometry-grid{grid-template-columns:1fr}.geometry-card{min-height:0}}
+</style>

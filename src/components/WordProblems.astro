@@ -1,0 +1,63 @@
+---
+import {makeStorySet} from '../lib/word-problems';
+const sample=makeStorySet(20261104,8,'mixed','standard');
+---
+<section class="workspace story-workspace" data-story-workspace aria-label="Original word-problem generator">
+ <aside class="panel story-settings">
+  <h2 class="panel-title">Build a word-problem worksheet</h2>
+  <p class="panel-sub">Choose a real math context. All questions, answers, and PDF files are calculated locally in your browser.</p>
+  <div class="story-field"><label for="story-mode">Math story skill</label><select id="story-mode" data-story-mode>
+   <option value="mixed">Mixed real-life word problems</option>
+   <option value="proportions">Proportions and unit rates</option>
+   <option value="area">Rectangle area word problems</option>
+   <option value="multiplication">Multiplication story problems</option>
+   <option value="division">Equal-sharing division stories</option>
+   <option value="one-step">One-step equation stories</option>
+   <option value="decimals">Exact decimal addition stories</option>
+  </select></div>
+  <div class="story-field"><label for="story-level">Number difficulty</label><select id="story-level" data-story-level>
+   <option value="easy">Easy · smaller whole numbers</option>
+   <option value="standard" selected>Standard · balanced whole numbers</option>
+   <option value="challenge">Challenge · larger whole numbers</option>
+  </select></div>
+  <div class="story-row"><div class="story-field"><label for="story-count">Questions</label><select id="story-count" data-story-count>
+   <option value="4">4</option><option value="8" selected>8</option><option value="12">12</option><option value="16">16</option><option value="20">20</option><option value="30">30</option><option value="40">40</option>
+  </select></div>
+  <div class="story-field"><label for="story-paper">PDF paper</label><select id="story-paper" data-story-paper><option value="Letter">US Letter</option><option value="A4">A4</option></select></div></div>
+  <div class="story-field"><label for="story-seed">Reproducible seed</label><input type="number" id="story-seed" data-story-seed value="20261104" min="0" max="4294967295" step="1" inputmode="numeric"/><p class="story-note">The same seed and settings always create the same word problems and matching answer key.</p></div>
+  <div class="story-actions"><button type="button" data-story-new class="btn btn-primary">Generate new problems</button><button type="button" data-story-download="questions" class="btn btn-secondary">Download student PDF</button><button type="button" data-story-download="answers" class="btn">Download answer key PDF</button><button type="button" data-story-download="steps" class="btn">Download worked solutions PDF</button><button type="button" data-story-share class="btn btn-soft">Copy reproducible link</button></div>
+  <p class="story-note">No login, tracking or server-side submissions. Answers are separate from student PDFs. Only the settings go into shared links.</p>
+ </aside>
+ <div class="panel story-preview">
+  <div class="story-preview-head"><div><span class="eyebrow">Live practice preview</span><h2>Original word problems</h2><p>Write the answer with its real-world units. Check each problem's matching reasoning after attempting it.</p></div><button type="button" data-story-toggle class="btn btn-soft" aria-pressed="false">Show answers and worked steps</button></div>
+  <p data-story-status role="status" aria-live="polite">8 original word problems ready.</p>
+  <div class="story-paper-preview"><p class="story-sheet-head">Math Works · Student practice · WP1</p><p class="story-student-line">Name: _____________________________ Date: ___________________</p>
+  <ol data-story-list>{sample.questions.map(p=><li><p>{p.question}</p><div class="story-pencil-line" aria-label="Space to solve the problem on paper"></div></li>)}</ol>
+  </div>
+ </div>
+</section>
+<style>
+.story-workspace{display:grid;grid-template-columns:minmax(260px,310px) minmax(0,1fr);gap:19px;align-items:start;padding:25px 0 10px}
+.story-settings{padding:23px}.story-preview{padding:24px}
+.story-field{margin:17px 0}.story-field label{display:block;font-size:.86rem;color:#22354b;font-weight:800;margin-bottom:7px}
+.story-field select,.story-field input{width:100%;min-height:45px;border:1.4px solid #9aa9bb;border-radius:9px;padding:9px 11px;color:#1d3046;background:#fff;font:inherit}
+.story-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.story-actions{display:grid;gap:10px;margin:22px 0 15px}
+.story-actions button{width:100%;text-align:center;min-height:44px}.story-actions button:disabled{opacity:.65;cursor:wait}
+.story-note{font-size:.82rem;color:#5b6b7d;line-height:1.58;margin:9px 0 0}
+.story-preview-head{display:flex;gap:17px;justify-content:space-between;align-items:start}
+.story-preview-head h2{font-size:1.45rem;margin:5px 0}.story-preview-head p{color:#516376;font-size:.9rem;line-height:1.6;margin:7px 0}
+.story-preview-head button{flex:none;max-width:215px;white-space:normal;min-height:46px}
+[data-story-status]{padding:10px 13px;border-radius:9px;background:#eaf5ef;color:#205a47;font-weight:650;font-size:.85rem}
+[data-story-status][data-error=true]{background:#fff1ed;color:#a22f24}
+.story-paper-preview{background:#fff;border:1px solid #d8e0e8;border-radius:12px;padding:22px 27px;margin-top:16px;box-shadow:0 4px 13px #152a4410}
+.story-sheet-head{font-size:.73rem;font-weight:800;letter-spacing:.09em;color:#526b83;text-transform:uppercase}.story-student-line{font-size:.8rem;margin:17px 0 22px;color:#40556b}
+[data-story-list]{margin:0;padding-left:26px;display:grid;gap:19px;color:#213348}
+[data-story-list]>li{padding-left:4px;line-height:1.55}
+[data-story-list]>li>p{margin:0 0 8px}
+.story-pencil-line{min-height:31px;border-bottom:1px solid #bdcbd8;margin:0 6px 0 0}
+.story-solution{color:#12634c;font-weight:800}.story-steps{padding-left:18px;color:#516376;font-size:.9rem}
+.story-field input:focus-visible,.story-field select:focus-visible,.story-actions button:focus-visible,.story-preview-head button:focus-visible{outline:3px solid #187b68;outline-offset:3px}
+@media(max-width:890px){.story-workspace{grid-template-columns:1fr}.story-preview-head{flex-wrap:wrap}.story-preview-head button{max-width:none}}
+@media(max-width:520px){.story-settings,.story-preview{padding:17px}.story-paper-preview{padding:18px}.story-row{grid-template-columns:1fr 1fr}.story-student-line{overflow-wrap:anywhere}}
+</style>
+<script>import '../client/word-problems.ts';</script>

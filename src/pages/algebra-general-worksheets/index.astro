@@ -1,0 +1,60 @@
+---
+import Layout from '../../components/Layout.astro';
+import {titleFor} from '../../lib/site';
+import routes from '../../data/routes.json';
+const known=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
+const modules=[
+ {title:'Solve equations and inequalities',intro:'Work from inverse operations toward inequalities and simultaneous equations.',items:[
+ ['one-step-equations-worksheets','Solve x + 7 = 12 or -3x = 12'],
+ ['two-step-equations-worksheets','Solve 3x + 5 = 20 using two inverse steps'],
+ ['inequalities-worksheets','Practice inequality directions and closed/open endpoints'],
+ ['systems-equations-worksheets','Solve systems, and classify zero or infinitely many solutions']
+ ]},
+ {title:'Functions and linear relationships',intro:'Read function rules, evaluate tables, plot lines and compare slopes.',items:[
+ ['functions-worksheets','Evaluate a rule such as f(x) = 3x - 2'],
+ ['function-tables-worksheets','Find a missing input or output from a linear table'],
+ ['linear-equations-worksheets','Graph or evaluate y = mx + b'],
+ ['slope-worksheets','Find rise over run from exact coordinate pairs'],
+ ['coordinate-plane-worksheets','Place or identify points in all four quadrants'],
+ ['domain-range-worksheets','Find input/output sets and test whether a relation is a function']
+ ]}
+] as const;
+for(const m of modules)for(const [slug] of m.items)if(!known.has(slug))throw Error('Algebra collection points to an unavailable generator: '+slug);
+---
+<Layout title="Algebra Worksheets – Equations, Functions, Slope & Systems | Math Worksheet Studio"
+ description="Explore real algebra worksheet generators: one- and two-step equations, inequalities, slope, systems, functions, tables and coordinate graphs. Printable PDF keys." canonicalPath="/algebra-general-worksheets/">
+<div class="container">
+<section class="hero hero-compact">
+<div class="crumb"><a href="/worksheets/">All math worksheets</a> / Algebra &amp; functions</div>
+<span class="eyebrow">Algebra practice library</span>
+<h1>Algebra Worksheets</h1>
+<p>Find a worksheet that practices the algebra skill you actually need. Open a working generator, choose its problem settings, and print the matching student and answer-key PDFs.</p>
+</section>
+<section class="panel info-panel"><h2>Choose the right starting point</h2>
+<p>Start with <a href="/one-step-equations-worksheets/">one-step equations</a> to practice inverse operations. Move to <a href="/two-step-equations-worksheets/">two-step equations</a>, then <a href="/inequalities-worksheets/">inequalities</a> or <a href="/systems-equations-worksheets/">systems</a>. For relationships between quantities, follow the functions and graphing tools below.</p>
+<p>This is an organized collection of distinct working tools, not a new all-in-one algebra exercise engine. The pages offer precise task selectors and reproducible math sets.</p>
+</section>
+{modules.map((module,i)=><section class="algebra-module" aria-labelledby={'algebra-module-'+i}>
+<div class="algebra-heading"><span class="eyebrow">Practice path {i+1}</span><h2 id={'algebra-module-'+i}>{module.title}</h2><p>{module.intro}</p></div>
+<div class="algebra-card-grid">{module.items.map(([slug,summary])=><a href={'/'+slug+'/'} class="algebra-card"><strong>{titleFor(slug)}</strong><span>{summary}</span><small>Open worksheet generator →</small></a>)}</div>
+</section>)}
+<section class="info-grid">
+<div class="panel info-panel"><h2>Worked concept: inverse operations</h2>
+<p><strong>Example:</strong> 3x + 5 = 20. Subtract 5 from both sides to get 3x = 15; divide both sides by 3, so x = 5. Checking gives 3 × 5 + 5 = 20.</p><p>In an inequality, multiplication or division by a negative value reverses the comparison direction. The <a href="/inequalities-worksheets/">inequality generator</a> includes those cases.</p></div>
+<div class="panel info-panel"><h2>Worked concept: slope</h2>
+<p>The slope between (1, 2) and (3, 6) is (6 − 2) / (3 − 1) = 2. A vertical line has an undefined slope because its change in x is zero.</p><p>Practice the number rule separately from graphing the actual points with <a href="/slope-worksheets/">slope worksheets</a> and <a href="/linear-equations-worksheets/">linear-equation worksheets</a>.</p></div>
+</section>
+<section class="panel info-panel">
+<h2>Scope and related practice</h2><p>These exercises cover the exact listed equation, inequality, linear-function, system and coordinate tasks. This directory does <strong>not</strong> present a dedicated literal-equation rearranging tool, factoring polynomials, quadratic equations or a complete Algebra I curriculum. Avoid using an unrelated worksheet for those tasks.</p>
+<p>Also explore <a href="/worksheets-by-grade/">math by suggested grade</a>, <a href="/geometry-general-worksheets/">geometry worksheets</a> and <a href="/word-problems-worksheets/">arithmetic word problems</a>.</p>
+</section>
+</div>
+</Layout>
+<style>
+.algebra-module{margin:30px 0 36px}.algebra-heading h2{font-size:clamp(1.35rem,2.6vw,1.85rem);margin:4px 0 9px}.algebra-heading p{color:#53647a;line-height:1.65;max-width:70ch}
+.algebra-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,255px),1fr));gap:13px}
+.algebra-card{background:#fff;border:1px solid #d7e0e9;border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:9px;text-decoration:none;min-height:150px;color:#172337}
+.algebra-card strong{line-height:1.35}.algebra-card span{line-height:1.5;color:#53647a;font-size:.87rem}.algebra-card small{margin-top:auto;color:#1b64a5;font-size:.83rem;font-weight:800}
+.algebra-card:hover{border-color:#1b64a5}.algebra-card:focus-visible{outline:3px solid #187b68;outline-offset:3px}
+@media(max-width:610px){.algebra-card-grid{grid-template-columns:1fr}.algebra-card{min-height:0}}
+</style>

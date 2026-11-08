@@ -4,6 +4,7 @@ import {readFileSync,statSync,existsSync} from 'node:fs';
 import {join} from 'node:path';
 import assert from 'node:assert/strict';
 import {SKILL_RELATIONS,SEO_INTENT_CONTRASTS} from '../src/lib/intent-relations.ts';
+import {R98_PREVIEW_ONLY_HOLD_PAGES,isR98PreviewHold} from '../src/lib/preview-pages.ts';
 
 const root = new URL('../',import.meta.url).pathname;
 const routes = JSON.parse(readFileSync(join(root,'src/data/routes.json'),'utf8'));
@@ -20,7 +21,7 @@ const check = (slug) => {
   assert.doesNotMatch(html,/<link\s+rel="canonical"/i,`Preview canonical leak: ${slug}`);
   assert.doesNotMatch(html,/<meta\s+property="og:url"/i,`Preview OG URL leak: ${slug}`);
   assert.doesNotMatch(html,/<script type="application\/ld\+json"/i,`Preview schema leak: ${slug}`);
-  if(slug){
+  if(slug&&!isR98PreviewHold(slug)){
     const image=join(dist,'images','worksheets',`${slug}-sample.webp`);
     assert.ok(existsSync(image) && statSync(image).size>1000, `Missing/empty static WebP: ${slug}`);
     assert.match(html,/class="sample-img"/,`Missing visible static image for ${slug}`);
@@ -45,11 +46,22 @@ assert.doesNotMatch(notFound,/<link\s+rel="canonical"/i);
 assert.doesNotMatch(notFound,/data-workspace|class="problems-grid"/i);
 for(const route of routes){
  assert.ok(!seen.has(route.slug),`Duplicate route: ${route.slug}`);seen.add(route.slug);
- if(route.type==='HOLD')assert.ok(!existsSync(join(dist,route.slug,'index.html')),`HOLD page published: ${route.slug}`);
- else check(route.slug);
+ if(route.type==='HOLD'){
+  assert.ok(isR98PreviewHold(route.slug),`Unexpected unpublished HOLD route: ${route.slug}`);
+  check(route.slug); // Working preview is permitted, but still MUST remain noindex.
+  const html=readFileSync(join(dist,route.slug,'index.html'),'utf8');
+  assert.doesNotMatch(html,/<script type="application\/ld\+json"/i,'Unapproved HOLD page leaked public structured data');
+ }else check(route.slug);
 }
 for(const path of ['robots.txt','about/index.html','privacy/index.html','contact/index.html','terms/index.html','sitemap.xml']) assert.ok(existsSync(join(dist,path)),`Missing supporting file: ${path}`);
-console.log(`STATIC AUDIT PASS: ${routes.filter(r=>r.type!=='HOLD').length} preview topics, unique routes, 51 WebP assets, noindex metadata, support pages.`);
+assert.equal(R98_PREVIEW_ONLY_HOLD_PAGES.length,4);
+const directory=readFileSync(join(dist,'worksheets','index.html'),'utf8');
+const home=readFileSync(join(dist,'index.html'),'utf8');
+for(const slug of R98_PREVIEW_ONLY_HOLD_PAGES){
+ assert.ok(home.includes(`href="/${slug}/"`),`New preview has no home navigation link: ${slug}`);
+ assert.ok(directory.includes(`href="/${slug}/"`),`New preview has no worksheet directory navigation: ${slug}`);
+}
+console.log(`STATIC AUDIT PASS: 51 baseline generators, 4 supplemental noindex preview routes, unique paths, 51 WebP assets, support pages.`);
 
 /** R41 source-to-built-site SEO intent audit: never release guessed keywords. */
 function parseCsvLine(line){
@@ -89,7 +101,10 @@ for(const [i,line] of csvLines.entries()){
  routeHits.add(slug);
  if(route.type==='HOLD'){
   heldMapping++;
-  assert.ok(!existsSync(join(dist,slug,'index.html')),`HOLD mapped keyword has published page: ${slug}`);
+  assert.ok(isR98PreviewHold(slug),`Unexpected HOLD keyword: ${slug}`);
+  assert.ok(existsSync(join(dist,slug,'index.html')),`Built preview missing for historically held intent: ${slug}`);
+  // R98: still unapproved for indexing; content does not imply all keywords are supported.
+  assert.match(readFileSync(join(dist,slug,'index.html'),'utf8'),/name="robots" content="noindex,nofollow"/i);
  }else{
   publishedMapping++;
   assert.ok(existsSync(join(dist,slug,'index.html')),`Mapped keyword has no static tool page: ${slug}`);
@@ -112,7 +127,7 @@ for(const {parent,child,difference} of SKILL_RELATIONS){
  }
 }
 assert.equal(checkedLinks,48);
-console.log(`R41 STATIC SEO AUDIT PASS: 488 source keywords -> 55 mapped routes (437 live, 51 HOLD), 24 intent relationships, 48 rendered reciprocal links, noindex preserved.`);
+console.log(`R41 STATIC SEO AUDIT PASS: frozen 488 source keywords -> 55 intents (437 linked to original v18 generators, 51 attached to 4 additional noindex HOLD-preview guides/tools); 24 task relationships, 48 reciprocal links.`);
 
 /** R62: selected intent must match the original evidence exactly, while
  * known unsupported searches stay out of visible specialist SEO claims.

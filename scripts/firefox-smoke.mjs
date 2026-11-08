@@ -32,13 +32,49 @@ try{
  const page=await context.newPage(),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  const open=async url=>page.goto(`${address}/${url}/`,{waitUntil:'networkidle'});
- for(const missing of ['worksheets-by-grade','unknown-r81-worksheet']){
+ for(const missing of ['unknown-r81-worksheet','unknown-r98-worksheet']){
   const response=await page.goto(`${address}/${missing}/`,{waitUntil:'load'});
   assert.equal(response?.status(),404);
   assert.match(await page.locator('h1').innerText(),/worksheet page isn.t available/i);
   assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  }
- checks.push({name:'R81 Firefox HOLD and unknown URLs show 404, not soft-404 homepage',status:'pass'});
+ checks.push({name:'R81 Firefox genuinely unknown URLs show 404, not soft-404 homepage',status:'pass'});
+ // R98: the four former HOLD intents now have real standalone content, but
+ // remain intentionally NOINDEX on Cloudflare preview and on an owned domain
+ // until an explicit owner-approved indexing workflow.
+ for(const slug of ['word-problems-worksheets','worksheets-by-grade','algebra-general-worksheets','geometry-general-worksheets']){
+  const response=await open(slug);
+  assert.equal(response?.status(),200,'Missing new R98 preview page '+slug);
+  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+  assert.equal(await page.locator('link[rel="canonical"]').count(),0);
+  assert.ok((await page.locator('h1').innerText()).length>=10);
+ }
+ await open('worksheets-by-grade');
+ assert.ok(await page.locator('#grade-8 .grade-card').count()>=8,'R98 grade eight lacks enough original math tools');
+ await open('word-problems-worksheets');
+ assert.equal(await page.locator('[data-story-list] > li').count(),8);
+ await page.locator('[data-story-mode]').selectOption('one-step');
+ await page.locator('[data-story-paper]').selectOption('A4');
+ const r98Q=await page.locator('[data-story-list] > li').first().innerText();
+ assert.match(r98Q,/library shelf|books/);
+ for(const edition of ['questions','answers','steps']){
+  const waiting=page.waitForEvent('download',{timeout:45000});
+  await page.locator('[data-story-download="'+edition+'"]').click();
+  const dl=await waiting;
+  assert.ok(dl.suggestedFilename().includes('-one-step-'),dl.suggestedFilename());
+  assert.ok(dl.suggestedFilename().endsWith('-'+edition+'.pdf'),dl.suggestedFilename());
+  const target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const doc=await PDFDocument.load(readFileSync(target));
+  assert.ok(doc.getPageCount()>=1);
+  assert.ok(Math.abs(doc.getPage(0).getWidth()-595.28)<0.1,'R98 Firefox A4 PDF geometry wrong');
+  assert.match(doc.getTitle()??'',/WP1-/);
+ }
+ await page.locator('[data-story-toggle]').click();
+ assert.equal(await page.locator('.story-solution').count(),8,'Firefox story key not revealed');
+ await page.locator('[data-story-toggle]').click();
+ assert.equal(await page.locator('.story-solution').count(),0,'Firefox student preview leaked answers');
+ checks.push({name:'R98 four preview pages, A4 student, answers and worked-step PDFs in Firefox',status:'pass'});
  await open('systems-equations-worksheets');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('.problem').count(),8);

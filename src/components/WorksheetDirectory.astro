@@ -27,6 +27,16 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
   <p id="directory-search-status" data-directory-status role="status" aria-live="polite"></p>
   <ul id="directory-matches" class="directory-matches" data-directory-matches hidden aria-label="Specific matched worksheet tasks"></ul>
  </div>
+ <section class="directory-extras" aria-label="Guided worksheet collections">
+  <h2>Find practice by need</h2>
+  <p>Choose a suggested grade, a subject pathway, or fresh original word problems. These pages link to actual working tools, rather than presenting an unsupported all-in-one worksheet.</p>
+  <div class="directory-grid">
+   <a class="directory-card" href="/word-problems-worksheets/"><span class="directory-card-type">Live story generator</span><strong>Word Problems Worksheets</strong><span class="directory-card-description">Unit rates, area, multiplication and equal sharing; student, answer and step PDFs.</span><span class="directory-card-action">Create word problems →</span></a>
+   <a class="directory-card" href="/worksheets-by-grade/"><span class="directory-card-type">Suggested skill navigation</span><strong>Math Worksheets by Grade</strong><span class="directory-card-description">Grade 5, 6, 7 and 8 suggested study paths linked to working math generators.</span><span class="directory-card-action">Browse by grade →</span></a>
+   <a class="directory-card" href="/algebra-general-worksheets/"><span class="directory-card-type">Subject pathway</span><strong>Algebra Worksheets</strong><span class="directory-card-description">Equations, functions, inequalities and slope; choose the specific algebra task.</span><span class="directory-card-action">Browse algebra →</span></a>
+   <a class="directory-card" href="/geometry-general-worksheets/"><span class="directory-card-type">Subject pathway</span><strong>Geometry Worksheets</strong><span class="directory-card-description">Geometric area, volume, angles, lines, triangles and graphs.</span><span class="directory-card-action">Browse geometry →</span></a>
+  </div>
+ </section>
  <nav class="directory-nav" aria-label="Math worksheet subject directories">
   <a href="/worksheets/" aria-current={!section?'page':undefined}>All worksheets</a>
   {WORKSHEET_SECTIONS.map(group=><a href={`/${group.slug}/`} aria-current={section===group.slug?'page':undefined}>{group.slug==='data-statistics'?'Data & statistics':group.slug.charAt(0).toUpperCase()+group.slug.slice(1)}</a>)}
@@ -50,9 +60,10 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
    </a>)}
   </div>
  </section>)}
- <p class="directory-note">These are browser-based tools with reproducible practice sets and matching answer PDFs. Topic pages are not grade-level certifications. Broad or unbuilt concepts from the original planning sheet are deliberately not presented as working tools.</p>
+ <p class="directory-note">The 51 original v18 worksheet generators and the independent word-story tool work in your browser, with matching printable PDF answers. Grade and subject guides link to implemented topics; they do not claim official grade certification or unsupported search phrases.</p>
 </div>
 <style>
+ .directory-extras{padding:15px 0 24px}.directory-extras h2{font-size:1.3rem;margin:0 0 7px;color:#172337}.directory-extras>p{font-size:.88rem;color:#53647a;line-height:1.55;margin:0 0 16px;max-width:70ch}
  .directory-search{padding:23px;margin:18px 0 12px;background:linear-gradient(135deg,#f3f8fc 0%,#f1f9f6 100%);border:1px solid #d7e0e9;border-radius:18px}
  .directory-search label{display:block;color:#172337;font-size:1.12rem;font-weight:800}
  .directory-search form>p{color:#53647a;margin:7px 0 14px;font-size:.87rem;line-height:1.5}
