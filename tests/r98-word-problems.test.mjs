@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
 import {PDFDocument} from 'pdf-lib';
+import {spawnSync} from 'node:child_process';
 import {makeStorySet,verifyStorySet,expectedStoryAnswer,STORY_CHOICES,STORY_LEVELS} from '../src/lib/word-problems.ts';
 import {createStoryPdf} from '../src/lib/word-problems-pdf.ts';
 import {R98_PREVIEW_ONLY_HOLD_PAGES} from '../src/lib/preview-pages.ts';
@@ -142,5 +143,13 @@ test('R98: all 51 original HOLD-source phrases receive exactly one evidence-base
   'Exactly the original 51 held source phrases must be accounted for');
  for(const claim of ['SUPPORTED','DIRECTORY','PARTIAL','UNSUPPORTED','noindex,nofollow','not a Google indexing authorization']){
   assert.ok(matrix.toLowerCase().includes(claim.toLowerCase()),'Missing transparent scope label: '+claim);
+ }
+});
+
+test('R98: Chromium and Firefox full browser QA scripts have valid JavaScript syntax before expensive jobs',()=>{
+ for(const file of ['scripts/browser-smoke.mjs','scripts/firefox-smoke.mjs']){
+  const script=new URL('../'+file,import.meta.url).pathname;
+  const check=spawnSync(process.execPath,['--check',script],{encoding:'utf8'});
+  assert.equal(check.status,0,file+' fails node --check: '+check.stderr);
  }
 });
