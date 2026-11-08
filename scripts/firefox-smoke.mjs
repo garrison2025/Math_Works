@@ -61,7 +61,20 @@ try{
   const waiting=page.waitForEvent('download',{timeout:45000});
   await page.locator('[data-story-download="'+edition+'"]').click();
   const dl=await waiting;
-  assert.match(dl.suggestedFilename(),new RegExp('word-problems.*one-step.*'+edition+'\\.pdf
+  assert.ok(dl.suggestedFilename().includes('-one-step-'),dl.suggestedFilename());
+  assert.ok(dl.suggestedFilename().endsWith('-'+edition+'.pdf'),dl.suggestedFilename());
+  const target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const doc=await PDFDocument.load(readFileSync(target));
+  assert.ok(doc.getPageCount()>=1);
+  assert.ok(Math.abs(doc.getPage(0).getWidth()-595.28)<0.1,'R98 Firefox A4 PDF geometry wrong');
+  assert.match(doc.getTitle()??'',/WP1-/);
+ }
+ await page.locator('[data-story-toggle]').click();
+ assert.equal(await page.locator('.story-solution').count(),8,'Firefox story key not revealed');
+ await page.locator('[data-story-toggle]').click();
+ assert.equal(await page.locator('.story-solution').count(),0,'Firefox student preview leaked answers');
+ checks.push({name:'R98 four preview pages, A4 student, answers and worked-step PDFs in Firefox',status:'pass'});
  await open('systems-equations-worksheets');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('.problem').count(),8);
