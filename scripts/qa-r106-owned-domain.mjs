@@ -44,14 +44,16 @@ async function verify(){
  let i=0;
  await Promise.all(Array.from({length:5},async()=>{while(i<routes.length){
   const route=routes[i++],r=await get(base+'/'+route.slug+'/');
+  const legacyTarget={'algebra-general-worksheets':'/algebra/','geometry-general-worksheets':'/geometry/'}[route.slug];
   assert.equal(r.status,200,'Missing path '+route.slug);
   assert.equal(meta(r.text,'math-works-build-sha'),sha,'Wrong SHA '+route.slug);
+  if(legacyTarget){assert.equal(r.url,base+legacyTarget,'Legacy URL must resolve to canonical hub '+route.slug);assert.equal(meta(r.text,'robots'),'index,follow,max-image-preview:large','Canonical subject indexability '+legacyTarget);assert.ok(r.text.includes('href="https://mathworksheetstudio.com'+legacyTarget+'"'),'Canonical subject '+legacyTarget);continue;}
   const isIndexed=route.type!=='HOLD'||['word-problems-worksheets','worksheets-by-grade'].includes(route.slug);
   assert.equal(meta(r.text,'robots'),isIndexed?'index,follow,max-image-preview:large':'noindex,follow','Published index status '+route.slug);
   if(!isIndexed)assert.ok(!/<link[^>]*rel="canonical"/i.test(r.text),'HOLD canonical leak '+route.slug);
   else assert.ok(r.text.includes('href="https://mathworksheetstudio.com/'+route.slug+'/"'),'Canonical '+route.slug);
  }}));
- result.verified.push('53 published topic routes and 2 navigation noindex-follow HOLDs; SHA verified');
+ result.verified.push('51 core tools, 2 promoted generators and 2 legacy subject 301s; SHA verified');
  const [home,contact,privacy,robots,sitemap,preview]=await Promise.all([
   get(base+'/'),get(base+'/contact/'),get(base+'/privacy/'),
   get(base+'/robots.txt'),get(base+'/sitemap.xml'),get('https://math-works.pages.dev/')
@@ -79,7 +81,7 @@ async function verify(){
  try{const www=await get('https://www.mathworksheetstudio.com/');
   if(www.url!==base+'/')result.warnings.push('www apex 301 not independently verified: '+www.url);
  }catch(e){result.warnings.push('www is not yet verified or routable: '+String(e).slice(0,120));}
- result.status='PASS';console.log('R108 LIVE SEO SUCCESS: 64 indexable pages including 53 topic routes and 5 directories; 2 navigation HOLD noindex');
+ result.status='PASS';console.log('R109 LIVE SEO SUCCESS: 64 canonical URLs, 2 legacy subject 301s, 51 core topics and 5 enriched subject directories');
 }
 try{await verify()}catch(error){result.status='FAIL';result.errors=[String(error?.stack||error)];console.error(error);process.exitCode=1;}
 finally{writeFileSync(out+'/evidence.json',JSON.stringify(result,null,2)+'\n');}

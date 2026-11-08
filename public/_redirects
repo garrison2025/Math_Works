@@ -1,0 +1,6 @@
+# Consolidate historical subject URLs into the single short, indexable category URL.
+# Cloudflare Pages applies these before serving static assets.
+/algebra-general-worksheets /algebra/ 301
+/algebra-general-worksheets/ /algebra/ 301
+/geometry-general-worksheets /geometry/ 301
+/geometry-general-worksheets/ /geometry/ 301

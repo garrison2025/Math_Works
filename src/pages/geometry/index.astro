@@ -2,13 +2,66 @@
 import Layout from '../../components/Layout.astro';
 import WorksheetDirectory from '../../components/WorksheetDirectory.astro';
 import SubjectGuide from '../../components/SubjectGuide.astro';
+import SolidVolumes from '../../components/SolidVolumes.astro';
+import FocusDrills from '../../components/FocusDrills.astro';
+import R101Comprehensive from '../../components/R101Comprehensive.astro';
 ---
-<Layout title="Free Geometry Worksheets | Math Worksheet Studio" description="Printable geometry practice with real diagrams for angles, right triangles, area, surface area, volume, coordinate planes and printable protractors." canonicalPath="/geometry/">
- <div class="container"><section class="hero hero-compact">
-  <span class="eyebrow">Printable math practice library</span>
-  <h1>Geometry and measurement practice</h1>
-  <p>Find topic-specific geometry generators with vector diagrams, exact answer keys, and A4 or US Letter PDFs.</p>
- </section></div>
+<Layout title="Geometry Worksheets | Area, Angles & Volume" description="Generate geometry practice for area, angles, triangle relationships, circles and 3D solid volumes. Print diagrams, answer keys and worked steps." canonicalPath="/geometry/">
+ <div class="container">
+  <section class="hero hero-compact" aria-labelledby="geometry-heading">
+   <span class="eyebrow">Geometry practice by exact topic</span>
+   <h1 id="geometry-heading">Geometry Worksheets</h1>
+   <p>Find a real printable tool for the geometry skill you are teaching. The library distinguishes flat area, exposed surface area, solid volume, angle relationships and coordinate geometry; specialist labs add further supported diagrams and calculations.</p>
+  </section>
+  <section class="panel info-panel" aria-labelledby="geometry-scope-heading">
+   <h2 id="geometry-scope-heading">Choose a geometry task, not just a shape name</h2>
+   <p>For area, distinguish a triangle, parallelogram and trapezoid. For three-dimensional solids, volume uses cubic units while surface area uses square units. For angle work, identify whether the task is classification, an intersection, a triangle sum or four adjacent sectors around one point.</p>
+  </section>
+ </div>
  <WorksheetDirectory section="geometry"/>
- <div class="container"><SubjectGuide section="geometry"/></div>
+ <div class="container">
+  <section class="panel info-panel" aria-labelledby="solid-volume-lab">
+   <span class="eyebrow">Exact 3D measurement</span>
+   <h2 id="solid-volume-lab">Printable sphere, cone and pyramid volume practice</h2>
+   <p>Choose a solid and generate exact volume problems with a reproducible seed, matched teacher answers and worked-step PDFs. The triangular base altitude and the full pyramid height are treated as separate measurements.</p>
+  </section>
+ </div>
+ <SolidVolumes/>
+ <div class="container">
+  <section class="panel info-panel" aria-labelledby="point-angle-heading">
+   <span class="eyebrow">Exact angle relationships · R100</span>
+   <h2 id="point-angle-heading">Printable angles around a point worksheets</h2>
+   <p>Four adjacent angle sectors meet at point O. The SVG diagram and printable PDF rays use the same integer-degree measurements. Find the missing sector from a full turn of 360°, then compare with a separate answer key.</p>
+   <p>This is a focused four-sector missing-angle drill, not a general compass, polygon theorem or proof course.</p>
+  </section>
+ </div>
+ <FocusDrills scope="angles"/>
+ <div class="container">
+  <section class="panel info-panel" aria-labelledby="advanced-geometry-heading">
+   <span class="eyebrow">Expanded authentic geometry practice · R101</span>
+   <h2 id="advanced-geometry-heading">Triangle congruence, similarity, polygons, circles and mixed volumes</h2>
+   <p>Generate focused exercises on five valid congruence rules (SSS, SAS, ASA, AAS and right-triangle HL), proportional sides in similar right triangles, polygon side counts, circle measurements and six volume shapes. Triangle diagrams are schematic: use the stated side and angle measurements rather than estimating from the picture.</p>
+   <p>This is targeted skills practice, not a full Euclidean proof course or every possible circle theorem.</p>
+  </section>
+ </div>
+ <R101Comprehensive scope="geometry"/>
+ <div class="container">
+  <section class="info-grid" aria-label="Geometry worked examples">
+   <div class="panel info-panel">
+    <h2>Example: why perpendicular height matters</h2>
+    <p>A triangle with base 8 units and perpendicular height 5 units has area (8 × 5) / 2 = <strong>20 square units</strong>. A slanted side is not automatically the height. Try the <a href="/area-of-triangles-worksheets/">triangle area generator</a>.</p>
+   </div>
+   <div class="panel info-panel">
+    <h2>Example: a right triangle</h2>
+    <p>If the legs measure 3 and 4 units, then c² = 3² + 4² = 25, so c = <strong>5 units</strong>. Use this rule only when the triangle has a right angle.</p>
+    <p>Try <a href="/pythagorean-worksheets/">Pythagorean theorem worksheets</a>.</p>
+   </div>
+  </section>
+  <section class="panel info-panel">
+   <h2>Scope and related practice</h2>
+   <p>The original 51 generators, the specialist solid-volume lab, the four-sector angle drill and the R101 geometry practice cover the tasks explicitly listed on this page. They do not constitute a complete geometry proof course or every circle theorem. Choose a dedicated generator rather than assuming an unrelated geometry keyword is supported.</p>
+   <p>For algebra, visit <a href="/algebra/">algebra worksheets</a>; for suggested study paths, see <a href="/worksheets-by-grade/">math worksheets by grade</a>.</p>
+  </section>
+  <SubjectGuide section="geometry"/>
+ </div>
 </Layout>

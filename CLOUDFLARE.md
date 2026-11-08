@@ -56,3 +56,11 @@ On a Cloudflare Pages production build, inspect **View source** on `https://math
 After merging R81 and confirming production deployment, test a real unknown path and a HOLD path such as `/word-problems-worksheets/` with a real HTTP status viewer (or `curl -I`). They must return **404**, render the custom worksheet-not-available page, and emit `noindex,nofollow`. A `200` homepage response is a soft-404 defect. The local Chromium/Firefox static preview uses the same `404.html` with a simulated 404 status; this is not independent Cloudflare live verification.
 
 Keep `PUBLIC_INDEXABLE=false` on the unpurchased preview domain. New build-revision metadata does **not** authorize indexing or substitute for the physical-print/teacher review.
+
+## R109 subject URL consolidation
+
+The two historical long subject URLs now redirect to their short canonical directories using `public/_redirects`:
+- `/algebra-general-worksheets/` → `/algebra/`
+- `/geometry-general-worksheets/` → `/geometry/`
+
+Both slash variants are declared as 301 redirects. Cloudflare Pages applies `_redirects` rules before serving static assets; the live release gate tests the actual HTTP 301 Location and the destination canonical. The short pages preserve the original algebra and geometry specialist generators rather than discarding them. The 64-URL sitemap retains only the short subject destinations.

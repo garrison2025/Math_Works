@@ -1,14 +1,41 @@
 ---
 import Layout from '../../components/Layout.astro';
+import FocusDrills from '../../components/FocusDrills.astro';
 import WorksheetDirectory from '../../components/WorksheetDirectory.astro';
 import SubjectGuide from '../../components/SubjectGuide.astro';
 ---
-<Layout title="Free Algebra and Function Worksheets | Math Worksheet Studio" description="Printable algebra worksheets for one-step and two-step equations, inequalities, linear graphs, systems, functions and domain/range." canonicalPath="/algebra/">
- <div class="container"><section class="hero hero-compact">
-  <span class="eyebrow">Printable math practice library</span>
-  <h1>Algebra and function practice</h1>
-  <p>Choose specific equation, graph or function practice and use the dedicated generator instead of mixing unrelated algebra skills.</p>
- </section></div>
+<Layout title="Algebra Worksheets | Equations & Functions" description="Generate algebra practice for formula rearrangement, multistep equations, expression simplification, inequalities, systems and functions. Print matching answer PDFs." canonicalPath="/algebra/">
+ <div class="container">
+  <section class="hero hero-compact" aria-labelledby="algebra-heading">
+   <span class="eyebrow">Algebra practice library</span>
+   <h1 id="algebra-heading">Algebra Worksheets</h1>
+   <p>Choose a focused algebra generator or build a separate advanced drill. The library distinguishes equation solving, symbolic manipulation, inequalities and function work instead of treating them as interchangeable questions.</p>
+  </section>
+  <section class="panel info-panel" aria-labelledby="algebra-scope-heading">
+   <h2 id="algebra-scope-heading">Choose the algebra skill you need</h2>
+   <p>Start with one-step and two-step equations for inverse operations. Use the focused practice lab below for literal-formula rearrangement, distributive multistep equations and simplifying expressions. Open the dedicated tools for inequalities, systems, functions, tables, slope and domain or range.</p>
+  </section>
+ </div>
+ <FocusDrills scope="algebra"/>
  <WorksheetDirectory section="algebra"/>
- <div class="container"><SubjectGuide section="algebra"/></div>
+ <div class="container">
+  <section class="info-grid" aria-label="Algebra worked examples">
+   <div class="panel info-panel">
+    <h2>Worked concept: inverse operations</h2>
+    <p><strong>Example:</strong> 3x + 5 = 20. Subtract 5 from both sides to get 3x = 15; divide both sides by 3, so x = 5. Check: 3 × 5 + 5 = 20.</p>
+    <p>In an inequality, multiplying or dividing by a negative reverses the comparison direction. Use the dedicated <a href="/inequalities-worksheets/">inequalities worksheet generator</a> for these cases.</p>
+   </div>
+   <div class="panel info-panel">
+    <h2>Worked concept: slope</h2>
+    <p>The slope between (1, 2) and (3, 6) is (6 − 2) / (3 − 1) = 2. A vertical line has undefined slope because its change in x is zero.</p>
+    <p>Practise the number rule with <a href="/slope-worksheets/">slope worksheets</a> and graph the line with <a href="/linear-equations-worksheets/">linear-equation worksheets</a>.</p>
+   </div>
+  </section>
+  <section class="panel info-panel" aria-labelledby="algebra-boundary-heading">
+   <h2 id="algebra-boundary-heading">What the advanced algebra lab covers</h2>
+   <p>The original practice lab includes four supported literal-equation structures, one-variable linear equations with distributive brackets, and collecting like terms. It does not claim to generate quadratic equations, polynomial factoring, nonlinear literal equations or a complete Algebra I curriculum.</p>
+   <p>For contextual one-, two- and three-step equation modelling, use the separate <a href="/word-problems-worksheets/#equation-story-lab">original algebra word-problem generator</a>. For geometry, visit <a href="/geometry/">geometry worksheets</a>.</p>
+  </section>
+  <SubjectGuide section="algebra"/>
+ </div>
 </Layout>

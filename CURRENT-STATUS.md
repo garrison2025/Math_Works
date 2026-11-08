@@ -1,3 +1,13 @@
+# R109 — Subject hub consolidation and SEO evidence integrity (2026-11-08)
+
+The next SEO audit found that homepage and directory links pointed at two historical noindex subject URLs even though short canonical subject directories were already indexable. The short `/algebra/` and `/geometry/` pages now retain the original real advanced tools: formula rearrangement, distributive multistep algebra and expression simplification; sphere/cone/pyramid volumes, four-sector point-angle drills, and R101 geometry exercises. The four old slash/no-slash URL forms now have Cloudflare Pages 301 redirects to the short canonical pages. Sitemap remains exactly 64 URLs; no duplicate subject URLs are added.
+
+R109 also reconciles all 51 page-primary keyword volume/KD metrics against the frozen original `keyword-evidence.csv`. Thirteen stale `routes.json` records were corrected; `seo-targets.json` already matched all 51 exact source rows. The original 488-row CSV is unchanged. Home page copy now states that worked steps are available only on supported topics, and a regression test prevents future unsupported step-PDF claims.
+
+**Status:** implementation candidate on `fix/r109-algebra-geometry-seo-consolidation`; do not call deployed until CI, Cloudflare Pages and the owned-domain 301 tests pass. Google indexing/traffic still requires Search Console evidence.
+
+---
+
 # R108 — Live SEO quality and canonical rollout (2026-11-08)
 
 Owner-approved 64 public canonical URLs in the main build, 51 individually verified intent titles/descriptions/H1, 5 original math subject guides, 2 promoted real mixed/word-story generator pages, 24 subject comparison inserts, schema, site trust and social previews. Two navigation HOLD pages remain noindex-follow; previews and 404 remain noindex-nofollow. CI and Cloudflare verification must be checked before claiming deployment. DNS redirects, Search Console and Core Web Vitals require independent verification.

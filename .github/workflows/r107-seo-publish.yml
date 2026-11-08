@@ -11,6 +11,9 @@ on:
       - 'src/pages/sitemap.xml.ts'
       - 'astro.config.mjs'
       - 'public/robots.txt'
+      - 'public/_redirects'
+      - 'src/data/routes.json'
+      - 'tests/r109-seo-consolidation.test.mjs'
       - 'scripts/qa-r107-index-built.mjs'
       - 'tests/r108-seo-meta.test.mjs'
       - 'scripts/qa-r108-lab-speed.mjs'
@@ -40,6 +43,8 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Simulate main and preview publication contract
         run: node --experimental-strip-types --test tests/r107-publication.test.mjs
+      - name: Check legacy URL consolidation and frozen keyword metric provenance
+        run: node --experimental-strip-types --test tests/r109-seo-consolidation.test.mjs
       - name: Check all 51 exact-intent metadata entries
         run: node --experimental-strip-types --test tests/r108-seo-meta.test.mjs
       - name: Build Cloudflare production with stale Cloudflare PUBLIC_INDEXABLE=false
