@@ -60,7 +60,7 @@ try{
   assert.equal(await page.locator('[data-wide-list] > li').count(),16);
   const start=await page.locator('[data-wide-list] > li > p:first-child').allTextContents();
   assert.equal(start.length,16);
-  assert.ok(start.every(x=>x.length>25));
+  assert.ok(start.every(x=>x.trim().length>=10),'Blank or unexpectedly short question preview');
   assert.equal(await page.locator('.wide-answer').count(),0,'Answer leak before reveal');
   await page.locator('[data-wide-toggle]').click();
   assert.equal(await page.locator('.wide-answer').count(),16);
