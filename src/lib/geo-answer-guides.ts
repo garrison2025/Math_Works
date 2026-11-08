@@ -85,7 +85,7 @@ export const GEO_GUIDES:Readonly<Record<string,GeoGuide>>={
    {question:"Why is printer calibration necessary?",answer:"Printers and PDF viewers may scale output. Computer-based PDF geometry checks cannot verify the physical sheet in your hand. If the 50 mm line is the wrong length, fix print scaling and reprint."}
   ],
   related:{href:"/angle-worksheets/",label:"Practise reading and classifying angles"}
- }
+ },
  "multiplication-worksheets":{
   purpose:"Use the general multiplication page for mixed facts, selected 1–12 times-table practice, or two-digit-by-one-digit products. Choose a specialist page for a different written algorithm; the broad generator does not automatically provide every factor size.",
   answers:[
