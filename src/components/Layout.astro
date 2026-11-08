@@ -25,7 +25,7 @@ const sheetSlug=focus?.slug||
 const socialImage=`${base}/images/worksheets/${sheetSlug}-sample.webp`;
 const socialAlt=focus?
  `${title} — example printable practice sheet`:'Original math worksheet preview with questions';
-const website={ "@type":"WebSite","@id":`${base}/#website`,name:"Math Worksheet Studio",url:`${base}/`,inLanguage:"en-US" };
+const website={ "@type":"WebSite","@id":`${base}/#website`,name:"Math Worksheet Studio",url:`${base}/`,description:"A free, browser-based library of 51 topic-specific math worksheet generators with reproducible questions and matching printable answer keys.",inLanguage:"en-US" };
 const webpage=canonical?{
  "@type":"WebPage",name:title,url:canonical,description,inLanguage:"en-US",
  isPartOf:{"@id":`${base}/#website`}
