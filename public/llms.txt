@@ -25,6 +25,8 @@ Public source repository: https://github.com/garrison2025/Math_Works
 - Rectangular-prism volume: https://mathworksheetstudio.com/volume-of-rectangular-prisms-worksheets/
 - Box plots: https://mathworksheetstudio.com/box-plots-worksheets/
 - Printable protractor: https://mathworksheetstudio.com/printable-protractor/
+- Equivalent fractions: https://mathworksheetstudio.com/equivalent-fractions-worksheets/
+- Mean, median, mode and range: https://mathworksheetstudio.com/mean-median-mode-range-worksheets/
 - General multiplication practice: https://mathworksheetstudio.com/multiplication-worksheets/
 - Mixed addition and subtraction: https://mathworksheetstudio.com/mixed-addition-subtraction-worksheets/
 - Pythagorean theorem: https://mathworksheetstudio.com/pythagorean-worksheets/
