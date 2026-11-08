@@ -1,5 +1,6 @@
 /** V2.0 /worksheets/ library and five navigational subject directories.
- * Five original subject directories now include unique math teaching guides and\n * are owner-approved indexable pages; no keyword permutations are manufactured.
+ * Five original subject directories now include unique math teaching guides and
+ * are owner-approved indexable pages; no keyword permutations are manufactured.
  * Every built (non-HOLD) worksheet belongs to exactly one directory.
  */
 export const WORKSHEET_SECTIONS=[
