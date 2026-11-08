@@ -960,7 +960,9 @@ try {
  ]){
   await page.goto(base+'/'+name+'/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
-  assert.equal(await page.locator('.directory-card').count(),expected,'Incomplete V2 subject directory');
+  assert.equal(await page.locator('.directory-group .directory-card').count(),expected,'Original V2 generators missing');
+  if(name==='worksheets')assert.equal(await page.locator('.directory-extras .directory-card').count(),4,
+   'Four new noindex guided pages not linked in main directory');
   assert.equal(await page.locator('.directory-nav a').count(),6);
  }
  events.push({kind:'interaction',name:'R89 six subject directories and true corrected exercise settings in Chromium',status:'pass'});
@@ -986,10 +988,13 @@ try {
  await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
  await page.locator('[data-directory-query]').fill('8th grade math worksheets');
  await page.waitForFunction(()=>document.querySelector('[data-directory-status]')?.textContent?.includes('0 topic'));
- assert.equal(await page.locator('[data-directory-matches] a').count(),0,
-  'HOLD grade keywords must never appear as working search destinations');
+ assert.equal(await page.locator('[data-directory-matches] a[href="/worksheets-by-grade/"]').count(),1,
+  'R98 grade search must offer the appropriate grade directory without asserting a single generator covers the entire grade');
+ assert.equal(await page.locator('[data-directory-matches] a[href^="/word-problems-worksheets/"]').count(),0,
+  'Grade keywords should not be routed to unrelated story problems');
  await page.locator('[data-directory-clear]').click();
- assert.equal(await page.locator('.directory-card:visible').count(),51);
+ assert.equal(await page.locator('.directory-group .directory-card:visible').count(),51);
+ assert.equal(await page.locator('.directory-extras .directory-card:visible').count(),4);
  await page.setViewportSize({width:360,height:740});
  await page.locator('[data-directory-query]').fill('fraction times fraction worksheet');
  await page.locator('[data-directory-matches] a[href*="/multiplying-fractions-worksheets/"]').first()
@@ -1013,7 +1018,10 @@ try {
  await page.goto(base+'/terms/',{waitUntil:'networkidle'});
  assert.equal(await page.locator('h1').innerText(),'Terms of Use');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
- events.push({kind:'interaction',name:'R90 exact-keyword search, restored option, HOLD exclusion, clear action, 360px and Terms',status:'pass'});
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ await page.locator('[data-directory-query]').fill('word problems with decimals');
+ await page.locator('[data-directory-matches] a[href="/word-problems-worksheets/"]').waitFor({state:'visible',timeout:12000});
+ events.push({kind:'interaction',name:'R90 exact V2 generator aliases plus four truthful guide suggestions, grade search, restored option, mobile and Terms',status:'pass'});
  // R71 each mode downloads three ACTUAL PDF files through isolated
  // Playwright contexts to avoid Chrome's multi-download suppression.
  for(const input of [
