@@ -1,0 +1,30 @@
+{
+  "schema": "mathworks-r113-geo-content-expansion/v1",
+  "date": "2026-11-08",
+  "state": "CONTENT_ENRICHMENT_CODED_REQUIRES_CI_AND_LIVE_SEARCH_REVIEW",
+  "selectionMethod": "Select the ten uncovered topic pages whose historical sourceMonthlyVolume is at least 2,400 and whose sourceSemrushKD remains within the existing <=29 gate. Metrics are retained historical snapshots, not current search measurements.",
+  "baselineGuideCount": 10,
+  "totalGuideCount": 20,
+  "visibleQuestionAnswerPairs": 40,
+  "newIndexableUrls": 0,
+  "addedGuides": [
+    "multiplication-worksheets",
+    "mixed-addition-subtraction-worksheets",
+    "pythagorean-worksheets",
+    "multiplication-tables-worksheets",
+    "subtraction-worksheets",
+    "one-step-equations-worksheets",
+    "decimal-multiplication-worksheets",
+    "fractions-worksheets",
+    "two-digit-multiplication-worksheets",
+    "order-of-operations-worksheets"
+  ],
+  "scopeLimits": [
+    "Each answer describes only the implemented generator and its explicit limits.",
+    "Common Core links are context references, not grade-alignment certification or endorsement.",
+    "No FAQPage, rating, review or fabricated expert-person markup is added.",
+    "No new indexed URLs are created; the approved 64-URL sitemap policy is unchanged.",
+    "GEO text and llms.txt do not guarantee AI citations or Google ranking gains.",
+    "Current Google rankings, impressions, clicks and indexing require Search Console data."
+  ]
+}
