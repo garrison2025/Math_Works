@@ -41,7 +41,7 @@ function independentAnswer(p){
  }
  throw Error('Unexpected mode '+p.mode);
 }
-test('R98: six original story skills use true numeric questions and match independently parsed answers across 12,600 problems',()=>{
+test('R98: six original story skills use true numeric questions and match independently parsed answers across 6,720 problems',()=>{
  let problems=0,sets=0;
  for(const mode of STORY_CHOICES){
   for(const level of STORY_LEVELS){
