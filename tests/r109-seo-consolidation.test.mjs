@@ -73,5 +73,5 @@ test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
 test('topic snippets never promise a worked-step PDF where none is verified',()=>{
  assert.equal(Object.keys(TOPIC_SEO).length,51);
  for(const [slug,seo] of Object.entries(TOPIC_SEO))if(/worked[- ]steps?|worked solutions|solution steps/i.test(seo.description))assert.ok(hasVerifiedSteps(slug),'Unverified steps '+slug);
- const home=read('../src/pages/index.astro');assert.match(home,/worked steps are available on supported topics/i);assert.match(home,/without an account/i);assert.match(home,/A4 or US Letter/i);assert.doesNotMatch(home,/verified worked steps\./i);
+ const home=read('../src/pages/index.astro');assert.match(home,/worked steps are available on supported topics/i);assert.match(home,/No account/i);assert.match(home,/US Letter or A4/i);assert.doesNotMatch(home,/verified worked steps\./i);
 });
