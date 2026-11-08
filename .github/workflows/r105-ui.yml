@@ -1,0 +1,43 @@
+name: R105 workbench UX, reduced motion and PDF regression
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'scripts/qa-r105-ui.mjs'
+      - '.github/workflows/r105-ui.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/styles/ui-v5.css'
+      - 'src/components/Layout.astro'
+      - 'src/components/Workspace.astro'
+      - 'src/components/WorksheetDirectory.astro'
+      - 'src/components/R101Comprehensive.astro'
+      - 'src/client/workspace.ts'
+      - 'src/client/r101-comprehensive.ts'
+      - 'src/client/worksheet-directory-search.ts'
+      - 'scripts/qa-r105-ui.mjs'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  workbench-ux-and-motion:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - name: Real Chromium 24 viewports, preview motion, Grade 5, quick search and actual PDF
+        run: node scripts/qa-r105-ui.mjs
+      - name: Archive R105 real browser screenshots and test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r105-workbench-responsive-browser-evidence
+          path: qa-artifacts/r105-ui/
+          retention-days: 30
+          if-no-files-found: warn

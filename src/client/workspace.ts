@@ -64,6 +64,18 @@ function setup(root:HTMLElement){
  const sheetCaption=root.querySelector<HTMLElement>('[data-sheet-caption]')!;
  const sheetFooter=root.querySelector<HTMLElement>('[data-sheet-footer]')!;
  let mode:PdfMode='questions';let worksheet:Worksheet|undefined;let practiceMode=false;
+ // R105: visual acknowledgement only. No changes to generation, question state or PDFs.
+ let uiReady=false;let previewAnimation:Animation|undefined;
+ const printableView=root.querySelector<HTMLElement>('[data-print-sheet]')!;
+ function animatePreview(){
+  if(!uiReady||document.hidden||window.matchMedia('(prefers-reduced-motion: reduce)').matches||
+   window.matchMedia('print').matches||typeof printableView.animate!=='function')return;
+  previewAnimation?.cancel();
+  previewAnimation=printableView.animate([
+   {opacity:.84,transform:'translateY(5px)'},
+   {opacity:1,transform:'translateY(0)'}
+  ],{duration:200,easing:'cubic-bezier(.2,.75,.25,1)'});
+ }
  let refreshSpecialExample:(()=>void)|undefined;
  let refreshEquationPreview:(()=>void)|undefined;
  function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsPracticeAnswer(topic,p.expectedAnswer));}
@@ -129,6 +141,7 @@ function setup(root:HTMLElement){
   summary.textContent=`${s.problems.length} questions · ${difficulty.value} · ${paper.value}${writingRoom.value==='extra'?' · Extra writing room (PDF only)':''} · Engine v${s.generatorVersion} · Config ${s.optionsHash}`;sheetCaption.textContent=`${mode==='questions'?'Practice worksheet':mode==='answers'?'Answer key':'Worked solutions'} · Sheet ID ${s.seed}`;sheetFooter.textContent=`${mode.toUpperCase()} · Engine v${s.generatorVersion} · Seed ${s.seed} · Config ${s.optionsHash} · ${s.problems.length} questions`;
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
   updatePracticeUI();
+  animatePreview();
  }
  function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();refreshSpecialExample?.();refreshEquationPreview?.();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
    worksheet=undefined;setExportReady(false);refreshEquationPreview?.();
@@ -953,6 +966,7 @@ function setup(root:HTMLElement){
   if(value!==undefined&&el)el.value=value;
  }
  rebuild();
+ uiReady=true;
  const params=new URL(window.location.href).searchParams;
  if(params.has('seed') && params.get('gv')!==GENERATOR_VERSION){
   inform('This shared link uses an older or unversioned generator. Its original questions may differ after an update. Copy a fresh link to preserve the current version.',true);
