@@ -261,7 +261,7 @@ function candidate(r:Rng,kind:WideKind,level:WideLevel):Omit<WideProblem,'id'>{
  case 'polygon-sides':a=r.int(3,12);v=r.int(0,2);break;
  case 'triangle-congruence':
   v=r.int(0,4);
-  if(v===0){a=r.int(4,cap+2);b=r.int(4,cap+2);c=r.int(Math.abs(a-b)+1,a+b-1);}
+  if(v===0){a=r.int(4,cap+2);b=r.int(4,cap+2);c=r.int(Math.max(2,Math.abs(a-b)+1),a+b-1);}
   else if(v===1){a=r.int(3,cap+2);b=r.int(3,cap+2);c=r.int(35,130);}
   else if(v===2||v===3){a=r.int(30,75);b=r.int(30,75);c=r.int(3,cap+2);}
   else {a=r.int(6,cap+4);b=r.int(3,a-1);}
