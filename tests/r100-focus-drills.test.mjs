@@ -13,10 +13,10 @@ function independent(p){
   assert.ok(m,q);
   const a=asNumber(m[1]),b=asNumber(m[3])*(m[2]==='-'?-1:1),
    c=asNumber(m[5])*(m[4]==='-'?-1:1),rhs=asNumber(m[6]);
-  assert.equal((rhs-c)%a,0,'Numerical inverse must divide exactly');
+  assert.ok((rhs-c)%a===0,'Numerical inverse must divide exactly (negative zero is an exact multiple)');
   const x=(rhs-c)/a-b;
   assert.equal(answer,'x = '+x);
-  assert.equal(a*(x+b)+c,rhs);
+  assert.ok(a*(x+b)+c===rhs,'Independently substituted solution does not satisfy the equation');
   return;
  }
  if(p.kind==='simplify'){
