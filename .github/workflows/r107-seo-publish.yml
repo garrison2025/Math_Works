@@ -15,6 +15,7 @@ on:
       - 'src/data/routes.json'
       - 'tests/r109-seo-consolidation.test.mjs'
       - 'scripts/qa-r107-index-built.mjs'
+      - 'scripts/qa-r109-internal-links.mjs'
       - 'tests/r108-seo-meta.test.mjs'
       - 'scripts/qa-r108-lab-speed.mjs'
       - 'tests/r107-publication.test.mjs'
@@ -58,6 +59,8 @@ jobs:
         run: npm run build
       - name: Inspect all 64 HTML pages, 64 canonical sitemap URLs, OG and topic-specific metadata
         run: node scripts/qa-r107-index-built.mjs
+      - name: Audit all 64 pages for broken internal links, fragments and orphan pages
+        run: node scripts/qa-r109-internal-links.mjs
       - name: Record reproducible mobile Chrome FCP/LCP/CLS lab metrics (not CrUX)
         run: node scripts/qa-r108-lab-speed.mjs
       - uses: actions/upload-artifact@v4
