@@ -27,6 +27,12 @@ on:
   push:
     branches: [main]
     paths:
+      - 'src/pages/**'
+      - 'src/components/GeoTopicAnswers.astro'
+      - 'src/lib/geo-answer-guides.ts'
+      - 'tests/r111-geo-evidence.test.mjs'
+      - 'scripts/qa-r111-geo-built.mjs'
+      - '.github/workflows/r107-seo-publish.yml'
       - 'public/_redirects'
       - 'src/data/routes.json'
       - 'tests/r109-seo-consolidation.test.mjs'
