@@ -8,6 +8,7 @@ import corrections from '../src/data/seo-routing-r70.json' with {type:'json'};
 import {topicOptionsFor} from '../src/lib/topic-options.ts';
 import {correctedTaskLinksFor} from '../src/lib/seo-routing-r70.ts';
 import {WORKSHEET_SECTIONS,worksheetSectionFor} from '../src/lib/worksheet-directory.ts';
+import {R98_PREVIEW_ONLY_HOLD_PAGES,isR98PreviewHold} from '../src/lib/preview-pages.ts';
 
 function parseCsvRow(text){
  const values=[];let value='',quoted=false;
@@ -73,7 +74,12 @@ for(const [index,line] of lineSet.entries()){
  assert.ok(effective,'Corrected task route not in V2 '+effectiveRoute);
  if(original.type==='HOLD'){
   assert.ok(!changed,'V2 HOLD unexpectedly promoted');
-  assert.ok(!existsSync(join(dist,originalRoute,'index.html')),'V2 HOLD unexpectedly built');
+  assert.ok(isR98PreviewHold(originalRoute),'Unreviewed or non-listed HOLD has been built: '+originalRoute);
+  const hold=readFileSync(join(dist,originalRoute,'index.html'),'utf8');
+  assert.match(hold,/<h1[\s>]/i,'Built preview lacks an informative heading');
+  assert.match(hold,/name="robots"\s+content="noindex,nofollow"/i,'An unapproved HOLD preview became indexable');
+  assert.doesNotMatch(hold,/<link\s+rel="canonical"/i,'HOLD preview leaked a public canonical');
+  assert.doesNotMatch(hold,/<script type="application\/ld\+json"/i,'HOLD preview leaked schema');
  }else{
   const html=pageHtml(effectiveRoute);
   assert.ok(html.includes('data-seo-'+(effective.type==='CONDITIONAL_HUB'?'hub':'focus')));
@@ -98,14 +104,14 @@ for(const [index,line] of lineSet.entries()){
   sourceRoute:originalRoute,effectiveRoute,requiredOptions:changed?correction.requiredOptions:{},
   routeType:effective.type,
   section:effective.type==='HOLD'?null:worksheetSectionFor(effectiveRoute),
-  deployment:original.type==='HOLD'?'V2_HOLD_NOT_BUILT':changed?'BUILT_CORRECTED_TASK':'BUILT_AS_PLANNED',
+  deployment:original.type==='HOLD'?'V2_HOLD_PREVIEW_ONLY':changed?'BUILT_CORRECTED_TASK':'BUILT_AS_PLANNED',
   searchIndexApproved:false});
 }
 assert.equal(seen.size,488);
 assert.equal(routeCounts.size,55);
-assert.equal(records.filter(x=>x.deployment==='V2_HOLD_NOT_BUILT').length,51);
+assert.equal(records.filter(x=>x.deployment==='V2_HOLD_PREVIEW_ONLY').length,51);
 assert.equal(records.filter(x=>x.deployment==='BUILT_CORRECTED_TASK').length,15);
-assert.equal(records.filter(x=>x.deployment!=='V2_HOLD_NOT_BUILT').length,437);
+assert.equal(records.filter(x=>x.deployment!=='V2_HOLD_PREVIEW_ONLY').length,437);
 for(const route of routes){
  if(route.type==='HOLD'){
   assert.ok(!targetMap.has(route.slug));
@@ -134,7 +140,7 @@ const all=readFileSync(join(dist,'worksheets','index.html'),'utf8');
 assert.match(all,/name="robots"\s+content="noindex,nofollow"/i);
 for(const route of routes)if(route.type!=='HOLD')
  assert.ok(all.includes('/'+route.slug+'/'),'Missing V2 master directory topic '+route.slug);
-else assert.ok(!all.includes('/'+route.slug+'/'),'HOLD linked as working tool '+route.slug);
+else assert.ok(all.includes('/'+route.slug+'/'),'R98 standalone noindex guide missing from directory '+route.slug);
 
 const directory=join(process.cwd(),'qa-artifacts','r89-v2-keyword-deployment');
 mkdirSync(directory,{recursive:true});
@@ -143,11 +149,12 @@ const status={
  plan:'Frozen owner-provided V2.0: 488 keywords and 55 route intents',
  newSerpResearch:false,updatedSearchVolumeOrKD:false,
  originalKeywordRows:488,plannedRouteIntents:55,workingPages:51,
+ supplementalPreviewPages:R98_PREVIEW_ONLY_HOLD_PAGES.length,
  mappedToWorkingPages:437,heldKeywordRows:51,heldRoutes:4,
  correctedTaskLinksWithExactOptions:15,
  subjectDirectories:['worksheets',...WORKSHEET_SECTIONS.map(s=>s.slug)],
  subjectCounts:groups,approvedIndexPages:0,
- teacherReview:'NOT RUN',physicalPrint:'NOT RUN',
+ teacherReview:'OWNER-WAIVED_NOT_CERTIFIED',physicalPrint:'OWNER-WAIVED_NOT_CERTIFIED',
  previewRobots:'noindex,nofollow',result:'PASS'
 };
 writeFileSync(join(directory,'summary.json'),JSON.stringify(status,null,2)+'\n');
@@ -156,4 +163,4 @@ const columns=['row','keyword','sourceVolume','sourceKD','sourceRoute','effectiv
 const cell=value=>'"'+String(value??'').replaceAll('"','""')+'"';
 writeFileSync(join(directory,'keyword-landing-matrix.csv'),
  [columns.join(','),...records.map(row=>columns.map(c=>cell(row[c])).join(','))].join('\n')+'\n');
-console.log('R89 PASS: 488 original keywords; 437 mapped to 51 built pages; 51 held by V2; 15 corrected mode-preserving links; six navigable directories; all noindex.');
+console.log('R89 PASS: 488 frozen keywords; 437 on 51 v18 generators; 51 historically HOLD rows remain unapproved but 4 distinct supplemental preview routes are built; all noindex.');
