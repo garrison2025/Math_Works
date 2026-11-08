@@ -16,13 +16,20 @@ function init(root:HTMLElement){
  const toggle=root.querySelector<HTMLButtonElement>('[data-story-toggle]')!;
  let keyVisible=false,pack:StorySet;
  const message=(m:string,error=false)=>{status.textContent=m;status.dataset.error=error?'true':'false'};
+ // Browsers can restore cached select state *after* a deferred script initializes.
+ // Shared settings take priority over session form restoration, including on
+ // same-path query navigation and back/forward cache pageshow.
  const params=new URLSearchParams(window.location.search);
- const seeded=params.get('wp_seed');
- if(seeded&&/^\d{1,10}$/.test(seeded)&&Number(seeded)<=0xffffffff)seed.value=seeded;
- const selected=params.get('wp_mode');if(selected&&choices.has(selected))mode.value=selected;
- const selectedLevel=params.get('wp_level');if(selectedLevel&&levels.has(selectedLevel))level.value=selectedLevel;
- const n=Number(params.get('wp_count'));if(counts.has(n))quantity.value=String(n);
- const page=params.get('wp_paper');if(page==='Letter'||page==='A4')paper.value=page;
+ const hasSharedSettings=['wp_seed','wp_mode','wp_level','wp_count','wp_paper'].some(k=>params.has(k));
+ const restoreSettings=()=>{
+  const seeded=params.get('wp_seed');
+  if(seeded&&/^\d{1,10}$/.test(seeded)&&Number(seeded)<=0xffffffff)seed.value=seeded;
+  const selected=params.get('wp_mode');if(selected&&choices.has(selected))mode.value=selected;
+  const selectedLevel=params.get('wp_level');if(selectedLevel&&levels.has(selectedLevel))level.value=selectedLevel;
+  const count=params.get('wp_count');if(count&&counts.has(Number(count)))quantity.value=count;
+  const targetPaper=params.get('wp_paper');if(targetPaper==='Letter'||targetPaper==='A4')paper.value=targetPaper;
+ };
+ restoreSettings();
  function current(){
   return makeStorySet(Number(seed.value),Number(quantity.value),mode.value as StoryChoice,level.value as StoryLevel);
  }
@@ -86,6 +93,12 @@ function init(root:HTMLElement){
    finally{button.disabled=false;}
   });
  }
+ // pageshow occurs after browser session-history form restoration; always
+ // reapply a valid shared URL and render its reproducible problems there.
+ if(hasSharedSettings)window.addEventListener('pageshow',()=>{
+  restoreSettings();
+  try{keyVisible=false;render()}catch(e){message(e instanceof Error?e.message:'Unable to restore shared worksheet',true)}
+ });
  try{render()}catch(e){message(e instanceof Error?e.message:'Unable to initialize stories',true)}
 }
 export function initWordProblemWorkspaces(){
