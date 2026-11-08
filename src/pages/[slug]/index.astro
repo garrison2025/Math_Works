@@ -7,6 +7,7 @@ import {sampleProblem} from '../../lib/math';
 import {relatedSkillTasks} from '../../lib/intent-relations';
 import {correctedTaskLinksFor} from '../../lib/seo-routing-r70';
 import seoTargets from '../../data/seo-targets.json';
+import {topicSeoFor} from '../../data/topic-seo';
 import {topicOptionsFor,maxQuantityForTopic} from '../../lib/topic-options';
 import {hasVerifiedSteps} from '../../lib/capabilities';
 import {teachingNotes} from '../../lib/teaching-notes';
@@ -20,6 +21,7 @@ const reviewedTaskRoutes=correctedTaskLinksFor(route.slug);
 const fixedSample=sampleProblem(route.slug,20261104);
 const seoTarget=seoTargets.find(entry=>entry.slug===route.slug);
 if(!seoTarget)throw new Error('Missing source-backed SEO intent for '+route.slug);
+const pageSeo=topicSeoFor(route.slug);
 const specialized=route.type==='CONDITIONAL_TOOL';
 const focusHeading=seoTarget.primary[0].toUpperCase()+seoTarget.primary.slice(1);
 const topicsWithOptions=topicOptionsFor(route.slug).map(def=>({
@@ -32,8 +34,8 @@ const stepPdf=hasVerifiedSteps(route.slug);
 const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===skill.slug)?.type==='CONDITIONAL_TOOL');
 
 ---
-<Layout title={`${title} – Free Printable PDF & Answer Key | Math Worksheet Studio`} description={topicIntro(route.slug)} canonicalPath={`/${route.slug}/`}>
-<div class="container"><section class="hero hero-compact"><div class="crumb"><a href="/worksheets/">All math worksheets</a> / {category(route.slug)}</div><span class="eyebrow">Make it · Print it · Practice it</span><h1>{title}</h1><p>{topicIntro(route.slug)}</p></section><Workspace slug={route.slug}/>
+<Layout title={pageSeo.title} description={pageSeo.description} canonicalPath={`/${route.slug}/`}>
+<div class="container"><section class="hero hero-compact"><div class="crumb"><a href="/worksheets/">All math worksheets</a> / {category(route.slug)}</div><span class="eyebrow">Make it · Print it · Practice it</span><h1>{pageSeo.heading}</h1><p>{topicIntro(route.slug)}</p></section><Workspace slug={route.slug}/>
 {specialized?<section class="panel info-panel" data-seo-focus aria-label="Worksheet content and customization">
 <span class="eyebrow">Exact practice scope</span>
 <h2>{focusHeading}: printable practice options</h2>
@@ -195,7 +197,7 @@ const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===ski
 <h3>Surface area of composite solids — remove both concealed faces</h3>
 <p>Joining two closed rectangular prisms creates a composite solid. The shared contact rectangle is counted once on each separate box, but <strong>neither side of this internal contact is part of the exposed exterior surface</strong>. Therefore use <strong>SA(composite) = SA(box A) + SA(box B) − 2×area(shared joint)</strong>.</p>
 <p>For example, a bottom prism of 8 × 3 × 2 cm with a 4 × 3 × 2 cm top prism joined at one end has separate surface areas 92 cm² and 52 cm². The common contact face is 4 × 3 = 12 cm², so the exposed total is <strong>92 + 52 − 2×12 = 120 cm²</strong>. The true unfolded composite net comprises <strong>two congruent L-shaped end faces and six rectangles</strong> whose widths match the actual boundary lengths.</p>
-<p>Use the dedicated panels for student questions, independent answer keys and fully worked steps. The composite generator is specifically limited to two full-depth, orthogonally joined rectangular prisms; it is not a general arbitrary-solid calculator. Source keyword volumes and difficulty scores remain historical snapshots, not current SEO rankings. The preview website remains excluded from indexing until a separate launch review.</p>
+<p>Use the dedicated panels for student questions, independent answer keys and fully worked steps. The composite generator is specifically limited to two full-depth, orthogonally joined rectangular prisms; it is not a general arbitrary-solid calculator. Source keyword volumes and difficulty scores are historical research snapshots, not live traffic or rankings. Review the generated student sheet and separate answer key for your classroom needs.</p>
 </section>}
 <section class="info-grid" aria-label="Worked example and common mistakes"><div class="panel info-panel"><h2>Worked example</h2><p><strong>Question:</strong> {fixedSample.payload.question}</p><p><strong>Answer:</strong> {fixedSample.expectedAnswer}</p><ol>{fixedSample.solutionSteps.map(s=><li>{s}</li>)}</ol><p>This example is generated from a fixed seed so the explanation and answer refer to the exact same mathematical problem.</p></div><div class="panel info-panel"><h2>Teaching notes</h2><p>The generator offers Easy, Standard and Challenge numerical ranges. These are practice settings, not school curriculum levels or official assessment standards.</p><ul>{teachingNotes(route.slug).map(note=><li>{note}</li>)}</ul><p>Always review the printed answer key before distributing worksheets to a classroom.</p></div></section>
 <section class="info-grid" aria-label="Common mistakes and checking answers"><div class="panel info-panel"><h2>Common mistakes</h2><ul>{commonMistakes(route.slug).map(item=><li>{item}</li>)}</ul></div><div class="panel info-panel"><h2>Check your answers</h2><p>The answer-key PDF is generated from the same exact problem set and seed as the practice sheet. Use it after attempting each question. You can reproduce the sheet later using the same topic, difficulty, question count and seed.</p><p>For printing, select US Letter or A4; for a physical protractor, always use 100% scale and verify the 50 mm line.</p></div></section>
