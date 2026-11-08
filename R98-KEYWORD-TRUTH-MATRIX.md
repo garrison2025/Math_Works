@@ -60,7 +60,7 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | Exact source phrase | Technical scope and truthful status |
 |---|---|
 | real life examples of geometric shapes printable free | **UNSUPPORTED** — shape-in-life example sheet not generated |
-| volume of a sphere worksheet | **UNSUPPORTED** — no exact sphere-volume dedicated mode |
+| volume of a sphere worksheet | **SUPPORTED (R99 preview-only)** — exact sphere volume in terms of π; new on-page generator and matching PDF editions, not an index-approved independent URL |
 | volume of a cylinder worksheet | **SUPPORTED via separate PDF pack** — cylinder volume selector under `/surface-area-worksheets/`; not main v18 question preview |
 | congruent triangles worksheet | **UNSUPPORTED** — no triangle congruence exercise |
 | shapes and sides | **PARTIAL** — geometric lines, angles and triangle sides; not general polygon-side worksheets |
@@ -68,14 +68,14 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | volume practice problems | **PARTIAL** — rectangular and triangular prisms and cylinder; not all solid families |
 | circle worksheet | **PARTIAL** — circle/sector area separate PDF pack under `/area-worksheets/`; not all circle topics |
 | area composite figures | **SUPPORTED, restricted** — L-shaped area separate PDF pack under `/area-worksheets/`, not arbitrary composite figures |
-| volume of pyramid worksheet | **UNSUPPORTED** — surface-area-only square/regular pyramids are a different task |
-| volume of a cone worksheet | **UNSUPPORTED** |
+| volume of pyramid worksheet | **SUPPORTED (R99 preview-only), restricted** — square-base and triangular-base pyramid volumes with perpendicular heights; no all-shapes claim |
+| volume of a cone worksheet | **SUPPORTED (R99 preview-only)** — exact right circular cone volumes in terms of π with separate PDFs |
 | similar triangles worksheet | **UNSUPPORTED** — no similarity proof/ratio generator |
 | triangle worksheet | **PARTIAL** — area/angles/Pythagorean/triangle inequality specialists, not a comprehensive worksheet |
 | triangle congruence worksheet | **UNSUPPORTED** |
 | shapes worksheet | **PARTIAL** — linked geometry skill generators, not generic shape-identification practice |
-| volume of spheres worksheet | **UNSUPPORTED** |
-| volume of triangular pyramid worksheet | **UNSUPPORTED** — triangular **surface area** is not volume |
+| volume of spheres worksheet | **SUPPORTED (R99 preview-only)** — exact sphere volumes with separate student/teacher/worked-step PDFs |
+| volume of triangular pyramid worksheet | **SUPPORTED (R99 preview-only)** — exact triangular pyramid volumes using separate base triangle altitude and solid perpendicular height |
 
 ## Indexation / GEO launch decision
 
