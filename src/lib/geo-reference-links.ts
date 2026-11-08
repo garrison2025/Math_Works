@@ -52,7 +52,7 @@ export const GEO_REFERENCES:Readonly<Record<string,GeoReference>>={
   url:"https://www.thecorestandards.org/Math/Content/4/MD/",
   label:"Common Core: Grade 4 Measurement & Data",
   context:"Describes measuring angles with a protractor; physical printer calibration remains our separate safety instruction."
- }
+ },
  "multiplication-worksheets":{
   url:"https://www.thecorestandards.org/Math/Content/4/NBT/B/5/",
   label:"Common Core: Grade 4 Multi-Digit Multiplication",
