@@ -13,6 +13,8 @@ const idsOf=html=>new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
 const inbound=new Map(live.map(path=>[path,0]));
 const failures=[],counts={pages:0,anchors:0,internal:0,fragments:0,external:0};
 const cache=new Map(live.map(path=>[path,read(path)]));
+assert.match(cache.get('/geometry/'),/<section\b[^>]*id="point-angle-lab"[^>]*data-focus-workspace\b/,'Geometry deep link must target the interactive angle generator');
+assert.match(cache.get('/algebra/'),/<section\b[^>]*id="algebra-focus-lab"[^>]*data-focus-workspace\b/,'Algebra deep link must target the interactive focus generator');
 for(const source of live){
  const html=cache.get(source),sourceIds=idsOf(html);counts.pages++;
  for(const m of html.matchAll(/<a\b[^>]*>/gi)){

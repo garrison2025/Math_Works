@@ -38,7 +38,10 @@ for(const p of live){
  const json=html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
  assert.ok(json,'Missing JSONLD '+p);
  const graph=JSON.parse(json)['@graph'];
- assert.ok(graph.some(x=>x['@type']==='WebSite'),'WebSite schema '+p);
+ const website=graph.find(x=>x['@type']==='WebSite');
+ assert.ok(website,'WebSite schema '+p);
+ assert.equal(website.name,'Math Worksheet Studio','Consistent brand entity '+p);
+ assert.match(website.description,/51 topic-specific math worksheet generators/,'Brand differentiation schema '+p);
  assert.ok(graph.some(x=>x['@type']==='WebPage'),'WebPage schema '+p);
  if(active.includes(p)||promoted.includes(p))assert.ok(graph.some(x=>x['@type']==='WebApplication'),'Real tool schema '+p);
  if(active.includes(p))assert.ok(graph.some(x=>x['@type']==='LearningResource'),'Worksheet resource schema '+p);
