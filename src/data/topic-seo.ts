@@ -30,7 +30,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Order of Operations Worksheets"
   },
   "inequalities-worksheets": {
-    "title": "Inequalities Worksheets | Solve & Graph",
+    "title": "Inequalities Worksheets | Solve & Graph Number Lines",
     "description": "Solve one-step and two-step inequalities, including negative coefficients that reverse the sign. Print number-line diagrams and checked answers.",
     "heading": "Inequalities Worksheets"
   },
@@ -50,7 +50,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Complementary and Supplementary Angles Worksheets"
   },
   "mean-median-mode-range-worksheets": {
-    "title": "Mean, Median, Mode & Range Worksheets",
+    "title": "Mean, Median, Mode & Range Worksheets | PDFs",
     "description": "Calculate mean, median, mode and range from practice data sets. Print fresh statistics questions with a reproducible answer key.",
     "heading": "Mean, Median, Mode and Range Worksheets"
   },
@@ -85,7 +85,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Adding Fractions with Unlike Denominators Worksheets"
   },
   "area-worksheets": {
-    "title": "Area Worksheets | Rectangles & Squares",
+    "title": "Area Worksheets | Rectangles, Squares & Answers",
     "description": "Practice finding area from rectangular and square dimensions, then choose specialist triangle, trapezoid or parallelogram tools for other shapes.",
     "heading": "Area Worksheets"
   },
@@ -160,7 +160,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Subtraction Worksheets"
   },
   "place-value-worksheets": {
-    "title": "Place Value Worksheets | Expanded Form",
+    "title": "Place Value Worksheets | Expanded Form Practice",
     "description": "Build whole-number place value exercises, identify digit values and write expanded forms. Print new questions and answer keys.",
     "heading": "Place Value Worksheets"
   },
@@ -170,7 +170,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Division Worksheets"
   },
   "surface-area-worksheets": {
-    "title": "Surface Area Worksheets | Solids & Nets",
+    "title": "Surface Area Worksheets | Solids, Nets & Answers",
     "description": "Find surface area of supported prisms, cylinders and other solids using real diagrams. Explore nets and composite faces with separate answers.",
     "heading": "Surface Area Worksheets"
   },
@@ -190,7 +190,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Slope from Two Points Worksheets"
   },
   "mixed-addition-subtraction-worksheets": {
-    "title": "Mixed Addition & Subtraction Worksheets",
+    "title": "Mixed Addition & Subtraction Worksheets | PDFs",
     "description": "Print alternating addition and subtraction problems with reproducible answers. Optional decimal column packs include exact place-value steps.",
     "heading": "Mixed Addition and Subtraction Worksheets"
   },
@@ -225,7 +225,7 @@ export const TOPIC_SEO:Readonly<Record<string,TopicSeo>>={
     "heading": "Scientific Notation Worksheets"
   },
   "gcf-worksheets": {
-    "title": "Greatest Common Factor Worksheets | GCF",
+    "title": "Greatest Common Factor Worksheets | GCF Practice",
     "description": "Find greatest common factors using integer divisibility. Print reproducible GCF questions and matching checked answer keys.",
     "heading": "Greatest Common Factor Worksheets"
   },
