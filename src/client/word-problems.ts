@@ -1,7 +1,7 @@
 /** Word problems preview, controls and client-only PDF download. No accounts or score tracking. */
 import {makeStorySet,type StorySet,type StoryChoice,type StoryLevel} from '../lib/word-problems.ts';
 import {createStoryPdf,type StoryPaper,type StoryPdfEdition} from '../lib/word-problems-pdf.ts';
-const choices=new Set(['mixed','proportions','area','multiplication','division']);
+const choices=new Set(['mixed','proportions','area','multiplication','division','one-step','decimals']);
 const levels=new Set(['easy','standard','challenge']);
 const counts=new Set([4,8,12,16,20,30,40]);
 function init(root:HTMLElement){
