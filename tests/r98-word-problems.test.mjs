@@ -121,3 +121,26 @@ test('R98: four historically held routes now have useful standalone previews but
  const geometry=readFileSync(new URL('../src/pages/geometry-general-worksheets/index.astro',import.meta.url),'utf8');
  assert.match(geometry,/surface-area-worksheets/);
 });
+
+
+test('R98: all 51 original HOLD-source phrases receive exactly one evidence-based scope classification',()=>{
+ const matrix=readFileSync(new URL('../R98-KEYWORD-TRUTH-MATRIX.md',import.meta.url),'utf8');
+ const csv=readFileSync(new URL('../src/data/keyword-evidence.csv',import.meta.url),'utf8').trimEnd().split(/\r?\n/).slice(1);
+ const held=new Set(R98_PREVIEW_ONLY_HOLD_PAGES),tick=String.fromCharCode(96);
+ const expected=csv.map(line=>{
+  const keyword=line.startsWith(tick)?line.slice(1,line.indexOf(tick,1)):undefined;
+  const last=line.slice(line.lastIndexOf(',')+1).replaceAll(tick,'');
+  const slug=last.split('/')[1];
+  return {keyword,slug};
+ }).filter(entry=>held.has(entry.slug));
+ const actual=matrix.split('\n').filter(line=>line.startsWith('| ')&&!line.includes('Exact source phrase'))
+  .map(line=>line.split('|')[1]?.trim()).filter(Boolean);
+ assert.equal(expected.length,51);
+ assert.equal(actual.length,51);
+ assert.equal(new Set(actual).size,51,'Duplicate historic keyword audit row');
+ assert.deepEqual(new Set(actual),new Set(expected.map(entry=>entry.keyword)),
+  'Exactly the original 51 held source phrases must be accounted for');
+ for(const claim of ['SUPPORTED','DIRECTORY','PARTIAL','UNSUPPORTED','noindex,nofollow','not a Google indexing authorization']){
+  assert.ok(matrix.toLowerCase().includes(claim.toLowerCase()),'Missing transparent scope label: '+claim);
+ }
+});
