@@ -2,11 +2,12 @@
 import {makeFocusPack,pointAngleSvg} from '../lib/focus-drills.ts';
 const {scope='algebra'}=Astro.props as {scope?:'algebra'|'angles'};
 const isAngles=scope==='angles',id=isAngles?'angle-drill':'algebra-drill';
+const anchor=isAngles?'angle-drill':'algebra-focus-lab';
 const sample=makeFocusPack(20261108,8,isAngles?'point-angles':'mixed');
 const menu=isAngles?[['point-angles','Angles around a point — find the missing sector']]:
  [['mixed','Mixed algebra (three supported skills)'],['literal','Rearrange literal formulas'],['multi-step','Solve three-step linear equations'],['simplify','Distribute and collect like terms']];
 ---
-<section class="focus-workspace" data-focus-workspace data-focus-scope={scope} aria-label={isAngles?'Angles around a point exercise builder':'Algebra expression and equation worksheet builder'}>
+<section id={anchor} class="focus-workspace" data-focus-workspace data-focus-scope={scope} aria-label={isAngles?'Angles around a point exercise builder':'Algebra expression and equation worksheet builder'}>
 <aside class="panel focus-settings">
  <span class="eyebrow">{isAngles?'Angle relationships · R100':'Algebra practice · R100'}</span>
  <h2>{isAngles?'Make point-angle worksheets':'Build advanced algebra worksheets'}</h2>

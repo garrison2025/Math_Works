@@ -39,6 +39,16 @@ test('homepage and library navigation use only the canonical subject hubs',()=>{
   assert.doesNotMatch(source,/algebra-general-worksheets|geometry-general-worksheets/);
  }
 });
+test('grade guide fragments resolve to real canonical subject sections',()=>{
+ const grade=read('../src/pages/worksheets-by-grade/index.astro');
+ const algebra=read('../src/components/FocusDrills.astro');
+ const geometry=read('../src/pages/geometry/index.astro');
+ assert.match(grade,/href="\/algebra\/#algebra-focus-lab"/);
+ assert.match(grade,/href="\/geometry\/#point-angle-lab"/);
+ assert.match(algebra,/id=\{anchor\}/);
+ assert.match(algebra,/const anchor=isAngles\?'angle-drill':'algebra-focus-lab'/);
+ assert.match(geometry,/id="point-angle-lab"/);
+});
 test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
  const rows=parseCSV(read('../src/data/keyword-evidence.csv')),columns=Object.fromEntries(rows[0].map((n,i)=>[n,i]));
  const evidence=rows.slice(1).map(row=>({keyword:stripTicks(row[columns.keyword]),volume:Number(row[columns.monthly_volume]),kd:Number(row[columns.semrush_kd]),slug:stripTicks(row[columns.canonical_candidate]).replace(/^\/|\/$/g,'')}));

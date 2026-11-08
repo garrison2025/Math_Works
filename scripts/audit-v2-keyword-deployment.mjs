@@ -138,9 +138,25 @@ for(const section of WORKSHEET_SECTIONS){
 }
 const all=readFileSync(join(dist,'worksheets','index.html'),'utf8');
 assert.match(all,/name="robots"\s+content="noindex,nofollow"/i);
-for(const route of routes)if(route.type!=='HOLD')
- assert.ok(all.includes('/'+route.slug+'/'),'Missing V2 master directory topic '+route.slug);
-else assert.ok(all.includes('/'+route.slug+'/'),'R98 standalone noindex guide missing from directory '+route.slug);
+const consolidatedSubjectRoutes=new Map([
+ ['algebra-general-worksheets','algebra'],
+ ['geometry-general-worksheets','geometry']
+]);
+const redirectLines=readFileSync(join(process.cwd(),'public','_redirects'),'utf8').split(/\r?\n/);
+for(const route of routes){
+ if(route.type!=='HOLD'){
+  assert.ok(all.includes('/'+route.slug+'/'),'Missing V2 master directory topic '+route.slug);
+  continue;
+ }
+ const canonical=consolidatedSubjectRoutes.get(route.slug);
+ if(canonical){
+  assert.ok(all.includes('/'+canonical+'/'),'Missing canonical subject hub for legacy HOLD '+route.slug);
+  assert.ok(redirectLines.includes('/'+route.slug+' /'+canonical+'/ 301'),'Missing legacy 301 redirect '+route.slug);
+  assert.ok(redirectLines.includes('/'+route.slug+'/ /'+canonical+'/ 301'),'Missing slash-variant 301 redirect '+route.slug);
+ }else{
+  assert.ok(all.includes('/'+route.slug+'/'),'R98 standalone noindex guide missing from directory '+route.slug);
+ }
+}
 
 const directory=join(process.cwd(),'qa-artifacts','r89-v2-keyword-deployment');
 mkdirSync(directory,{recursive:true});
