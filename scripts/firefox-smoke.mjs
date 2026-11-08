@@ -100,6 +100,43 @@ try{
  assert.equal(await page.locator('.solid-answer').count(),0);
  assert.equal(await page.locator('[data-solid-list] > li').first().innerText(),solidOriginal);
  checks.push({name:'R99 Firefox exact 3D sphere volume generator, answer isolation and three real Letter PDFs',status:'pass'});
+ // R100 Firefox: new hold-page algebra and angle questions have real Letter PDF editions.
+ await open('algebra-general-worksheets');
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ assert.equal(await page.locator('[data-focus-workspace][data-focus-scope="algebra"]').count(),1);
+ await page.locator('[data-focus-mode]').selectOption('literal');
+ await page.locator('[data-focus-paper]').selectOption('Letter');
+ assert.equal(await page.locator('[data-focus-list] > li').count(),8);
+ for(const edition of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:60000});
+  await page.locator('[data-focus-download="'+edition+'"]').click();
+  const dl=await pending,target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPage(0).getWidth(),612);
+  assert.match(pdf.getTitle(),/FD1-/);
+  assert.match(pdf.getTitle(),new RegExp(edition));
+ }
+ await page.locator('[data-focus-toggle]').click();
+ assert.equal(await page.locator('.focus-answer').count(),8);
+ await page.locator('[data-focus-toggle]').click();
+ assert.equal(await page.locator('.focus-answer').count(),0);
+ await open('geometry-general-worksheets');
+ assert.equal(await page.locator('[data-focus-workspace][data-focus-scope="angles"]').count(),1);
+ assert.equal(await page.locator('[data-focus-list] .focus-diagram svg').count(),8);
+ for(const edition of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:60000});
+  await page.locator('[data-focus-download="'+edition+'"]').click();
+  const dl=await pending,target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPage(0).getWidth(),612);
+  assert.match(pdf.getTitle(),/FD1-20261108-point-angles-standard-8/);
+  assert.match(pdf.getTitle(),new RegExp(edition));
+ }
+ await page.locator('[data-focus-toggle]').click();
+ assert.equal(await page.locator('.focus-answer').count(),8);
+ await page.locator('[data-focus-toggle]').click();
+ assert.equal(await page.locator('.focus-answer').count(),0);
+ checks.push({name:'R100 Firefox literal rearrangements, true angle vectors and six actual Letter PDFs',status:'pass'});
  await open('systems-equations-worksheets');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('.problem').count(),8);

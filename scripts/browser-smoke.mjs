@@ -1782,6 +1782,65 @@ try {
  await page.setViewportSize({width:1280,height:900});
  events.push({kind:'interaction',name:'R99 noindex exact sphere cone pyramids; A4 real student/answers/steps PDFs; share reload; 390px responsive',status:'pass'});
 
+ // R100: three genuine algebra families and vector point-angle drills in built Chromium.
+ await page.goto(base+'/algebra-general-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ assert.equal(await page.locator('[data-focus-workspace][data-focus-scope="algebra"]').count(),1);
+ for(const mode of ['literal','multi-step','simplify']){
+  await page.locator('[data-focus-mode]').selectOption(mode);
+  await page.locator('[data-focus-count]').selectOption('8');
+  await page.locator('[data-focus-paper]').selectOption('A4');
+  await page.locator('[data-focus-seed]').fill('314159');
+  await page.locator('[data-focus-seed]').dispatchEvent('change');
+  assert.equal(await page.locator('[data-focus-list] > li').count(),8);
+  const first=await page.locator('[data-focus-list] > li').first().innerText();
+  assert.match(first,mode==='literal'?/Rearrange/:mode==='multi-step'?/Solve \d+\(x/:/Simplify \d+\(x/);
+  assert.equal(await page.locator('.focus-answer').count(),0,'Student preview leaked R100 algebra answer');
+  const editions=mode==='multi-step'?['questions','answers','steps']:['questions'];
+  for(const edition of editions){
+   const pending=page.waitForEvent('download',{timeout:55000});
+   await page.locator('[data-focus-download="'+edition+'"]').click();
+   const file=await pending,doc=await verifyPdf(file,'R100 '+mode+' '+edition,{paper:'A4'});
+   assert.ok(doc.getTitle().includes('FD1-314159-'+mode+'-standard-8'));
+  }
+  await page.locator('[data-focus-toggle]').click();
+  assert.equal(await page.locator('.focus-answer').count(),8);
+  await page.locator('[data-focus-toggle]').click();
+  assert.equal(await page.locator('.focus-answer').count(),0);
+ }
+ await page.locator('[data-focus-share]').click();
+ const r100Link=await page.evaluate(()=>navigator.clipboard.readText()),r100Url=new URL(r100Link);
+ assert.equal(r100Url.searchParams.get('fd_mode'),'simplify');
+ assert.equal(r100Url.searchParams.get('fd_seed'),'314159');
+ const r100Original=await page.locator('[data-focus-list] > li').first().innerText();
+ await page.goto(r100Link,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-focus-list] > li').first().innerText(),r100Original);
+ await page.setViewportSize({width:390,height:844});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'R100 algebra mobile horizontal overflow');
+ await page.screenshot({path:join(out,'r100-algebra-mobile.png'),fullPage:true});
+ await page.setViewportSize({width:1280,height:900});
+ await page.goto(base+'/geometry-general-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ assert.equal(await page.locator('[data-focus-workspace][data-focus-scope="angles"]').count(),1);
+ assert.equal(await page.locator('[data-focus-list] > li').count(),8);
+ assert.equal(await page.locator('[data-focus-list] .focus-diagram svg').count(),8);
+ await page.locator('[data-focus-paper]').selectOption('A4');
+ for(const edition of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:55000});
+  await page.locator('[data-focus-download="'+edition+'"]').click();
+  const file=await pending,doc=await verifyPdf(file,'R100 point angles '+edition,{paper:'A4'});
+  assert.match(doc.getTitle(),/FD1-20261108-point-angles-standard-8/);
+ }
+ await page.locator('[data-focus-toggle]').click();
+ assert.equal(await page.locator('.focus-answer').count(),8);
+ await page.locator('[data-focus-toggle]').click();
+ assert.equal(await page.locator('.focus-answer').count(),0);
+ await page.setViewportSize({width:390,height:844});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'R100 angle diagram mobile overflow');
+ await page.screenshot({path:join(out,'r100-point-angles-mobile.png'),fullPage:true});
+ await page.setViewportSize({width:1280,height:900});
+ events.push({kind:'interaction',name:'R100 three algebra types and matching actual PDFs, clipboard reload, four-sector SVG+vector PDF geometry, noindex and mobile',status:'pass'});
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
