@@ -1,5 +1,12 @@
 # Cloudflare Pages setup
 
+## R107 — Public indexing approved (2026-11-08)
+
+Owner explicitly directed replacing noindex and publishing the purchased .com website. On Cloudflare production `CF_PAGES_BRANCH=main`, the build will index the homepage, 51 approved working generator/topic URLs, the `/worksheets/` directory, and About, Contact, Privacy and Terms: **57 canonical URLs**. All have `index,follow`, self-canonical to `https://mathworksheetstudio.com` and valid schema, and appear in `sitemap.xml`. The four historical HOLD preview pages remain `noindex,nofollow` and outside the sitemap; 404 stays noindex. Feature-branch previews remain noindex because the branch must equal `main`.
+
+Cloudflare Pages' old `PUBLIC_INDEXABLE=false` and `PUBLIC_INDEXABLE_ROUTES` env values are no longer read. That is intentional: the owner approved release without a further Cloudflare env edit. `PUBLIC_SITE_URL` is no longer a source of canonical authority. Use Cloudflare account **Bulk Redirect** from `math-works.pages.dev` to the custom `.com` (301, preserve path/query), and from `www.mathworksheetstudio.com` to the apex with proper DNS; code alone cannot add those account-level redirects. Until then both production hosts can serve identical HTML with the **custom-domain canonical**. Preview branch URLs must not be redirected to production. Verify/submit `https://mathworksheetstudio.com/sitemap.xml` in GSC; Google indexing and ranking remain Google's decisions.
+
+
 ## R106 owned domain / official email (2026-11-08)
 
 Official primary hostname: **https://mathworksheetstudio.com**. Public homepage/contact/robots/sitemap HTTPS checks succeeded and matched the last deployed Git SHA. Existing HTML is still `noindex,nofollow`, and sitemap is deliberately empty. Owner supplied `contact@mathworksheetstudio.com`.

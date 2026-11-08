@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-# HTML robots, self-canonicals, and sitemap are controlled by the explicit per-route SEO release gate.
+Sitemap: https://mathworksheetstudio.com/sitemap.xml

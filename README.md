@@ -1,5 +1,8 @@
 # Math Worksheet Studio
 
+**R107 owner-approved SEO launch:** Cloudflare production `main` builds 57 indexable custom-domain canonical pages (51 topic pages, worksheet directory, homepage and four support pages). Four historical HOLD pages stay noindex; previews/local builds stay noindex. Prior no-domain/noindex remarks below are historical. See [CLOUDFLARE.md](CLOUDFLARE.md).
+
+
 **R106 | 2026-11-08 owned domain update:** Owner reports buying and binding `mathworksheetstudio.com` in Cloudflare. Public HTTPS verification matched the Pages deployment SHA `2daa8e86` on the primary hostname. It still served `noindex,nofollow` and an empty sitemap. The public MX records are Cloudflare Email Routing (does not verify delivery or outbound sending); `www.mathworksheetstudio.com` was NXDOMAIN at the time of the check. Contact email is `contact@mathworksheetstudio.com`. GSC verification and explicit per-route indexation approval are still uncompleted; older no-domain records below are historical. 
 
 
