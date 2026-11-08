@@ -16,8 +16,6 @@ on:
       - 'scripts/qa-r111-geo-built.mjs'
       - 'src/components/SkillComparison.astro'
       - 'src/pages/**'
-      - 'src/data/geo-r113-coverage.json'
-      - 'src/lib/site.ts'
       - 'src/components/Layout.astro'
       - 'src/pages/sitemap.xml.ts'
       - 'astro.config.mjs'
@@ -35,6 +33,8 @@ on:
     branches: [main]
     paths:
       - 'src/pages/**'
+      - 'src/data/geo-r113-coverage.json'
+      - 'src/lib/site.ts'
       - 'src/components/GeoTopicAnswers.astro'
       - 'src/lib/geo-answer-guides.ts'
       - 'src/lib/geo-reference-links.ts'
