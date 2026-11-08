@@ -75,6 +75,31 @@ try{
  await page.locator('[data-story-toggle]').click();
  assert.equal(await page.locator('.story-solution').count(),0,'Firefox student preview leaked answers');
  checks.push({name:'R98 four preview pages, A4 student, answers and worked-step PDFs in Firefox',status:'pass'});
+ // R99 supplemental geometry lab: exact volumes in Firefox with independent downloads.
+ await open('geometry-general-worksheets');
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ assert.equal(await page.locator('[data-solid-workspace]').count(),1);
+ await page.locator('[data-solid-mode]').selectOption('sphere');
+ await page.locator('[data-solid-paper]').selectOption('Letter');
+ await page.locator('[data-solid-count]').selectOption('8');
+ assert.equal(await page.locator('[data-solid-list] > li').count(),8);
+ const solidOriginal=await page.locator('[data-solid-list] > li').first().innerText();
+ for(const edition of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:55000});
+  await page.locator('[data-solid-download="'+edition+'"]').click();
+  const dl=await pending,target=join(out,dl.suggestedFilename());
+  await dl.saveAs(target);
+  const pdf=await PDFDocument.load(readFileSync(target));
+  assert.equal(pdf.getPage(0).getWidth(),612);
+  assert.match(pdf.getTitle()??'',/SV1-/);
+  assert.match(pdf.getTitle()??'',new RegExp(edition));
+ }
+ await page.locator('[data-solid-toggle]').click();
+ assert.equal(await page.locator('.solid-answer').count(),8);
+ await page.locator('[data-solid-toggle]').click();
+ assert.equal(await page.locator('.solid-answer').count(),0);
+ assert.equal(await page.locator('[data-solid-list] > li').first().innerText(),solidOriginal);
+ checks.push({name:'R99 Firefox exact 3D sphere volume generator, answer isolation and three real Letter PDFs',status:'pass'});
  await open('systems-equations-worksheets');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('.problem').count(),8);

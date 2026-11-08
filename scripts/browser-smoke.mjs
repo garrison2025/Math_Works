@@ -1742,6 +1742,46 @@ try {
  await page.setViewportSize({width:1280,height:900});
  events.push({kind:'interaction',name:'R98 four preview-only pages; independent 6-mode story tool: actual A4 PDFs, answer isolation, copy/reload, 390px mobile',status:'pass'});
 
+ // R99: exact solid-volume lab must be a real, accessible, noindex worksheet tool.
+ await page.goto(base+'/geometry-general-worksheets/',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
+ assert.equal(await page.locator('[data-solid-workspace]').count(),1,'R99 on-page volume lab missing');
+ await page.locator('[data-solid-mode]').selectOption('triangular-pyramid');
+ await page.locator('[data-solid-level]').selectOption('challenge');
+ await page.locator('[data-solid-count]').selectOption('12');
+ await page.locator('[data-solid-paper]').selectOption('A4');
+ await page.locator('[data-solid-seed]').fill('314159');
+ await page.locator('[data-solid-seed]').dispatchEvent('change');
+ assert.equal(await page.locator('[data-solid-list] > li').count(),12);
+ const volumeBaseline=await page.locator('[data-solid-list] > li').first().innerText();
+ assert.match(volumeBaseline,/triangular pyramid has a triangular base/);
+ assert.equal(await page.locator('.solid-answer').count(),0,'R99 student preview leaked answers');
+ await page.locator('[data-solid-toggle]').click();
+ assert.equal(await page.locator('.solid-answer').count(),12);
+ assert.match(await page.locator('.solid-answer').first().innerText(),/cubic (cm|m|ft)/);
+ await page.locator('[data-solid-toggle]').click();
+ assert.equal(await page.locator('.solid-answer').count(),0);
+ for(const edition of ['questions','answers','steps']){
+  const pending=page.waitForEvent('download',{timeout:55000});
+  await page.locator('[data-solid-download="'+edition+'"]').click();
+  const file=await pending;
+  assert.match(file.suggestedFilename(),/solid-volumes-sv1-314159-triangular-pyramid-challenge-12-a4/);
+  const doc=await verifyPdf(file,'R99 '+edition,{paper:'A4'});
+  assert.match(doc.getTitle()??'',/SV1-314159-triangular-pyramid-challenge-12/);
+ }
+ await page.locator('[data-solid-share]').click();
+ const volumeLink=await page.evaluate(()=>navigator.clipboard.readText());
+ const volumeUrl=new URL(volumeLink);
+ for(const [k,v] of [['sv_seed','314159'],['sv_mode','triangular-pyramid'],['sv_level','challenge'],['sv_count','12'],['sv_paper','A4']])
+  assert.equal(volumeUrl.searchParams.get(k),v);
+ await page.goto(volumeLink,{waitUntil:'networkidle'});
+ assert.equal(await page.locator('[data-solid-list] > li').first().innerText(),volumeBaseline);
+ await page.setViewportSize({width:390,height:844});
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'R99 solid volume mobile layout overflows');
+ await page.screenshot({path:join(out,'r99-solid-volume-mobile.png'),fullPage:true});
+ await page.setViewportSize({width:1280,height:900});
+ events.push({kind:'interaction',name:'R99 noindex exact sphere cone pyramids; A4 real student/answers/steps PDFs; share reload; 390px responsive',status:'pass'});
+
  // The opt-in answer checker, seed changes and PDF export must not send any
  // student response, score, generator seed or configuration over HTTP.
  await page.goto(`${base}/addition-worksheets/`,{waitUntil:'networkidle'});
