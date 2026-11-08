@@ -83,7 +83,7 @@ export function verifyStorySet(set:StorySet):void{
   const v=p.values;
   if(p.mode==='proportions'&&(!p.question.includes(String(v.a*v.b))||!p.question.includes(String(v.c))))throw Error('Proportion prompt mismatch');
   if(p.mode==='division'&&!p.question.includes(String(v.a*v.b)))throw Error('Division prompt mismatch');
-  if(p.steps.some(step=>!step.includes(p.units)))throw Error('Missing final answer units in steps');
+  if(!p.steps.at(-1)?.includes(p.units))throw Error('Missing final answer units in steps');
  }
 }
 export function makeStorySet(seed:number,count:number=8,mode:StoryChoice='mixed',level:StoryLevel='standard'):StorySet{
