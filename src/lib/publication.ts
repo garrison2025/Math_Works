@@ -1,6 +1,6 @@
 /** R107 owner approval: production main publishes the actual 51 math topic URLs. */
-import type {PublishInputs,TopicEntry} from './indexation';
-import {releasePaths} from './indexation';
+import type {PublishInputs,TopicEntry} from './indexation.ts';
+import {releasePaths} from './indexation.ts';
 export const OWNED_SITE='https://mathworksheetstudio.com';
 export function releaseForBuild(topics:readonly TopicEntry[],branch:string):PublishInputs {
  const main=branch==='main';
