@@ -75,7 +75,8 @@ export function grade5FullModel(kind:Grade5FullKind,z:Values):Model{
   // Fixed-point arithmetic: numerator and denominator are exact base-10 integers.
   const numerator=v===0?a*power:a,denominator=v===0?100:100*power;
   const places=v===0?Math.max(0,2-b):2+b;
-  const quotient=(numerator/denominator).toFixed(places).replace(/\\.?0+$/,'');
+  const exact=(numerator/denominator).toFixed(places);
+  const quotient=places===0?exact:exact.replace(/0+$/,'').replace(/\.$/,'');
   return result('Calculate '+val+(v===0?' × ':' ÷ ')+'10^'+b+'.',quotient,
    'A power of ten moves the decimal point '+b+' place(s) '+(v===0?'right':'left')+'.',
    'The exact result is '+quotient+'.');
