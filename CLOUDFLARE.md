@@ -1,5 +1,25 @@
 # Cloudflare Pages setup
 
+## R106 owned domain / official email (2026-11-08)
+
+Official primary hostname: **https://mathworksheetstudio.com**. Public homepage/contact/robots/sitemap HTTPS checks succeeded and matched the last deployed Git SHA. Existing HTML is still `noindex,nofollow`, and sitemap is deliberately empty. Owner supplied `contact@mathworksheetstudio.com`.
+
+In **Cloudflare Workers & Pages → math-works → Settings → Environment variables → Production**, configure or check:
+```text
+PUBLIC_SITE_URL=https://mathworksheetstudio.com
+PUBLIC_INDEXABLE=false
+PUBLIC_INDEXABLE_ROUTES=
+PUBLIC_INDEXABLE_HUB_ROUTES=
+```
+These are instructions, **not changes already applied to the Cloudflare dashboard**. Indexation requires separate explicit owner approval of particular specialized pages, verified main-branch deployment and canonical/sitemap tests. Four historically HOLD preview pages must never be silently promoted. The `*.pages.dev` build must not become a second indexable public copy.
+
+**WWW gap:** Public DNS returned NXDOMAIN for `www.mathworksheetstudio.com`. Use Cloudflare's [www-to-apex Bulk Redirect guide](https://developers.cloudflare.com/pages/how-to/www-redirect/) to add a proxied `www` record and a **301 redirect** to the apex, preserving URL path and query. Cloudflare Pages `_redirects` does not implement host-based redirects. Before any public indexing, also consider [redirecting the `math-works.pages.dev` production alias](https://developers.cloudflare.com/pages/how-to/redirect-to-custom-domain/) to the canonical domain using Cloudflare Bulk Redirects.
+
+**Email:** Public MX records show `route1/2/3.mx.cloudflare.net`, which indicates Cloudflare Email Routing infrastructure, but cannot establish that the `contact@` alias forwards to a verified inbox. Check the Email Routing rule and send an actual inbound test. Standard routing forwards mail only; branded-domain outbound replies need a separate sending solution.
+
+**GSC:** No Google Search Console property verification, unique DNS TXT record or sitemap submission has been completed in this workflow. Do not invent a verification token or claim indexing.
+
+
 - Repository: https://github.com/garrison2025/Math_Works
 - Framework: Astro / Static
 - Production branch: `main`

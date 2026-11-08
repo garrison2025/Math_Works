@@ -1,3 +1,5 @@
+**R106 | 2026-11-08 owned domain update:** Owner reports buying and binding `mathworksheetstudio.com` in Cloudflare. Public HTTPS verification matched the Pages deployment SHA `2daa8e86` on the primary hostname. It still served `noindex,nofollow` and an empty sitemap. The public MX records are Cloudflare Email Routing (does not verify delivery or outbound sending); `www.mathworksheetstudio.com` was NXDOMAIN at the time of the check. Contact email is `contact@mathworksheetstudio.com`. GSC verification and explicit per-route indexation approval are still uncompleted; older no-domain records below are historical. 
+
 # R97 — Online-only acceptance policy (owner decision, 2026-11-08)
 
 **Current and controlling release acceptance policy.** The owner explicitly accepts **online/digital verification** and no longer requires in-person or physical/offline testing before proceeding with this website. This supersedes the mandatory offline wording in R93 and R95 release matrices. Historical test results and descriptions of unperformed physical work remain accurate; the *requirement* is waived, **not the physical test result certified**.
