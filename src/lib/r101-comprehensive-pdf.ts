@@ -76,12 +76,12 @@ export function drawWideDiagram(page:PDFPage,p:WideProblem,x:number,y:number,fon
  if(k.startsWith('tri-')||k==='triangle-congruence'||k==='triangle-similarity'){
   const right=k==='triangle-similarity'||(k==='triangle-congruence'&&z.v===4);
   if(right)rightTriangle(page,x+10,y-85,1);else triangle(page,x+10,y-85,1);
-  page.drawText('A',{x:x+40,y:y-24,size:9,font,color:ink});
+  page.drawText('A',{x:right?x+1:x+40,y:y-24,size:9,font,color:ink});
   page.drawText('B',{x:x+3,y:y-94,size:9,font,color:ink});
   page.drawText('C',{x:x+68,y:y-94,size:9,font,color:ink});
   if(k==='triangle-congruence'||k==='triangle-similarity'){
    if(right)rightTriangle(page,x+147,y-85,1.15);else triangle(page,x+147,y-85,1.15);
-   page.drawText('D',{x:x+181,y:y-18,size:9,font,color:ink});
+   page.drawText('D',{x:right?x+139:x+181,y:y-18,size:9,font,color:ink});
    page.drawText('E',{x:x+140,y:y-94,size:9,font,color:ink});
    page.drawText('F',{x:x+219,y:y-94,size:9,font,color:ink});
   }
