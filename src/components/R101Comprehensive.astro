@@ -2,7 +2,7 @@
 import {makeWidePack,wideDiagram,MODE_LABELS,type WideMode} from '../lib/r101-comprehensive.ts';
 const {scope='geometry'}=Astro.props as {scope?:'grade'|'geometry'|'stories'};
 const choices:Record<'grade'|'geometry'|'stories',WideMode[]>={
- grade:['grade2','grade5'],
+ grade:['grade2','grade5','grade5-full'],
  geometry:['shapes','real-shapes','polygon-sides','congruent','similar','triangles','circles','volumes'],
  stories:['equation-stories']
 };
@@ -12,15 +12,15 @@ const label=scope==='grade'?'Grade-level mixed worksheet builder':scope==='geome
 ---
 <section class="wide-workspace" data-wide-workspace data-wide-scope={scope} aria-label={label}>
  <aside class="panel wide-settings">
-  <span class="eyebrow">Supplemental worksheets · R101 · reproducible</span>
+  <span class="eyebrow">Original printable practice · Grade 5 CCSS coverage R102</span>
   <h2>{label}</h2>
   <p>Choose a precise supported skill, generate an original question set and download independent student, answer-key or worked-solution PDFs. Diagrams are schematic unless otherwise specified; written measurements determine the answers.</p>
   <div class="wide-field"><label for={'wide-'+scope+'-mode'}>Topic and question family</label>
-   <select id={'wide-'+scope+'-mode'} data-wide-mode>{active.map(mode=><option value={mode} selected={mode===defaultMode}>{MODE_LABELS[mode]}</option>)}</select></div>
+   <select id={'wide-'+scope+'-mode'} data-wide-mode>{active.map(mode=><option value={mode} selected={mode===defaultMode}>{MODE_LABELS[mode]}</option>)}</select><p data-wide-coverage hidden class="wide-coverage">Full Grade 5 mode: every 40/48-question set covers 26 Common Core content standards across five domains, using 34 original exercise families. This is not a state curriculum certification or a guarantee of mastery.</p></div>
   <div class="wide-field"><label for={'wide-'+scope+'-level'}>Difficulty</label>
    <select id={'wide-'+scope+'-level'} data-wide-level><option value="easy">Easy</option><option value="standard" selected>Standard</option><option value="challenge">Challenge</option></select></div>
   <div class="wide-row"><div class="wide-field"><label for={'wide-'+scope+'-count'}>Questions</label>
-   <select id={'wide-'+scope+'-count'} data-wide-count><option value="8" selected>8</option><option value="16">16</option><option value="24">24</option></select></div>
+   <select id={'wide-'+scope+'-count'} data-wide-count><option value="8" selected>8</option><option value="16">16</option><option value="24">24</option><option value="40" hidden disabled>40 · 26 standards</option><option value="48" hidden disabled>48 · 26 standards</option></select></div>
    <div class="wide-field"><label for={'wide-'+scope+'-paper'}>PDF paper</label>
    <select id={'wide-'+scope+'-paper'} data-wide-paper><option value="Letter">US Letter</option><option value="A4">A4</option></select></div></div>
   <div class="wide-field"><label for={'wide-'+scope+'-seed'}>Reproducible seed</label>
@@ -56,6 +56,8 @@ const label=scope==='grade'?'Grade-level mixed worksheet builder':scope==='geome
 .wide-field label{display:block;font-size:.85rem;font-weight:800;color:#263e55;margin-bottom:7px}
 .wide-field input,.wide-field select{width:100%;min-height:46px;font:inherit;padding:9px 11px;border:1.5px solid #92a9bf;border-radius:9px;background:#fff;color:#1d344b}
 .wide-field>p,.wide-footnote{font-size:.79rem;line-height:1.55;color:#5b7085;margin:8px 0 0}
+.wide-coverage{padding:11px 13px;border-left:3px solid #247e85;border-radius:5px;background:#edf8f7;color:#24515a!important}
+.wide-coverage[hidden]{display:none}
 .wide-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .wide-actions{display:grid;gap:9px;margin:22px 0 15px}
 .wide-actions button{min-height:44px;width:100%;white-space:normal}

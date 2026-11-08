@@ -45,7 +45,7 @@ try{
   assert.ok(size.body<=size.viewport+3,'Mobile horizontal overflow '+slug+' '+JSON.stringify(size));
  };
  const scenarios=[
-  ['worksheets-by-grade','grade2'],['worksheets-by-grade','grade5'],
+  ['worksheets-by-grade','grade2'],['worksheets-by-grade','grade5'],['worksheets-by-grade','grade5-full'],
   ['geometry-general-worksheets','real-shapes'],['geometry-general-worksheets','shapes'],
   ['geometry-general-worksheets','polygon-sides'],['geometry-general-worksheets','congruent'],
   ['geometry-general-worksheets','similar'],['geometry-general-worksheets','triangles'],
@@ -56,19 +56,25 @@ try{
   await open(route);
   await page.locator('[data-wide-mode]').selectOption(mode);
   await page.locator('[data-wide-paper]').selectOption(mode==='grade2'?'A4':'Letter');
-  await page.locator('[data-wide-count]').selectOption('16');
-  assert.equal(await page.locator('[data-wide-list] > li').count(),16);
+  const questions=mode==='grade5-full'?40:16;
+  await page.locator('[data-wide-count]').selectOption(String(questions));
+  assert.equal(await page.locator('[data-wide-list] > li').count(),questions);
   const start=await page.locator('[data-wide-list] > li > p:first-child').allTextContents();
-  assert.equal(start.length,16);
+  assert.equal(start.length,questions);
   assert.ok(start.every(x=>x.trim().length>=10),'Blank or unexpectedly short question preview');
   assert.equal(await page.locator('.wide-answer').count(),0,'Answer leak before reveal');
+  if(mode==='grade5-full'){
+   assert.equal(await page.locator('[data-wide-coverage]').isVisible(),true);
+   assert.match(await page.locator('[data-wide-status]').textContent(),/26 Grade 5 CCSS/);
+   assert.equal(await page.locator('.wide-diagram svg').count(),3);
+  }
   await page.locator('[data-wide-toggle]').click();
-  assert.equal(await page.locator('.wide-answer').count(),16);
-  assert.equal(await page.locator('.wide-steps').count(),16);
+  assert.equal(await page.locator('.wide-answer').count(),questions);
+  assert.equal(await page.locator('.wide-steps').count(),questions);
   await page.locator('[data-wide-toggle]').click();
   assert.equal(await page.locator('.wide-answer').count(),0,'Answer leak after hide');
   assert.deepEqual(await page.locator('[data-wide-list] > li > p:first-child').allTextContents(),start,'Toggling changed seeded questions');
-  const editions=mode==='grade2'||mode==='congruent'||mode==='similar'||mode==='equation-stories'?['questions','answers','steps']:['questions'];
+  const editions=mode==='grade5-full'||mode==='grade2'||mode==='congruent'||mode==='similar'||mode==='equation-stories'?['questions','answers','steps']:['questions'];
   for(const edition of editions){
    const waiting=page.waitForEvent('download',{timeout:60000});
    await page.locator('[data-wide-download="'+edition+'"]').click();
@@ -78,17 +84,18 @@ try{
    const pdf=await PDFDocument.load(readFileSync(dest));
    assert.ok(pdf.getPageCount()>=1);
    assert.ok(Math.abs(pdf.getPage(0).getWidth()-(mode==='grade2'?595.28:612))<.15);
-   assert.ok((pdf.getTitle()||'').includes('WM1-20261108-'+mode+'-standard-16'));
+   assert.ok((pdf.getTitle()||'').includes('WM1-20261108-'+mode+'-standard-'+questions));
    assert.ok((pdf.getTitle()||'').includes(edition));
   }
   await page.locator('[data-wide-seed]').fill('314159');
   await page.locator('[data-wide-seed]').dispatchEvent('change');
   assert.notDeepEqual(await page.locator('[data-wide-list] > li > p:first-child').allTextContents(),start,'New seed did not change questions');
-  evidence.push({route,mode,questions:16,pdfEditions:editions.length,paper:mode==='grade2'?'A4':'Letter',viewport:390});
+  evidence.push({route,mode,questions,pdfEditions:editions.length,paper:mode==='grade2'?'A4':'Letter',viewport:390});
  }
  await open('geometry-general-worksheets');
  await page.locator('[data-wide-mode]').selectOption('polygon-sides');
  assert.equal(await page.locator('.wide-diagram svg').count(),8,'Expected vector polygon diagrams');
+ assert.equal(await page.locator('.wide-diagram text').count(),0,'Polygon diagram must not reveal sides or polygon name');
  const before=await page.locator('[data-wide-list] > li > p:first-child').allTextContents();
  await page.goto(base+'/geometry-general-worksheets/?wm_seed=20261108&wm_mode=polygon-sides&wm_count=8&wm_level=standard&wm_paper=A4',{waitUntil:'networkidle'});
  assert.equal(await page.locator('[data-wide-mode]').inputValue(),'polygon-sides');

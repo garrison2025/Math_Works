@@ -1,16 +1,18 @@
-/** R101 authentic supplemental math practice. No source SEO evidence or 51 core generators are modified. */
-export type WideMode='grade2'|'grade5'|'real-shapes'|'shapes'|'polygon-sides'|'congruent'|'similar'|'triangles'|'circles'|'volumes'|'equation-stories';
+/** R101/R102 authentic supplemental practice; no source SEO evidence or 51 core generators are modified. */
+import {GRADE5_FULL_KINDS,GRADE5_FULL_COUNTS,GRADE5_STANDARDS,GRADE5_STANDARD_IDS,grade5FullModel,grade5FullValues,grade5FullDiagram,type Grade5FullKind} from './r102-grade5-full.ts';
+export type WideMode='grade2'|'grade5'|'grade5-full'|'real-shapes'|'shapes'|'polygon-sides'|'congruent'|'similar'|'triangles'|'circles'|'volumes'|'equation-stories';
 export type WideLevel='easy'|'standard'|'challenge';
-export type WideKind='g2-add'|'g2-sub'|'g2-place'|'g2-time'|'g2-money'|'g2-shape'|'g5-mult'|'g5-div'|'g5-decimal'|'g5-fraction'|'g5-volume'|'g5-order'|'g5-measure'|'g5-story'|'real-shape'|'polygon-sides'|'triangle-congruence'|'triangle-similarity'|'tri-angle'|'tri-area'|'circle-radius'|'circle-circumference'|'circle-area'|'circle-semicircle'|'vol-prism'|'vol-cylinder'|'vol-cone'|'vol-sphere'|'vol-pyramid'|'vol-tri-pyramid'|'eq-one-step'|'eq-two-step'|'eq-multi';
+export type WideKind='g2-add'|'g2-sub'|'g2-place'|'g2-time'|'g2-money'|'g2-shape'|'g5-mult'|'g5-div'|'g5-decimal'|'g5-fraction'|'g5-volume'|'g5-order'|'g5-measure'|'g5-story'|'real-shape'|'polygon-sides'|'triangle-congruence'|'triangle-similarity'|'tri-angle'|'tri-area'|'circle-radius'|'circle-circumference'|'circle-area'|'circle-semicircle'|'vol-prism'|'vol-cylinder'|'vol-cone'|'vol-sphere'|'vol-pyramid'|'vol-tri-pyramid'|'eq-one-step'|'eq-two-step'|'eq-multi'|Grade5FullKind;
 export type WideValues={a:number;b:number;c:number;d:number;v:number};
 export type WideProblem={id:string;kind:WideKind;values:WideValues;question:string;answer:string;steps:string[]};
 export type WidePack={version:'wm1';seed:number;mode:WideMode;level:WideLevel;problems:WideProblem[]};
-export const WIDE_MODES:readonly WideMode[]=['grade2','grade5','real-shapes','shapes','polygon-sides','congruent','similar','triangles','circles','volumes','equation-stories'];
+export const WIDE_MODES:readonly WideMode[]=['grade2','grade5','grade5-full','real-shapes','shapes','polygon-sides','congruent','similar','triangles','circles','volumes','equation-stories'];
 export const WIDE_LEVELS:readonly WideLevel[]=['easy','standard','challenge'];
 export const WIDE_COUNTS:readonly number[]=[8,16,24];
 const groups:Record<WideMode,readonly WideKind[]>={
  grade2:['g2-add','g2-sub','g2-place','g2-time','g2-money','g2-shape'],
  grade5:['g5-mult','g5-div','g5-decimal','g5-fraction','g5-volume','g5-order','g5-measure','g5-story'],
+ 'grade5-full':GRADE5_FULL_KINDS,
  'real-shapes':['real-shape'],shapes:['real-shape','polygon-sides','g2-shape','tri-angle'],
  'polygon-sides':['polygon-sides'],congruent:['triangle-congruence'],similar:['triangle-similarity'],
  triangles:['triangle-congruence','triangle-similarity','tri-angle','tri-area'],
@@ -20,6 +22,7 @@ const groups:Record<WideMode,readonly WideKind[]>={
 };
 export const MODE_LABELS:Record<WideMode,string>={
  grade2:'Grade 2 mixed skills (six strands)',grade5:'Grade 5 mixed skills (eight strands)',
+ 'grade5-full':'Grade 5 complete CCSS standards sampler (26 standards)',
  'real-shapes':'Everyday objects and geometric shapes',shapes:'Shapes, sides and triangle basics',
  'polygon-sides':'Polygons and number of sides',congruent:'Triangle congruence: SSS, SAS, ASA, AAS, HL',
  similar:'Similar right triangles: corresponding sides',triangles:'Triangle mixed practice',
@@ -238,9 +241,14 @@ function model(kind:WideKind,z:WideValues):Pick<WideProblem,'question'|'answer'|
    'Add '+c+', divide by '+a+', then subtract '+b+': x = '+d+'.');
  }
  }
+ if(kind.startsWith('g5s-'))return grade5FullModel(kind as Grade5FullKind,z);
  throw Error('Unsupported comprehensive exercise');
 }
 function candidate(r:Rng,kind:WideKind,level:WideLevel):Omit<WideProblem,'id'>{
+ if(kind.startsWith('g5s-')){
+  const k=kind as Grade5FullKind,values=grade5FullValues(r,k,level);
+  return {kind,values,...grade5FullModel(k,values)};
+ }
  const cap=level==='easy'?7:level==='standard'?13:21;
  let a=0,b=0,c=0,d=0,v=0;
  switch(kind){
@@ -283,8 +291,9 @@ function candidate(r:Rng,kind:WideKind,level:WideLevel):Omit<WideProblem,'id'>{
  return {kind,values,...model(kind,values)};
 }
 export function verifyWidePack(pack:WidePack){
+ const countOK=pack.mode==='grade5-full'?GRADE5_FULL_COUNTS.includes(pack.problems.length as 40|48):WIDE_COUNTS.includes(pack.problems.length);
  if(pack.version!=='wm1'||!Number.isSafeInteger(pack.seed)||pack.seed<0||pack.seed>0xffffffff||
-  !WIDE_MODES.includes(pack.mode)||!WIDE_LEVELS.includes(pack.level)||!WIDE_COUNTS.includes(pack.problems.length))
+  !WIDE_MODES.includes(pack.mode)||!WIDE_LEVELS.includes(pack.level)||!countOK)
   throw Error('Invalid comprehensive worksheet settings');
  const set=new Set<string>(),family=groups[pack.mode];
  for(let i=0;i<pack.problems.length;i++){
@@ -295,9 +304,14 @@ export function verifyWidePack(pack:WidePack){
   if(set.has(p.question))throw Error('Duplicate worksheet question');
   set.add(p.question);
  }
+ if(pack.mode==='grade5-full'){
+  const covered=new Set(pack.problems.map(p=>GRADE5_STANDARDS[p.kind as Grade5FullKind]));
+  if(GRADE5_STANDARD_IDS.some(s=>!covered.has(s)))throw Error('Missing Grade 5 curriculum standard');
+ }
 }
 export function makeWidePack(seed:number,count=8,mode:WideMode='grade5',level:WideLevel='standard'):WidePack{
- if(!Number.isSafeInteger(seed)||seed<0||seed>0xffffffff||!WIDE_COUNTS.includes(count)||
+ if(!Number.isSafeInteger(seed)||seed<0||seed>0xffffffff||
+  !(mode==='grade5-full'?GRADE5_FULL_COUNTS.includes(count as 40|48):WIDE_COUNTS.includes(count))||
   !WIDE_MODES.includes(mode)||!WIDE_LEVELS.includes(level))throw Error('Invalid worksheet parameters');
  const r=new Rng(seed),family=groups[mode],problems:WideProblem[]=[],seen=new Set<string>();
  for(let tries=0;problems.length<count;tries++){
@@ -313,13 +327,14 @@ export function makeWidePack(seed:number,count=8,mode:WideMode='grade5',level:Wi
 export function wideDiagram(p:WideProblem):string{
  const kind=p.kind, z=p.values;
  const head='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 116" role="img" aria-label="Original schematic exercise diagram; exact values are in the question" style="width:100%;max-width:320px;height:auto">';
+ if(kind.startsWith('g5s-'))return grade5FullDiagram(kind as Grade5FullKind,z);
  const end='</svg>',line=(x1:number,y1:number,x2:number,y2:number)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="#245b89" stroke-width="2" />',
  text=(x:number,y:number,s:string)=>'<text x="'+x+'" y="'+y+'" font-family="sans-serif" font-size="11" fill="#163958">'+s+'</text>';
  const polygon=(n:number,cx:number,cy:number,r:number)=>{
   const pts=Array.from({length:n},(_,i)=>[cx+Math.cos(-Math.PI/2+2*Math.PI*i/n)*r,cy+Math.sin(-Math.PI/2+2*Math.PI*i/n)*r]);
   return '<polygon points="'+pts.map(p=>p.map(x=>x.toFixed(2)).join(',')).join(' ')+'" fill="#e7f1fa" stroke="#245b89" stroke-width="2"/>';
  };
- if(kind==='polygon-sides')return head+polygon(z.a,130,56,41)+text(170,107,nameOf(z.a)+' · '+z.a+' sides')+end;
+ if(kind==='polygon-sides')return head+polygon(z.a,130,56,41)+end;
  if(kind==='g2-shape'||kind==='real-shape'){
   const o=objects[z.v],shape=o.shape;
   let drawing='';

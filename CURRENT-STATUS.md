@@ -1,3 +1,9 @@
+# R102 Grade 5 full-standards sampler — implementation candidate
+
+R102 introduces a 40/48-question Grade 5 Common Core content-standards sampler. Every generated sheet must include all 26 published CCSS Grade 5 content standards (five domains) through 34 original math problem families, including fraction operations, decimals, measurements, fraction line plots, coordinates and geometric hierarchies. The existing eight-strand Grade 5 mixed mode remains available. Its R98 phrase is **SUPPORTED with strict CCSS sampler scope**, not a claim about every state's curriculum or student mastery. Independent math, exact PDF, browser and release verifications must complete before calling it deployed. Source keyword evidence (488 rows), 51 v18 core generators, the four HOLD preview pages and noindex policy are unchanged. User-waived physical printing, teacher and real-device acceptance are not claimed. No paid domain/GSC/index authorization.
+
+---
+
 # R101 remaining intent coverage — candidate pending CI and live verification
 
 R101 adds genuine printable Grade 2 and mixed Grade 5 practice, real-life geometric shape recognition, regular polygon side counts, five valid triangle congruence criteria, right-triangle similarity ratios, circle dimensions/area/perimeter, six solid volumes and multistep equation stories. The 488 original source terms, 51 core generators, four historically HOLD preview routes and fail-closed noindex policy remain untouched. The phrase `full worksheet of all of grade 5 math` is intentionally still PARTIAL: eight included strands are not a certified entire grade-5 curriculum. **R101 CI, merged-main results and Cloudflare exact SHA must be independently verified before claiming release.** Physical printing and teacher sign-offs remain owner-waived, not run. No domain/indexation/GSC release.
