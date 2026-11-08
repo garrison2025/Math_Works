@@ -24,6 +24,14 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
     <button type="button" data-directory-clear hidden aria-label="Clear worksheet search">Clear</button>
    </div>
   </form>
+  <div class="directory-quick-filters" role="group" aria-label="Try a quick worksheet search">
+   <span>Try a skill</span>
+   <button type="button" data-directory-suggestion="fractions">Fractions</button>
+   <button type="button" data-directory-suggestion="multiplication">Multiplication</button>
+   <button type="button" data-directory-suggestion="equations">Equations</button>
+   <button type="button" data-directory-suggestion="geometry">Geometry</button>
+   <button type="button" data-directory-suggestion="word problems">Word problems</button>
+  </div>
   <p id="directory-search-status" data-directory-status role="status" aria-live="polite"></p>
   <ul id="directory-matches" class="directory-matches" data-directory-matches hidden aria-label="Specific matched worksheet tasks"></ul>
  </div>
@@ -100,6 +108,17 @@ const primaries=new Map(targets.map(t=>[t.slug,t.primary]));
  .directory-note{color:#56667b;font-size:.87rem;line-height:1.65;margin:24px 0 40px}
  @media(max-width:680px){.directory-search-row{flex-wrap:wrap}.directory-search input{flex-basis:100%}.directory-heading{align-items:start;flex-direction:column;gap:10px}.directory-grid{grid-template-columns:1fr}.directory-card{min-height:0}.directory-more{padding:3px 0}}
  @media(prefers-reduced-motion:reduce){.directory-card{transition:none}.directory-card:hover{transform:none}}
+
+ /* R105 direct-touch skill shortcuts; the same existing search index handles results. */
+ .directory-quick-filters{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:13px}
+ .directory-quick-filters>span{font-size:.74rem;color:#61748b;font-weight:730;margin-right:4px}
+ .directory-search .directory-quick-filters button{min-height:32px;border-radius:999px;border:1px solid #c8d9eb;padding:6px 11px;background:#fff;color:#315278;font-size:.73rem;font-weight:690;transition:background-color .17s,border-color .17s,transform .17s}
+ .directory-search .directory-quick-filters button:hover{background:#e6f0ff;border-color:#91b5e7;transform:translateY(-1px)}
+ .directory-search .directory-quick-filters button[aria-pressed="true"]{background:#214fb8;border-color:#214fb8;color:white}
+ .directory-matches:not([hidden])>li{animation:r105-suggest .21s cubic-bezier(.2,.75,.2,1) both}
+ .directory-matches:not([hidden])>li:nth-child(2n){animation-delay:35ms}
+ @keyframes r105-suggest{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+ @media(prefers-reduced-motion:reduce){.directory-search .directory-quick-filters button{transition:none}.directory-search .directory-quick-filters button:hover{transform:none}.directory-matches:not([hidden])>li{animation:none}}
 </style>
 
 <script>import '../client/worksheet-directory-search.ts';</script>
