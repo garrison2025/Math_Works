@@ -19,7 +19,7 @@ html{scroll-padding-top:95px}
 .preview-tools .toggle[data-action=practice][aria-pressed=true]{background:#e4f7ee;color:#0c6b52;border-color:#bfe2d2}
 .preview-tools .toggle:disabled{opacity:.47}
 .preview-panel .sheet-outer{border:1px solid #c7d8eb;border-radius:14px}
-.print-sheet{border-radius:3px;contain:paint}
+.print-sheet{border-radius:3px}
 .sheet-top{border-bottom-color:#244f8c}
 .sheet-top .sheet-logo{color:#2459ae;letter-spacing:.035em}
 .sheet-name{color:#556981}
@@ -37,6 +37,10 @@ html{scroll-padding-top:95px}
 .settings details.calibration-card summary{outline-offset:5px}
 .settings .controls-foot{line-height:1.62}
 .wide-workspace{scroll-margin-top:92px}
+.wide-preview-jump{display:none;align-items:center;gap:5px;width:fit-content;color:#2254b6;font-size:.83rem;font-weight:760;padding:9px 12px;border-radius:10px;background:#eaf2ff;border:1px solid #cfddf5;margin:4px 0 13px}
+.wide-preview-jump:hover{text-decoration:none;background:#dfeaff}
+.wide-preview-jump:focus-visible{outline:3px solid #6c9df1;outline-offset:3px}
+.wide-workspace .wide-preview{scroll-margin-top:90px}
 .wide-workspace .wide-preview{background:linear-gradient(165deg,#edf4ff,#f5f9fe);border-color:#d8e5f3}
 .wide-workspace .wide-paper{border-color:#d9e6f3;box-shadow:0 18px 35px #20436d0c;padding:clamp(18px,2.3vw,32px)}
 .wide-workspace .wide-paper-id{color:#365d8c}
@@ -84,6 +88,7 @@ html{scroll-padding-top:95px}
  .settings .actions{margin-top:17px}
  .settings .actions>.btn,.settings .actions>.download-grid .btn{min-height:45px}
  .wide-workspace{gap:14px}
+ .wide-preview-jump{display:inline-flex}
  .wide-workspace .wide-header{flex-wrap:wrap}
  .wide-workspace .wide-header button{max-width:none}
  .wide-workspace .wide-paper{padding:15px}
@@ -100,7 +105,7 @@ html{scroll-padding-top:95px}
 }
 /* The original print CSS is authoritative: navigation, effects and controls never print. */
 @media print{
- .settings-topbar,.settings-preview-link,.directory-quick-filters{display:none!important}
+ .settings-topbar,.settings-preview-link,.directory-quick-filters,.wide-preview-jump{display:none!important}
  .workspace>.preview-panel,.wide-workspace>.wide-preview{position:static!important;top:auto!important;max-height:none!important;overflow:visible!important}
  .workspace>.preview-panel .sheet-outer{max-height:none!important;overflow:visible!important}
  .print-sheet{contain:none!important;border:0!important}
