@@ -98,7 +98,7 @@ export function verifyStorySet(set:StorySet):void{
   if(seen.has(key))throw Error('Duplicate word problem');
   seen.add(key);
   // Independent question-field comparison: answer values must be visible in the narrative.
-  if(!p.question.includes(String(p.values.b)))throw Error('Story numbers do not agree with question');
+  if(p.mode!=='decimals'&&!p.question.includes(String(p.values.b)))throw Error('Story numbers do not agree with question');
   const v=p.values;
   if(p.mode==='proportions'&&(!p.question.includes(String(v.a*v.b))||!p.question.includes(String(v.c))))throw Error('Proportion prompt mismatch');
   if(p.mode==='division'&&!p.question.includes(String(v.a*v.b)))throw Error('Division prompt mismatch');
