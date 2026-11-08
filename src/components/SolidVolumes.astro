@@ -1,0 +1,67 @@
+---
+import {makeSolidSet} from '../lib/solid-volumes.ts';
+const sample=makeSolidSet(20261108,8,'mixed','standard');
+---
+<section class="solid-workspace" data-solid-workspace aria-label="Exact 3D solid volume worksheet generator">
+<aside class="panel solid-settings">
+  <span class="eyebrow">New · R99 exact volumes</span>
+  <h2>Build your 3D volume worksheet</h2>
+  <p>Choose the solid, adjust the numbers, and generate reproducible student and teacher PDFs. Exact results use π instead of an approximate decimal.</p>
+  <div class="solid-field"><label for="solid-mode">Solid shape</label><select id="solid-mode" data-solid-mode>
+   <option value="mixed">Mixed sphere, cone and pyramid volumes</option>
+   <option value="sphere">Sphere volume</option>
+   <option value="cone">Right circular cone volume</option>
+   <option value="square-pyramid">Right square pyramid volume</option>
+   <option value="triangular-pyramid">Triangular pyramid volume</option>
+  </select></div>
+  <div class="solid-field"><label for="solid-level">Dimensions</label><select id="solid-level" data-solid-level>
+   <option value="easy">Easy · 2–21 units</option>
+   <option value="standard" selected>Standard · 4–25 units</option>
+   <option value="challenge">Challenge · 8–30 units</option>
+  </select></div>
+  <div class="solid-row"><div class="solid-field"><label for="solid-count">Questions</label><select id="solid-count" data-solid-count>
+   <option value="4">4</option><option value="8" selected>8</option><option value="12">12</option><option value="16">16</option><option value="20">20</option>
+  </select></div><div class="solid-field"><label for="solid-paper">Paper size</label><select id="solid-paper" data-solid-paper><option value="Letter">US Letter</option><option value="A4">A4</option></select></div></div>
+  <div class="solid-field"><label for="solid-seed">Worksheet seed (0–4294967295)</label><input id="solid-seed" data-solid-seed type="number" min="0" max="4294967295" step="1" inputmode="numeric" value="20261108"/>
+  <p>The same seed and settings reproduce the exact same questions and answers.</p></div>
+  <div class="solid-actions">
+   <button class="btn btn-primary" type="button" data-solid-new>Generate new questions</button>
+   <button class="btn btn-secondary" type="button" data-solid-download="questions">Download student PDF</button>
+   <button class="btn" type="button" data-solid-download="answers">Download answer key PDF</button>
+   <button class="btn" type="button" data-solid-download="steps">Download worked steps PDF</button>
+   <button class="btn btn-soft" type="button" data-solid-share>Copy reproducible link</button>
+  </div>
+  <p class="solid-note">No login or student account. Calculations and files remain in your browser; only the selected settings are included in copied links. Print at 100% for accurate paper dimensions.</p>
+</aside>
+<div class="panel solid-preview">
+ <div class="solid-preview-heading"><div><span class="eyebrow">Student practice preview</span><h2>Volume of 3D solids</h2><p>Calculate cubic units. For spheres and cones, leave answers in exact terms of π.</p></div>
+ <button type="button" class="btn btn-soft" data-solid-toggle aria-pressed="false">Show answers and steps</button></div>
+ <p data-solid-status role="status" aria-live="polite">8 exact problems ready.</p>
+ <div class="solid-preview-paper"><p class="solid-sheet-id">Math Works · Student practice · SV1</p><p class="solid-name">Name: __________________________ Date: _______________</p>
+ <ol data-solid-list>{sample.problems.map(p=><li><p>{p.question}</p><div class="solid-writing" aria-label="Space for your calculation"></div></li>)}</ol>
+ </div>
+</div>
+</section>
+<style>
+.solid-workspace{display:grid;grid-template-columns:minmax(260px,310px) minmax(0,1fr);gap:19px;align-items:start;margin:18px 0 30px}
+.solid-settings,.solid-preview{padding:24px;min-width:0}.solid-settings h2,.solid-preview h2{font-size:1.4rem;line-height:1.25;margin:3px 0 10px}
+.solid-settings>p,.solid-preview-heading p{color:#53657a;line-height:1.6;font-size:.89rem}
+.solid-field{margin:17px 0}.solid-field label{display:block;font-weight:800;color:#243850;font-size:.84rem;margin-bottom:7px}
+.solid-field input,.solid-field select{min-height:45px;width:100%;padding:10px;border:1.5px solid #9daec1;border-radius:9px;background:#fff;color:#20354e;font:inherit}
+.solid-field>p,.solid-note{font-size:.8rem;line-height:1.5;color:#5d6f84;margin:8px 0 0}
+.solid-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.solid-actions{display:grid;gap:9px;margin:24px 0 18px}.solid-actions button{width:100%;min-height:44px;white-space:normal}
+.solid-preview-heading{display:flex;justify-content:space-between;align-items:start;gap:16px}.solid-preview-heading button{flex:none;max-width:195px;min-height:44px;white-space:normal}
+[data-solid-status]{background:#eaf5ee;color:#225a49;padding:10px 13px;border-radius:9px;font-weight:700;font-size:.84rem;margin:17px 0}
+[data-solid-status][data-error=true]{background:#fff2ed;color:#a42e23}
+.solid-preview-paper{border:1px solid #d7e0e9;background:white;padding:24px 27px;border-radius:11px;box-shadow:0 6px 15px #12233a0b}
+.solid-sheet-id{font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;color:#53647a;font-weight:800}
+.solid-name{font-size:.83rem;margin:16px 0 22px;color:#334e69;overflow-wrap:anywhere}
+[data-solid-list]{display:grid;gap:19px;padding-left:26px;margin:0}[data-solid-list]>li{padding-left:4px;font-size:.94rem;line-height:1.55}[data-solid-list]>li>p{margin:0 0 8px}
+.solid-writing{border-bottom:1px solid #becbd7;height:34px}.solid-answer{color:#12644b;font-weight:800}.solid-steps{padding-left:19px;color:#516376;font-size:.89rem}
+.solid-field select:focus-visible,.solid-field input:focus-visible,.solid-actions button:focus-visible,.solid-preview-heading button:focus-visible{outline:3px solid #187b68;outline-offset:3px}
+@media(max-width:920px){.solid-workspace{grid-template-columns:1fr}.solid-preview-heading{flex-wrap:wrap}.solid-preview-heading button{max-width:none}}
+@media(max-width:520px){.solid-settings,.solid-preview{padding:17px}.solid-preview-paper{padding:18px}.solid-row{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){.solid-workspace *{scroll-behavior:auto}}
+</style>
+<script>import '../client/solid-volumes.ts';</script>

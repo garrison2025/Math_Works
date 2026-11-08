@@ -6,6 +6,7 @@ export type StoryPaper='Letter'|'A4';
 const sizes:Record<StoryPaper,[number,number]>={Letter:[612,792],A4:[595.28,841.89]};
 const ink=rgb(.11,.17,.24),muted=rgb(.36,.42,.5),blue=rgb(.10,.37,.61);
 const fontSize=11,lineHeight=16,margin=46;
+export const STORY_FOOTER_BASELINE=42; // V2 minimum edge margin is 36pt.
 function wrap(text:string,font:PDFFont,size:number,maxWidth:number):string[]{
  const lines:string[]=[];let line='';
  for(const word of text.trim().split(/\s+/)){
@@ -75,7 +76,7 @@ export async function createStoryPdf(set:StorySet,edition:StoryPdfEdition,paper:
  }
  pages.forEach((p,i)=>{
   const foot=`Page ${i+1} of ${pages.length}   |   ${identity}   |   ${edition}`;
-  p.drawText(foot,{x:margin,y:29,size:8,font:regular,color:muted});
+  p.drawText(foot,{x:margin,y:STORY_FOOTER_BASELINE,size:8,font:regular,color:muted});
  });
  doc.setTitle(`Math Works word problems | ${edition} | ${identity}`);
  doc.setSubject('Original, exact, seeded word problems. Matching student, teacher and solution editions.');
