@@ -4,17 +4,82 @@ import Workspace from '../components/Workspace.astro';
 import routesJson from '../data/routes.json';
 import {category,titleFor} from '../lib/site';
 const routes=routesJson.filter(x=>x.type!=='HOLD');
-const groups=['Arithmetic & Numbers','Algebra & Functions','Geometry & Graphs','Data & Statistics'];
+const groups=[
+ {id:'numbers',name:'Arithmetic & Numbers',symbol:'+',description:'Build fluency with arithmetic, fractions and decimals.'},
+ {id:'algebra',name:'Algebra & Functions',symbol:'x',description:'Practice equations, expressions and relationships.'},
+ {id:'geometry',name:'Geometry & Graphs',symbol:'△',description:'Work through shapes, measurement and coordinate ideas.'},
+ {id:'statistics',name:'Data & Statistics',symbol:'▥',description:'Read, construct and interpret data.'}
+];
 ---
 <Layout title="Free Printable Math Worksheet Generator | Math Worksheet Studio" description="Create fresh printable math worksheets, answer keys and worked solutions on selected topics. Choose from algebra, fractions, geometry, arithmetic, and more. No account required.">
-<div class="container"><section class="hero"><span class="eyebrow">Free printable teaching tools</span><h1>A better way to make math practice.</h1><p>Choose a math topic, generate fresh problems, and get a clean worksheet with matching answers. Built for teachers, parents, and independent practice.</p><a class="btn btn-primary" href="/worksheets/">Search all worksheets</a></section><section aria-labelledby="example-worksheet"><h2 id="example-worksheet">Try a sample: two-step equations</h2><Workspace slug="two-step-equations-worksheets"/></section>
-<section id="topics" class="topic-section"><div class="section-header"><div><span class="eyebrow">Explore the library</span><h2>Choose a practice topic</h2><p>Each topic opens its own worksheet generator, preview and answer key.</p></div></div>{groups.map(group=><div class="topic-group"><h3>{group}</h3><div class="topic-grid">{routes.filter(r=>category(r.slug)===group).map(r=><a class="topic-card" href={`/${r.slug}/`}><strong>{titleFor(r.slug)}</strong><small>Printable practice · Answer key included</small><span class="topic-link">Open worksheet →</span></a>)}</div></div>)}</section>
-<section class="topic-section" aria-labelledby="practice-paths-heading"><div class="section-header"><div><span class="eyebrow">More ways to find the right practice</span><h2 id="practice-paths-heading">Explore by grade, subject or real-world story</h2><p>Use a focused worksheet generator or navigate to the exact skill you need.</p></div></div>
-<div class="topic-grid">
-<a class="topic-card" href="/word-problems-worksheets/"><strong>Original Word Problems</strong><small>Generate proportion, area, multiplication and division stories, with separate PDF keys</small><span class="topic-link">Open story generator →</span></a>
-<a class="topic-card" href="/worksheets-by-grade/"><strong>Math by Suggested Grade</strong><small>Browse working skill tools recommended for grades 5, 6, 7 and 8</small><span class="topic-link">Explore grades →</span></a>
-<a class="topic-card" href="/algebra-general-worksheets/"><strong>Algebra Practice Directory</strong><small>Equations, inequalities, systems, functions and graphing</small><span class="topic-link">Explore algebra →</span></a>
-<a class="topic-card" href="/geometry-general-worksheets/"><strong>Geometry Practice Directory</strong><small>Area, angles, measurement, Pythagorean theorem and coordinate geometry</small><span class="topic-link">Explore geometry →</span></a>
-</div></section>
-<section id="how-it-works" class="info-grid"><div class="panel info-panel"><h2>Three steps to a printable worksheet</h2><ol><li>Pick your topic and adjust the difficulty or question count.</li><li>Preview the questions and create a new reproducible set.</li><li>Download the questions and answers (and worked steps where verified), or print directly.</li></ol></div><div class="panel info-panel"><h2>Designed for real classrooms</h2><p>Worksheets are generated from deterministic math routines, not copied PDFs. The same seed produces matching question and answer sets, so you can recreate any worksheet later.</p><p>No student login, hosted database, or paid generation service is required.</p></div></section></div>
+ <div class="container">
+  <section class="hero hero-home" aria-labelledby="home-heading">
+   <div class="hero-copy">
+    <span class="eyebrow hero-eyebrow"><span class="eyebrow-spark" aria-hidden="true"></span> Built for better math practice</span>
+    <h1 id="home-heading">Math practice, <span class="hero-accent">made simple.</span></h1>
+    <p>Create clear, fresh math worksheets in seconds. Pick a skill, tune the difficulty, and print matching questions, answers and verified worked steps.</p>
+    <div class="hero-actions">
+     <a class="btn btn-primary hero-primary" href="/worksheets/">Find your worksheet <span aria-hidden="true">↗</span></a>
+     <a class="btn hero-secondary" href="#try-a-worksheet">Try a live example <span aria-hidden="true">↓</span></a>
+    </div>
+    <ul class="hero-highlights" aria-label="Worksheet studio benefits">
+     <li><span aria-hidden="true">✓</span> No account needed</li>
+     <li><span aria-hidden="true">✓</span> Letter &amp; A4 PDFs</li>
+     <li><span aria-hidden="true">✓</span> Matching answer keys</li>
+    </ul>
+   </div>
+   <div class="hero-illustration" aria-hidden="true">
+    <div class="hero-halo hero-halo-one"></div><div class="hero-halo hero-halo-two"></div>
+    <div class="hero-preview-window">
+     <div class="hero-preview-toolbar"><span class="hero-preview-dots"><i></i><i></i><i></i></span><span>Worksheet preview</span><span class="hero-toolbar-pill">PDF READY</span></div>
+     <div class="hero-paper-preview">
+      <div class="hero-paper-top"><span>MATH WORKSHEET STUDIO</span><span>01 / 01</span></div>
+      <strong class="hero-paper-title">Two-step equations</strong>
+      <div class="hero-paper-byline"><span>Name: ____________________</span><span>Date: __________</span></div>
+      <div class="hero-paper-problems">
+       <div><small>01</small><strong>2x + 7 = 19</strong><span>x = ______</span></div>
+       <div><small>02</small><strong>3x − 4 = 11</strong><span>x = ______</span></div>
+       <div><small>03</small><strong>4x + 9 = 25</strong><span>x = ______</span></div>
+      </div>
+      <div class="hero-paper-footer">Practice sheet · Sample layout</div>
+     </div>
+    </div>
+    <div class="hero-float hero-float-key"><span class="hero-float-icon">✓</span><span><strong>Answers included</strong><small>Same questions, every time</small></span></div>
+    <div class="hero-float hero-float-print"><span aria-hidden="true">↗</span> Ready for the classroom</div>
+   </div>
+  </section>
+
+  <section class="demo-section" id="try-a-worksheet" aria-labelledby="example-worksheet">
+   <div class="demo-intro">
+    <div><span class="eyebrow">Make one right here</span><h2 id="example-worksheet">Your next worksheet starts here.</h2><p>Adjust the settings, see the page as you build it, then download a clean, ready-to-print PDF.</p></div>
+    <span class="demo-detail"><span class="demo-live-dot" aria-hidden="true"></span> Live, in-browser generator</span>
+   </div>
+   <Workspace slug="two-step-equations-worksheets"/>
+  </section>
+
+  <section id="topics" class="topic-section" aria-labelledby="topics-heading">
+   <div class="section-header"><div><span class="eyebrow">Explore the library</span><h2 id="topics-heading">A worksheet for every next step.</h2><p>Explore {routes.length} working topic generators, organised by the skills you're teaching.</p></div><a class="section-quick-link" href="/worksheets/">Search all worksheets <span aria-hidden="true">↗</span></a></div>
+   {groups.map(group=><section class="topic-group" aria-labelledby={`topic-group-${group.id}`}><div class="topic-group-heading"><span class="topic-group-symbol" aria-hidden="true">{group.symbol}</span><div><h3 id={`topic-group-${group.id}`}>{group.name}</h3><p>{group.description}</p></div><span class="topic-group-count">{routes.filter(r=>category(r.slug)===group.name).length} topics</span></div><div class="topic-grid">{routes.filter(r=>category(r.slug)===group.name).map(r=><a class="topic-card" href={`/${r.slug}/`}><strong>{titleFor(r.slug)}</strong><small>Printable practice · Matching answer key</small><span class="topic-link">Open worksheet <span aria-hidden="true">↗</span></span></a>)}</div></section>)}
+  </section>
+
+  <section class="topic-section pathways-section" aria-labelledby="practice-paths-heading">
+   <div class="section-header"><div><span class="eyebrow">Find your way</span><h2 id="practice-paths-heading">Prefer to browse another way?</h2><p>Choose a grade, a subject, or practical word problems.</p></div></div>
+   <div class="pathways-grid">
+    <a class="pathway-card" href="/worksheets-by-grade/"><span class="pathway-number">01 / SUGGESTED GRADES</span><span class="pathway-icon" aria-hidden="true">G5</span><strong>Math by suggested grade</strong><span>Browse grade-level study paths and the Grade 5 standards sampler.</span><span class="pathway-arrow" aria-hidden="true">↗</span></a>
+    <a class="pathway-card" href="/word-problems-worksheets/"><span class="pathway-number">02 / STORIES</span><span class="pathway-icon" aria-hidden="true">≡</span><strong>Original word problems</strong><span>Create contextual practice with matching answer and step PDFs.</span><span class="pathway-arrow" aria-hidden="true">↗</span></a>
+    <a class="pathway-card" href="/algebra-general-worksheets/"><span class="pathway-number">03 / ALGEBRA</span><span class="pathway-icon" aria-hidden="true">ƒ(x)</span><strong>Algebra pathways</strong><span>Equations, inequalities, functions and coordinate graphs.</span><span class="pathway-arrow" aria-hidden="true">↗</span></a>
+    <a class="pathway-card" href="/geometry-general-worksheets/"><span class="pathway-number">04 / GEOMETRY</span><span class="pathway-icon" aria-hidden="true">△</span><strong>Geometry pathways</strong><span>Angles, measurement, shapes and spatial reasoning.</span><span class="pathway-arrow" aria-hidden="true">↗</span></a>
+   </div>
+  </section>
+
+  <section id="how-it-works" class="how-section" aria-labelledby="how-title">
+   <div class="section-header"><div><span class="eyebrow">Simple by design</span><h2 id="how-title">From idea to printable practice.</h2><p>Everything you need for a useful worksheet, without a signup or extra software.</p></div></div>
+   <div class="how-grid">
+    <div class="how-card"><span class="how-number">01</span><h3>Pick a skill</h3><p>Choose an exact math topic and set the difficulty, question count and page size.</p></div>
+    <div class="how-card"><span class="how-number">02</span><h3>Preview instantly</h3><p>See real generated questions, keep a reproducible seed and adjust before printing.</p></div>
+    <div class="how-card"><span class="how-number">03</span><h3>Print with confidence</h3><p>Download separate student and matching answer PDFs. Worked steps appear where verified.</p></div>
+   </div>
+   <p class="how-note">Generated in your browser. No student login, hosted question database or paid generation service is required.</p>
+  </section>
+ </div>
 </Layout>
