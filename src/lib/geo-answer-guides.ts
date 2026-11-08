@@ -49,7 +49,7 @@ export const GEO_GUIDES:Readonly<Record<string,GeoGuide>>={
  "volume-of-rectangular-prisms-worksheets":{
   purpose:"Use rectangular-prism volume sheets when the task concerns three-dimensional capacity in cubic units, not the exposed area of the faces.",
   answers:[
-   {question:"What is the formula for rectangular-prism volume?",answer:"V = length × width × height. A 2 cm × 3 cm × 4 cm rectangular prism has V = 24 cm³."},
+   {question:"What is the formula for rectangular-prism volume?",answer:"V = length × width × height. A 2 cm × 3 cm × 4 cm rectangular prism has V = 24 cm³. State the result in cubic units, not square units."},
    {question:"How does volume differ from surface area?",answer:"The same 2 × 3 × 4 cm prism has total closed surface area 2(2×3 + 2×4 + 3×4) = 52 cm². Volume is 24 cm³; the units and formulas are different."}
   ],
   related:{href:"/surface-area-worksheets/",label:"Compare total surface area"}
