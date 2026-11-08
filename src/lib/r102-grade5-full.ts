@@ -40,7 +40,6 @@ function frac(n:number,d:number):string{
  if(d<=0||!Number.isSafeInteger(n)||!Number.isSafeInteger(d))throw Error('Invalid exact fraction');
  const g=gcd(n,d);return d/g===1?String(n/g):(n/g)+'/'+(d/g);
 }
-const dec=(v:number,places:number)=> (v/100).toFixed(places);
 const cents=(v:number)=> (v/100).toFixed(2);
 const fixed4=(v:number)=> (v/10000).toFixed(4).replace(/0+$/,'').replace(/\.$/,'');
 function requireValue(ok:boolean){if(!ok)throw Error('Invalid Grade 5 question values');}
@@ -72,10 +71,14 @@ export function grade5FullModel(kind:Grade5FullKind,z:Values):Model{
    (a*100)+' ÷ '+(a*10)+' = 10.');
  case 'g5s-nbt-power':{
   requireValue(a>=101&&a<=999&&b>=1&&b<=2&&v<=1);
-  const val=a/100,scale=10**b,ans=v===0?val*scale:val/scale;
-  return result('Calculate '+val.toFixed(2)+(v===0?' × ':' ÷ ')+'10^'+b+'.',String(Number(ans.toFixed(5))),
+  const val=(a/100).toFixed(2),power=10**b;
+  // Fixed-point arithmetic: numerator and denominator are exact base-10 integers.
+  const numerator=v===0?a*power:a,denominator=v===0?100:100*power;
+  const places=v===0?Math.max(0,2-b):2+b;
+  const quotient=(numerator/denominator).toFixed(places).replace(/\\.?0+$/,'');
+  return result('Calculate '+val+(v===0?' × ':' ÷ ')+'10^'+b+'.',quotient,
    'A power of ten moves the decimal point '+b+' place(s) '+(v===0?'right':'left')+'.',
-   'The exact result is '+String(Number(ans.toFixed(5)))+'.');
+   'The exact result is '+quotient+'.');
  }
  case 'g5s-nbt-expand':
   requireValue(a>=1&&a<=9&&b<=9&&c<=9&&d<=9);
@@ -181,7 +184,7 @@ export function grade5FullModel(kind:Grade5FullKind,z:Values):Model{
  case 'g5s-md-lineplot':{
   requireValue(a>=1&&a<=4&&b>=1&&b<=4&&c>=1&&c<=4&&d>=1&&d<=4);
   const eighths=a+2*b+3*c+4*d,ans=frac(eighths,8);
-  return result('The line plot shows '+(a+b+c+d)+' ribbon pieces, measured in inches. What is their combined length? Use the X marks above 1/8, 1/4, 3/8 and 1/2.',
+  return result('The line plot shows '+(a+b+c+d)+' ribbon pieces, measured in inches. What is their combined length? Read the X marks above 1/8, 1/4, 3/8 and 1/2.',
    ans+' inches','Convert measurements to eighths: 1/4=2/8, 3/8=3/8, 1/2=4/8.',
    'Add '+a+' + 2 × '+b+' + 3 × '+c+' + 4 × '+d+' = '+eighths+' eighths; simplify to '+ans+' inches.');
  }
@@ -244,7 +247,7 @@ export function grade5FullValues(r:Rng,kind:Grade5FullKind,level:'easy'|'standar
  const cap=level==='easy'?5:level==='standard'?8:12;
  let a=0,b=0,c=0,d=0,v=0;
  switch(kind){
- case 'g5s-oa-eval':a=r.int(2,cap);c=r.int(1,cap);b=r.int(c,2*cap);d=r.int(1,cap);break;
+ case 'g5s-oa-eval':a=r.int(2,cap);c=r.int(1,cap);b=r.int(c,2*cap);d=r.int(1,Math.min(8,cap));break;
  case 'g5s-oa-expression':a=r.int(2,cap+3);b=r.int(2,cap+5);c=r.int(1,cap+7);break;
  case 'g5s-oa-pattern':a=r.int(2,cap);b=2*a;c=r.int(1,7);break;
  case 'g5s-nbt-place':a=r.int(1,9);break;
