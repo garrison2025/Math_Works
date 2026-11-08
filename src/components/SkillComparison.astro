@@ -1,0 +1,189 @@
+---
+interface Props {slug:string}
+const {slug}=Astro.props;
+const comparisons={
+  "area-of-triangles-worksheets": [
+    "Triangle area is not parallelogram area",
+    "A triangle uses one-half × base × perpendicular height. A parallelogram with the same base and height has twice the area.",
+    "A triangle with base 8 cm and height 3 cm covers 12 cm²; a parallelogram using those same measurements covers 24 cm².",
+    "/area-of-parallelograms-worksheets/",
+    "Compare parallelogram area"
+  ],
+  "area-of-parallelograms-worksheets": [
+    "Parallelogram area needs a perpendicular height",
+    "Use base × perpendicular height for a parallelogram; do not divide by two, which applies to triangles.",
+    "A parallelogram with base 8 cm and height 3 cm covers 24 cm². A matching triangle covers 12 cm².",
+    "/area-of-triangles-worksheets/",
+    "Compare triangle area"
+  ],
+  "addition-worksheets": [
+    "Addition combines; subtraction finds the difference",
+    "Whole-number addition and subtraction use aligned place values, but their checks work in opposite directions. This generator concentrates on sums and regrouping.",
+    "Example: 237 + 185 = 422. Check by reversing the operation: 422 − 185 = 237.",
+    "/subtraction-worksheets/",
+    "Choose subtraction instead"
+  ],
+  "subtraction-worksheets": [
+    "Subtraction is not just an addition sheet with new signs",
+    "Subtracting may require exchanging one ten for ten ones. This generator targets differences and borrowing, with a separate teacher answer key.",
+    "Example: 802 − 467 = 335. Check the result by adding 335 + 467 = 802.",
+    "/addition-worksheets/",
+    "Choose addition instead"
+  ],
+  "equivalent-fractions-worksheets": [
+    "Equivalent fractions versus fraction addition",
+    "Equivalent fractions name the same quantity using different numerators and denominators; unlike-denominator addition combines two quantities.",
+    "Example: 1/2 = 3/6 is an equivalence. But 1/2 + 1/3 = 5/6 is an addition problem.",
+    "/adding-unlike-fractions-worksheets/",
+    "Compare unlike-denominator addition"
+  ],
+  "adding-unlike-fractions-worksheets": [
+    "Add unlike denominators using equivalent forms",
+    "First create a common denominator, then add the converted numerators. Finding an equivalent fraction by itself is a different practice goal.",
+    "Example: 1/2 + 1/3 = 3/6 + 2/6 = 5/6. Do not add the denominators to obtain 2/5.",
+    "/equivalent-fractions-worksheets/",
+    "Practise equivalence first"
+  ],
+  "complementary-supplementary-angles-worksheets": [
+    "Angle sums versus vertical-angle equality",
+    "Complementary angles sum to 90°, supplementary angles sum to 180°, while vertical angles on crossing lines are equal.",
+    "Example: an angle of 35° needs 55° to be complementary and 145° to be supplementary.",
+    "/vertical-angles-worksheets/",
+    "Compare vertical angles"
+  ],
+  "vertical-angles-worksheets": [
+    "Vertical angles are equal, not necessarily 90°",
+    "Opposite angles at a line intersection match each other. Adjacent angles on a straight line, rather than the opposite pair, sum to 180°.",
+    "If one angle is 65°, its opposite vertical angle is 65°, while an adjacent supplementary angle is 115°.",
+    "/complementary-supplementary-angles-worksheets/",
+    "Compare angle sums"
+  ],
+  "two-digit-by-one-digit-multiplication-worksheets": [
+    "Choose the number of digits being multiplied",
+    "This worksheet multiplies a two-digit number by one digit, so each exercise has one multiplier digit. Larger column multiplication is a separate skill.",
+    "Example: 24 × 3 = 72. The problem 124 × 23 requires a multi-digit algorithm instead.",
+    "/three-digit-by-two-digit-multiplication-worksheets/",
+    "Try three-digit by two-digit multiplication"
+  ],
+  "three-digit-by-two-digit-multiplication-worksheets": [
+    "Two-digit multipliers need a tens-row partial product",
+    "A three-digit by two-digit multiplication includes distinct ones and tens partial products, unlike a two-digit by one-digit problem.",
+    "Example: 123 × 24 = 123 × 4 + 123 × 20 = 492 + 2460 = 2952.",
+    "/two-digit-by-one-digit-multiplication-worksheets/",
+    "Review a simpler column algorithm"
+  ],
+  "one-step-equations-worksheets": [
+    "One inverse operation versus two",
+    "One-step equations reverse one operation to isolate x. Two-step equations require undoing addition or subtraction and multiplication or division.",
+    "Example: x + 7 = 12 gives x = 5. Compare 3x + 7 = 22, where you must first subtract 7.",
+    "/two-step-equations-worksheets/",
+    "Move to two-step equations"
+  ],
+  "two-step-equations-worksheets": [
+    "Two-step equations need a sequence of inverses",
+    "For ax + b = c, remove the constant and then divide by the nonzero coefficient; changing the order can give the wrong solution.",
+    "Example: 3x + 7 = 22 means 3x = 15 and x = 5. A one-step equation needs only one inverse operation.",
+    "/one-step-equations-worksheets/",
+    "Review one-step equations"
+  ],
+  "long-division-worksheets": [
+    "Long division records work; division facts test recall",
+    "Long division is an algorithm with quotient positions, multiplication, subtraction and possible remainders. Division fact sheets focus on numerical fluency.",
+    "Example: 125 ÷ 6 = 20 remainder 5; show the intermediate quotient steps instead of writing only 20 R5.",
+    "/division-worksheets/",
+    "Compare division facts and stories"
+  ],
+  "division-worksheets": [
+    "Division facts and long division are distinct tasks",
+    "Use this page for division facts and the additional decimal/story panels. For the traditional written quotient algorithm choose long division.",
+    "Example: 56 ÷ 7 = 8 tests a division fact. The written steps of 125 ÷ 6 belong in long-division practice.",
+    "/long-division-worksheets/",
+    "Open long division"
+  ],
+  "surface-area-worksheets": [
+    "Surface area measures exposed faces, not interior volume",
+    "Surface area adds 2-D faces and is measured in square units. Volume measures three-dimensional capacity in cubic units.",
+    "For a 2 cm × 3 cm × 4 cm prism, surface area = 52 cm² but volume = 24 cm³.",
+    "/volume-of-rectangular-prisms-worksheets/",
+    "Compare prism volume"
+  ],
+  "volume-of-rectangular-prisms-worksheets": [
+    "Volume is measured in cubic units",
+    "Multiply length × width × height to find a prism's volume. Do not use the surface-area formula, which adds its exposed faces.",
+    "For a 2 cm × 3 cm × 4 cm prism, volume = 24 cm³; surface area is 52 cm².",
+    "/surface-area-worksheets/",
+    "Compare surface area"
+  ],
+  "box-plots-worksheets": [
+    "Box plots summarize a distribution; scatter plots compare pairs",
+    "A box plot records the median and spread of one data set. Scatter plots show relationships between paired coordinates.",
+    "Five-number summaries support a box-and-whisker diagram; six ordered pairs support a scatter plot, not a box plot.",
+    "/scatter-plot-worksheets/",
+    "Choose a scatter plot"
+  ],
+  "scatter-plot-worksheets": [
+    "Scatter plots need pairs of measurements",
+    "Plot each ordered pair against two labeled axes to inspect possible association. A box plot instead summarizes the spread of one variable.",
+    "For pairs (1,2), (2,4) and (3,6), the plotted points show a positive pattern, but correlation alone does not prove cause.",
+    "/box-plots-worksheets/",
+    "Compare box plots"
+  ],
+  "slope-worksheets": [
+    "Slope is rise over run, not a full graphing task",
+    "Calculating slope from two points uses a ratio of vertical and horizontal change. Graphing a complete line from its equation is a related but separate exercise.",
+    "For (1,2) and (3,6), slope = (6−2)/(3−1) = 2. A vertical line has undefined slope.",
+    "/linear-equations-worksheets/",
+    "Graph a linear equation"
+  ],
+  "linear-equations-worksheets": [
+    "Graphing a line builds on the meaning of slope",
+    "A linear rule such as y = 2x + 3 gives a slope and y-intercept. Calculating the slope from two existing points is a related but different question.",
+    "For y = 2x + 3, x = 0 gives y = 3 and x = 2 gives y = 7. Plot both points before drawing the line.",
+    "/slope-worksheets/",
+    "Practise slope from two points"
+  ],
+  "functions-worksheets": [
+    "Function evaluation is not the same as completing a table",
+    "Use a rule and a specified input to find an output; a function table groups several input-output evaluations or missing values.",
+    "If f(x) = 2x + 1, then f(3) = 7. A function table might ask for outputs at x = 1, 2 and 3.",
+    "/function-tables-worksheets/",
+    "Fill input-output tables"
+  ],
+  "function-tables-worksheets": [
+    "Input-output tables organize multiple evaluations",
+    "Each row in a function table uses the same given rule. A standalone function evaluation asks only for one or a few specified values.",
+    "For f(x) = 2x + 1, inputs 1, 2, 3 give outputs 3, 5, 7.",
+    "/functions-worksheets/",
+    "Try standalone function evaluation"
+  ],
+  "multiplication-tables-worksheets": [
+    "Times-table fluency comes before multi-digit algorithms",
+    "Multiplication tables practice retrieval of facts. A multi-digit worksheet needs written place-value reasoning and often regrouping.",
+    "Example: knowing 6 × 7 = 42 helps with 36 × 7, but the larger calculation needs place-value steps.",
+    "/two-digit-by-one-digit-multiplication-worksheets/",
+    "Apply facts to multi-digit multiplication"
+  ],
+  "mixed-addition-subtraction-worksheets": [
+    "Mixed arithmetic requires choosing the operation",
+    "Alternating addition and subtraction develops operation recognition as well as numerical accuracy. A single-operation worksheet isolates one technique.",
+    "Example: 503 − 278 = 225 and 225 + 278 = 503. The second calculation checks the first.",
+    "/addition-worksheets/",
+    "Isolate addition practice"
+  ]
+} as const;
+const entry=comparisons[slug as keyof typeof comparisons];
+---
+{entry&&<section class="skill-contrast panel info-panel" data-seo-skill-contrast aria-labelledby="contrast-heading">
+ <span class="eyebrow">Different skills, different practice</span>
+ <h2 id="contrast-heading">{entry[0]}</h2>
+ <p>{entry[1]}</p>
+ <p><strong>Check an example:</strong> {entry[2]}</p>
+ <p class="skill-contrast-link"><a href={entry[3]}>{entry[4]} <span aria-hidden="true">↗</span></a></p>
+</section>}
+<style>
+.skill-contrast{border-left:4px solid #4488dc;background:linear-gradient(110deg,#f5f9ff,#fff);margin:21px 0}
+.skill-contrast h2{font-size:clamp(1.15rem,2vw,1.46rem);line-height:1.25}
+.skill-contrast p{line-height:1.65;color:#3d5369}
+.skill-contrast-link a{display:inline-flex;color:#1c4a96;font-weight:740;text-decoration:underline;text-underline-offset:3px}
+.skill-contrast-link a:focus-visible{outline:3px solid #4488dc;outline-offset:3px}
+</style>
