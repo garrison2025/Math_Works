@@ -45,10 +45,15 @@ export async function createStoryPdf(set:StorySet,edition:StoryPdfEdition,paper:
  startPage();
  for(const p of set.questions){
   const questionLines=wrap(p.question,regular,fontSize,maxWidth-25);
-  const answerLines=edition==='answers'?wrap('Answer: '+p.answer,regular,10.5,maxWidth-22):[];
-  const stepLines=edition==='steps'?p.steps.flatMap(s=>wrap(s,regular,10,maxWidth-32)):[];
-  const needed=18+questionLines.length*lineHeight+
-   (edition==='questions'?76:edition==='answers'?answerLines.length*lineHeight+18:stepLines.length*(lineHeight-1)+22);
+  const answerRows=edition==='questions'?0:wrap('Answer: '+p.answer,bold,10.5,maxWidth-25).length;
+  const stepRows=edition==='steps'?p.steps.reduce((sum,s)=>sum+wrap(s,regular,10,maxWidth-25).length,0):0;
+  // Compute the actual Y advance for each block, including the paragraph gaps
+  // and a safety buffer. Especially on worked-step pages, never rely on
+  // (lineHeight-1) estimates that could overlap the PDF footer.
+  const bodyAdvance=questionLines.length*lineHeight+6+
+   (edition==='questions'?2*20+17:edition==='answers'?answerRows*lineHeight+19:
+    stepRows*lineHeight+p.steps.length*4+answerRows*lineHeight+16);
+  const needed=bodyAdvance+12;
   if(needed>h-180)throw Error('A word problem cannot fit on one PDF page');
   if(y-needed<64)startPage();
   page!.drawText(p.id+'.',{x:margin,y,size:11,font:bold,color:blue});
