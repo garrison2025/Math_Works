@@ -1,5 +1,7 @@
 # R95 final release gate matrix — Math Worksheet Studio
 
+> **SUPERSEDED FOR RELEASE POLICY on 2026-11-08:** See [ONLINE-RELEASE-ACCEPTANCE.md](ONLINE-RELEASE-ACCEPTANCE.md). By express owner direction, the mandatory physical-printer measurements, signed teacher 408-case review and hands-on real-device/screen-reader gate below are **waived, not PASS**. Keep their historical NOT RUN records for truthful disclosure. Digital mathematical/browser/PDF QA and deployment confirmation still apply; actual owned domain, GSC and public indexing remain separate. The table below is a **historical R95 snapshot**, not the active release checklist.
+
 > Technical work and real-world acceptance are separate. This document MUST NOT be interpreted as sign-off. R95 expands the independently checked **base worksheet steps**; specialized R66–R86 PDF packs still have separate audits and remain independently scoped.
 
 ## Evidence inventory and acceptance criteria
@@ -14,7 +16,7 @@
 | Third-party software license | Live npm audit; lockfile license inventory (296 entries, 14 Sharp/libvips optional build-platform flags in the R94 baseline); R95 real dist/ SHA256 and native binary check | Human reviews actual license texts, the exact release distribution channels, NOTICE, source/relinking duties if applicable, signs decision for legal entity and SHA | PENDING HUMAN LEGAL REVIEW |
 | Custom .com domain | Pages can build on main, domain configuration documented | Owner purchases a real domain, attaches it to Cloudflare Pages, configures NS/DNS and checks HTTPS + deployed Git SHA | NOT DONE |
 | Google Search Console | Indexation code fails closed; preview pages.dev stays noindex,nofollow | Owner verifies actual custom domain in GSC with Google-issued DNS TXT, checks every approved canonical, sitemap, 404 HOLD, manually approves individual URL list | NOT DONE |
-| Public search indexing | Separate PUBLIC_INDEXABLE + PUBLIC_INDEXABLE_ROUTES allowlist, main-only | Only after written teacher, physical print, legal, accessibility, domain and index URL approval | NOT AUTHORIZED |
+| Public search indexing | Separate PUBLIC_INDEXABLE + PUBLIC_INDEXABLE_ROUTES allowlist, main-only | **2026-11-08 override:** see R97 online-only gate; no mandatory teacher/physical/real-device signature, but still requires owned domain, relevant online compliance assessment and explicit URL indexing approval | NOT AUTHORIZED |
 
 ## Teacher signature record
 

@@ -1,5 +1,7 @@
 # R93 — Release acceptance and deployment runbook
 
+> **2026-11-08 policy override:** Owner now requires **online-only QA**; the signed teacher review, physical printer measurement and real-device screen-reader check in this historical R93 runbook are **optional, OWNER-WAIVED, not completed/validated**. They are **no longer release-blocking**. See the active [ONLINE-RELEASE-ACCEPTANCE.md](ONLINE-RELEASE-ACCEPTANCE.md) for the current online evidence criteria. Domain acquisition, GSC verification and the explicit `PUBLIC_INDEXABLE` release decision are still pending and distinct from this waiver.
+
 The owner's V2.0 original 488 keyword rows and the 55 route intents are **frozen and accepted for development**. No new US SERP/KD/Volume research is required. Four original HOLD routes intentionally remain HTTP 404. All `*.pages.dev` builds must stay `noindex,nofollow`.
 
 ## What can be certified by CI
