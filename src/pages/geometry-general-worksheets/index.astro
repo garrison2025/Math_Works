@@ -2,6 +2,7 @@
 import Layout from '../../components/Layout.astro';
 import SolidVolumes from '../../components/SolidVolumes.astro';
 import FocusDrills from '../../components/FocusDrills.astro';
+import R101Comprehensive from '../../components/R101Comprehensive.astro';
 import {titleFor} from '../../lib/site';
 import routes from '../../data/routes.json';
 const known=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
@@ -46,6 +47,8 @@ for(const group of groups)for(const [slug] of group.items)if(!known.has(slug))th
 <SolidVolumes/>
 <section id="point-angle-lab" aria-labelledby="point-angle-heading" class="panel info-panel"><span class="eyebrow">Exact angle relationships · R100</span><h2 id="point-angle-heading">Printable angles around a point worksheets</h2><p>Four genuine adjacent angle sectors meet at point O. The SVG diagram and printable PDF rays match the same integer-degree measurements. Solve the missing angle from a full turn of 360°, then compare with a separate answer key.</p><p>This is a narrow four-sector missing-angle drill, not a general compass, polygon theorem or proof course.</p></section>
 <FocusDrills scope="angles"/>
+<section id="comprehensive-geometry-lab" class="panel info-panel"><span class="eyebrow">Expanded authentic geometry practice · R101</span><h2>Triangle congruence and similarity, polygons, circles and mixed volumes</h2><p>Make printable exercises on five valid congruence rules (SSS, SAS, ASA, AAS and right-triangle HL), proportional sides in similar right triangles, original everyday-object drawings, polygon sides, circle measurements and six volume shapes. Triangle diagrams are explicitly schematic: use the stated side and angle measurements rather than estimating from the picture.</p><p>This is focused skills practice, not a full Euclidean proof course or every possible circle theorem.</p></section>
+<R101Comprehensive scope="geometry"/>
 {groups.map((group,i)=><section class="geometry-group" aria-labelledby={'geometry-group-'+i}>
 <div class="geometry-heading"><span class="eyebrow">Topic group {i+1}</span><h2 id={'geometry-group-'+i}>{group.title}</h2><p>{group.summary}</p></div>
 <div class="geometry-grid">{group.items.map(([slug,note])=><a class="geometry-card" href={'/'+slug+'/'}><strong>{titleFor(slug)}</strong><span>{note}</span><small>Open worksheet generator →</small></a>)}</div>
@@ -58,7 +61,7 @@ for(const group of groups)for(const [slug] of group.items)if(!known.has(slug))th
 </section>
 <section class="panel info-panel">
 <h2>What's outside this directory's verified core generators?</h2>
-<p>The original core generators still do not include circle theorem proofs, triangle congruence or similarity proofs. The new R99 preview-only panel above separately generates exact sphere, cone and pyramid volume problems; it is not an index-approved independent topic URL. Some linked tools include separate specialist PDF extensions, but do not assume an unrelated keyword describes the default live generator.</p>
+<p>The original 51 core tools remain unchanged. The separate R101 preview lab adds congruence-rule identification, similar-triangle proportional-side calculations, circle measurements, recognition and polygon tasks. It does not teach unrestricted formal geometry proofs or all circle theorems. The R99 volume lab remains a separate exact specialist. Some linked tools include separate specialist PDF extensions, but do not assume an unrelated keyword describes the default live generator.</p>
 <p>See also <a href="/algebra-general-worksheets/">algebra worksheets</a>, <a href="/worksheets-by-grade/">suggested grade-level practice</a> and the <a href="/worksheets/">full subject directory</a>.</p>
 </section>
 </div>

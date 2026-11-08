@@ -1,5 +1,6 @@
 ---
 import Layout from '../../components/Layout.astro';
+import R101Comprehensive from '../../components/R101Comprehensive.astro';
 import {titleFor} from '../../lib/site';
 import routes from '../../data/routes.json';
 const built=new Set(routes.filter(r=>r.type!=='HOLD').map(r=>r.slug));
@@ -49,8 +50,8 @@ const grades=[
 ]}] as const;
 for(const group of grades)for(const [slug] of group.items){if(!built.has(slug))throw Error('Grade directory cannot link an unbuilt worksheet: '+slug)}
 ---
-<Layout title="Math Worksheets by Grade – Grades 5, 6, 7 & 8 | Math Worksheet Studio"
- description="Choose real printable math worksheet generators by suggested grade 5, 6, 7 or 8 practice skills. Explore actual topics, PDF answer keys and independent practice tools." canonicalPath="/worksheets-by-grade/">
+<Layout title="Math Worksheets by Grade – Grades 2, 5, 6, 7 & 8 | Math Worksheet Studio"
+ description="Choose real printable mixed Grade 2 and Grade 5 practice and browse suggested Grade 5–8 subject worksheet generators. Explore actual topics, PDF answer keys and independent practice tools." canonicalPath="/worksheets-by-grade/">
 <div class="container">
 <section class="hero hero-compact">
 <div class="crumb"><a href="/worksheets/">All math worksheets</a> / Grade navigation</div>
@@ -58,10 +59,12 @@ for(const group of grades)for(const [slug] of group.items){if(!built.has(slug))t
 <h1>Math Worksheets by Grade</h1>
 <p>Start with a typical grade-level skill, then open an actual generator. These recommendations make it easier to navigate the existing math practice library; they are not a claim of official curriculum alignment or a complete grade-specific course.</p>
 </section>
+<section id="grade-mixed-lab" class="panel info-panel"><span class="eyebrow">New original mixed practice · R101</span><h2>Printable Grade 2 and Grade 5 mixed math worksheets</h2><p>Build a Grade 2 sheet with addition, subtraction, place value, time, money and shape recognition; or a Grade 5 sheet with multiplication, division, decimals, fractions, volume, operation order, unit conversions and a word problem. These are representative skill sets, not official or all-standards curriculum certification.</p></section>
+<R101Comprehensive scope="grade"/>
 <nav class="grade-pills" aria-label="Jump to a grade">{grades.map(g=><a href={'#'+g.anchor}>{g.grade}</a>)}</nav>
 <div class="panel info-panel"><h2>How to choose a worksheet</h2>
 <p>Grade placement varies by school, state and learning sequence. Choose by the specific skill your student is studying. Each linked tool produces fresh math questions and matching downloadable answers. If a topic is too easy or too difficult, try its Easy, Standard or Challenge number settings before changing grade.</p>
-<p>These are subject-based selections, not a separate grade-specific generator. The printable PDFs are made on the linked worksheet pages.</p>
+<p>The navigation below links to individual skills. The R101 mixed worksheet panel above separately produces genuine Grade 2 or Grade 5 question, answer and worked-step PDFs.</p>
 </div>
 {grades.map(g=><section id={g.anchor} class="grade-section" aria-labelledby={g.anchor+'-heading'}>
 <div class="grade-heading"><span class="eyebrow">Suggested practice</span><h2 id={g.anchor+'-heading'}>{g.grade} math worksheets</h2><p>{g.description}</p><span>{g.items.length} working practice tools</span></div>

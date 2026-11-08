@@ -1,3 +1,9 @@
+# R101 remaining intent coverage — candidate pending CI and live verification
+
+R101 adds genuine printable Grade 2 and mixed Grade 5 practice, real-life geometric shape recognition, regular polygon side counts, five valid triangle congruence criteria, right-triangle similarity ratios, circle dimensions/area/perimeter, six solid volumes and multistep equation stories. The 488 original source terms, 51 core generators, four historically HOLD preview routes and fail-closed noindex policy remain untouched. The phrase `full worksheet of all of grade 5 math` is intentionally still PARTIAL: eight included strands are not a certified entire grade-5 curriculum. **R101 CI, merged-main results and Cloudflare exact SHA must be independently verified before claiming release.** Physical printing and teacher sign-offs remain owner-waived, not run. No domain/indexation/GSC release.
+
+---
+
 # Math Worksheet Studio — current release status (single source of truth)
 
 **R100 candidate (not released until merged-main CI and exact Cloudflare SHA):** add three original focused algebra drill families (literal formula rearrangement; distributive three-step integer equations; linear expression expansion/combining like terms) to the existing historical HOLD algebra directory; add exact four-sector angles around point O with consistent vector SVG and PDF diagrams to the historical HOLD geometry directory. Includes student/teacher/worked PDF editions for both page types and reclassifies exactly six *restricted* R98 keyword-truth rows. Source 488 metrics, 51 v18 core generators and public-indexing route gates are unchanged. R100 must pass Chromium, Firefox, independent math/PDF tests and deployment separately.
