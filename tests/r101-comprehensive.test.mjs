@@ -86,7 +86,7 @@ function independentlySolve(p){
 }
 test('R101: 11 modes across 3 levels, 5 seeds and 24 questions are reproducible and mathematically consistent',()=>{
  let n=0;
- for(const mode of WIDE_MODES)for(const level of WIDE_LEVELS)
+ for(const mode of WIDE_MODES.filter(mode=>mode!=='grade5-full'))for(const level of WIDE_LEVELS)
   for(const seed of [0,1,2,20261108,4294967295]){
    const pack=makeWidePack(seed,24,mode,level);
    assert.equal(pack.problems.length,24);
@@ -97,7 +97,7 @@ test('R101: 11 modes across 3 levels, 5 seeds and 24 questions are reproducible 
    if(mode==='grade5')assert.equal(new Set(pack.problems.slice(0,8).map(p=>p.kind)).size,8);
    if(mode==='grade2')assert.equal(new Set(pack.problems.slice(0,6).map(p=>p.kind)).size,6);
   }
- assert.equal(n,WIDE_MODES.length*WIDE_LEVELS.length*5*24);
+ assert.equal(n,(WIDE_MODES.length-1)*WIDE_LEVELS.length*5*24);
  assert.equal(WIDE_COUNTS.length,3);
  assert.equal(Object.keys(MODE_LABELS).length,WIDE_MODES.length);
 });
@@ -125,7 +125,7 @@ test('R101: untrusted forged question, answer, step, geometry value, order and s
 });
 test('R101: 66 real PDFs, separate student/teacher/worked documents in both paper formats',async()=>{
  let files=0;
- for(const mode of WIDE_MODES){
+ for(const mode of WIDE_MODES.filter(mode=>mode!=='grade5-full')){
   const pack=makeWidePack(314159,16,mode,'challenge');
   for(const paper of ['A4','Letter'])for(const edition of ['questions','answers','steps']){
    const bytes=await createWidePdf(pack,edition,paper),pdf=await PDFDocument.load(bytes);
@@ -177,9 +177,8 @@ test('R101: frozen original 488 source rows, 51 active generators, four HOLDs an
  assert.equal(expected.length,12);
  for(const phrase of expected){
   const row=matrix.split('\n').find(s=>s.startsWith('| '+phrase+' |'));
-  assert.ok(row?.includes('R101 preview-only'),'Scope matrix not updated for '+phrase);
+  assert.ok(row?.includes(phrase==='full worksheet of all of grade 5 math'?'R102 preview-only':'R101 preview-only'),'Scope matrix not updated for '+phrase);
  }
  const partial=matrix.split('\n').filter(x=>x.startsWith('| ')&&x.includes('**PARTIAL'));
- assert.equal(partial.length,1);
- assert.ok(partial[0].includes('full worksheet of all of grade 5 math'));
+ assert.equal(partial.length,0,'Every old partial phrase must have a bounded honest implemented scope');
 });

@@ -23,7 +23,7 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | math worksheets for 8th graders | **DIRECTORY** — same restricted scope |
 | math worksheets for 6th graders | **DIRECTORY** — grade 6 linked skills |
 | math worksheets for 7th graders | **DIRECTORY** — grade 7 linked skills |
-| full worksheet of all of grade 5 math | **PARTIAL (R101 preview-only)** — one real Grade 5 mixed PDF spanning eight major strands; not a complete all-standards curriculum or literally every grade-five topic |
+| full worksheet of all of grade 5 math | **SUPPORTED (R102 preview-only), restricted** — seeded 40/48-question Grade 5 Common Core content-standards sampler with 34 distinct question families that touch all 26 published 5th-grade CCSS content standards across OA, NBT, NF, MD and G; printable A4/Letter student, answer-key and worked-step PDFs. This does not certify every state curriculum, every mathematical subskill, or student mastery |
 | math for 8th graders worksheets | **DIRECTORY** — grade 8 |
 | 8th grade math worksheet | **DIRECTORY** — no single dedicated grade-8 combined PDF |
 | grade 8 math worksheets | **DIRECTORY** — no official grade standards claim |
@@ -83,7 +83,7 @@ Six previously unsupported phrases now have **narrow actual on-page functionalit
 
 ## R101 supplemental practice: authentic remaining intent coverage
 
-R101 adds original seeded question generators and separate A4/Letter student/answer/worked PDFs for Grade 2 six-skill mixed sets, Grade 5 eight-strand mixed sets, recognizable everyday geometric objects, regular polygon sides/vertices, five valid congruence rule conditions, right-triangle similarity ratios, triangle angles/area, four circle measurements, six solid volumes and one-/two-/three-step equation stories. Exact implementation is scoped by each row above. The **one intentionally remaining PARTIAL source phrase is the literal all-of-grade-5 curriculum assertion**; a multi-strand worksheet cannot honestly certify every grade-five skill. No public index approval is granted. Digital QA and live deployment require distinct evidence before their status becomes PASS.
+R101 adds original seeded question generators and separate A4/Letter student/answer/worked PDFs for Grade 2 six-skill mixed sets, Grade 5 eight-strand mixed sets, recognizable everyday geometric objects, regular polygon sides/vertices, five valid congruence rule conditions, right-triangle similarity ratios, triangle angles/area, four circle measurements, six solid volumes and one-/two-/three-step equation stories. Exact implementation is scoped by each row above. R102 replaces the last PARTIAL phrase with a precisely scoped, generated 26-standard **Common Core sampler** (40 or 48 unique questions). Every content standard is represented by at least one independent problem family, but this does not imply exhaustive state-curriculum coverage, every subskill, or mastery. The matrix now contains zero unsupported/partial phrases among the reviewed R98 items. No public index approval is granted. Digital QA and live deployment require distinct evidence before their status becomes PASS.
 
 ## Indexation / GEO launch decision
 

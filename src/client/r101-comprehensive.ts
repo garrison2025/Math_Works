@@ -2,10 +2,11 @@
 import {makeWidePack,wideDiagram,WIDE_COUNTS,WIDE_LEVELS,WIDE_MODES,MODE_LABELS,
  type WidePack,type WideMode,type WideLevel} from '../lib/r101-comprehensive.ts';
 import {createWidePdf,type WideEdition,type WidePaper} from '../lib/r101-comprehensive-pdf.ts';
+import {GRADE5_FULL_COUNTS} from '../lib/r102-grade5-full.ts';
 function initialize(root:HTMLElement){
  if(root.dataset.ready)return;root.dataset.ready='true';
  const scopes:Record<string,readonly WideMode[]>={
-  grade:['grade2','grade5'],
+  grade:['grade2','grade5','grade5-full'],
   geometry:['shapes','real-shapes','polygon-sides','congruent','similar','triangles','circles','volumes'],
   stories:['equation-stories']
  };
@@ -19,15 +20,25 @@ function initialize(root:HTMLElement){
  const title=root.querySelector<HTMLElement>('[data-wide-title]')!;
  const toggle=root.querySelector<HTMLButtonElement>('[data-wide-toggle]')!;
  const status=root.querySelector<HTMLElement>('[data-wide-status]')!;
+ const coverage=root.querySelector<HTMLElement>('[data-wide-coverage]');
  const query=new URLSearchParams(window.location.search),params=['wm_seed','wm_mode','wm_level','wm_count','wm_paper'];
  let answersShown=false,pack:WidePack;
  function message(msg:string,isError=false){status.textContent=msg;status.dataset.error=String(isError);}
+ function synchronizeCounts(){
+  const full=mode.value==='grade5-full';
+  for(const option of count.options){
+   const n=Number(option.value),valid=full?GRADE5_FULL_COUNTS.includes(n as 40|48):WIDE_COUNTS.includes(n);
+   option.hidden=!valid;option.disabled=!valid;
+  }
+  if(count.selectedOptions.length===0||count.selectedOptions[0].disabled)count.value=full?'40':'8';
+  if(coverage){coverage.hidden=!full;}
+ }
  function restore(){
   const s=query.get('wm_seed');
   if(s&&/^\d{1,10}$/.test(s)&&Number(s)<=0xffffffff)seed.value=s;
   const m=query.get('wm_mode');if(m&&allowed.includes(m as WideMode)&&WIDE_MODES.includes(m as WideMode))mode.value=m;
   const l=query.get('wm_level');if(l&&WIDE_LEVELS.includes(l as WideLevel))level.value=l;
-  const c=query.get('wm_count');if(c&&WIDE_COUNTS.includes(Number(c)))count.value=c;
+  const c=query.get('wm_count');if(c&&(WIDE_COUNTS.includes(Number(c))||GRADE5_FULL_COUNTS.includes(Number(c) as 40|48)))count.value=c;
   const p=query.get('wm_paper');if(p==='Letter'||p==='A4')paper.value=p;
  }
  const make=()=>makeWidePack(Number(seed.value),Number(count.value),mode.value as WideMode,level.value as WideLevel);
@@ -53,11 +64,12 @@ function initialize(root:HTMLElement){
   }
   toggle.textContent=answersShown?'Hide answers':'Show worked answers';
   toggle.setAttribute('aria-pressed',String(answersShown));
-  message(pack.problems.length+' original '+pack.mode+' practice questions ready (seed '+pack.seed+').');
+  message(pack.problems.length+' original '+pack.mode+' practice questions ready (seed '+pack.seed+').'+(pack.mode==='grade5-full'?' All 26 Grade 5 CCSS content standards included.':''));
  }
  function safe(){try{answersShown=false;render();}catch(e){message(e instanceof Error?e.message:'Invalid worksheet settings',true);}}
- restore();
- for(const input of [mode,level,count,seed,paper])input.addEventListener('change',safe);
+ restore();synchronizeCounts();
+ mode.addEventListener('change',()=>{synchronizeCounts();safe();});
+ for(const input of [level,count,seed,paper])input.addEventListener('change',safe);
  toggle.addEventListener('click',()=>{try{answersShown=!answersShown;render();}catch(e){message(e instanceof Error?e.message:'Unable to display answers',true);}});
  root.querySelector<HTMLButtonElement>('[data-wide-new]')!.addEventListener('click',()=>{
   const buf=new Uint32Array(1);crypto.getRandomValues(buf);seed.value=String(buf[0]);safe();
@@ -86,7 +98,7 @@ function initialize(root:HTMLElement){
    finally{button.disabled=false;}
   });
  }
- if(params.some(s=>query.has(s)))window.addEventListener('pageshow',()=>{restore();safe();});
+ if(params.some(s=>query.has(s)))window.addEventListener('pageshow',()=>{restore();synchronizeCounts();safe();});
  try{render();}catch(e){message(e instanceof Error?e.message:'Unable to prepare worksheet',true);}
 }
 document.querySelectorAll<HTMLElement>('[data-wide-workspace]').forEach(initialize);

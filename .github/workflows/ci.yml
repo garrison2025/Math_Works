@@ -270,7 +270,7 @@ jobs:
           path: qa-artifacts/browser/
           retention-days: 7
           if-no-files-found: warn
-      - name: R101 real Chrome responsive / math / 11-mode PDF browser QA
+      - name: R102 real Chrome responsive / math / 12-mode PDF browser QA
         timeout-minutes: 6
         run: node scripts/r101-browser-qa.mjs chromium
       - name: Archive R101 Chromium browser PDF and responsive evidence
@@ -713,7 +713,7 @@ jobs:
       - name: Firefox PDF download and mobile QA
         timeout-minutes: 5
         run: npm run qa:firefox
-      - name: R101 Firefox responsive math and every 11-mode PDF browser QA
+      - name: R102 Firefox responsive math and every 12-mode PDF browser QA
         timeout-minutes: 6
         run: node scripts/r101-browser-qa.mjs firefox
       - name: Archive R101 Firefox browser PDF and responsive evidence
