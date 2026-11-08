@@ -25,6 +25,16 @@ Public source repository: https://github.com/garrison2025/Math_Works
 - Rectangular-prism volume: https://mathworksheetstudio.com/volume-of-rectangular-prisms-worksheets/
 - Box plots: https://mathworksheetstudio.com/box-plots-worksheets/
 - Printable protractor: https://mathworksheetstudio.com/printable-protractor/
+- General multiplication practice: https://mathworksheetstudio.com/multiplication-worksheets/
+- Mixed addition and subtraction: https://mathworksheetstudio.com/mixed-addition-subtraction-worksheets/
+- Pythagorean theorem: https://mathworksheetstudio.com/pythagorean-worksheets/
+- Multiplication tables: https://mathworksheetstudio.com/multiplication-tables-worksheets/
+- Subtraction with borrowing: https://mathworksheetstudio.com/subtraction-worksheets/
+- One-step equations: https://mathworksheetstudio.com/one-step-equations-worksheets/
+- Decimal multiplication: https://mathworksheetstudio.com/decimal-multiplication-worksheets/
+- Fraction operations: https://mathworksheetstudio.com/fractions-worksheets/
+- Two-digit multiplication: https://mathworksheetstudio.com/two-digit-multiplication-worksheets/
+- Order of operations: https://mathworksheetstudio.com/order-of-operations-worksheets/
 
 ## Accuracy and scope
 - 51 existing core topic generators plus separate original mixed-skill and word-problem tools.
