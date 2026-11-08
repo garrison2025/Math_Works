@@ -7,6 +7,7 @@ import {join} from 'node:path';
 import routes from '../src/data/routes.json' with {type:'json'};
 import {publishedPaths,releaseForBuild} from '../src/lib/publication.ts';
 import {GEO_REFERENCES} from '../src/lib/geo-reference-links.ts';
+import {GEO_GUIDES} from '../src/lib/geo-answer-guides.ts';
 
 const origin='https://mathworksheetstudio.com';
 const read=(path)=>readFileSync(join('dist',...path.split('/').filter(Boolean),'index.html'),'utf8');
@@ -58,5 +59,6 @@ assert.match(llms,/# Math Worksheet Studio/);
 assert.match(llms,/https:\/\/mathworksheetstudio\.com\/worksheets\//);
 assert.match(llms,/https:\/\/mathworksheetstudio\.com\/about\//);
 assert.match(llms,/not certified curriculum coverage/);
+for(const slug of Object.keys(GEO_GUIDES))assert.ok(llms.includes(origin+'/'+slug+'/'),'llms.txt discovery link '+slug);
 assert.ok(!/we are ranked|guaranteed to be cited|certified teacher approved/i.test(llms));
 console.log('R112 AUDIT PASS: 64 titles in 40–60 chars; truthful organization author, source-linked schema, visible dates, answer-first homepage and optional llms.txt.');
