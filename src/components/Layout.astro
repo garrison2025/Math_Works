@@ -6,6 +6,7 @@ import topics from '../data/routes.json';
 import seoTargets from '../data/seo-targets.json';
 import {releaseForBuild,publishedPath} from '../lib/publication';
 import {GEO_GUIDES} from '../lib/geo-answer-guides';
+import {GEO_REFERENCES} from '../lib/geo-reference-links';
 const {title,description,canonicalPath='/'}=Astro.props;
 const release=releaseForBuild(topics,process.env.CF_PAGES_BRANCH||'');
 const base=release.site;
@@ -52,7 +53,8 @@ const resource=focus&&canonical?{
  "@type":"LearningResource","@id":`${canonical}#worksheet`,name:title,url:canonical,inLanguage:"en-US",
  isAccessibleForFree:true,learningResourceType:"Worksheet",
  educationalUse:"practice",about:focus.primary,teaches:focus.primary,description,
- creator:editor,publisher:editor
+ creator:editor,publisher:editor,
+ ...(GEO_REFERENCES[focus.slug]?{citation:GEO_REFERENCES[focus.slug].url}:{})
 }:undefined;
 const libraryChild=focus||canonicalPath.startsWith('/worksheets')||
  canonicalPath==='/word-problems-worksheets/'||
