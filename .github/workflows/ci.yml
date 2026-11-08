@@ -270,6 +270,17 @@ jobs:
           path: qa-artifacts/browser/
           retention-days: 7
           if-no-files-found: warn
+      - name: R101 real Chrome responsive / math / 11-mode PDF browser QA
+        timeout-minutes: 6
+        run: node scripts/r101-browser-qa.mjs chromium
+      - name: Archive R101 Chromium browser PDF and responsive evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r101-chromium-original-math-pdfs-and-viewport-qa
+          path: qa-artifacts/r101-browser/chromium/
+          retention-days: 30
+          if-no-files-found: warn
       - name: R91 capture exact Chromium math and independent answers for all 51 V2 tools
         timeout-minutes: 6
         run: npm run qa:r91-chromium-math
@@ -702,6 +713,17 @@ jobs:
       - name: Firefox PDF download and mobile QA
         timeout-minutes: 5
         run: npm run qa:firefox
+      - name: R101 Firefox responsive math and every 11-mode PDF browser QA
+        timeout-minutes: 6
+        run: node scripts/r101-browser-qa.mjs firefox
+      - name: Archive R101 Firefox browser PDF and responsive evidence
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r101-firefox-original-math-pdfs-and-viewport-qa
+          path: qa-artifacts/r101-browser/firefox/
+          retention-days: 30
+          if-no-files-found: warn
       - name: R91 verify all 102 generated Firefox math snapshots exactly match Chromium
         timeout-minutes: 6
         run: npm run qa:r91-firefox-math

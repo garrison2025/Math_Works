@@ -1,0 +1,80 @@
+---
+import {makeWidePack,wideDiagram,MODE_LABELS,type WideMode} from '../lib/r101-comprehensive.ts';
+const {scope='geometry'}=Astro.props as {scope?:'grade'|'geometry'|'stories'};
+const choices:Record<'grade'|'geometry'|'stories',WideMode[]>={
+ grade:['grade2','grade5'],
+ geometry:['shapes','real-shapes','polygon-sides','congruent','similar','triangles','circles','volumes'],
+ stories:['equation-stories']
+};
+const active=choices[scope],defaultMode=scope==='grade'?'grade2':scope==='geometry'?'triangles':'equation-stories';
+const sample=makeWidePack(20261108,8,defaultMode,'standard');
+const label=scope==='grade'?'Grade-level mixed worksheet builder':scope==='geometry'?'Geometry and visual reasoning worksheet builder':'Algebraic story-problem builder';
+---
+<section class="wide-workspace" data-wide-workspace data-wide-scope={scope} aria-label={label}>
+ <aside class="panel wide-settings">
+  <span class="eyebrow">Supplemental worksheets · R101 · reproducible</span>
+  <h2>{label}</h2>
+  <p>Choose a precise supported skill, generate an original question set and download independent student, answer-key or worked-solution PDFs. Diagrams are schematic unless otherwise specified; written measurements determine the answers.</p>
+  <div class="wide-field"><label for={'wide-'+scope+'-mode'}>Topic and question family</label>
+   <select id={'wide-'+scope+'-mode'} data-wide-mode>{active.map(mode=><option value={mode} selected={mode===defaultMode}>{MODE_LABELS[mode]}</option>)}</select></div>
+  <div class="wide-field"><label for={'wide-'+scope+'-level'}>Difficulty</label>
+   <select id={'wide-'+scope+'-level'} data-wide-level><option value="easy">Easy</option><option value="standard" selected>Standard</option><option value="challenge">Challenge</option></select></div>
+  <div class="wide-row"><div class="wide-field"><label for={'wide-'+scope+'-count'}>Questions</label>
+   <select id={'wide-'+scope+'-count'} data-wide-count><option value="8" selected>8</option><option value="16">16</option><option value="24">24</option></select></div>
+   <div class="wide-field"><label for={'wide-'+scope+'-paper'}>PDF paper</label>
+   <select id={'wide-'+scope+'-paper'} data-wide-paper><option value="Letter">US Letter</option><option value="A4">A4</option></select></div></div>
+  <div class="wide-field"><label for={'wide-'+scope+'-seed'}>Reproducible seed</label>
+   <input id={'wide-'+scope+'-seed'} data-wide-seed type="number" inputmode="numeric" min="0" max="4294967295" step="1" value="20261108"/>
+   <p>The same seed, mode, count and difficulty produce the same original questions.</p></div>
+  <div class="wide-actions">
+   <button type="button" class="btn btn-primary" data-wide-new>Generate a new set</button>
+   <button type="button" class="btn btn-secondary" data-wide-download="questions">Download student PDF</button>
+   <button type="button" class="btn" data-wide-download="answers">Download teacher answer PDF</button>
+   <button type="button" class="btn" data-wide-download="steps">Download worked steps PDF</button>
+   <button type="button" class="btn btn-soft" data-wide-share>Copy reproducible link</button>
+  </div>
+  <p class="wide-footnote">Runs locally in your browser. No student data is uploaded or retained. All diagrams and PDFs are generated from the matching validated math records, not decorative images.</p>
+ </aside>
+ <div class="panel wide-preview">
+  <div class="wide-header"><div><span class="eyebrow">Live question preview · no answer leak</span>
+   <h2>Math practice sheet</h2><p data-wide-title>{MODE_LABELS[defaultMode]}</p></div>
+   <button type="button" class="btn btn-soft" data-wide-toggle aria-pressed="false">Show worked answers</button></div>
+  <p data-wide-status role="status" aria-live="polite">8 original practice questions ready.</p>
+  <div class="wide-paper">
+   <p class="wide-paper-id">MATH WORKS · SUPPLEMENTAL PRACTICE · WM1</p>
+   <p class="wide-name">Name: _________________________ Date: _______________________</p>
+   <ol data-wide-list>{sample.problems.map(p=><li><p>{p.question}</p>{wideDiagram(p)&&<div class="wide-diagram" set:html={wideDiagram(p)}/>}<div class="wide-writing" aria-label="Space for written work"></div></li>)}</ol>
+  </div>
+ </div>
+</section>
+<style>
+.wide-workspace{display:grid;grid-template-columns:minmax(270px,318px) minmax(0,1fr);gap:20px;align-items:start;margin:23px 0 34px}
+.wide-settings,.wide-preview{padding:24px;min-width:0}
+.wide-settings h2,.wide-preview h2{font-size:clamp(1.14rem,2.3vw,1.5rem);line-height:1.3;margin:5px 0 12px}
+.wide-settings>p,.wide-header p{font-size:.88rem;line-height:1.6;color:#52667b}
+.wide-field{margin:17px 0}
+.wide-field label{display:block;font-size:.85rem;font-weight:800;color:#263e55;margin-bottom:7px}
+.wide-field input,.wide-field select{width:100%;min-height:46px;font:inherit;padding:9px 11px;border:1.5px solid #92a9bf;border-radius:9px;background:#fff;color:#1d344b}
+.wide-field>p,.wide-footnote{font-size:.79rem;line-height:1.55;color:#5b7085;margin:8px 0 0}
+.wide-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wide-actions{display:grid;gap:9px;margin:22px 0 15px}
+.wide-actions button{min-height:44px;width:100%;white-space:normal}
+.wide-header{display:flex;justify-content:space-between;align-items:start;gap:15px}
+.wide-header button{max-width:200px;min-height:44px;flex:none;white-space:normal}
+[data-wide-status]{padding:11px 13px;background:#e8f3ec;color:#215844;border-radius:9px;font-weight:750;font-size:.85rem;margin:17px 0}
+[data-wide-status][data-error="true"]{background:#fff0ed;color:#a12f25}
+.wide-paper{background:white;border:1px solid #d8e2eb;border-radius:12px;box-shadow:0 8px 22px #152b4409;padding:23px 27px}
+.wide-paper-id{color:#5b748b;font-size:.72rem;font-weight:800;letter-spacing:.09em}
+.wide-name{color:#52677b;font-size:.8rem;margin:17px 0 23px;overflow-wrap:anywhere}
+[data-wide-list]{display:grid;gap:23px;padding-left:25px;margin:0;color:#1c344c}
+[data-wide-list]>li{padding-left:4px;line-height:1.55;overflow-wrap:anywhere}
+[data-wide-list]>li>p{margin:0 0 10px}
+.wide-diagram{display:flex;justify-content:center;background:#f8fbfe;border:1px solid #e2eaf2;border-radius:9px;padding:4px;margin:6px 0 11px}
+.wide-writing{height:32px;border-bottom:1px solid #b9c8d6}
+.wide-answer{color:#176449;font-weight:800}
+.wide-steps{padding-left:23px;font-size:.88rem;color:#4d6174;margin:8px 0 12px}
+.wide-field input:focus-visible,.wide-field select:focus-visible,.wide-actions button:focus-visible,.wide-header button:focus-visible{outline:3px solid #137e67;outline-offset:3px}
+@media(max-width:930px){.wide-workspace{grid-template-columns:1fr}.wide-header{flex-wrap:wrap}.wide-header button{max-width:none}}
+@media(max-width:520px){.wide-settings,.wide-preview{padding:16px}.wide-paper{padding:17px}.wide-row{grid-template-columns:1fr 1fr}}
+</style>
+<script>import '../client/r101-comprehensive.ts';</script>

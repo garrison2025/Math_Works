@@ -23,7 +23,7 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | math worksheets for 8th graders | **DIRECTORY** — same restricted scope |
 | math worksheets for 6th graders | **DIRECTORY** — grade 6 linked skills |
 | math worksheets for 7th graders | **DIRECTORY** — grade 7 linked skills |
-| full worksheet of all of grade 5 math | **PARTIAL** — selected grade 5 links; no complete all-topics worksheet |
+| full worksheet of all of grade 5 math | **PARTIAL (R101 preview-only)** — one real Grade 5 mixed PDF spanning eight major strands; not a complete all-standards curriculum or literally every grade-five topic |
 | math for 8th graders worksheets | **DIRECTORY** — grade 8 |
 | 8th grade math worksheet | **DIRECTORY** — no single dedicated grade-8 combined PDF |
 | grade 8 math worksheets | **DIRECTORY** — no official grade standards claim |
@@ -31,7 +31,7 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | eighth grade math worksheets | **DIRECTORY** |
 | math sheets for 7th graders | **DIRECTORY** |
 | math worksheets for seventh graders free | **DIRECTORY** |
-| free printable 2nd grade math worksheets | **UNSUPPORTED** — no grade 2 collection; do not claim available |
+| free printable 2nd grade math worksheets | **SUPPORTED (R101 preview-only), restricted** — original Grade 2 mixed generator covering arithmetic, place value, time, money and familiar shapes; not a complete district-specific curriculum |
 | angles around a point worksheet grade 8 | **SUPPORTED (R100 preview-only), restricted** — four-sector angles at point O with exact ray diagrams and a missing angle; not a general grade-eight curriculum |
 
 ## Algebra subject navigation — 16 original source phrases
@@ -47,7 +47,7 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | algebra worksheet | **DIRECTORY** |
 | literal equations worksheet | **SUPPORTED (R100 preview-only), restricted** — selected linear symbolic rearrangements with formula-specific steps; not arbitrary literal equations |
 | solving single step equations worksheet | **SUPPORTED via links** — `/one-step-equations-worksheets/` |
-| equation story problems | **PARTIAL** — new one-step additive unknown stories; not general algebra stories |
+| equation story problems | **SUPPORTED (R101 preview-only), restricted** — explicit new one-, two- and multistep unknown stories with independent worked PDFs; not arbitrary algebraic word problems |
 | algebraic expressions simplify worksheets | **SUPPORTED (R100 preview-only), restricted** — one-variable distributive expansion and combining linear like terms; not arbitrary polynomial operations |
 | multi step equations worksheet | **SUPPORTED (R100 preview-only), restricted** — genuine three-step integer linear equations using a(x + b) + c = d; no general nonlinear or fractional-coefficient claim |
 | pre algebra worksheets | **DIRECTORY** — subset of arithmetic/algebra skills |
@@ -59,27 +59,31 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 
 | Exact source phrase | Technical scope and truthful status |
 |---|---|
-| real life examples of geometric shapes printable free | **UNSUPPORTED** — shape-in-life example sheet not generated |
+| real life examples of geometric shapes printable free | **SUPPORTED (R101 preview-only), restricted** — original everyday-clock/window/stop-sign/ball/can/die drawing questions and printable PDFs |
 | volume of a sphere worksheet | **SUPPORTED (R99 preview-only)** — exact sphere volume in terms of π; new on-page generator and matching PDF editions, not an index-approved independent URL |
 | volume of a cylinder worksheet | **SUPPORTED via separate PDF pack** — cylinder volume selector under `/surface-area-worksheets/`; not main v18 question preview |
-| congruent triangles worksheet | **UNSUPPORTED** — no triangle congruence exercise |
-| shapes and sides | **PARTIAL** — geometric lines, angles and triangle sides; not general polygon-side worksheets |
+| congruent triangles worksheet | **SUPPORTED (R101 preview-only), restricted** — determine SSS, SAS, ASA, AAS or right-angle HL for constructed matching triangles; diagrams schematic |
+| shapes and sides | **SUPPORTED (R101 preview-only), restricted** — identify names, side and vertex counts of 3–12-sided polygons; not arbitrary 3D face/edge counting |
 | area pdf | **SUPPORTED via links** — separate actual printable area generators |
-| volume practice problems | **PARTIAL** — rectangular and triangular prisms and cylinder; not all solid families |
-| circle worksheet | **PARTIAL** — circle/sector area separate PDF pack under `/area-worksheets/`; not all circle topics |
+| volume practice problems | **SUPPORTED (R101 preview-only), restricted** — six solid families with exact pi coefficients and distinct pyramid base/solid heights; not arbitrary solids |
+| circle worksheet | **SUPPORTED (R101 preview-only), restricted** — radius/diameter, circumference, area and full semicircle perimeter; circle theorems remain outside scope |
 | area composite figures | **SUPPORTED, restricted** — L-shaped area separate PDF pack under `/area-worksheets/`, not arbitrary composite figures |
 | volume of pyramid worksheet | **SUPPORTED (R99 preview-only), restricted** — square-base and triangular-base pyramid volumes with perpendicular heights; no all-shapes claim |
 | volume of a cone worksheet | **SUPPORTED (R99 preview-only)** — exact right circular cone volumes in terms of π with separate PDFs |
-| similar triangles worksheet | **UNSUPPORTED** — no similarity proof/ratio generator |
-| triangle worksheet | **PARTIAL** — area/angles/Pythagorean/triangle inequality specialists, not a comprehensive worksheet |
-| triangle congruence worksheet | **UNSUPPORTED** |
-| shapes worksheet | **PARTIAL** — linked geometry skill generators, not generic shape-identification practice |
+| similar triangles worksheet | **SUPPORTED (R101 preview-only), restricted** — proportional corresponding sides in two original right-triangle families; not unrestricted similarity proofs |
+| triangle worksheet | **SUPPORTED (R101 preview-only), restricted** — mixed triangle area, missing angles, congruence rules and similar-side ratios; not every triangle theorem |
+| triangle congruence worksheet | **SUPPORTED (R101 preview-only), restricted** — SSS, SAS, ASA, AAS and HL identifying conditions; diagrams explicitly not to scale |
+| shapes worksheet | **SUPPORTED (R101 preview-only), restricted** — mixed familiar 2D/3D shape identification and polygon/triangle reasoning; not all geometric shape categories |
 | volume of spheres worksheet | **SUPPORTED (R99 preview-only)** — exact sphere volumes with separate student/teacher/worked-step PDFs |
 | volume of triangular pyramid worksheet | **SUPPORTED (R99 preview-only)** — exact triangular pyramid volumes using separate base triangle altitude and solid perpendicular height |
 
 ## R100 supplemental algebra and angle drills
 
 Six previously unsupported phrases now have **narrow actual on-page functionality** in historically HOLD directories, with deterministic generators, separate PDFs and independently reviewed mathematical rules. No source keyword data or public indexing approval changes. Five broad algebra phrases remain restricted to literal-symbol rearrangements, distributive linear equations and expression simplification; the grade-8 point-angle phrase covers four-sector full-turn problems. These claims require green R100 CI and real deployment evidence.
+
+## R101 supplemental practice: authentic remaining intent coverage
+
+R101 adds original seeded question generators and separate A4/Letter student/answer/worked PDFs for Grade 2 six-skill mixed sets, Grade 5 eight-strand mixed sets, recognizable everyday geometric objects, regular polygon sides/vertices, five valid congruence rule conditions, right-triangle similarity ratios, triangle angles/area, four circle measurements, six solid volumes and one-/two-/three-step equation stories. Exact implementation is scoped by each row above. The **one intentionally remaining PARTIAL source phrase is the literal all-of-grade-5 curriculum assertion**; a multi-strand worksheet cannot honestly certify every grade-five skill. No public index approval is granted. Digital QA and live deployment require distinct evidence before their status becomes PASS.
 
 ## Indexation / GEO launch decision
 
