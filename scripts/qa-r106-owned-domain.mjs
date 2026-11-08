@@ -15,6 +15,21 @@ const meta=(html,name)=>{
  const tag=html.match(new RegExp('<meta\\s+name="'+name+'"[^>]*>','i'))?.[0]||'';
  return tag.match(/\bcontent="([^"]*)"/i)?.[1]||'';
 };
+// Cloudflare Scrape Shield may intentionally rewrite mailto links on the owned
+// domain. Its data-cfemail hex payload is first-byte XOR encoded; validate the
+// decoded public contact value instead of requiring unprotected raw HTML.
+function hasContactAddress(html){
+ const expected='contact@mathworksheetstudio.com';
+ if(html.includes('mailto:'+expected))return true;
+ for(const [,encoded] of html.matchAll(/data-cfemail="([a-f0-9]+)"/gi)){
+  if(encoded.length<4||encoded.length%2!==0)continue;
+  const bytes=encoded.match(/.{2}/g)?.map(hex=>parseInt(hex,16))||[];
+  const decoded=bytes.slice(1).map(byte=>String.fromCharCode(byte^bytes[0])).join('');
+  if(decoded===expected)return true;
+ }
+ return false;
+}
+assert.ok(hasContactAddress('<span data-cfemail="51323e3f25303225113c302539263e233a223934342522252435383e7f323e3c">'),'Cloudflare email decode fixture');
 async function verify(){
  let observed='unavailable';
  for(let i=0;i<60;i++){
@@ -45,8 +60,8 @@ async function verify(){
   assert.equal(meta(r.text,'robots'),'noindex,nofollow',name+' SEO gate');
   assert.ok(!/<link[^>]*rel="canonical"/i.test(r.text),name+' unapproved canonical');
  }
- assert.match(contact.text,/mailto:contact@mathworksheetstudio\.com/);
- assert.match(privacy.text,/mailto:contact@mathworksheetstudio\.com/);
+ assert.ok(hasContactAddress(contact.text),'Live Contact email absent or wrongly Cloudflare-obfuscated');
+ assert.ok(hasContactAddress(privacy.text),'Live Privacy email absent or wrongly Cloudflare-obfuscated');
  assert.equal(robots.status,200);assert.match(robots.text,/User-agent: \*/);
  assert.equal(sitemap.status,200);assert.ok(!/<loc\b/i.test(sitemap.text),'Sitemap should remain empty');
  result.verified.push('Contact email, privacy link, preview protection and empty sitemap');
