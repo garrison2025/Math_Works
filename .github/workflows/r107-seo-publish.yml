@@ -4,6 +4,11 @@ on:
     paths:
       - 'src/lib/publication.ts'
       - 'src/data/topic-seo.ts'
+      - 'src/data/geo-r113-coverage.json'
+      - 'src/lib/site.ts'
+      - 'src/data/seo-r114-topic-instructions.json'
+      - 'tests/r114-topic-instructions.test.mjs'
+      - 'scripts/qa-r114-topic-instructions-built.mjs'
       - 'src/components/SubjectGuide.astro'
       - 'src/components/GeoTopicAnswers.astro'
       - 'src/lib/geo-answer-guides.ts'
@@ -31,6 +36,11 @@ on:
     branches: [main]
     paths:
       - 'src/pages/**'
+      - 'src/data/geo-r113-coverage.json'
+      - 'src/lib/site.ts'
+      - 'src/data/seo-r114-topic-instructions.json'
+      - 'tests/r114-topic-instructions.test.mjs'
+      - 'scripts/qa-r114-topic-instructions-built.mjs'
       - 'src/components/GeoTopicAnswers.astro'
       - 'src/lib/geo-answer-guides.ts'
       - 'src/lib/geo-reference-links.ts'
@@ -67,8 +77,10 @@ jobs:
         run: node --experimental-strip-types --test tests/r109-seo-consolidation.test.mjs
       - name: Check all 51 exact-intent metadata entries
         run: node --experimental-strip-types --test tests/r108-seo-meta.test.mjs
-      - name: Check ten original GEO answer guides and editorial integrity
+      - name: Check twenty original GEO answer guides and editorial integrity
         run: node --experimental-strip-types --test tests/r111-geo-evidence.test.mjs
+      - name: Check task-specific instructions and mistake guidance for all 51 live pages
+        run: node --experimental-strip-types --test tests/r114-topic-instructions.test.mjs
       - name: Build Cloudflare production with stale Cloudflare PUBLIC_INDEXABLE=false
         env:
           CF_PAGES_BRANCH: main
@@ -81,6 +93,8 @@ jobs:
         run: node scripts/qa-r109-internal-links.mjs
       - name: Verify rendered original GEO answers and public quality-method pages
         run: node --experimental-strip-types scripts/qa-r111-geo-built.mjs
+      - name: Verify task-specific instructions and common mistakes in all 51 built topic pages
+        run: node --experimental-strip-types scripts/qa-r114-topic-instructions-built.mjs
       - name: Verify 64 title lengths, source-backed entity schema, references and optional llms.txt
         run: node --experimental-strip-types scripts/qa-r112-audit-built.mjs
       - name: Record reproducible mobile Chrome FCP/LCP/CLS lab metrics (not CrUX)

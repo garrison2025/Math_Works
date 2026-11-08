@@ -85,5 +85,85 @@ export const GEO_GUIDES:Readonly<Record<string,GeoGuide>>={
    {question:"Why is printer calibration necessary?",answer:"Printers and PDF viewers may scale output. Computer-based PDF geometry checks cannot verify the physical sheet in your hand. If the 50 mm line is the wrong length, fix print scaling and reprint."}
   ],
   related:{href:"/angle-worksheets/",label:"Practise reading and classifying angles"}
- }
+ },
+ "multiplication-worksheets":{
+  purpose:"Use the general multiplication page for mixed facts, selected 1–12 times-table practice, or two-digit-by-one-digit products. Choose a specialist page for a different written algorithm; the broad generator does not automatically provide every factor size.",
+  answers:[
+   {question:"Which multiplication worksheet should I choose for two-digit factors?",answer:"The general page offers multiplication facts, times-table-style facts and two-digit-by-one-digit products. If both factors have two digits, choose the dedicated two-digit-by-two-digit worksheet; do not assume the broad facts generator includes that column algorithm."},
+   {question:"How can I check a multiplication fact without a calculator?",answer:"Use the inverse division relationship. For 7 × 8 = 56, check 56 ÷ 8 = 7 or 56 ÷ 7 = 8. For an area-model question, verify each partial product first, then add the partial products to recover the full product."}
+  ],
+  related:{href:"/two-digit-by-one-digit-multiplication-worksheets/",label:"Practise two-digit by one-digit multiplication"}
+ },
+ "mixed-addition-subtraction-worksheets":{
+  purpose:"Use this worksheet when a practice set should alternate whole-number addition and subtraction, or focus on one of those operations. The separate decimal-column panel is a different exercise with tenths and hundredths.",
+  answers:[
+   {question:"How can I check a subtraction answer?",answer:"Add the difference back to the number being subtracted. For 502 − 178 = 324, check 324 + 178 = 502. If the sum does not return to the starting number, review the place-value columns and any regrouping."},
+   {question:"Can a mixed subtraction worksheet produce a negative answer?",answer:"Yes. The whole-number mixed-operation generator can subtract a larger second number from a smaller first number. Keep the negative sign: 312 − 487 = −175, and check it by adding 487 back to −175 to recover 312."}
+  ],
+  related:{href:"/subtraction-worksheets/",label:"Practise subtraction with borrowing"}
+ },
+ "pythagorean-worksheets":{
+  purpose:"Use this generator for right-triangle side-length practice with scaled integer Pythagorean triples. Choose a missing hypotenuse or a missing leg; it does not claim to cover every non-integer triangle measurement or proofs of the theorem.",
+  answers:[
+   {question:"How do you find the hypotenuse of a right triangle?",answer:"Identify the two legs that meet at the right angle, then use a² + b² = c². If the legs are 6 and 8, c² = 36 + 64 = 100, so the positive hypotenuse is c = 10."},
+   {question:"How do you find a missing leg when the hypotenuse is known?",answer:"Rearrange the theorem: a² = c² − b². If the hypotenuse is 13 and the known leg is 5, the missing leg is √(169 − 25) = √144 = 12. The hypotenuse must remain the longest side."}
+  ],
+  related:{href:"/triangle-angle-sum-worksheets/",label:"Review triangle angle sums"}
+ },
+ "multiplication-tables-worksheets":{
+  purpose:"Use this page for individual multiplication facts from tables 1–12 and for a separate blank 12-by-12 chart with a matching completed answer chart. The chart is a reference and practice grid, not a timed test or a custom 0–12 table.",
+  answers:[
+   {question:"How do you read a blank multiplication table?",answer:"Use the row label as the first factor and the column label as the second factor. The cell where row 7 meets column 8 is 56, because 7 × 8 = 56. The student chart leaves the product cells blank; the separate teacher chart fills them in."},
+   {question:"How can a multiplication table help check a fact?",answer:"Multiplication is commutative, so the entries for row 6 column 7 and row 7 column 6 should both be 42. Matching symmetric cells are a useful check, but they do not replace verifying every product in the answer chart."}
+  ],
+  related:{href:"/multiplication-worksheets/",label:"Practise mixed multiplication facts"}
+ },
+ "subtraction-worksheets":{
+  purpose:"Use this generator for multi-digit whole-number subtraction with a selectable borrowing requirement. The generated subtraction is nonnegative; use the mixed addition-and-subtraction page when you specifically need differences that may be negative.",
+  answers:[
+   {question:"How do you subtract when a zero is in the tens place?",answer:"For 502 − 178, regroup one hundred as ten tens, then regroup one of those tens as ten ones. Subtract the columns: 12 − 8 = 4, 9 − 7 = 2, and 4 − 1 = 3. The difference is 324."},
+   {question:"How do you verify a multi-digit subtraction answer?",answer:"Add the difference to the subtrahend. For 502 − 178 = 324, calculate 324 + 178 = 502. This inverse check confirms the result and can reveal a borrowing or column-alignment error."}
+  ],
+  related:{href:"/mixed-addition-subtraction-worksheets/",label:"Practise mixed addition and subtraction"}
+ },
+ "one-step-equations-worksheets":{
+  purpose:"Use the one-step equation generator for integer addition/subtraction or multiplication equations that can be solved with one inverse operation. Separate decimal and fraction packs are optional extensions, not part of every default question set.",
+  answers:[
+   {question:"How do you solve a one-step addition equation?",answer:"For x + 7 = 12, subtract 7 from both sides so the equality stays balanced: x = 12 − 7 = 5. The inverse operation removes the added constant and isolates the variable."},
+   {question:"How do you check a one-step equation solution?",answer:"Substitute the proposed value into the original equation. With x = 5 in x + 7 = 12, the left side becomes 5 + 7 = 12, which matches the right side. Checking the original equation is safer than checking only the rearranged line."}
+  ],
+  related:{href:"/two-step-equations-worksheets/",label:"Move on to two-step equations"}
+ },
+ "decimal-multiplication-worksheets":{
+  purpose:"Use this worksheet for decimal products with one or two decimal places in each factor. The generator calculates exact finite-decimal products and prints a separate answer key; it does not provide thousandths-place factors or recurring-decimal rounding practice.",
+  answers:[
+   {question:"How do you place the decimal point when multiplying decimals?",answer:"Multiply as whole numbers first, then count the total decimal places in both factors. For 2.4 × 1.3, calculate 24 × 13 = 312; the factors have two decimal places altogether, so the product is 3.12."},
+   {question:"How can you estimate a decimal product to check it?",answer:"Round the factors to convenient nearby values before multiplying. For 2.4 × 1.3, an estimate of about 2 × 1.5 = 3 makes the exact product 3.12 plausible. A result such as 31.2 would signal a misplaced decimal point."}
+  ],
+  related:{href:"/decimal-place-value-worksheets/",label:"Review decimal place value"}
+ },
+ "fractions-worksheets":{
+  purpose:"Use the broad fraction generator for exact addition, subtraction, multiplication and division, with separate printable answer keys. Additional panels provide number lines, fraction strips and fraction-decimal conversion; this page does not claim every visual model or fraction word-problem type.",
+  answers:[
+   {question:"What is the first step when adding fractions with unlike denominators?",answer:"Rewrite both fractions with a common denominator before adding the numerators. For 1/2 + 1/3, use sixths: 1/2 = 3/6 and 1/3 = 2/6, so the sum is 5/6. Do not add the denominators."},
+   {question:"How do you divide one fraction by another?",answer:"Multiply the first fraction by the reciprocal of the second, nonzero fraction. For 2/3 ÷ 1/4, calculate 2/3 × 4/1 = 8/3. Simplify the exact result where possible and keep the negative sign if the operation produces a negative value."}
+  ],
+  related:{href:"/equivalent-fractions-worksheets/",label:"Review equivalent fractions"}
+ },
+ "two-digit-multiplication-worksheets":{
+  purpose:"Use this dedicated generator when both factors are two-digit whole numbers. It lays out ones and tens partial products separately; it is not the two-digit-by-one-digit or three-digit-by-two-digit algorithm.",
+  answers:[
+   {question:"How do you multiply two two-digit numbers?",answer:"For 23 × 14, split 14 into 4 + 10. Calculate 23 × 4 = 92 and 23 × 10 = 230, then add the partial products: 92 + 230 = 322."},
+   {question:"Why is the tens partial product shifted one place?",answer:"The tens digit in 14 represents 10, not 1. Therefore 23 × 10 = 230, which belongs in the tens place. The column layout makes that place value visible before the two partial products are added."}
+  ],
+  related:{href:"/three-digit-by-two-digit-multiplication-worksheets/",label:"Move on to three-digit by two-digit multiplication"}
+ },
+ "order-of-operations-worksheets":{
+  purpose:"Use this generator to practise numeric expressions with selected parentheses, powers, multiplication, division, addition and subtraction. Multiplication and division share a priority, as do addition and subtraction; each pair is evaluated from left to right.",
+  answers:[
+   {question:"What is the correct order of operations?",answer:"Evaluate grouping symbols first, then exponents. Next perform multiplication and division from left to right, followed by addition and subtraction from left to right. Multiplication does not automatically come before division when both appear in the same expression."},
+   {question:"Should multiplication always be done before division?",answer:"No. Multiplication and division have equal precedence, so work from left to right. For 24 ÷ 6 × 2, divide first to get 4, then multiply by 2; the correct result is 8, not 2."}
+  ],
+  related:{href:"/integer-operations-worksheets/",label:"Practise integer operations"}
+ },
 } as const;

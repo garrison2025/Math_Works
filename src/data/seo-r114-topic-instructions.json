@@ -1,0 +1,19 @@
+{
+  "schema": "mathworks-r114-topic-instructions/v1",
+  "date": "2026-11-08",
+  "state": "CONTENT_QUALITY_ENRICHMENT_REQUIRES_CI",
+  "publishedRouteCount": 51,
+  "topicSpecificHowToCount": 51,
+  "topicSpecificCommonMistakesCount": 51,
+  "newIndexableUrls": 0,
+  "corrections": [
+    "Replace generic fallback how-to steps on all previously uncovered live routes with instructions grounded in each generator's actual task.",
+    "Replace generic fallback common-mistake text on all previously uncovered live routes with topic-specific error checks.",
+    "Remove unsupported straight-angle classification from the angle worksheet teaching note; current angle generator covers acute, right and obtuse measures."
+  ],
+  "scopeLimits": [
+    "No new routes or indexed URLs are created.",
+    "Instructions must match implemented generator behavior and current option controls.",
+    "Grade standards references remain contextual, not certification."
+  ]
+}
