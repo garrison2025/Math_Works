@@ -1,8 +1,10 @@
 ---
 import {GEO_GUIDES} from '../lib/geo-answer-guides';
+import {GEO_REFERENCES} from '../lib/geo-reference-links';
 interface Props {slug:string}
 const {slug}=Astro.props as Props;
 const guide=GEO_GUIDES[slug];
+const reference=GEO_REFERENCES[slug];
 ---
 {guide&&<section class="panel info-panel geo-topic-answers" data-geo-answers aria-labelledby="geo-topic-answers-title">
  <span class="eyebrow">Teaching reference · Specific to this worksheet</span>
@@ -12,7 +14,9 @@ const guide=GEO_GUIDES[slug];
   <h3>{item.question}</h3>
   <p>{item.answer}</p>
  </div>)}
+ {reference&&<p class="geo-topic-reference"><strong>Standards context:</strong> <a href={reference.url} target="_blank" rel="noopener noreferrer">{reference.label}</a>. {reference.context}</p>}
  <p class="geo-topic-related"><a href={guide.related.href}>{guide.related.label}</a> or <a href="/about/">read how we check worksheet answers</a>.</p>
+ <p class="geo-topic-credit">Prepared by <a href="/about/">Math Worksheet Studio</a> · Content updated November 8, 2026. Mathematics and printer output require classroom review.</p>
 </section>}
 <style>
 .geo-topic-answers{margin:22px 0;padding:clamp(20px,3vw,30px);border:1px solid #d2dfeb;background:#f7fbff}
@@ -24,4 +28,7 @@ const guide=GEO_GUIDES[slug];
 .geo-topic-related{margin:17px 0 0}
 .geo-topic-related a{color:#1b64a5;text-decoration:underline;text-underline-offset:3px;font-weight:700}
 .geo-topic-related a:focus-visible{outline:3px solid #167c68;outline-offset:2px}
+.geo-topic-reference{border-top:1px solid #dce5ef;padding-top:13px;margin-top:15px}
+.geo-topic-credit{font-size:.79rem!important;color:#53647a!important;border-top:1px solid #dce5ef;padding-top:12px;margin-top:13px}
+.geo-topic-reference a,.geo-topic-credit a{color:#1b64a5;text-decoration:underline;text-underline-offset:3px}
 </style>
