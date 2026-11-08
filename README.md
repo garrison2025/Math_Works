@@ -62,7 +62,7 @@ Cloudflare Pages: Framework preset Astro, build `npm run build`, output `dist`; 
 
 ## Publishing rules
 
-All preview pages emit `noindex,nofollow`, with no canonical. **Setting a domain and `PUBLIC_INDEXABLE=true` alone never enables indexing**. An independent release gate also requires `PUBLIC_INDEXABLE_ROUTES` (comma-separated *individually approved* specialized tool slugs) and Cloudflare's `main` branch. Only the allowlisted specialized tools, the homepage and basic support pages enter the canonical/sitemap. All 8 unapproved hubs and 4 HOLD intents stay out of the sitemap. No custom domain is configured at present; all pages remain noindex. For quality gates and known limitations, read `RELEASE-EVIDENCE.md` and `SEO-GEO-PROJECT-BRIEF.md`.
+All preview pages emit `noindex,nofollow`, with no canonical. A public build needs an owned HTTPS domain in `PUBLIC_SITE_URL`, `PUBLIC_INDEXABLE=true` and an approved route on the Cloudflare `main` branch. List individually approved specialized tools in `PUBLIC_INDEXABLE_ROUTES` and separately approved hubs in `PUBLIC_INDEXABLE_HUB_ROUTES` (comma-separated slugs). Approved routes, the homepage and basic support pages enter the canonical/sitemap. Leave the hub list empty until each hub's purpose and distinction from its child routes have been reviewed. HOLD routes stay excluded. For quality gates and known limitations, read `RELEASE-EVIDENCE.md` and `SEO-GEO-PROJECT-BRIEF.md`.
 
 ## Limitations
 

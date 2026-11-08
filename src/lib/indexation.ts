@@ -1,5 +1,5 @@
 /** Explicit, fail-closed indexation approval. A built topic URL is not automatically a released URL. */
-export type PublishInputs = {site:string;enabled:string;routes:string;branch?:string};
+export type PublishInputs = {site:string;enabled:string;routes:string;hubs?:string;branch?:string};
 export type TopicEntry = {slug:string;type:string};
 const trim=(s:string)=>s.replace(/\/+$/,'');
 export function releasePaths(input:PublishInputs,topics:readonly TopicEntry[]):string[] {
@@ -11,8 +11,12 @@ export function releasePaths(input:PublishInputs,topics:readonly TopicEntry[]):s
  const host=site.hostname.toLowerCase();
  if(host==='localhost'||host==='example.com'||host.endsWith('.example.com')||host.endsWith('.pages.dev')||host.endsWith('.test')||!host.includes('.'))return [];
  const approved=new Set(input.routes.split(',').map(s=>s.trim()).filter(Boolean));
- const paths=topics.filter(t=>t.type==='CONDITIONAL_TOOL' && approved.has(t.slug)).map(t=>`/${t.slug}/`);
- // Do not publish an empty public-facing site. Hubs and HOLDs need separate owner QA approval.
+ const approvedHubs=new Set((input.hubs??'').split(',').map(s=>s.trim()).filter(Boolean));
+ const paths=topics.filter(t=>
+  (t.type==='CONDITIONAL_TOOL' && approved.has(t.slug)) ||
+  (t.type==='CONDITIONAL_HUB' && approvedHubs.has(t.slug))
+ ).map(t=>`/${t.slug}/`);
+ // A separate allowlist approves hubs. HOLD topics are always excluded.
  return paths.length ? ['/','/about/','/contact/','/privacy/','/terms/',...paths] : [];
 }
 export function isIndexablePath(path:string,input:PublishInputs,topics:readonly TopicEntry[]):boolean {
