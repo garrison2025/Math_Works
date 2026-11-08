@@ -7,6 +7,9 @@ on:
       - 'src/components/SubjectGuide.astro'
       - 'src/components/GeoTopicAnswers.astro'
       - 'src/lib/geo-answer-guides.ts'
+      - 'src/lib/geo-reference-links.ts'
+      - 'public/llms.txt'
+      - 'scripts/qa-r112-audit-built.mjs'
       - 'tests/r111-geo-evidence.test.mjs'
       - 'scripts/qa-r111-geo-built.mjs'
       - 'src/components/SkillComparison.astro'
@@ -30,6 +33,9 @@ on:
       - 'src/pages/**'
       - 'src/components/GeoTopicAnswers.astro'
       - 'src/lib/geo-answer-guides.ts'
+      - 'src/lib/geo-reference-links.ts'
+      - 'public/llms.txt'
+      - 'scripts/qa-r112-audit-built.mjs'
       - 'tests/r111-geo-evidence.test.mjs'
       - 'scripts/qa-r111-geo-built.mjs'
       - '.github/workflows/r107-seo-publish.yml'
@@ -75,6 +81,8 @@ jobs:
         run: node scripts/qa-r109-internal-links.mjs
       - name: Verify rendered original GEO answers and public quality-method pages
         run: node --experimental-strip-types scripts/qa-r111-geo-built.mjs
+      - name: Verify 64 title lengths, source-backed entity schema, references and optional llms.txt
+        run: node --experimental-strip-types scripts/qa-r112-audit-built.mjs
       - name: Record reproducible mobile Chrome FCP/LCP/CLS lab metrics (not CrUX)
         run: node scripts/qa-r108-lab-speed.mjs
       - uses: actions/upload-artifact@v4
