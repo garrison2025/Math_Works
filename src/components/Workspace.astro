@@ -30,8 +30,13 @@ const closureLabels:Record<string,string>={mixed:'Alternate exercise forms','ord
 <strong>Decimal and fraction equation practice</strong>
 <p class="hint">Make a separate reproducible practice pack with exact decimal or simplified fraction answers. Student, answer-key and worked-step PDFs share the same seed, difficulty, question count, equation form, and paper settings above. These downloads do not replace the original integer generator or its live preview.</p>
 <div class="field"><label for={`equation-kind-${slug}`}>Number type for extra practice</label><select id={`equation-kind-${slug}`} data-equation-kind><option value="decimal">Decimals · exact tenths / hundredths</option><option value="fraction">Fractions · exact simplified answers</option></select></div>
-<div class="download-grid"><button type="button" class="btn btn-secondary" data-action="equation-pack-questions">Extra practice PDF</button><button type="button" class="btn" data-action="equation-pack-answers">Extra answer key PDF</button><button type="button" class="btn" data-action="equation-pack-steps">Extra worked steps PDF</button></div>
-<p class="hint">Copy reproducible link remembers the selected number type for this PDF-only pack. After opening it, use the same extra PDF button to reproduce the pack; the original live preview remains separate.</p>
+<div class="hint" data-equation-preview hidden>
+  <p data-equation-preview-label></p>
+  <ol data-equation-preview-questions></ol>
+ </div>
+ <p class="hint" data-equation-preview-error role="status" hidden></p>
+ <div class="download-grid"><button type="button" class="btn btn-secondary" data-action="equation-pack-questions">Download decimal equations PDF</button><button type="button" class="btn" data-action="equation-pack-answers">Decimal answer key PDF</button><button type="button" class="btn" data-action="equation-pack-steps">Decimal worked steps PDF</button></div>
+<p class="hint">Copy reproducible link remembers the selected number type. After opening it, use the download buttons in this panel to reproduce the pack.</p>
 </div>}{(slug==='number-line-worksheets'||slug==='fractions-worksheets')&&<div class="calibration-card" data-r66-fraction-number-line aria-label="Printable fraction number line practice">
 <strong>Fractions on a number line</strong>
 <p class="hint">Generate real fraction number-line diagrams with exact tick positions. Separate student and teacher PDFs; independent of your original number-line or fraction worksheet above.</p>

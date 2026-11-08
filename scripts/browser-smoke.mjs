@@ -755,8 +755,15 @@ try {
   else await page.locator('[data-option="coefficient"]').selectOption('negative');
   const integerPreview=await page.locator('.problem .q').first().innerText();
   assert.ok(integerPreview.length>5);
+  let decimalSample;
   for(const kind of ['decimal','fraction']){
    await page.locator('[data-equation-kind]').selectOption(kind);
+   const sample=page.locator('[data-equation-preview-questions] li');
+   assert.equal(await sample.count(),3);
+   assert.match(await page.locator('[data-equation-preview-label]').innerText(),new RegExp(kind+' equation preview','i'));
+   assert.match(await page.locator('[data-action="equation-pack-questions"]').innerText(),new RegExp(kind+' equations PDF','i'));
+   if(kind==='decimal')decimalSample=await sample.allTextContents();
+   else assert.notDeepEqual(await sample.allTextContents(),decimalSample);
    for(const mode of ['questions','answers','steps']){
     const event=page.waitForEvent('download',{timeout:30000});
     await page.locator('[data-action="equation-pack-'+mode+'"]').click();

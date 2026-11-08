@@ -8,7 +8,7 @@ const hub=topics.find(t=>t.type==='CONDITIONAL_HUB').slug;
 const hold=topics.find(t=>t.type==='HOLD').slug;
 const base={site:'https://mathclassroom.org',enabled:'true',routes:`${tool},${hub},${hold}`,branch:'main'};
 test('default preview, sample domains and feature branch never become indexable',()=>{
- for(const scenario of [{...base,enabled:'false'}, {...base,site:'https://mathclassroom.pages.dev'}, {...base,site:'https://example.com'}, {...base,site:'http://mathclassroom.org'}, {...base,site:'https://mathclassroom.org:8080'}, {...base,branch:'feature/foo'}, {...base,routes:''}]){
+ for(const scenario of [{...base,enabled:'false'}, {...base,site:'https://mathclassroom.pages.dev'}, {...base,site:'https://example.com'}, {...base,site:'http://mathclassroom.org'}, {...base,site:'https://mathclassroom.org:8080'}, {...base,branch:'feature/foo',hubs:hub}, {...base,site:'https://mathclassroom.pages.dev',hubs:hub}, {...base,routes:''}]){
   assert.deepEqual(releasePaths(scenario,topics),[],JSON.stringify(scenario));
  }
 });
@@ -21,5 +21,14 @@ test('release only explicitly approved specialized topics; no hubs or HOLD',()=>
  assert.ok(isIndexablePath(`/${tool}/`,base,topics));
  assert.ok(!isIndexablePath(`/${hub}/`,base,topics));
  assert.ok(paths.includes("/terms/"));
+ assert.equal(paths.length,6);
+});
+test('the hub allowlist publishes approved hubs and excludes HOLDs and misplaced tools',()=>{
+ const input={...base,routes:'',hubs:` ${hub}, ${hold}, ${tool} `};
+ const paths=releasePaths(input,topics);
+ assert.ok(paths.includes('/'));
+ assert.ok(isIndexablePath(`/${hub}/`,input,topics));
+ assert.ok(!paths.includes(`/${hold}/`));
+ assert.ok(!paths.includes(`/${tool}/`));
  assert.equal(paths.length,6);
 });

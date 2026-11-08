@@ -65,6 +65,7 @@ function setup(root:HTMLElement){
  const sheetFooter=root.querySelector<HTMLElement>('[data-sheet-footer]')!;
  let mode:PdfMode='questions';let worksheet:Worksheet|undefined;let practiceMode=false;
  let refreshSpecialExample:(()=>void)|undefined;
+ let refreshEquationPreview:(()=>void)|undefined;
  function canPractice(){return !!worksheet&&topic!=='decimal-place-value-worksheets'&&worksheet.problems.every(p=>supportsPracticeAnswer(topic,p.expectedAnswer));}
  function updatePracticeUI(){
   const available=canPractice(),button=root.querySelector<HTMLButtonElement>('[data-action="practice"]')!;
@@ -129,8 +130,8 @@ function setup(root:HTMLElement){
   root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
   updatePracticeUI();
  }
- function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();refreshSpecialExample?.();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
-   worksheet=undefined;setExportReady(false);
+ function rebuild(){try{limitQuantity();const {n,q,difficulty:d,options}=state();worksheet=makeWorksheet(topic,n,q,d,options);render();refreshSpecialExample?.();refreshEquationPreview?.();setExportReady(true);inform(`${q} matching problems generated locally · Seed ${n} · Config ${worksheet.optionsHash}.`);}catch(e){
+   worksheet=undefined;setExportReady(false);refreshEquationPreview?.();
    list.classList.remove('with-diagrams');list.innerHTML='<p class="empty">Enter a valid seed and settings to generate a worksheet. Previously shown questions have been cleared.</p>';
    summary.textContent='Worksheet unavailable';sheetCaption.textContent='Check settings before printing';sheetFooter.textContent='No valid worksheet to export';
    inform(e instanceof Error?e.message:'Could not create worksheet.',true);updatePracticeUI();
@@ -246,21 +247,56 @@ function setup(root:HTMLElement){
   });
  }
 
- // R65 opt-in exact algebra extension. The original v18 integer worksheet
- // and share URL are left untouched: selected pack kind is an explicit
- // separate download configuration, never quietly mixed into live preview.
- if(topic==='one-step-equations-worksheets'||topic==='two-step-equations-worksheets'){
-  const kindInput=root.querySelector<HTMLSelectElement>('[data-equation-kind]');
+ // The extension has its own preview and uses the same pack generator for PDF exports.
+ const equationPanel=root.querySelector<HTMLElement>('[data-r65-equation-pack]');
+ if(equationPanel){
+  const kindInput=equationPanel.querySelector<HTMLSelectElement>('[data-equation-kind]')!;
+  const preview=equationPanel.querySelector<HTMLElement>('[data-equation-preview]')!;
+  const previewLabel=preview.querySelector<HTMLElement>('[data-equation-preview-label]')!;
+  const previewQuestions=preview.querySelector<HTMLOListElement>('[data-equation-preview-questions]')!;
+  const previewError=equationPanel.querySelector<HTMLElement>('[data-equation-preview-error]')!;
+  const kind=()=>kindInput.value as EquationNumberType;
+  const buildPack=({n,q,difficulty,options}:ReturnType<typeof state>)=>
+   createEquationPack(topic as EquationTopic,kind(),n,q,difficulty,options);
+  const buttons={
+   questions:equationPanel.querySelector<HTMLButtonElement>('[data-action="equation-pack-questions"]')!,
+   answers:equationPanel.querySelector<HTMLButtonElement>('[data-action="equation-pack-answers"]')!,
+   steps:equationPanel.querySelector<HTMLButtonElement>('[data-action="equation-pack-steps"]')!,
+  };
+  refreshEquationPreview=()=>{
+   const label=kind()==='fraction'?'Fraction':'Decimal';
+   buttons.questions.textContent=`Download ${label.toLowerCase()} equations PDF`;
+   buttons.answers.textContent=`${label} answer key PDF`;
+   buttons.steps.textContent=`${label} worked steps PDF`;
+   preview.hidden=true;
+   previewError.hidden=true;
+   previewQuestions.replaceChildren();
+   try{
+    if(!worksheet)throw Error('Enter valid worksheet settings to preview this pack.');
+    const pack=buildPack(state());
+    const sample=pack.questions.slice(0,3);
+    previewLabel.textContent=`${label} equation preview · first ${sample.length} of ${pack.questions.length} questions`;
+    for(const {question} of sample){
+     const item=document.createElement('li');
+     item.textContent=question;
+     previewQuestions.append(item);
+    }
+    preview.hidden=false;
+   }catch(e){
+    previewError.textContent=e instanceof Error?e.message:'Could not preview the equation pack.';
+    previewError.hidden=false;
+   }
+  };
+  kindInput.addEventListener('change',refreshEquationPreview);
   for(const downloadMode of ['questions','answers','steps'] as const){
-   const button=root.querySelector<HTMLButtonElement>('[data-action="equation-pack-'+downloadMode+'"]');
-   if(!button||!kindInput)continue;
+   const button=buttons[downloadMode];
    button.addEventListener('click',async()=>{
     button.disabled=true;
     try{
      const parameters=state();
-     const kind=kindInput.value as EquationNumberType;
+     const pack=buildPack(parameters);
+     const kind=pack.kind;
      inform('Verifying and preparing '+kind+' equation '+downloadMode+' PDF...');
-     const pack=createEquationPack(topic as EquationTopic,kind,parameters.n,parameters.q,parameters.difficulty,parameters.options);
      const bytes=await createEquationPackPdf(pack,downloadMode as EquationPdfMode,paper.value as Paper,writingRoom.value as WritingRoom);
      const url=URL.createObjectURL(new Blob([new Uint8Array(bytes)],{type:'application/pdf'}));
      const filename=topic+'-'+kind+'-'+downloadMode+'-seed'+parameters.n+'-'+parameters.difficulty+
