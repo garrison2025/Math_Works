@@ -41,13 +41,24 @@ test('homepage and library navigation use only the canonical subject hubs',()=>{
 });
 test('grade guide fragments resolve to real canonical subject sections',()=>{
  const grade=read('../src/pages/worksheets-by-grade/index.astro');
- const algebra=read('../src/components/FocusDrills.astro');
+ const focus=read('../src/components/FocusDrills.astro');
  const geometry=read('../src/pages/geometry/index.astro');
  assert.match(grade,/href="\/algebra\/#algebra-focus-lab"/);
  assert.match(grade,/href="\/geometry\/#point-angle-lab"/);
- assert.match(algebra,/id=\{anchor\}/);
- assert.match(algebra,/const anchor=isAngles\?'angle-drill':'algebra-focus-lab'/);
- assert.match(geometry,/id="point-angle-lab"/);
+ assert.match(focus,/id=\{anchor\}/);
+ assert.match(focus,/const anchor=isAngles\?'point-angle-lab':'algebra-focus-lab'/);
+ assert.match(geometry,/id="point-angle-intro-heading"/);
+ assert.doesNotMatch(geometry,/id="point-angle-lab"/);
+ test('homepage and WebSite schema clearly describe the local-first 51-generator brand',()=>{
+  const home=read('../src/pages/index.astro'),layout=read('../src/components/Layout.astro');
+  const description=home.match(/description="([^"]+)"/)?.[1]||'';
+  assert.ok(description.length>=110&&description.length<=160);
+  assert.match(description,/51 focused generators/);
+  assert.match(description,/student-data upload/);
+  assert.match(home,/51 focused math-topic generators, right in your browser/i);
+  assert.match(layout,/name:"Math Worksheet Studio"/);
+  assert.match(layout,/51 topic-specific math worksheet generators/);
+ });
 });
 test('all 51 primary keyword metrics match the exact original CSV rows',()=>{
  const rows=parseCSV(read('../src/data/keyword-evidence.csv')),columns=Object.fromEntries(rows[0].map((n,i)=>[n,i]));
