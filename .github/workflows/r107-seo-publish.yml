@@ -4,6 +4,8 @@ on:
     paths:
       - 'src/lib/publication.ts'
       - 'src/data/topic-seo.ts'
+      - 'src/data/geo-r113-coverage.json'
+      - 'src/lib/site.ts'
       - 'src/components/SubjectGuide.astro'
       - 'src/components/GeoTopicAnswers.astro'
       - 'src/lib/geo-answer-guides.ts'
@@ -14,6 +16,8 @@ on:
       - 'scripts/qa-r111-geo-built.mjs'
       - 'src/components/SkillComparison.astro'
       - 'src/pages/**'
+      - 'src/data/geo-r113-coverage.json'
+      - 'src/lib/site.ts'
       - 'src/components/Layout.astro'
       - 'src/pages/sitemap.xml.ts'
       - 'astro.config.mjs'
