@@ -4,11 +4,11 @@ import '../styles/ui-v4.css';
 import '../styles/ui-v5.css';
 import topics from '../data/routes.json';
 import seoTargets from '../data/seo-targets.json';
-import {isIndexablePath,absoluteSite} from '../lib/indexation';
+import {releaseForBuild,publishedPath} from '../lib/publication';
 const {title,description,canonicalPath='/'}=Astro.props;
-const release={site:import.meta.env.PUBLIC_SITE_URL||'', enabled:import.meta.env.PUBLIC_INDEXABLE||'', routes:import.meta.env.PUBLIC_INDEXABLE_ROUTES||'', hubs:import.meta.env.PUBLIC_INDEXABLE_HUB_ROUTES||'', branch:process.env.CF_PAGES_BRANCH||''};
-const base=absoluteSite(release);
-const indexed=isIndexablePath(canonicalPath,release,topics);
+const release=releaseForBuild(topics,process.env.CF_PAGES_BRANCH||'');
+const base=release.site;
+const indexed=publishedPath(canonicalPath,release,topics);
 const canonical=indexed?`${base}${canonicalPath}`:undefined;
 // Cloudflare Pages exposes the exact deployed Git commit at build time.
 const sourceRevision=process.env.CF_PAGES_COMMIT_SHA||process.env.GITHUB_SHA||'';

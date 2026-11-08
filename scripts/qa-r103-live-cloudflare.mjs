@@ -31,11 +31,12 @@ async function verify(){
    const route=routes[next++],r=await get(base+'/'+route.slug+'/');
    assert.equal(r.status,200,'Route HTTP '+route.slug);
    assert.equal(meta(r.body,'math-works-build-sha'),sha,'Stale route '+route.slug);
-   assert.equal(meta(r.body,'robots'),'noindex,nofollow','Search indexing gate '+route.slug);
+   assert.equal(meta(r.body,'robots'),route.type==='HOLD'?'noindex,nofollow':'index,follow,max-image-preview:large','Publication state '+route.slug);
    if(route.type==='HOLD')assert.ok(!/<link[^>]+rel="canonical"/i.test(r.body),'HOLD canonical '+route.slug);
+   else assert.ok(r.body.includes('href="https://mathworksheetstudio.com/'+route.slug+'/"'),'Canonical host '+route.slug);
   }
  }));
- evidence.checks.push('55 real HTTP 200 routes including 51 tools and 4 HOLDs; exact SHA and noindex');
+ evidence.checks.push('55 real pages: 51 indexable canonical tools and eight hubs, four HOLD noindex; exact SHA');
  const robots=await get(base+'/robots.txt');assert.equal(robots.status,200);evidence.checks.push('robots.txt HTTP 200');
  const exe=['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium'].find(existsSync);
  assert.ok(exe,'Chrome executable not found');
