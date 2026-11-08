@@ -14,6 +14,7 @@ const label=scope==='grade'?'Grade-level mixed worksheet builder':scope==='geome
  <aside class="panel wide-settings">
   <span class="eyebrow">Original printable practice · Grade 5 CCSS coverage R102</span>
   <h2>{label}</h2>
+  <a class="wide-preview-jump" href={`#wide-preview-${scope}`}>View live practice sheet ↓</a>
   <p>Choose a precise supported skill, generate an original question set and download independent student, answer-key or worked-solution PDFs. Diagrams are schematic unless otherwise specified; written measurements determine the answers.</p>
   <div class="wide-field"><label for={'wide-'+scope+'-mode'}>Topic and question family</label>
    <select id={'wide-'+scope+'-mode'} data-wide-mode>{active.map(mode=><option value={mode} selected={mode===defaultMode}>{MODE_LABELS[mode]}</option>)}</select><p data-wide-coverage hidden class="wide-coverage">Full Grade 5 mode: every 40/48-question set covers 26 Common Core content standards across five domains, using 34 original exercise families. This is not a state curriculum certification or a guarantee of mastery.</p></div>
@@ -35,7 +36,7 @@ const label=scope==='grade'?'Grade-level mixed worksheet builder':scope==='geome
   </div>
   <p class="wide-footnote">Runs locally in your browser. No student data is uploaded or retained. All diagrams and PDFs are generated from the matching validated math records, not decorative images.</p>
  </aside>
- <div class="panel wide-preview">
+ <div id={`wide-preview-${scope}`} class="panel wide-preview">
   <div class="wide-header"><div><span class="eyebrow">Live question preview · no answer leak</span>
    <h2>Math practice sheet</h2><p data-wide-title>{MODE_LABELS[defaultMode]}</p></div>
    <button type="button" class="btn btn-soft" data-wide-toggle aria-pressed="false">Show worked answers</button></div>
