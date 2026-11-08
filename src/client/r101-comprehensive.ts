@@ -23,6 +23,17 @@ function initialize(root:HTMLElement){
  const coverage=root.querySelector<HTMLElement>('[data-wide-coverage]');
  const query=new URLSearchParams(window.location.search),params=['wm_seed','wm_mode','wm_level','wm_count','wm_paper'];
  let answersShown=false,pack:WidePack;
+ let uiReady=false,previewAnimation:Animation|undefined;
+ const paperView=root.querySelector<HTMLElement>('.wide-paper')!;
+ function animatePreview(){
+  if(!uiReady||document.hidden||window.matchMedia('(prefers-reduced-motion: reduce)').matches||
+   window.matchMedia('print').matches||typeof paperView.animate!=='function')return;
+  previewAnimation?.cancel();
+  previewAnimation=paperView.animate([
+   {opacity:.88,transform:'translateY(4px)'},
+   {opacity:1,transform:'translateY(0)'}
+  ],{duration:180,easing:'ease-out'});
+ }
  function message(msg:string,isError=false){status.textContent=msg;status.dataset.error=String(isError);}
  function synchronizeCounts(){
   const full=mode.value==='grade5-full';
@@ -65,6 +76,7 @@ function initialize(root:HTMLElement){
   toggle.textContent=answersShown?'Hide answers':'Show worked answers';
   toggle.setAttribute('aria-pressed',String(answersShown));
   message(pack.problems.length+' original '+pack.mode+' practice questions ready (seed '+pack.seed+').'+(pack.mode==='grade5-full'?' All 26 Grade 5 CCSS content standards included.':''));
+  animatePreview();
  }
  function safe(){try{answersShown=false;render();}catch(e){message(e instanceof Error?e.message:'Invalid worksheet settings',true);}}
  restore();synchronizeCounts();
@@ -100,5 +112,6 @@ function initialize(root:HTMLElement){
  }
  if(params.some(s=>query.has(s)))window.addEventListener('pageshow',()=>{restore();synchronizeCounts();safe();});
  try{render();}catch(e){message(e instanceof Error?e.message:'Unable to prepare worksheet',true);}
+ uiReady=true;
 }
 document.querySelectorAll<HTMLElement>('[data-wide-workspace]').forEach(initialize);
