@@ -1,0 +1,109 @@
+/* R105: usable workbench, responsive navigation and purposeful motion.
+ * CSS only adds visual feedback; math, PDF export, keyword routes, and SEO are unchanged. */
+:root{--ui-accent:#245bd6;--ui-teal:#138476;--ui-soft:#eef4ff}
+html{scroll-padding-top:95px}
+.site-header .nav-pill:focus-visible,.settings-preview-link:focus-visible,.directory-quick-filters button:focus-visible{outline:3px solid #6c9df1;outline-offset:3px}
+.workspace{scroll-margin-top:92px}
+.settings-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:0 0 12px}
+.settings-topbar .panel-title{margin-bottom:6px}
+.settings-topbar .panel-sub{margin:0;max-width:300px}
+.settings-preview-link{display:none;flex:none;white-space:nowrap;align-items:center;gap:5px;font-size:.76rem;font-weight:760;color:#1e51b8;background:#eaf2ff;border:1px solid #cbdcf5;border-radius:10px;padding:9px 10px}
+.settings-preview-link:hover{text-decoration:none;color:#17439b;background:#dfeafe}
+.preview-panel{scroll-margin-top:95px}
+.preview-head{position:relative;gap:14px}
+.preview-head strong{font-size:1.01rem;letter-spacing:-.025em}
+.preview-tools{background:#dde7f3;border:1px solid #ccd9ec;border-radius:13px;padding:4px;gap:4px}
+.preview-tools .toggle{border:1px solid transparent;border-radius:9px;padding:8px 12px;min-height:39px;background:transparent;color:#405d78;font-size:.8rem;font-weight:710;transition:background-color .16s,border-color .16s,box-shadow .16s}
+.preview-tools .toggle:hover:not(:disabled){background:#f1f6fd;color:#1b4b91}
+.preview-tools .toggle[aria-pressed=true]{background:#fff;color:#214da7;border-color:#c5d5ee;box-shadow:0 2px 6px #27558c18}
+.preview-tools .toggle[data-action=practice][aria-pressed=true]{background:#e4f7ee;color:#0c6b52;border-color:#bfe2d2}
+.preview-tools .toggle:disabled{opacity:.47}
+.preview-panel .sheet-outer{border:1px solid #c7d8eb;border-radius:14px}
+.print-sheet{border-radius:3px;contain:paint}
+.sheet-top{border-bottom-color:#244f8c}
+.sheet-top .sheet-logo{color:#2459ae;letter-spacing:.035em}
+.sheet-name{color:#556981}
+.problems-grid .problem{border-bottom-color:#e3e9f2}
+.practice-actions{border-radius:13px;border-color:#d3e2f1;box-shadow:0 5px 15px #19396d09}
+.practice-answer:focus-within{border-color:#78a7e6;background:#f5f9ff}
+.status{padding:8px 11px;border:1px solid #d5e9e4;background:#f1faf7;border-radius:10px;margin-top:17px;line-height:1.5;color:#14695c}
+.status.error{background:#fff1ef;border-color:#f1c4c3;color:#a52d35}
+.settings .actions>.btn[data-action=regenerate]{position:relative;overflow:hidden}
+.settings .actions>.btn[data-action=regenerate]:not(:disabled):active{box-shadow:0 2px 5px #245bd624}
+.download-grid>.btn{line-height:1.35;font-size:.83rem;padding:9px}
+.settings .calibration-card{transition:border-color .18s,box-shadow .18s}
+.settings .calibration-card:focus-within{border-color:#8bb4ed;box-shadow:0 0 0 2px #d7e7fc}
+.settings details.calibration-card[open]{border-color:#bdd4ed;box-shadow:0 4px 16px #285b9210}
+.settings details.calibration-card summary{outline-offset:5px}
+.settings .controls-foot{line-height:1.62}
+.wide-workspace{scroll-margin-top:92px}
+.wide-workspace .wide-preview{background:linear-gradient(165deg,#edf4ff,#f5f9fe);border-color:#d8e5f3}
+.wide-workspace .wide-paper{border-color:#d9e6f3;box-shadow:0 18px 35px #20436d0c;padding:clamp(18px,2.3vw,32px)}
+.wide-workspace .wide-paper-id{color:#365d8c}
+.wide-workspace [data-wide-list]>li{padding-bottom:5px}
+.wide-workspace .wide-diagram{border-color:#d9e6f1;background:#f8fbff}
+.wide-workspace .wide-actions .btn{border-radius:12px}
+.wide-workspace [data-wide-status]{background:#e7f6f0;border:1px solid #cae7db;color:#1e6655;border-radius:12px}
+.wide-workspace [data-wide-status][data-error=true]{background:#fff0ed;border-color:#f2c9c2;color:#a12f25}
+.wide-workspace .wide-field select,.wide-workspace .wide-field input{border-radius:12px;border-color:#bdcfe5;background:#fbfcff}
+.wide-workspace .wide-header button{border-radius:11px}
+
+/* Display the paper while the user browses extensive optional PDF settings.
+ * Keep the actual paper itself independently scrollable; never scale the PDF. */
+@media(min-width:961px) and (min-height:610px){
+ .workspace>.settings{position:static;top:auto}
+ .workspace>.preview-panel{position:sticky;top:90px;align-self:start;max-height:calc(100dvh - 104px);overflow-y:auto;scrollbar-width:thin;overscroll-behavior:contain}
+ .workspace>.preview-panel .sheet-outer{max-height:min(56dvh,650px);min-height:265px}
+ .workspace>.preview-panel .special-live-preview .special-pdf-iframe{min-height:300px;height:min(55dvh,620px)}
+}
+@media(min-width:931px) and (min-height:610px){
+ .wide-workspace>.wide-preview{position:sticky;top:90px;align-self:start;max-height:calc(100dvh - 104px);overflow-y:auto;scrollbar-width:thin}
+}
+/* Short viewports keep normal document scrolling so no nested trap exists. */
+@media(max-height:609px){
+ .workspace>.settings,.workspace>.preview-panel,.wide-workspace>.wide-preview{position:static!important;max-height:none!important;overflow:visible!important}
+}
+@media(max-width:960px){
+ .workspace>.settings{position:static;top:auto}
+ .workspace>.preview-panel,.wide-workspace>.wide-preview{position:static;max-height:none;overflow:visible}
+}
+@media(max-width:680px){
+ html{scroll-padding-top:80px}
+ .settings-preview-link{display:inline-flex}
+ .settings-topbar{position:sticky;top:65px;z-index:8;padding:11px 0 12px;background:linear-gradient(#fff 85%,#ffffffef);border-bottom:1px solid #e6edf7;margin:-9px 0 8px}
+ .settings-topbar .panel-title{font-size:1.03rem}
+ .settings-topbar .panel-sub{font-size:.75rem;max-width:205px}
+ .preview-head{display:block}
+ .preview-head>div:first-child{display:flex;flex-wrap:wrap;column-gap:10px;align-items:center}
+ .preview-head>div:first-child>div{flex-basis:100%}
+ .preview-head .mobile-jump{font-size:.75rem}
+ .preview-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%;margin-top:12px}
+ .preview-tools .toggle{min-width:0;padding:8px 5px;font-size:.72rem;min-height:42px;white-space:normal;overflow-wrap:break-word}
+ .preview-tools [data-action=practice]{grid-column:1/-1}
+ .preview-panel .sheet-outer{padding:7px 5px;max-height:62svh}
+ .settings .actions{margin-top:17px}
+ .settings .actions>.btn,.settings .actions>.download-grid .btn{min-height:45px}
+ .wide-workspace{gap:14px}
+ .wide-workspace .wide-header{flex-wrap:wrap}
+ .wide-workspace .wide-header button{max-width:none}
+ .wide-workspace .wide-paper{padding:15px}
+}
+@media(max-width:375px){
+ .settings-preview-link{font-size:.69rem;padding:8px}
+ .settings-topbar .panel-sub{max-width:160px}
+ .preview-tools .toggle{font-size:.67rem}
+}
+@media(prefers-reduced-motion:reduce){
+ .preview-tools .toggle,.settings .calibration-card{transition:none!important}
+ .directory-quick-filters button{transition:none!important}
+ .directory-matches li{animation:none!important}
+}
+/* The original print CSS is authoritative: navigation, effects and controls never print. */
+@media print{
+ .settings-topbar,.settings-preview-link,.directory-quick-filters{display:none!important}
+ .workspace>.preview-panel,.wide-workspace>.wide-preview{position:static!important;top:auto!important;max-height:none!important;overflow:visible!important}
+ .workspace>.preview-panel .sheet-outer{max-height:none!important;overflow:visible!important}
+ .print-sheet{contain:none!important;border:0!important}
+ .preview-tools{display:none!important}
+ .status{display:none!important}
+}
