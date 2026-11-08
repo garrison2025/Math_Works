@@ -32,7 +32,7 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | math sheets for 7th graders | **DIRECTORY** |
 | math worksheets for seventh graders free | **DIRECTORY** |
 | free printable 2nd grade math worksheets | **UNSUPPORTED** — no grade 2 collection; do not claim available |
-| angles around a point worksheet grade 8 | **UNSUPPORTED** — no complete around-a-point angle generator, despite other angle tools |
+| angles around a point worksheet grade 8 | **SUPPORTED (R100 preview-only), restricted** — four-sector angles at point O with exact ray diagrams and a missing angle; not a general grade-eight curriculum |
 
 ## Algebra subject navigation — 16 original source phrases
 
@@ -45,14 +45,14 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | solving equations worksheet | **SUPPORTED via links** — same limited equation families |
 | algebra i worksheets | **DIRECTORY** — no full Algebra I curriculum |
 | algebra worksheet | **DIRECTORY** |
-| literal equations worksheet | **UNSUPPORTED** — rearranging named-variable equations not specifically generated |
+| literal equations worksheet | **SUPPORTED (R100 preview-only), restricted** — selected linear symbolic rearrangements with formula-specific steps; not arbitrary literal equations |
 | solving single step equations worksheet | **SUPPORTED via links** — `/one-step-equations-worksheets/` |
 | equation story problems | **PARTIAL** — new one-step additive unknown stories; not general algebra stories |
-| algebraic expressions simplify worksheets | **UNSUPPORTED** — polynomial addition/subtraction extensions are distinct from comprehensive simplification |
-| multi step equations worksheet | **UNSUPPORTED** — base generators cover one/two steps, not arbitrary multistep equations |
+| algebraic expressions simplify worksheets | **SUPPORTED (R100 preview-only), restricted** — one-variable distributive expansion and combining linear like terms; not arbitrary polynomial operations |
+| multi step equations worksheet | **SUPPORTED (R100 preview-only), restricted** — genuine three-step integer linear equations using a(x + b) + c = d; no general nonlinear or fractional-coefficient claim |
 | pre algebra worksheets | **DIRECTORY** — subset of arithmetic/algebra skills |
-| solving multi step equations worksheet | **UNSUPPORTED** — no arbitrary multistep solver |
-| simplifying algebraic expressions worksheet | **UNSUPPORTED** |
+| solving multi step equations worksheet | **SUPPORTED (R100 preview-only), restricted** — three-step distributive linear equations with separate steps; not an arbitrary multistep solver |
+| simplifying algebraic expressions worksheet | **SUPPORTED (R100 preview-only), restricted** — expand a(x + b), collect signed x terms and constants; not general symbolic simplification |
 | pre algebra sheets | **DIRECTORY** |
 
 ## Geometry subject navigation — 17 original source phrases
@@ -76,6 +76,10 @@ Each of these modes creates seeded student, answer and worked-step PDFs on A4/Le
 | shapes worksheet | **PARTIAL** — linked geometry skill generators, not generic shape-identification practice |
 | volume of spheres worksheet | **SUPPORTED (R99 preview-only)** — exact sphere volumes with separate student/teacher/worked-step PDFs |
 | volume of triangular pyramid worksheet | **SUPPORTED (R99 preview-only)** — exact triangular pyramid volumes using separate base triangle altitude and solid perpendicular height |
+
+## R100 supplemental algebra and angle drills
+
+Six previously unsupported phrases now have **narrow actual on-page functionality** in historically HOLD directories, with deterministic generators, separate PDFs and independently reviewed mathematical rules. No source keyword data or public indexing approval changes. Five broad algebra phrases remain restricted to literal-symbol rearrangements, distributive linear equations and expression simplification; the grade-8 point-angle phrase covers four-sector full-turn problems. These claims require green R100 CI and real deployment evidence.
 
 ## Indexation / GEO launch decision
 
