@@ -48,6 +48,7 @@ export function initWorksheetDirectorySearch(){
   const groups=[...root.querySelectorAll<HTMLElement>('.directory-group')];
   const cards=[...root.querySelectorAll<HTMLAnchorElement>('.directory-group .directory-card')];
   const extras=[...root.querySelectorAll<HTMLAnchorElement>('.directory-extras .directory-card')];
+  const suggestions=[...search.querySelectorAll<HTMLButtonElement>('[data-directory-suggestion]')];
   const extraSection=root.querySelector<HTMLElement>('.directory-extras');
   // Unscripted pages remain a complete usable directory. Search only
   // appears if browser scripting has actually initialized successfully.
@@ -111,6 +112,10 @@ export function initWorksheetDirectorySearch(){
   const update=async()=>{
    const version=++request,q=input.value.trim();
    clear.hidden=!q;
+   for(const button of suggestions){
+    button.setAttribute('aria-pressed',String(normalizeWorksheetSearch(q).length>0&&
+     normalizeWorksheetSearch(q)===normalizeWorksheetSearch(button.dataset.directorySuggestion||'')));
+   }
    if(normalizeWorksheetSearch(q).length<2){reset();return}
    status.textContent='Finding the matching math worksheet…';
    try{
@@ -124,6 +129,11 @@ export function initWorksheetDirectorySearch(){
   };
   let pendingQuery:Promise<void>=Promise.resolve();
   input.addEventListener('input',()=>{pendingQuery=update()});
+  for(const button of suggestions)button.addEventListener('click',()=>{
+   input.value=button.dataset.directorySuggestion||'';
+   pendingQuery=update();
+   input.focus();
+  });
   form.addEventListener('submit',async event=>{
    event.preventDefault();
    const submitted=input.value;
