@@ -13,7 +13,7 @@ const meta=(html,name)=>{
  const tag=html.match(new RegExp('<meta\\b[^>]*\\bname="'+name+'"[^>]*>','i'))?.[0]||'';
  return tag.match(/content="([^"]*)"/i)?.[1]||'';
 };
-const get=async(url)=>{const r=await fetch(url,{headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});return {status:r.status,body:await r.text()};};
+const get=async(url)=>{const r=await fetch(url,{headers:{'Cache-Control':'no-cache'},signal:AbortSignal.timeout(20000)});return {status:r.status,body:await r.text(),url:r.url};};
 async function verify(){
  let actual='';
  for(let i=0;i<45;i++){
@@ -29,15 +29,17 @@ async function verify(){
  await Promise.all(Array.from({length:5},async()=>{
   while(next<routes.length){
    const route=routes[next++],r=await get(base+'/'+route.slug+'/');
+   const legacyTarget={'algebra-general-worksheets':'/algebra/','geometry-general-worksheets':'/geometry/'}[route.slug];
    assert.equal(r.status,200,'Route HTTP '+route.slug);
    assert.equal(meta(r.body,'math-works-build-sha'),sha,'Stale route '+route.slug);
+   if(legacyTarget){assert.equal(r.url,base+legacyTarget,'Legacy subject URL did not redirect '+route.slug);assert.equal(meta(r.body,'robots'),'index,follow,max-image-preview:large');assert.ok(r.body.includes('href="https://mathworksheetstudio.com'+legacyTarget+'"'));continue;}
    const isIndexed=route.type!=='HOLD'||['word-problems-worksheets','worksheets-by-grade'].includes(route.slug);
    assert.equal(meta(r.body,'robots'),isIndexed?'index,follow,max-image-preview:large':'noindex,follow','Publication state '+route.slug);
    if(!isIndexed)assert.ok(!/<link[^>]+rel="canonical"/i.test(r.body),'HOLD canonical '+route.slug);
    else assert.ok(r.body.includes('href="https://mathworksheetstudio.com/'+route.slug+'/"'),'Canonical host '+route.slug);
   }
  }));
- evidence.checks.push('55 real pages: 51 indexable canonical tools and eight hubs, four HOLD noindex; exact SHA');
+ evidence.checks.push('55 route intents: 51 core tools, 2 promoted generators and 2 legacy subject redirects; exact SHA');
  const robots=await get(base+'/robots.txt');assert.equal(robots.status,200);evidence.checks.push('robots.txt HTTP 200');
  const exe=['/usr/bin/google-chrome','/usr/bin/google-chrome-stable','/usr/bin/chromium'].find(existsSync);
  assert.ok(exe,'Chrome executable not found');

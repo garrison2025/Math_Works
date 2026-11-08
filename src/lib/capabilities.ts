@@ -1,6 +1,7 @@
 /** Step PDFs are opt-in for independently tested math routines.
  * Addition, subtraction, multiplication, division and fractions are the five
- * explicitly audited CONDITIONAL_HUB worked-step exceptions; they stay noindex. */
+ * explicitly audited CONDITIONAL_HUB worked-step exceptions. Indexation is
+ * controlled by the separate publication allowlist, not this capability map. */
 const STEP_TOPICS=new Set([
  'inequalities-worksheets',
  'decimal-multiplication-worksheets',

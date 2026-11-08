@@ -11,7 +11,11 @@ on:
       - 'src/pages/sitemap.xml.ts'
       - 'astro.config.mjs'
       - 'public/robots.txt'
+      - 'public/_redirects'
+      - 'src/data/routes.json'
+      - 'tests/r109-seo-consolidation.test.mjs'
       - 'scripts/qa-r107-index-built.mjs'
+      - 'scripts/qa-r109-internal-links.mjs'
       - 'tests/r108-seo-meta.test.mjs'
       - 'scripts/qa-r108-lab-speed.mjs'
       - 'tests/r107-publication.test.mjs'
@@ -19,6 +23,9 @@ on:
   push:
     branches: [main]
     paths:
+      - 'public/_redirects'
+      - 'src/data/routes.json'
+      - 'tests/r109-seo-consolidation.test.mjs'
       - 'src/lib/publication.ts'
       - 'src/components/Layout.astro'
       - 'src/pages/sitemap.xml.ts'
@@ -40,6 +47,8 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Simulate main and preview publication contract
         run: node --experimental-strip-types --test tests/r107-publication.test.mjs
+      - name: Check legacy URL consolidation and frozen keyword metric provenance
+        run: node --experimental-strip-types --test tests/r109-seo-consolidation.test.mjs
       - name: Check all 51 exact-intent metadata entries
         run: node --experimental-strip-types --test tests/r108-seo-meta.test.mjs
       - name: Build Cloudflare production with stale Cloudflare PUBLIC_INDEXABLE=false
@@ -50,6 +59,8 @@ jobs:
         run: npm run build
       - name: Inspect all 64 HTML pages, 64 canonical sitemap URLs, OG and topic-specific metadata
         run: node scripts/qa-r107-index-built.mjs
+      - name: Audit all 64 pages for broken internal links, fragments and orphan pages
+        run: node scripts/qa-r109-internal-links.mjs
       - name: Record reproducible mobile Chrome FCP/LCP/CLS lab metrics (not CrUX)
         run: node scripts/qa-r108-lab-speed.mjs
       - uses: actions/upload-artifact@v4

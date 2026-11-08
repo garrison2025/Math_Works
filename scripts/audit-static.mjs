@@ -57,11 +57,16 @@ for(const path of ['robots.txt','about/index.html','privacy/index.html','contact
 assert.equal(R98_PREVIEW_ONLY_HOLD_PAGES.length,4);
 const directory=readFileSync(join(dist,'worksheets','index.html'),'utf8');
 const home=readFileSync(join(dist,'index.html'),'utf8');
+const canonicalPreviewPath={
+ 'algebra-general-worksheets':'algebra',
+ 'geometry-general-worksheets':'geometry'
+};
 for(const slug of R98_PREVIEW_ONLY_HOLD_PAGES){
- assert.ok(home.includes(`href="/${slug}/"`),`New preview has no home navigation link: ${slug}`);
- assert.ok(directory.includes(`href="/${slug}/"`),`New preview has no worksheet directory navigation: ${slug}`);
+ const path=canonicalPreviewPath[slug]||slug;
+ assert.ok(home.includes(`href="/${path}/"`),`New preview has no canonical home navigation link for: ${slug}`);
+ assert.ok(directory.includes(`href="/${path}/"`),`New preview has no canonical worksheet-directory navigation for: ${slug}`);
 }
-console.log(`STATIC AUDIT PASS: 51 baseline generators, 4 supplemental noindex preview routes, unique paths, 51 WebP assets, support pages.`);
+console.log(`STATIC AUDIT PASS: 51 baseline generators, 4 supplemental preview intents (2 legacy paths consolidate to short canonical hubs), unique paths, 51 WebP assets, support pages.`);
 
 /** R41 source-to-built-site SEO intent audit: never release guessed keywords. */
 function parseCsvLine(line){
