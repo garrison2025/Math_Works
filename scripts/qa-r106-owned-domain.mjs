@@ -46,11 +46,12 @@ async function verify(){
   const route=routes[i++],r=await get(base+'/'+route.slug+'/');
   assert.equal(r.status,200,'Missing path '+route.slug);
   assert.equal(meta(r.text,'math-works-build-sha'),sha,'Wrong SHA '+route.slug);
-  assert.equal(meta(r.text,'robots'),route.type==='HOLD'?'noindex,nofollow':'index,follow,max-image-preview:large','Published index status '+route.slug);
-  if(route.type==='HOLD')assert.ok(!/<link[^>]*rel="canonical"/i.test(r.text),'HOLD canonical leak '+route.slug);
+  const isIndexed=route.type!=='HOLD'||['word-problems-worksheets','worksheets-by-grade'].includes(route.slug);
+  assert.equal(meta(r.text,'robots'),isIndexed?'index,follow,max-image-preview:large':'noindex,follow','Published index status '+route.slug);
+  if(!isIndexed)assert.ok(!/<link[^>]*rel="canonical"/i.test(r.text),'HOLD canonical leak '+route.slug);
   else assert.ok(r.text.includes('href="https://mathworksheetstudio.com/'+route.slug+'/"'),'Canonical '+route.slug);
  }}));
- result.verified.push('51 indexable canonical original topic routes and 4 noindex HOLDs with SHA match');
+ result.verified.push('53 published topic routes and 2 navigation noindex-follow HOLDs; SHA verified');
  const [home,contact,privacy,robots,sitemap,preview]=await Promise.all([
   get(base+'/'),get(base+'/contact/'),get(base+'/privacy/'),
   get(base+'/robots.txt'),get(base+'/sitemap.xml'),get('https://math-works.pages.dev/')
@@ -67,18 +68,18 @@ async function verify(){
  assert.equal(robots.status,200);assert.match(robots.text,/User-agent: \*/);
  assert.equal(sitemap.status,200);
  const sitemapUrls=[...sitemap.text.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
- assert.equal(sitemapUrls.length,57,'Sitemap must have 57 owner-approved URLs');
- assert.equal(new Set(sitemapUrls).size,57,'Duplicate sitemap URLs');
+ assert.equal(sitemapUrls.length,64,'Sitemap must have 64 owner-approved URLs');
+ assert.equal(new Set(sitemapUrls).size,64,'Duplicate sitemap URLs');
  assert.ok(sitemapUrls.every(url=>url.startsWith(base+'/')),'Noncanonical sitemap URL');
  assert.ok(sitemapUrls.includes(base+'/worksheets/'),'Missing worksheet directory');
- for(const slug of ['word-problems-worksheets','worksheets-by-grade','algebra-general-worksheets','geometry-general-worksheets'])
+ for(const slug of ['algebra-general-worksheets','geometry-general-worksheets'])
   assert.ok(!sitemapUrls.includes(base+'/'+slug+'/'),'HOLD sitemap leak '+slug);
  assert.match(robots.text,/Sitemap: https:\/\/mathworksheetstudio\.com\/sitemap\.xml/);
- result.verified.push('Contact email, privacy link, custom and Pages.dev canonicals, 57-URL sitemap');
+ result.verified.push('Contact email, official canonicals, 64-URL sitemap and category/grade publication');
  try{const www=await get('https://www.mathworksheetstudio.com/');
   if(www.url!==base+'/')result.warnings.push('www apex 301 not independently verified: '+www.url);
  }catch(e){result.warnings.push('www is not yet verified or routable: '+String(e).slice(0,120));}
- result.status='PASS';console.log('R107 LIVE SEO SUCCESS: 51 indexable topic routes, 4 HOLD noindex, 57 canonical sitemap URLs');
+ result.status='PASS';console.log('R108 LIVE SEO SUCCESS: 64 indexable pages including 53 topic routes and 5 directories; 2 navigation HOLD noindex');
 }
 try{await verify()}catch(error){result.status='FAIL';result.errors=[String(error?.stack||error)];console.error(error);process.exitCode=1;}
 finally{writeFileSync(out+'/evidence.json',JSON.stringify(result,null,2)+'\n');}

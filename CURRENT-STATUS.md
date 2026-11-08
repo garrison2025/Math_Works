@@ -1,3 +1,9 @@
+# R108 — Live SEO quality and canonical rollout (2026-11-08)
+
+Owner-approved 64 public canonical URLs in the main build, 51 individually verified intent titles/descriptions/H1, 5 original math subject guides, 2 promoted real mixed/word-story generator pages, 24 subject comparison inserts, schema, site trust and social previews. Two navigation HOLD pages remain noindex-follow; previews and 404 remain noindex-nofollow. CI and Cloudflare verification must be checked before claiming deployment. DNS redirects, Search Console and Core Web Vitals require independent verification.
+
+---
+
 **R106 | 2026-11-08 owned domain update:** Owner reports buying and binding `mathworksheetstudio.com` in Cloudflare. Public HTTPS verification matched the Pages deployment SHA `2daa8e86` on the primary hostname. It still served `noindex,nofollow` and an empty sitemap. The public MX records are Cloudflare Email Routing (does not verify delivery or outbound sending); `www.mathworksheetstudio.com` was NXDOMAIN at the time of the check. Contact email is `contact@mathworksheetstudio.com`. GSC verification and explicit per-route indexation approval are still uncompleted; older no-domain records below are historical. 
 
 ---

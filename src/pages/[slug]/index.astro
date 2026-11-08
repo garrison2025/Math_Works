@@ -1,6 +1,7 @@
 ---
 import Layout from '../../components/Layout.astro';
 import Workspace from '../../components/Workspace.astro';
+import SkillComparison from '../../components/SkillComparison.astro';
 import routesJson from '../../data/routes.json';
 import {titleFor,topicIntro,howTo,category,commonMistakes} from '../../lib/site';
 import {sampleProblem} from '../../lib/math';
@@ -36,6 +37,7 @@ const hubSpecialists=relatedSkills.filter(skill=>routesJson.find(r=>r.slug===ski
 ---
 <Layout title={pageSeo.title} description={pageSeo.description} canonicalPath={`/${route.slug}/`}>
 <div class="container"><section class="hero hero-compact"><div class="crumb"><a href="/worksheets/">All math worksheets</a> / {category(route.slug)}</div><span class="eyebrow">Make it · Print it · Practice it</span><h1>{pageSeo.heading}</h1><p>{topicIntro(route.slug)}</p></section><Workspace slug={route.slug}/>
+<SkillComparison slug={route.slug}/>
 {specialized?<section class="panel info-panel" data-seo-focus aria-label="Worksheet content and customization">
 <span class="eyebrow">Exact practice scope</span>
 <h2>{focusHeading}: printable practice options</h2>

@@ -1,5 +1,8 @@
 # Math Worksheet Studio
 
+**R108 SEO quality rollout:** 64 canonical public pages (51 existing working topics, 5 upgraded subject guides, Grade 2/5 mixed and word problems, homepage, directory, four trust/legal pages), unique SEO metadata, OG images, schema and real topic comparisons. Two navigation HOLD pages remain noindex-follow; preview branches stay noindex-nofollow. Cloudflare account redirects and Google Search Console require separate external configuration. Full details in [CLOUDFLARE.md](CLOUDFLARE.md).
+
+
 **R107 owner-approved SEO launch:** Cloudflare production `main` builds 57 indexable custom-domain canonical pages (51 topic pages, worksheet directory, homepage and four support pages). Four historical HOLD pages stay noindex; previews/local builds stay noindex. Prior no-domain/noindex remarks below are historical. See [CLOUDFLARE.md](CLOUDFLARE.md).
 
 
