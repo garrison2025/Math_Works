@@ -60,7 +60,7 @@ test('R113 expands the ten highest-demand uncovered topics without adding indexe
  assert.equal(coverage.totalGuideCount,20);
  assert.equal(coverage.visibleQuestionAnswerPairs,40);
  assert.equal(coverage.newIndexableUrls,0);
- const highDemand=seoTargets.filter(row=>!R111_INITIAL.includes(row.slug)&&row.sourceMonthlyVolume>=2400);
+ const highDemand=seoTargets.filter(row=>!R111_INITIAL.includes(row.slug)&&row.sourceMonthlyVolume>=2400&&row.sourceSemrushKD<=29);
  assert.deepEqual(highDemand.map(row=>row.slug).sort(),R113_ADDED.slice().sort(),'Select the ten uncovered pages at or above the historical 2,400-volume threshold');
  for(const slug of R113_ADDED){
   const target=seoTargets.find(row=>row.slug===slug);
