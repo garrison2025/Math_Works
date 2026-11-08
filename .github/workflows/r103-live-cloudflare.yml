@@ -1,0 +1,30 @@
+name: R103 live Cloudflare Pages acceptance
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/qa-r103-live-cloudflare.mjs'
+      - '.github/workflows/r103-live-cloudflare.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-production-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - run: npm ci --no-audit --no-fund
+      - name: Verify live routes, Grade 5 interactions, four real PDFs, viewport and SHA
+        run: node scripts/qa-r103-live-cloudflare.mjs
+      - name: Archive live production evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r103-real-cloudflare-live-browser-downloads
+          path: qa-artifacts/r103-live/
+          retention-days: 30
+          if-no-files-found: warn
