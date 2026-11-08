@@ -145,7 +145,7 @@ export const GEO_GUIDES:Readonly<Record<string,GeoGuide>>={
  "fractions-worksheets":{
   purpose:"Use the broad fraction generator for exact addition, subtraction, multiplication and division, with separate printable answer keys. Additional panels provide number lines, fraction strips and fraction-decimal conversion; this page does not claim every visual model or fraction word-problem type.",
   answers:[
-   {question:"How do you add fractions with different denominators?",answer:"Rewrite both fractions with a common denominator before adding the numerators. For 1/2 + 1/3, use sixths: 1/2 = 3/6 and 1/3 = 2/6, so the sum is 5/6. Do not add the denominators."},
+   {question:"What is the first step when adding fractions with unlike denominators?",answer:"Rewrite both fractions with a common denominator before adding the numerators. For 1/2 + 1/3, use sixths: 1/2 = 3/6 and 1/3 = 2/6, so the sum is 5/6. Do not add the denominators."},
    {question:"How do you divide one fraction by another?",answer:"Multiply the first fraction by the reciprocal of the second, nonzero fraction. For 2/3 ÷ 1/4, calculate 2/3 × 4/1 = 8/3. Simplify the exact result where possible and keep the negative sign if the operation produces a negative value."}
   ],
   related:{href:"/equivalent-fractions-worksheets/",label:"Review equivalent fractions"}
