@@ -55,7 +55,7 @@ export function drawWideDiagram(page:PDFPage,p:WideProblem,x:number,y:number,fon
   for(let i=0;i<4;i++){
    const xx=xs[i];line(page,xx,y-89,xx,y-81);
    page.drawText(['1/8','1/4','3/8','1/2'][i],{x:xx-8,y:y-103,size:9,font,color:ink});
-   for(let j=0;j<totals[i];j++)page.drawText('x',{x:xx-3,y:y-72-16*j,size:13,font,color:blue});
+   for(let j=0;j<totals[i];j++)page.drawText('x',{x:xx-3,y:y-72+16*j,size:13,font,color:blue});
   }
   return;
  }
