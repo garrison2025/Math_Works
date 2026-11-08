@@ -52,7 +52,9 @@ test('grade guide fragments resolve to real canonical subject sections',()=>{
 });
 test('homepage and WebSite schema clearly describe the local-first 51-generator brand',()=>{
   const home=read('../src/pages/index.astro'),layout=read('../src/components/Layout.astro');
+  const title=home.match(/<Layout title="([^"]+)"/)?.[1]||'';
   const description=home.match(/description="([^"]+)"/)?.[1]||'';
+  assert.match(title,/^Math Worksheet Studio \| Free Printable Math Worksheet Generator$/);
   assert.ok(description.length>=110&&description.length<=160);
   assert.match(description,/51 focused generators/);
   assert.match(description,/student-data upload/);
