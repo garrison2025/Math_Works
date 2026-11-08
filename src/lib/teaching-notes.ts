@@ -37,7 +37,7 @@ export const CLASSROOM_NOTES: Record<string, readonly [string, string]> = {
   "functions-worksheets": ["A function assigns exactly one output to each permitted input.","When checking a table or relation, repeated inputs must always produce the same output."],
   "multiplying-fractions-worksheets": ["Multiply numerator by numerator and denominator by denominator.","Cancel common factors or reduce the exact final product to simplest terms."],
   "slope-worksheets": ["Compute slope as change in y divided by change in x using the same point order in both differences.","A vertical line has undefined slope; a horizontal line has slope zero."],
-  "mixed-addition-subtraction-worksheets": ["Treat subtraction of a negative as addition of its opposite.","Keep place values aligned and confirm each sign before regrouping."],
+  "mixed-addition-subtraction-worksheets": ["Keep the minuend and subtrahend in their original order; reversing them changes the difference.","If the second number is larger, retain the negative sign and verify by adding the subtrahend back to the difference."],
   "long-division-worksheets": ["Divide, multiply, subtract, and bring down one place-value digit at a time.","The remainder must be nonnegative and smaller than the positive divisor; multiply back to verify."],
   "decimal-place-value-worksheets": ["Read the requested tenths, hundredths, thousandths, or other decimal position precisely.","When rounding, inspect the next digit and preserve enough trailing zeros to show the requested precision."],
   "printable-protractor": ["Print at Actual size / 100% without Fit to page, then measure the 50 mm calibration line on paper.","Read the scale that starts at zero on the selected ray, not the opposite graduated scale."],
