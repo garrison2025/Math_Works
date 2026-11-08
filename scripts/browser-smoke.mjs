@@ -1681,6 +1681,18 @@ try {
   assert.equal(await page.locator('link[rel="canonical"]').count(),0);
   assert.ok((await page.locator('h1').innerText()).length>9);
  }
+ await page.goto(base+'/worksheets/',{waitUntil:'networkidle'});
+ const r98Query=page.locator('[data-directory-query]');
+ await r98Query.fill('8th grade math worksheets');
+ await page.locator('[data-directory-matches] a[href="/worksheets-by-grade/"]').waitFor({timeout:12000});
+ assert.equal(await page.locator('.directory-extras a[href="/worksheets-by-grade/"]').isVisible(),true);
+ await r98Query.fill('word problems on proportions worksheet');
+ await page.locator('[data-directory-matches] a[href="/word-problems-worksheets/"]').waitFor({timeout:12000});
+ assert.equal(await page.locator('.directory-extras a[href="/word-problems-worksheets/"]').isVisible(),true);
+ await r98Query.fill('volume of a sphere worksheet');
+ assert.equal(await page.locator('[data-directory-matches] a[href="/geometry-general-worksheets/"]').count(),0,
+  'Unsupported sphere worksheet must not receive a misleading directory-search match');
+
  await page.goto(base+'/worksheets-by-grade/',{waitUntil:'networkidle'});
  assert.ok(await page.locator('#grade-8 .grade-card').count()>=8,'Grade 8 needs >=8 real topic links');
  await page.goto(base+'/word-problems-worksheets/',{waitUntil:'networkidle'});
