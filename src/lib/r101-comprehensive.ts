@@ -136,7 +136,7 @@ function model(kind:WideKind,z:WideValues):Pick<WideProblem,'question'|'answer'|
  case 'triangle-congruence':{
   valid(v,0,4);
   if(v===0){
-   valid(a,4,22);valid(b,4,22);valid(c,2,60);
+   valid(a,4,24);valid(b,4,24);valid(c,2,60);
    if(c<=Math.abs(a-b)||c>=a+b)throw Error('Invalid SSS triangle');
    return answer('Triangle ABC has AB='+a+', BC='+b+', AC='+c+'. Triangle DEF has DE='+a+', EF='+b+', DF='+c+'. State a congruence rule.',
     'Congruent by SSS','AB=DE, BC=EF and AC=DF.','All three corresponding side pairs match: SSS.');
