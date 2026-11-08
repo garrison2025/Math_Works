@@ -1,3 +1,7 @@
+**R106 | 2026-11-08 owned domain update:** Owner reports buying and binding `mathworksheetstudio.com` in Cloudflare. Public HTTPS verification matched the Pages deployment SHA `2daa8e86` on the primary hostname. It still served `noindex,nofollow` and an empty sitemap. The public MX records are Cloudflare Email Routing (does not verify delivery or outbound sending); `www.mathworksheetstudio.com` was NXDOMAIN at the time of the check. Contact email is `contact@mathworksheetstudio.com`. GSC verification and explicit per-route indexation approval are still uncompleted; older no-domain records below are historical. 
+
+---
+
 # R102 Grade 5 full-standards sampler — implementation candidate
 
 R102 introduces a 40/48-question Grade 5 Common Core content-standards sampler. Every generated sheet must include all 26 published CCSS Grade 5 content standards (five domains) through 34 original math problem families, including fraction operations, decimals, measurements, fraction line plots, coordinates and geometric hierarchies. The existing eight-strand Grade 5 mixed mode remains available. Its R98 phrase is **SUPPORTED with strict CCSS sampler scope**, not a claim about every state's curriculum or student mastery. Independent math, exact PDF, browser and release verifications must complete before calling it deployed. Source keyword evidence (488 rows), 51 v18 core generators, the four HOLD preview pages and noindex policy are unchanged. User-waived physical printing, teacher and real-device acceptance are not claimed. No paid domain/GSC/index authorization.

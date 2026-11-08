@@ -1,0 +1,32 @@
+name: R106 owned custom-domain online gate
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/pages/contact.astro'
+      - 'src/pages/privacy.astro'
+      - 'public/robots.txt'
+      - 'scripts/qa-r106-owned-domain.mjs'
+      - '.github/workflows/r106-owned-domain.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-real-purchased-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Verify exact live custom-domain SHA, all 55 paths, email and explicit noindex
+        run: node scripts/qa-r106-owned-domain.mjs
+      - name: Archive observed live evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r106-purchased-domain-https-qa
+          path: qa-artifacts/r106-owned-domain/
+          retention-days: 30
+          if-no-files-found: warn
