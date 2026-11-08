@@ -1,51 +1,61 @@
 # Math Worksheet Studio
-> Free printable mathematics practice generators. Worksheets and matching answer-key PDFs are generated in the browser without a student account.
 
-Website: https://mathworksheetstudio.com/
-Worksheets: https://mathworksheetstudio.com/worksheets/
-About and accuracy policy: https://mathworksheetstudio.com/about/
-Contact and corrections: https://mathworksheetstudio.com/contact/
-Public source repository: https://github.com/garrison2025/Math_Works
+> Free printable mathematics practice generators. Create worksheets and matching answer-key PDFs in your browser without a student account.
 
-## Working practice and discovery
-- Arithmetic worksheets: https://mathworksheetstudio.com/arithmetic/
-- Fraction worksheets: https://mathworksheetstudio.com/fractions/
-- Algebra worksheets: https://mathworksheetstudio.com/algebra/
-- Geometry worksheets: https://mathworksheetstudio.com/geometry/
-- Data and statistics worksheets: https://mathworksheetstudio.com/data-statistics/
-- Suggested grade pathways: https://mathworksheetstudio.com/worksheets-by-grade/
-- Original math word problems: https://mathworksheetstudio.com/word-problems-worksheets/
+Math Worksheet Studio provides focused mathematics practice tools, printable worksheets, and answer keys. This file is a compact guide to the site's main resources for language models and other automated readers.
 
-## Specific tools with worked classroom guidance
-- Two-step equations: https://mathworksheetstudio.com/two-step-equations-worksheets/
-- Long division: https://mathworksheetstudio.com/long-division-worksheets/
-- Unlike-denominator fraction addition: https://mathworksheetstudio.com/adding-unlike-fractions-worksheets/
-- Triangle area: https://mathworksheetstudio.com/area-of-triangles-worksheets/
-- Surface area: https://mathworksheetstudio.com/surface-area-worksheets/
-- Rectangular-prism volume: https://mathworksheetstudio.com/volume-of-rectangular-prisms-worksheets/
-- Box plots: https://mathworksheetstudio.com/box-plots-worksheets/
-- Printable protractor: https://mathworksheetstudio.com/printable-protractor/
-- Equivalent fractions: https://mathworksheetstudio.com/equivalent-fractions-worksheets/
-- Mean, median, mode and range: https://mathworksheetstudio.com/mean-median-mode-range-worksheets/
-- General multiplication practice: https://mathworksheetstudio.com/multiplication-worksheets/
-- Mixed addition and subtraction: https://mathworksheetstudio.com/mixed-addition-subtraction-worksheets/
-- Pythagorean theorem: https://mathworksheetstudio.com/pythagorean-worksheets/
-- Multiplication tables: https://mathworksheetstudio.com/multiplication-tables-worksheets/
-- Subtraction with borrowing: https://mathworksheetstudio.com/subtraction-worksheets/
-- One-step equations: https://mathworksheetstudio.com/one-step-equations-worksheets/
-- Decimal multiplication: https://mathworksheetstudio.com/decimal-multiplication-worksheets/
-- Fraction operations: https://mathworksheetstudio.com/fractions-worksheets/
-- Two-digit multiplication: https://mathworksheetstudio.com/two-digit-multiplication-worksheets/
-- Order of operations: https://mathworksheetstudio.com/order-of-operations-worksheets/
+## Main pages
 
-## Accuracy and scope
-- 51 existing core topic generators plus separate original mixed-skill and word-problem tools.
-- The topic, selected options, generator version and random seed reproduce the same question set.
-- Student questions and separate matching answer keys are available; worked steps are available only on supported topics.
-- Grade pathways are suggestions, not certified curriculum coverage or test preparation endorsements.
-- Box plots use the exclusive median-of-halves quartile convention.
-- Printable protractors require a 100% print setting and an actual ruler measurement of the 50 mm calibration line.
-- The public repository documents code and automated checks, not independent teacher approval.
-- For errors, report the page, problem number, settings, seed and expected answer without student personal information.
+- [Math Worksheet Studio home](https://mathworksheetstudio.com/): Overview of the free worksheet generators and how to use them.
+- [All worksheets](https://mathworksheetstudio.com/worksheets/): Browse the published worksheet tools and subject areas.
+- [About, methods, and accuracy policy](https://mathworksheetstudio.com/about/): Read how worksheet questions, answers, and quality checks are handled.
+- [Contact and corrections](https://mathworksheetstudio.com/contact/): Report a suspected question, answer, or content error.
+- [Privacy policy](https://mathworksheetstudio.com/privacy/): Review the site's privacy information.
+- [Terms of use](https://mathworksheetstudio.com/terms/): Review the site's terms.
+- [Public source repository](https://github.com/garrison2025/Math_Works): Inspect the implementation and automated quality checks.
 
-This optional navigation file does not replace the human-readable HTML pages, robots.txt or sitemap.xml.
+## Subject directories
+
+- [Arithmetic worksheets](https://mathworksheetstudio.com/arithmetic/): Addition, subtraction, multiplication, division, and number skills.
+- [Fraction worksheets](https://mathworksheetstudio.com/fractions/): Fraction practice and related skills.
+- [Algebra worksheets](https://mathworksheetstudio.com/algebra/): Equations, functions, and algebraic reasoning.
+- [Geometry worksheets](https://mathworksheetstudio.com/geometry/): Angles, measurement, area, volume, and geometric reasoning.
+- [Data and statistics worksheets](https://mathworksheetstudio.com/data-statistics/): Data displays and statistical measures.
+- [Suggested grade pathways](https://mathworksheetstudio.com/worksheets-by-grade/): Browse suggested practice by grade; these pathways are not a certification of full curriculum coverage.
+- [Original math word problems](https://mathworksheetstudio.com/word-problems-worksheets/): Practice applying mathematics in written problems.
+
+## Focused tools and learning guides
+
+- [Two-step equations worksheets](https://mathworksheetstudio.com/two-step-equations-worksheets/): Solve equations using inverse operations and check solutions.
+- [Long division worksheets](https://mathworksheetstudio.com/long-division-worksheets/): Practice quotient, remainder, and written division steps.
+- [Adding unlike fractions worksheets](https://mathworksheetstudio.com/adding-unlike-fractions-worksheets/): Find common denominators and add fractions.
+- [Triangle area worksheets](https://mathworksheetstudio.com/area-of-triangles-worksheets/): Calculate area using base and perpendicular height.
+- [Surface area worksheets](https://mathworksheetstudio.com/surface-area-worksheets/): Find the surface area of supported three-dimensional shapes.
+- [Rectangular-prism volume worksheets](https://mathworksheetstudio.com/volume-of-rectangular-prisms-worksheets/): Calculate volume and solve supported missing-dimension problems.
+- [Box plot worksheets](https://mathworksheetstudio.com/box-plots-worksheets/): Read and construct box plots using the site's stated quartile convention.
+- [Printable protractor](https://mathworksheetstudio.com/printable-protractor/): Print an angle-measuring tool and verify its calibration line.
+- [Equivalent fractions worksheets](https://mathworksheetstudio.com/equivalent-fractions-worksheets/): Identify and generate equivalent fractions.
+- [Mean, median, mode, and range worksheets](https://mathworksheetstudio.com/mean-median-mode-range-worksheets/): Practice common measures of center and spread.
+- [Multiplication worksheets](https://mathworksheetstudio.com/multiplication-worksheets/): Generate focused multiplication practice.
+- [Mixed addition and subtraction worksheets](https://mathworksheetstudio.com/mixed-addition-subtraction-worksheets/): Practice mixed addition and subtraction, including regrouping.
+- [Pythagorean theorem worksheets](https://mathworksheetstudio.com/pythagorean-worksheets/): Practice finding a missing side in right triangles.
+- [Multiplication tables worksheets](https://mathworksheetstudio.com/multiplication-tables-worksheets/): Practice multiplication facts and tables.
+- [Subtraction worksheets](https://mathworksheetstudio.com/subtraction-worksheets/): Practice multi-digit subtraction and regrouping.
+- [One-step equations worksheets](https://mathworksheetstudio.com/one-step-equations-worksheets/): Solve one-step equations and verify the result.
+- [Decimal multiplication worksheets](https://mathworksheetstudio.com/decimal-multiplication-worksheets/): Multiply decimals and place the decimal point correctly.
+- [Fraction operations worksheets](https://mathworksheetstudio.com/fractions-worksheets/): Practice the fraction operations supported by the generator.
+- [Two-digit multiplication worksheets](https://mathworksheetstudio.com/two-digit-multiplication-worksheets/): Practice two-digit multiplication with aligned written work.
+- [Order of operations worksheets](https://mathworksheetstudio.com/order-of-operations-worksheets/): Apply grouping symbols and operation precedence.
+
+## How to interpret the resources
+
+- The site has 51 core topic generators, plus separate original mixed-skill and word-problem tools.
+- A worksheet and its separate answer key are generated from the same topic settings. The topic, selected options, generator version, and random seed are used to reproduce the same question set.
+- Worked solutions are available only on topics where the feature is implemented; do not assume every generator provides step-by-step explanations.
+- Grade pathways are suggestions, not certified curriculum coverage, official standards alignment, or test-preparation endorsements.
+- Box plots use the exclusive median-of-halves quartile convention described on the relevant page.
+- For the printable protractor, print at 100% scale and measure the 50 mm calibration line with a ruler before use.
+- The public repository documents implementation and automated checks; it does not imply independent teacher approval.
+- When reporting an error, include the page, problem number, settings, seed, and expected answer. Do not include student personal information.
+
+This navigation file supplements the human-readable pages. It does not replace the canonical HTML pages, robots.txt, or sitemap.xml.

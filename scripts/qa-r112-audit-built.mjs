@@ -55,10 +55,35 @@ assert.match(home,/Are printable answer keys included\?/);
 assert.match(home,/Are the worksheets aligned to every grade standard\?/);
 for(const page of ['/about/','/worksheets/'])assert.match(read(page),/Math Worksheet Studio/);
 const llms=readFileSync('dist/llms.txt','utf8');
-assert.match(llms,/# Math Worksheet Studio/);
-assert.match(llms,/https:\/\/mathworksheetstudio\.com\/worksheets\//);
-assert.match(llms,/https:\/\/mathworksheetstudio\.com\/about\//);
+assert.match(llms,/# Math Worksheet Studio/,'llms.txt must begin with a Markdown H1');
+assert.match(llms,/^## Main pages$/m,'llms.txt must use readable Markdown sections');
 assert.match(llms,/not certified curriculum coverage/);
-for(const slug of Object.keys(GEO_GUIDES))assert.ok(llms.includes(origin+'/'+slug+'/'),'llms.txt discovery link '+slug);
+assert.match(llms,/random seed/);
+
+// AI-readability audit: every URL must be an actual Markdown hyperlink, not a bare URL.
+const markdownLinks=[...llms.matchAll(/^\s*-\s+\[([^\]]+)\]\((https:\/\/[^)\s]+)\)(?::\s*(.*))?$/gm)];
+const allUrls=[...llms.matchAll(/https:\/\/[^\s)]+/g)].map(match=>match[0]);
+const linkedUrls=markdownLinks.map(match=>match[2]);
+assert.ok(markdownLinks.length>=30,'llms.txt must expose at least 30 curated Markdown links; found '+markdownLinks.length);
+assert.equal(allUrls.length,markdownLinks.length,'Every URL in llms.txt must be wrapped in Markdown link syntax');
+assert.deepEqual([...allUrls].sort(),[...linkedUrls].sort(),'No bare or unrecognized URLs may remain in llms.txt');
+assert.equal(new Set(linkedUrls).size,linkedUrls.length,'llms.txt links must be unique');
+
+const approvedPaths=new Set(published);
+for(const [,label,href] of markdownLinks){
+ assert.ok(label.trim().length>0,'Every llms.txt link needs a descriptive label');
+ const url=new URL(href);
+ assert.equal(url.protocol,'https:','Only HTTPS links are allowed');
+ if(url.origin===origin){
+  assert.ok(approvedPaths.has(url.pathname),'llms.txt must only link to approved canonical pages: '+href);
+ }else{
+  assert.equal(href,'https://github.com/garrison2025/Math_Works','Unexpected external link in llms.txt: '+href);
+ }
+}
+for(const slug of Object.keys(GEO_GUIDES)){
+ assert.ok(new Set(linkedUrls).has(origin+'/'+slug+'/'),'GEO guide must be linked with Markdown syntax in llms.txt: '+slug);
+}
+assert.ok(linkedUrls.includes(origin+'/worksheets/'),'Worksheet directory must be a Markdown link');
+assert.ok(linkedUrls.includes(origin+'/about/'),'About and accuracy policy must be a Markdown link');
 assert.ok(!/we are ranked|guaranteed to be cited|certified teacher approved/i.test(llms));
-console.log('R112 AUDIT PASS: 64 titles in 40–60 chars; truthful organization author, source-linked schema, visible dates, answer-first homepage and optional llms.txt.');
+console.log('R112 AUDIT PASS: 64 approved canonical URLs; llms.txt has H1, Markdown sections, 30+ unique HTTPS Markdown links, all 20 GEO guides linked, no bare URLs, and no unsupported authority or citation claims.');
