@@ -1,0 +1,161 @@
+---
+/** Hand-edited, domain-specific learning guide for five subject libraries.
+ * No invented grades, scope or search-volume claims.
+ */
+import type {WorksheetSection} from '../lib/worksheet-directory';
+interface Props {section:WorksheetSection}
+const {section}=Astro.props;
+const guides={
+  "arithmetic": {
+    "eyebrow": "Choose the arithmetic operation first",
+    "intro": "Addition combines quantities; subtraction finds a difference; multiplication describes equal groups; division separates a total into equal groups. These related operations call for different practice layouts and different checks.",
+    "steps": [
+      "Start with place-value understanding before long written algorithms. For 503 − 278, keep hundreds, tens and ones aligned.",
+      "For multiplication facts, focus on accurate products. Move to two-digit columns when learners can explain regrouping and partial products.",
+      "Use division facts for quotients. Choose long division when learners need space to record each quotient digit and remainder."
+    ],
+    "example": "Example: 6 groups of 8 markers gives 6 × 8 = 48. Dividing those same 48 markers equally into 6 groups gives 48 ÷ 6 = 8.",
+    "mistake": "Do not use a division-facts sheet as a substitute for long-division algorithm practice. Match the generator to the operation students must actually perform.",
+    "links": [
+      [
+        "/place-value-worksheets/",
+        "Place-value foundations"
+      ],
+      [
+        "/two-digit-multiplication-worksheets/",
+        "Two-digit by two-digit columns"
+      ],
+      [
+        "/long-division-worksheets/",
+        "Long-division practice"
+      ]
+    ]
+  },
+  "fractions": {
+    "eyebrow": "Different fraction skills need different questions",
+    "intro": "Equivalent fractions, unlike-denominator addition, multiplication and mixed fraction operations are distinct objectives. Choose a focused generator so the printed questions match the skill under assessment.",
+    "steps": [
+      "Equivalent fractions: scale numerator and denominator by the same nonzero factor, such as 1/2 = 3/6.",
+      "Adding unlike denominators: first rewrite with a common denominator, as in 1/2 + 1/3 = 3/6 + 2/6 = 5/6.",
+      "Multiplying fractions: multiply numerators and denominators, then simplify; 2/3 × 3/4 = 6/12 = 1/2."
+    ],
+    "example": "Worked comparison: 1/2 + 1/3 needs a common denominator. In contrast, 1/2 × 1/3 = 1/6 does not. Mixing these methods is a common reason for wrong answers.",
+    "mistake": "If a student needs only fraction reduction, avoid treating a mixed four-operation sheet as a dedicated simplify-only worksheet. Use the supported equivalent-fraction task instead.",
+    "links": [
+      [
+        "/equivalent-fractions-worksheets/",
+        "Equivalent-fraction practice"
+      ],
+      [
+        "/adding-unlike-fractions-worksheets/",
+        "Adding unlike denominators"
+      ],
+      [
+        "/multiplying-fractions-worksheets/",
+        "Fraction multiplication"
+      ]
+    ]
+  },
+  "algebra": {
+    "eyebrow": "Choose the actual unknown-variable task",
+    "intro": "A one-step equation, a two-step equation, a function rule and an inequality can look similar on the page, but they test different reasoning. Start with the operation or representation your learner needs.",
+    "steps": [
+      "One-step equations undo a single operation: x + 7 = 12 gives x = 5.",
+      "Two-step equations require reversing two operations: 3x + 7 = 22 gives 3x = 15, then x = 5.",
+      "Inequalities need a solution set rather than one number. Dividing by a negative reverses the inequality sign."
+    ],
+    "example": "Compare 2x + 6 = 18 (one solution, x = 6) with 2x + 6 > 18 (all x > 6). Both use algebra, but the printed answer format differs.",
+    "mistake": "Do not confuse evaluating a function at a fixed input with solving an equation for an unknown input. Choose a function table for input-output work.",
+    "links": [
+      [
+        "/one-step-equations-worksheets/",
+        "One-step equations"
+      ],
+      [
+        "/two-step-equations-worksheets/",
+        "Two-step equations"
+      ],
+      [
+        "/inequalities-worksheets/",
+        "Inequalities and number lines"
+      ]
+    ]
+  },
+  "geometry": {
+    "eyebrow": "Start with the dimension being measured",
+    "intro": "Geometry practice should distinguish a shape's length, its flat area, its three-dimensional volume and the surface area of its exposed faces. Choose a worksheet with the correct diagram and unit.",
+    "steps": [
+      "For a triangle, the perpendicular height matters: area = base × height ÷ 2.",
+      "For a rectangular prism, volume = length × width × height and uses cubic units.",
+      "Surface area adds the areas of the exposed faces and uses square units; shared internal faces of a joined solid do not count."
+    ],
+    "example": "Example: a triangle with base 8 cm and perpendicular height 3 cm has area 12 cm². That calculation cannot be used as a prism's volume formula.",
+    "mistake": "A slanted side is not a triangle's perpendicular height; square units are not cubic units. Use the matching area, volume or surface-area tool.",
+    "links": [
+      [
+        "/area-of-triangles-worksheets/",
+        "Triangle area"
+      ],
+      [
+        "/volume-of-rectangular-prisms-worksheets/",
+        "Rectangular-prism volume"
+      ],
+      [
+        "/surface-area-worksheets/",
+        "Surface area and solid nets"
+      ]
+    ]
+  },
+  "data-statistics": {
+    "eyebrow": "Select calculation, reading or plotting",
+    "intro": "Statistics worksheets may ask for a single summary of a data set, a five-number box plot or a scatter diagram. Each exercise format needs different answer checks and visual representations.",
+    "steps": [
+      "For 3, 5, 7, the mean and median are both 5, and the range is 7 − 3 = 4.",
+      "A box plot uses the minimum, first quartile, median, third quartile and maximum; quartile conventions vary across classrooms.",
+      "A scatter plot shows ordered pairs and possible association. A visual trend alone does not prove cause and effect."
+    ],
+    "example": "Example: the data 2, 4, 4, 8 have mean 4.5, median 4, mode 4 and range 6. Each statistic answers a different question.",
+    "mistake": "This site's box-plot tool uses the exclusive median-of-halves quartile convention. Confirm that your class uses the same rule before printing answers.",
+    "links": [
+      [
+        "/mean-median-mode-range-worksheets/",
+        "Mean, median, mode and range"
+      ],
+      [
+        "/box-plots-worksheets/",
+        "Box-and-whisker plots"
+      ],
+      [
+        "/scatter-plot-worksheets/",
+        "Scatter plots"
+      ]
+    ]
+  }
+} as const;
+const guide=guides[section];
+if(!guide)throw Error('Missing subject guide '+section);
+---
+<section class="subject-seo-guide" aria-labelledby="subject-guide-heading">
+ <div class="subject-guide-intro"><span class="eyebrow">{guide.eyebrow}</span><h2 id="subject-guide-heading">How to choose the right practice sheet</h2><p>{guide.intro}</p></div>
+ <div class="subject-guide-columns">
+  <div><h3>Three skills to check</h3><ol>{guide.steps.map(step=><li>{step}</li>)}</ol></div>
+  <div><h3>Worked example</h3><p>{guide.example}</p><h3>Common teaching mix-up</h3><p>{guide.mistake}</p></div>
+ </div>
+ <h3>Start with a focused worksheet</h3>
+ <nav class="subject-guide-links" aria-label="Related focused math skills">
+  {guide.links.map(([href,label])=><a href={href}>{label}<span aria-hidden="true"> ↗</span></a>)}
+ </nav>
+</section>
+<style>
+.subject-seo-guide{margin:25px auto 34px;padding:clamp(20px,3vw,34px);border-radius:20px;border:1px solid #d4e1ec;background:linear-gradient(130deg,#f7fbff,#fff);box-shadow:0 10px 26px #22466e09}
+.subject-guide-intro{max-width:780px}.subject-seo-guide h2{font-size:clamp(1.34rem,2.4vw,1.8rem);line-height:1.22;letter-spacing:-.02em;margin:7px 0 10px;color:#163457}
+.subject-seo-guide h3{font-size:1rem;margin:9px 0 13px;color:#153858}
+.subject-seo-guide p,.subject-seo-guide li{color:#40566e;line-height:1.7;font-size:.91rem}
+.subject-guide-columns{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(17px,3vw,34px);margin:21px 0 22px}
+.subject-guide-columns>div{padding:16px 18px;border:1px solid #dce7f1;border-radius:14px;background:#fff}
+.subject-seo-guide li+li{margin-top:11px}.subject-guide-links{display:flex;flex-wrap:wrap;gap:9px}
+.subject-guide-links a{padding:9px 13px;border-radius:10px;background:#e7f0ff;color:#1c4e96;border:1px solid #ccddf5;font-size:.83rem;font-weight:730;text-decoration:none}
+.subject-guide-links a:hover{background:#d6e8ff}.subject-guide-links a:focus-visible{outline:3px solid #6a9fe7;outline-offset:2px}
+@media(max-width:710px){.subject-guide-columns{grid-template-columns:1fr}.subject-guide-columns>div{padding:14px 15px}}
+@media print{.subject-seo-guide{break-inside:avoid;box-shadow:none;background:#fff}}
+</style>

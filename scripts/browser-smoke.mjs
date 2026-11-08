@@ -85,7 +85,7 @@ try {
  const reducedDuration=await page.locator('.btn').first().evaluate(el=>getComputedStyle(el).transitionDuration);
  assert.ok(parseFloat(reducedDuration)<=.001,`Reduced motion not honored: ${reducedDuration}`);
  await page.emulateMedia({reducedMotion:'no-preference'});
- assert.equal(await page.title(),'Two Step Equations Worksheets – Free Printable PDF & Answer Key | Math Worksheet Studio');
+ assert.equal(await page.title(),'Two-Step Equations Worksheets | Free PDF & Answers');
  assert.equal(await page.locator('meta[name="robots"]').getAttribute('content'),'noindex,nofollow');
  assert.equal(await page.locator('[data-workspace]').count(),1);
  assert.equal(await page.locator('.problem').count(),8);

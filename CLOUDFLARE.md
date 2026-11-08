@@ -1,5 +1,14 @@
 # Cloudflare Pages setup
 
+## R108 — SEO quality rollout and index expansion (2026-11-08)
+
+Owner approved implementing the full SEO audit. The exact main-branch indexable set is now **64 URLs**: 51 original working topic tools/hubs, 5 subject directories with original subject-specific math instruction, 2 original working extra generators/grade pages, homepage, worksheet library, and 4 informational pages. Only `/algebra-general-worksheets/` and `/geometry-general-worksheets/` remain navigation-only `noindex,follow` with no canonical; 404 and branch previews remain `noindex,nofollow`.
+
+Every core topic has an individually authored concise page title, meta description and heading based on its true implemented math tasks and source-backed primary intent. 24 easily-confused topics now contain true worked contrasts and links to the appropriate specialist instead of SEO boilerplate. All indexable pages emit site-specific canonical metadata, large OpenGraph/Twitter sample images sourced from existing assets, and semantic WebSite, WebPage, BreadcrumbList and applicable WebApplication/LearningResource JSON-LD. Home H1 includes 'Free printable math worksheets'; About documents actual software QA and how to report mistakes. None of the original 488 keyword evidence rows, 51 generators or PDF algorithms changed.
+
+**External tasks remaining:** Cloudflare DNS/Bulk Redirect settings from `math-works.pages.dev` and `www.mathworksheetstudio.com` to the apex (301 preserving path/query), GSC domain verification + sitemap submission, external email forwarding tests, and measured field CWV. The domain alone does not confirm Google indexing or ranking; performance scores must be measured, never inferred. See official Cloudflare [Pages production-domain redirect instructions](https://developers.cloudflare.com/pages/how-to/redirect-to-custom-domain/) and [www redirect instructions](https://developers.cloudflare.com/pages/how-to/www-redirect/). The site does not have Cloudflare account-write credentials in the GitHub connector, so do not claim redirect rules were applied.
+
+
 ## R107 — Public indexing approved (2026-11-08)
 
 Owner explicitly directed replacing noindex and publishing the purchased .com website. On Cloudflare production `CF_PAGES_BRANCH=main`, the build will index the homepage, 51 approved working generator/topic URLs, the `/worksheets/` directory, and About, Contact, Privacy and Terms: **57 canonical URLs**. All have `index,follow`, self-canonical to `https://mathworksheetstudio.com` and valid schema, and appear in `sitemap.xml`. The four historical HOLD preview pages remain `noindex,nofollow` and outside the sitemap; 404 stays noindex. Feature-branch previews remain noindex because the branch must equal `main`.

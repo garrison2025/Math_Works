@@ -1,10 +1,10 @@
-/** R103 online-only Cloudflare Pages acceptance: never tests local dist. */
+/** R108 online-only Cloudflare custom-domain acceptance: never tests local dist. */
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync,mkdirSync,writeFileSync} from 'node:fs';
 import {chromium} from 'playwright-core';
 import {PDFDocument} from 'pdf-lib';
 
-const base='https://math-works.pages.dev',sha=process.env.GITHUB_SHA;
+const base='https://mathworksheetstudio.com',sha=process.env.GITHUB_SHA;
 assert.match(sha,/^[a-f0-9]{40}$/,'Expected GitHub commit SHA');
 const dir='qa-artifacts/r103-live';mkdirSync(dir,{recursive:true});
 const evidence={url:base,sha,checks:[],pdfs:[],errors:[]};
@@ -31,8 +31,9 @@ async function verify(){
    const route=routes[next++],r=await get(base+'/'+route.slug+'/');
    assert.equal(r.status,200,'Route HTTP '+route.slug);
    assert.equal(meta(r.body,'math-works-build-sha'),sha,'Stale route '+route.slug);
-   assert.equal(meta(r.body,'robots'),route.type==='HOLD'?'noindex,nofollow':'index,follow,max-image-preview:large','Publication state '+route.slug);
-   if(route.type==='HOLD')assert.ok(!/<link[^>]+rel="canonical"/i.test(r.body),'HOLD canonical '+route.slug);
+   const isIndexed=route.type!=='HOLD'||['word-problems-worksheets','worksheets-by-grade'].includes(route.slug);
+   assert.equal(meta(r.body,'robots'),isIndexed?'index,follow,max-image-preview:large':'noindex,follow','Publication state '+route.slug);
+   if(!isIndexed)assert.ok(!/<link[^>]+rel="canonical"/i.test(r.body),'HOLD canonical '+route.slug);
    else assert.ok(r.body.includes('href="https://mathworksheetstudio.com/'+route.slug+'/"'),'Canonical host '+route.slug);
   }
  }));

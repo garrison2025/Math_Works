@@ -1,13 +1,19 @@
-name: R107 public SEO owner launch QA
+name: R108 production SEO quality and public index release
 on:
   pull_request:
     paths:
       - 'src/lib/publication.ts'
+      - 'src/data/topic-seo.ts'
+      - 'src/components/SubjectGuide.astro'
+      - 'src/components/SkillComparison.astro'
+      - 'src/pages/**'
       - 'src/components/Layout.astro'
       - 'src/pages/sitemap.xml.ts'
       - 'astro.config.mjs'
       - 'public/robots.txt'
       - 'scripts/qa-r107-index-built.mjs'
+      - 'tests/r108-seo-meta.test.mjs'
+      - 'scripts/qa-r108-lab-speed.mjs'
       - 'tests/r107-publication.test.mjs'
       - '.github/workflows/r107-seo-publish.yml'
   push:
@@ -34,18 +40,22 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Simulate main and preview publication contract
         run: node --experimental-strip-types --test tests/r107-publication.test.mjs
+      - name: Check all 51 exact-intent metadata entries
+        run: node --experimental-strip-types --test tests/r108-seo-meta.test.mjs
       - name: Build Cloudflare production with stale Cloudflare PUBLIC_INDEXABLE=false
         env:
           CF_PAGES_BRANCH: main
           PUBLIC_INDEXABLE: 'false'
           PUBLIC_SITE_URL: https://math-works.pages.dev
         run: npm run build
-      - name: Inspect actual 57 indexable HTML pages and exact canonical sitemap
+      - name: Inspect all 64 HTML pages, 64 canonical sitemap URLs, OG and topic-specific metadata
         run: node scripts/qa-r107-index-built.mjs
+      - name: Record reproducible mobile Chrome FCP/LCP/CLS lab metrics (not CrUX)
+        run: node scripts/qa-r108-lab-speed.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: r107-57-public-canonical-pages-proof
-          path: qa-artifacts/r107-index/
+          name: r108-64-indexable-pages-and-unique-meta-proof
+          path: qa-artifacts/r108-seo/
           retention-days: 30
           if-no-files-found: warn
