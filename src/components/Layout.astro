@@ -5,6 +5,7 @@ import '../styles/ui-v5.css';
 import topics from '../data/routes.json';
 import seoTargets from '../data/seo-targets.json';
 import {releaseForBuild,publishedPath} from '../lib/publication';
+import {GEO_GUIDES} from '../lib/geo-answer-guides';
 const {title,description,canonicalPath='/'}=Astro.props;
 const release=releaseForBuild(topics,process.env.CF_PAGES_BRANCH||'');
 const base=release.site;
@@ -25,21 +26,33 @@ const sheetSlug=focus?.slug||
 const socialImage=`${base}/images/worksheets/${sheetSlug}-sample.webp`;
 const socialAlt=focus?
  `${title} — example printable practice sheet`:'Original math worksheet preview with questions';
-const website={ "@type":"WebSite","@id":`${base}/#website`,name:"Math Worksheet Studio",url:`${base}/`,inLanguage:"en-US" };
+const organizationId=`${base}/#organization`;
+const org={ "@type":"Organization","@id":organizationId,name:"Math Worksheet Studio",
+ url:`${base}/`,email:"contact@mathworksheetstudio.com",
+ // The project links to its own official public development repository.
+ sameAs:["https://github.com/garrison2025/Math_Works"] };
+const editor={"@id":organizationId};
+const updatedPages=new Set(['/about/','/worksheets/',...Object.keys(GEO_GUIDES).map(slug=>`/${slug}/`)]);
+const dateModified=updatedPages.has(canonicalPath)?'2026-11-08':undefined;
+const website={ "@type":"WebSite","@id":`${base}/#website`,name:"Math Worksheet Studio",url:`${base}/`,description:"A free, browser-based library of 51 topic-specific math worksheet generators with reproducible questions and matching printable answer keys.",inLanguage:"en-US",publisher:editor };
 const webpage=canonical?{
- "@type":"WebPage",name:title,url:canonical,description,inLanguage:"en-US",
- isPartOf:{"@id":`${base}/#website`}
+ "@type":"WebPage","@id":`${canonical}#webpage`,name:title,url:canonical,description,inLanguage:"en-US",
+ isPartOf:{"@id":`${base}/#website`},author:editor,publisher:editor,
+ ...(dateModified?{dateModified}:{}),
+ ...(focus?{mainEntity:{"@id":`${canonical}#worksheet`}}:{})
 }:undefined;
 const isTool=Boolean(focus)||canonicalPath==='/word-problems-worksheets/'||canonicalPath==='/worksheets-by-grade/';
 const application=isTool&&canonical?{
- "@type":"WebApplication",name:title,url:canonical,description,
+ "@type":"WebApplication","@id":`${canonical}#worksheet-generator`,name:title,url:canonical,description,
  applicationCategory:"EducationalApplication",operatingSystem:"Web browser",
+ creator:editor,provider:editor,isAccessibleForFree:true,
  offers:{"@type":"Offer",price:"0",priceCurrency:"USD"}
 }:undefined;
 const resource=focus&&canonical?{
- "@type":"LearningResource",name:title,url:canonical,inLanguage:"en-US",
+ "@type":"LearningResource","@id":`${canonical}#worksheet`,name:title,url:canonical,inLanguage:"en-US",
  isAccessibleForFree:true,learningResourceType:"Worksheet",
- educationalUse:"practice",about:focus.primary,description
+ educationalUse:"practice",about:focus.primary,teaches:focus.primary,description,
+ creator:editor,publisher:editor
 }:undefined;
 const libraryChild=focus||canonicalPath.startsWith('/worksheets')||
  canonicalPath==='/word-problems-worksheets/'||
@@ -53,11 +66,11 @@ const breadcrumb=canonical&&canonicalPath!=='/'?{
 }:undefined;
 const structured=indexed?{
  "@context":"https://schema.org",
- "@graph":[website,...(webpage?[webpage]:[]),...(application?[application]:[]),
+ "@graph":[org,website,...(webpage?[webpage]:[]),...(application?[application]:[]),
  ...(resource?[resource]:[]),...(breadcrumb?[breadcrumb]:[])]
 }:undefined;
 ---
 <!DOCTYPE html>
-<html lang="en-US"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="color-scheme" content="light"/><title>{title}</title><meta name="description" content={description}/>{buildRevision&&<meta name="math-works-build-sha" content={buildRevision}/>}<meta name="robots" content={robotsDirective}/>{canonical&&<link rel="canonical" href={canonical}/>}
+<html lang="en-US"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="color-scheme" content="light"/><title>{title}</title><meta name="description" content={description}/><meta name="author" content="Math Worksheet Studio"/>{buildRevision&&<meta name="math-works-build-sha" content={buildRevision}/>}<meta name="robots" content={robotsDirective}/>{canonical&&<link rel="canonical" href={canonical}/>}
 <meta property="og:type" content="website"/><meta property="og:site_name" content="Math Worksheet Studio"/><meta property="og:title" content={title}/><meta property="og:description" content={description}/>{canonical&&<meta property="og:url" content={canonical}/>}<meta property="og:image" content={socialImage}/><meta property="og:image:width" content="1000"/><meta property="og:image:height" content="560"/><meta property="og:image:type" content="image/webp"/><meta property="og:image:alt" content={socialAlt}/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={title}/><meta name="twitter:description" content={description}/><meta name="twitter:image" content={socialImage}/><meta name="twitter:image:alt" content={socialAlt}/><link rel="icon" type="image/svg+xml" href="/favicon.svg"/>{structured&&<script type="application/ld+json" set:html={JSON.stringify(structured)} />}</head>
 <body><a class="skip-link" href="#main-content">Skip to main content</a><header class="site-header"><div class="container header-inner"><a class="brand" href="/" aria-label="Math Worksheet Studio home"><span class="brand-mark" aria-hidden="true">∑</span><span class="brand-name">Math Worksheet <span class="brand-accent">Studio</span></span></a><nav class="header-nav" aria-label="Main navigation"><a href="/worksheets-by-grade/">By grade</a><a href="/#how-it-works">How it works</a><a class="nav-pill" href="/worksheets/">Browse worksheets <span aria-hidden="true">↗</span></a></nav></div></header><main id="main-content" tabindex="-1"><slot /></main><footer class="site-footer"><div class="container footer-inner"><span>© {new Date().getFullYear()} Math Worksheet Studio · Free, locally generated practice sheets.</span><div class="footer-links"><a href="/worksheets/">Worksheets</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/contact/">Contact</a></div></div></footer></body></html>
