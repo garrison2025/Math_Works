@@ -2,15 +2,16 @@
  * A distinct generator: existing 51 v18 worksheet algorithms and old shared URLs are unchanged.
  * Source V2 word-problems intent remains HOLD for public indexing pending separate owner review.
  */
-export type StoryMode='proportions'|'area'|'multiplication'|'division';
+export type StoryMode='proportions'|'area'|'multiplication'|'division'|'one-step'|'decimals';
 export type StoryChoice=StoryMode|'mixed';
 export type StoryLevel='easy'|'standard'|'challenge';
 export type StoryValues={a:number;b:number;c:number};
 export type StoryProblem={id:string;mode:StoryMode;question:string;answer:string;steps:string[];values:StoryValues;units:string};
 export type StorySet={version:'wp1';seed:number;mode:StoryChoice;level:StoryLevel;questions:StoryProblem[]};
-export const STORY_CHOICES:readonly StoryChoice[]=['mixed','proportions','area','multiplication','division'];
+export const STORY_CHOICES:readonly StoryChoice[]=['mixed','proportions','area','multiplication','division','one-step','decimals'];
 export const STORY_LEVELS:readonly StoryLevel[]=['easy','standard','challenge'];
-const MODES:readonly StoryMode[]=['proportions','area','multiplication','division'];
+const MODES:readonly StoryMode[]=['proportions','area','multiplication','division','one-step','decimals'];
+const cents=(v:number)=>String(Math.trunc(v/100))+'.'+String(v%100).padStart(2,'0');
 class Rng{
  private value:number;
  constructor(seed:number){this.value=seed===0?0x6d2b79f5:seed>>>0;}
@@ -23,6 +24,24 @@ function limit(level:StoryLevel):[number,number]{
 }
 function problem(rng:Rng,mode:StoryMode,level:StoryLevel):Omit<StoryProblem,'id'>{
  const [lo,hi]=limit(level),a=rng.int(lo,hi),b=rng.int(2,level==='challenge'?14:10);
+ if(mode==='decimals'){
+  const x=rng.int(lo*100,hi*100),y=rng.int(25,level==='challenge'?790:460);
+  return{
+   mode,values:{a:x,b:y,c:0},units:'liters',
+   question:`A community workshop has ${cents(x)} liters of paint and adds ${cents(y)} more liters. How many liters of paint are there now?`,
+   answer:`${cents(x+y)} liters`,
+   steps:[`Add the paint amounts: ${cents(x)} + ${cents(y)}.`,`Total: ${cents(x+y)} liters.`]
+  };
+ }
+ if(mode==='one-step'){
+  const total=a+b;
+  return{
+   mode,values:{a,b,c:0},units:'books',
+   question:`A library shelf has an unknown number of books. After ${b} more books are added, it holds ${total} books. How many books were on the shelf at first?`,
+   answer:`${a} books`,
+   steps:[`Let x be the original books: x + ${b} = ${total}.`,`Subtract ${b} from both sides: x = ${total} - ${b} = ${a} books.`]
+  };
+ }
  if(mode==='proportions'){
   const c=rng.int(2,level==='challenge'?18:12);
   const total=a*b,needed=a*c;
@@ -62,9 +81,9 @@ function problem(rng:Rng,mode:StoryMode,level:StoryLevel):Omit<StoryProblem,'id'
 export function expectedStoryAnswer(p:Pick<StoryProblem,'mode'|'values'|'units'>):string{
  const {a,b,c}=p.values;
  if(![a,b,c].every(Number.isSafeInteger)||a<=0||b<=0||c<0)throw Error('Invalid story operands');
- const units=({proportions:'cups',area:'square feet',multiplication:'markers',division:'pencils'} as const)[p.mode];
+ const units=({proportions:'cups',area:'square feet',multiplication:'markers',division:'pencils','one-step':'books',decimals:'liters'} as const)[p.mode];
  if(!units||p.units!==units)throw Error('Wrong unit for story type');
- const result=p.mode==='proportions'?a*c:p.mode==='area'||p.mode==='multiplication'?a*b:a;
+ const result=p.mode==='proportions'?a*c:p.mode==='area'||p.mode==='multiplication'?a*b:p.mode==='decimals'?cents(a+b):a;
  return `${result} ${units}`;
 }
 export function verifyStorySet(set:StorySet):void{
@@ -83,6 +102,8 @@ export function verifyStorySet(set:StorySet):void{
   const v=p.values;
   if(p.mode==='proportions'&&(!p.question.includes(String(v.a*v.b))||!p.question.includes(String(v.c))))throw Error('Proportion prompt mismatch');
   if(p.mode==='division'&&!p.question.includes(String(v.a*v.b)))throw Error('Division prompt mismatch');
+  if(p.mode==='one-step'&&(!p.question.includes(String(v.a+v.b))||!p.question.includes(String(v.b))))throw Error('One-step prompt mismatch');
+  if(p.mode==='decimals'&&(!p.question.includes(cents(v.a))||!p.question.includes(cents(v.b))))throw Error('Decimal prompt mismatch');
   if(!p.steps.at(-1)?.includes(p.units))throw Error('Missing final answer units in steps');
  }
 }
